@@ -1,0 +1,17 @@
+[
+  {
+    "patient_id": "S001",
+    "text": "54yo man, chronic alcohol use, severe epigastric pain radiating to back, nausea, vomiting, elevated lipase/amylase",
+    "condition": "acute pancreatitis (alcohol-related)"
+  },
+  {
+    "patient_id": "S002",
+    "text": "29yo woman, palpitations, heat intolerance, weight loss, fine tremor, tachycardia, diffuse non-tender goiter",
+    "condition": "Graves disease / hyperthyroidism"
+  },
+  {
+    "patient_id": "S008",
+    "text": "60yo woman, progressive dyspnea, dry cough, finger clubbing, CT bilateral basal reticular opacities with honeycombing",
+    "condition": "idiopathic pulmonary fibrosis"
+  }
+]

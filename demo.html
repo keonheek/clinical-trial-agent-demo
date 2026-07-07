@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Clinical Trial Recommendation — Multi-Agent Demo</title>
+<style>
+  :root{
+    --accent:#0f6e5a;
+    --accent-dark:#0b5646;
+    --accent-soft:#e6f2ef;
+    --ink:#1f2937;
+    --ink-soft:#6b7280;
+    --line:#e5e7eb;
+    --bg:#ffffff;
+    --bg-alt:#f8f9fa;
+    --met:#1f8a4c;
+    --met-bg:#e8f6ee;
+    --not-met:#b3261e;
+    --not-met-bg:#fbeceb;
+    --uncertain:#92660a;
+    --uncertain-bg:#fdf3dd;
+    --unknown:#5f6b7a;
+    --unknown-bg:#eef0f2;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Noto Sans KR","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.55;
+    font-size:15px;
+  }
+  a{color:var(--accent);}
+  h1,h2,h3{font-weight:700;line-height:1.3;}
+
+  /* ---- layout shell ---- */
+  .shell{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  @media (max-width:860px){
+    .shell{grid-template-columns:1fr;}
+  }
+
+  header.topbar{
+    padding:28px 24px 20px;
+    border-bottom:1px solid var(--line);
+    max-width:1180px;
+    margin:0 auto;
+  }
+  header.topbar h1{font-size:1.5rem;margin:0 0 6px;}
+  header.topbar .subtitle{margin:0;color:var(--ink-soft);font-size:0.95rem;}
+
+  /* ---- agent map strip ---- */
+  .agent-map{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    max-width:1180px;
+    margin:0 auto;
+    padding:10px 24px;
+    background:var(--bg-alt);
+    border-bottom:1px solid var(--line);
+    position:sticky;
+    top:0;
+    z-index:20;
+  }
+  .agent-step{
+    flex:1 1 auto;
+    min-width:110px;
+    text-align:center;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    padding:8px 6px;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+  }
+  .agent-step .n{
+    display:block;
+    font-size:0.68rem;
+    color:#9aa2ad;
+    margin-bottom:2px;
+  }
+  .agent-step.active{
+    color:var(--accent-dark);
+    border-bottom-color:var(--accent);
+    font-weight:700;
+  }
+
+  /* ---- sidebar (patient selector) ---- */
+  aside.sidebar{
+    border-right:1px solid var(--line);
+    padding:20px 16px;
+    align-self:start;
+    position:sticky;
+    top:52px;
+    max-height:calc(100vh - 52px);
+    overflow-y:auto;
+  }
+  @media (max-width:860px){
+    aside.sidebar{
+      position:static;
+      max-height:none;
+      border-right:none;
+      border-bottom:1px solid var(--line);
+      padding:14px 16px;
+    }
+  }
+  aside.sidebar h2{font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin:0 0 10px;}
+  @media (max-width:860px){ aside.sidebar h2{display:none;} }
+
+  #patientList{display:block;}
+  @media (max-width:860px){
+    #patientList{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+    }
+  }
+
+  .patient-btn{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 12px;
+    margin-bottom:8px;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:0.85rem;
+    color:var(--ink);
+  }
+  @media (max-width:860px){
+    .patient-btn{width:220px;flex:0 0 auto;margin-bottom:0;}
+  }
+  .patient-btn strong{display:block;color:var(--accent-dark);font-size:0.9rem;margin-bottom:2px;}
+  .patient-btn .snippet{color:var(--ink-soft);font-size:0.78rem;}
+  .patient-btn.selected{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+  }
+
+  /* ---- main content ---- */
+  main{padding:24px 24px 60px;min-width:0;}
+
+  .stage{
+    margin-bottom:44px;
+    scroll-margin-top:64px;
+  }
+  .stage-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:14px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:8px;
+  }
+  .stage-head .num{
+    font-size:1.4rem;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .stage-head h2{font-size:1.1rem;margin:0;}
+
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:14px;
+  }
+  table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:560px;
+    font-size:0.86rem;
+  }
+  th,td{
+    text-align:left;
+    padding:9px 12px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-alt);
+    font-weight:700;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  tr:last-child td{border-bottom:none;}
+
+  .vignette{
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:0.92rem;
+    margin-bottom:14px;
+  }
+  .vignette mark{
+    background:#fff2a8;
+    color:var(--ink);
+    padding:0 2px;
+    border-radius:2px;
+  }
+
+  .badge{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:99px;
+    font-size:0.72rem;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .badge-MET{background:var(--met-bg);color:var(--met);}
+  .badge-NOT_MET{background:var(--not-met-bg);color:var(--not-met);}
+  .badge-UNCERTAIN{background:var(--uncertain-bg);color:var(--uncertain);}
+  .badge-UNKNOWN{background:var(--unknown-bg);color:var(--unknown);}
+
+  .badge-ELIGIBLE{background:var(--met-bg);color:var(--met);}
+  .badge-INELIGIBLE{background:var(--not-met-bg);color:var(--not-met);}
+
+  .tag{
+    display:inline-block;
+    font-size:0.7rem;
+    padding:1px 6px;
+    border-radius:4px;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+  }
+  .tag.inclusion{border-color:#bcd8ce;color:var(--accent-dark);}
+  .tag.exclusion{border-color:#e3c2bd;color:#8a3a33;}
+
+  .trial-block{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:16px;
+  }
+  .trial-block-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .trial-block-head h3{font-size:0.98rem;margin:0;flex:1 1 auto;min-width:200px;}
+  .trial-block-head .meta{font-size:0.78rem;color:var(--ink-soft);}
+
+  .question-card{
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent);
+    border-radius:6px;
+    padding:10px 14px;
+    margin-bottom:10px;
+  }
+  .question-card .field{font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;}
+  .question-card .q{font-weight:600;margin:2px 0 4px;}
+  .question-card .why{font-size:0.85rem;color:var(--ink-soft);}
+
+  .rec-card{
+    display:grid;
+    grid-template-columns:44px 1fr auto;
+    gap:14px;
+    align-items:start;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .rec-card .rank{
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--accent);
+    text-align:center;
+  }
+  .rec-card h3{font-size:0.98rem;margin:0 0 4px;}
+  .rec-card .nct{font-size:0.8rem;margin-bottom:6px;}
+  .rec-card .rationale{font-size:0.88rem;color:var(--ink);}
+  .rec-card .phase{font-size:0.78rem;color:var(--ink-soft);}
+
+  .empty-note{
+    border:1px dashed var(--line);
+    border-radius:8px;
+    padding:40px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:60px auto;
+  }
+  .empty-note code{
+    background:var(--bg-alt);
+    padding:2px 6px;
+    border-radius:4px;
+  }
+
+  footer.disclaimer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:20px 24px 34px;
+    border-top:1px solid var(--line);
+    color:var(--ink-soft);
+    font-size:0.8rem;
+  }
+
+  #selftest-panel{
+    position:fixed;
+    top:12px;
+    right:12px;
+    z-index:100;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.12);
+    padding:12px 14px;
+    font-size:0.78rem;
+    max-width:280px;
+  }
+  #selftest-panel h4{margin:0 0 6px;font-size:0.8rem;}
+  #selftest-panel ul{margin:0;padding-left:16px;}
+  #selftest-panel li.pass{color:var(--met);}
+  #selftest-panel li.fail{color:var(--not-met);}
+  #selftest-panel .overall{margin-top:6px;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Interactive Clinical Trial Recommendation — Multi-Agent Demo</h1>
+  <p class="subtitle">임상시험 프로토콜과 환자 정보를 매칭하는 멀티 에이전트 시스템 데모</p>
+</header>
+
+<nav class="agent-map" id="agentMap">
+  <div class="agent-step" data-group="matching"><span class="n">1</span>기준 파싱</div>
+  <div class="agent-step" data-group="extraction"><span class="n">2</span>환자 정보 추출</div>
+  <div class="agent-step" data-group="matching"><span class="n">3</span>매칭·추론</div>
+  <div class="agent-step" data-group="questions"><span class="n">4</span>부족정보 탐지</div>
+  <div class="agent-step" data-group="questions"><span class="n">5</span>질문 생성</div>
+  <div class="agent-step" data-group="recommend"><span class="n">6</span>추천·설명</div>
+</nav>
+
+<div class="shell">
+  <aside class="sidebar">
+    <h2>환자 선택</h2>
+    <div id="patientList"></div>
+  </aside>
+
+  <main id="mainContent">
+    <div class="empty-note" id="emptyNote" style="display:none;">
+      traces.js 없음 — <code>python3 pipeline.py</code> 실행 후 새로고침 해주세요.
+    </div>
+
+    <section class="stage" id="stage-extraction" data-group="extraction">
+      <div class="stage-head"><span class="num">①</span><h2>환자 정보 추출</h2></div>
+      <div class="vignette" id="vignetteBox"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th><th>Evidence</th></tr></thead>
+          <tbody id="extractionBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="stage" id="stage-matching" data-group="matching">
+      <div class="stage-head"><span class="num">②</span><h2>조건 매칭</h2></div>
+      <div id="matchingBody"></div>
+    </section>
+
+    <section class="stage" id="stage-questions" data-group="questions">
+      <div class="stage-head"><span class="num">③</span><h2>부족 정보 → 확인 질문</h2></div>
+      <div id="questionsBody"></div>
+    </section>
+
+    <section class="stage" id="stage-recommend" data-group="recommend">
+      <div class="stage-head"><span class="num">④</span><h2>최종 추천</h2></div>
+      <div id="recommendBody"></div>
+    </section>
+  </main>
+</div>
+
+<footer class="disclaimer">
+  본 결과는 의학적 자문이 아닌 참고용입니다.
+</footer>
+
+<div id="selftest-panel" style="display:none;"></div>
+
+<script src="traces.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var traces = (typeof window.TRACES !== "undefined" && Array.isArray(window.TRACES)) ? window.TRACES : null;
+  var currentIndex = 0;
+
+  function escapeHtml(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+
+  function highlightEvidence(text, quote){
+    if(!quote) return escapeHtml(text);
+    var idx = text.indexOf(quote);
+    if(idx === -1) return escapeHtml(text);
+    var before = text.slice(0, idx);
+    var match = text.slice(idx, idx + quote.length);
+    var after = text.slice(idx + quote.length);
+    return escapeHtml(before) + "<mark>" + escapeHtml(match) + "</mark>" + escapeHtml(after);
+  }
+
+  function badgeClass(prefix, value){
+    var v = (value || "UNKNOWN").toUpperCase();
+    return "badge badge-" + v;
+  }
+
+  function renderPatientList(){
+    var el = document.getElementById("patientList");
+    el.innerHTML = "";
+    traces.forEach(function(t, i){
+      var btn = document.createElement("button");
+      btn.className = "patient-btn" + (i === currentIndex ? " selected" : "");
+      var snippet = (t.patient_text || "").slice(0, 80);
+      btn.innerHTML = "<strong>" + escapeHtml(t.patient_id || ("환자 " + (i+1))) + "</strong>" +
+        "<span class=\"snippet\">" + escapeHtml(snippet) + (t.patient_text && t.patient_text.length > 80 ? "…" : "") + "</span>";
+      btn.addEventListener("click", function(){
+        currentIndex = i;
+        renderAll();
+      });
+      el.appendChild(btn);
+    });
+  }
+
+  function renderExtraction(trace){
+    var vignette = document.getElementById("vignetteBox");
+    var body = document.getElementById("extractionBody");
+    var text = trace.patient_text || "";
+    var extraction = trace.extraction || [];
+
+    // build a combined highlight over the vignette for all evidence quotes
+    var marks = [];
+    extraction.forEach(function(ex){
+      if(ex.evidence_quote){
+        var idx = text.indexOf(ex.evidence_quote);
+        if(idx !== -1){
+          marks.push({start: idx, end: idx + ex.evidence_quote.length});
+        }
+      }
+    });
+    marks.sort(function(a,b){ return a.start - b.start; });
+    var html = "";
+    var cursor = 0;
+    marks.forEach(function(m){
+      if(m.start < cursor) return; // skip overlaps
+      html += escapeHtml(text.slice(cursor, m.start));
+      html += "<mark>" + escapeHtml(text.slice(m.start, m.end)) + "</mark>";
+      cursor = m.end;
+    });
+    html += escapeHtml(text.slice(cursor));
+    vignette.innerHTML = html || "<em>환자 텍스트 없음</em>";
+
+    body.innerHTML = "";
+    if(extraction.length === 0){
+      body.innerHTML = "<tr><td colspan=\"3\">추출된 정보 없음</td></tr>";
+      return;
+    }
+    extraction.forEach(function(ex){
+      var tr = document.createElement("tr");
+      tr.innerHTML = "<td>" + escapeHtml(ex.name) + "</td>" +
+        "<td>" + escapeHtml(ex.value) + "</td>" +
+        "<td>" + highlightEvidence(ex.evidence_quote || "", ex.evidence_quote || "") + "</td>";
+      body.appendChild(tr);
+    });
+  }
+
+  function renderMatching(trace){
+    var container = document.getElementById("matchingBody");
+    container.innerHTML = "";
+    var trials = trace.trials || [];
+    if(trials.length === 0){
+      container.innerHTML = "<p>매칭된 임상시험 없음</p>";
+      return;
+    }
+    trials.forEach(function(trial){
+      var block = document.createElement("div");
+      block.className = "trial-block";
+
+      var head = document.createElement("div");
+      head.className = "trial-block-head";
+      head.innerHTML =
+        "<h3>" + escapeHtml(trial.title || trial.nct_id || "") + "</h3>" +
+        "<span class=\"meta\">" + escapeHtml(trial.nct_id || "") + (trial.phase ? "  /  " + escapeHtml(trial.phase) : "") + "</span>" +
+        "<span class=\"" + badgeClass("elig", trial.eligibility) + "\">" + escapeHtml(trial.eligibility || "UNKNOWN") + "</span>";
+      block.appendChild(head);
+
+      var tableWrap = document.createElement("div");
+      tableWrap.className = "table-wrap";
+      var table = document.createElement("table");
+      table.innerHTML = "<thead><tr><th>기준</th><th>구분</th><th>판정</th><th>근거</th><th>설명</th></tr></thead>";
+      var tbody = document.createElement("tbody");
+      (trial.criteria || []).forEach(function(c){
+        var tr = document.createElement("tr");
+        var typeClass = (c.type === "exclusion") ? "exclusion" : "inclusion";
+        var typeLabel = (c.type === "exclusion") ? "제외" : "포함";
+        tr.innerHTML =
+          "<td>" + escapeHtml(c.text) + "</td>" +
+          "<td><span class=\"tag " + typeClass + "\">" + typeLabel + "</span></td>" +
+          "<td><span class=\"" + badgeClass("verdict", c.verdict) + "\">" + escapeHtml(c.verdict || "UNKNOWN") + "</span></td>" +
+          "<td>" + escapeHtml(c.evidence || "—") + "</td>" +
+          "<td>" + escapeHtml(c.reasoning || "—") + "</td>";
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      tableWrap.appendChild(table);
+      block.appendChild(tableWrap);
+
+      container.appendChild(block);
+    });
+  }
+
+  function renderQuestions(trace){
+    var container = document.getElementById("questionsBody");
+    container.innerHTML = "";
+    var questions = trace.questions || [];
+    if(questions.length === 0){
+      container.innerHTML = "<p>추가 확인 질문 없음 — 모든 필요 정보가 충분합니다.</p>";
+      return;
+    }
+    questions.forEach(function(q){
+      var card = document.createElement("div");
+      card.className = "question-card";
+      card.innerHTML =
+        "<div class=\"field\">" + escapeHtml(q.field || "") + "</div>" +
+        "<div class=\"q\">" + escapeHtml(q.question || "") + "</div>" +
+        "<div class=\"why\">" + escapeHtml(q.why || "") + "</div>";
+      container.appendChild(card);
+    });
+  }
+
+  function renderRecommend(trace){
+    var container = document.getElementById("recommendBody");
+    container.innerHTML = "";
+    var trials = (trace.trials || []).slice().sort(function(a,b){
+      var ra = (a.rank == null) ? 999 : a.rank;
+      var rb = (b.rank == null) ? 999 : b.rank;
+      return ra - rb;
+    });
+    if(trials.length === 0){
+      container.innerHTML = "<p>추천할 임상시험 없음</p>";
+      return;
+    }
+    trials.forEach(function(trial){
+      var card = document.createElement("div");
+      card.className = "rec-card";
+      var url = "https://clinicaltrials.gov/study/" + encodeURIComponent(trial.nct_id || "");
+      card.innerHTML =
+        "<div class=\"rank\">" + escapeHtml(trial.rank != null ? trial.rank : "—") + "</div>" +
+        "<div>" +
+          "<h3>" + escapeHtml(trial.title || "") + "</h3>" +
+          "<div class=\"nct\"><a href=\"" + url + "\" target=\"_blank\" rel=\"noopener\">" + escapeHtml(trial.nct_id || "") + "</a>" +
+          (trial.phase ? "  /  <span class=\"phase\">" + escapeHtml(trial.phase) + "</span>" : "") + "</div>" +
+          "<div class=\"rationale\">" + escapeHtml(trial.rationale || "") + "</div>" +
+        "</div>" +
+        "<span class=\"" + badgeClass("elig", trial.eligibility) + "\">" + escapeHtml(trial.eligibility || "UNKNOWN") + "</span>";
+      container.appendChild(card);
+    });
+  }
+
+  function renderAll(){
+    if(!traces || traces.length === 0){
+      document.getElementById("emptyNote").style.display = "block";
+      document.getElementById("mainContent").querySelectorAll(".stage").forEach(function(s){ s.style.display = "none"; });
+      document.querySelector("aside.sidebar").style.display = "none";
+      document.getElementById("agentMap").style.display = "none";
+      return;
+    }
+    var trace = traces[currentIndex];
+    renderPatientList();
+    renderExtraction(trace);
+    renderMatching(trace);
+    renderQuestions(trace);
+    renderRecommend(trace);
+  }
+
+  /* ---- scroll-spy over agent map ---- */
+  function initScrollSpy(){
+    var sections = Array.prototype.slice.call(document.querySelectorAll(".stage"));
+    if(sections.length === 0 || !("IntersectionObserver" in window)) return;
+    var steps = Array.prototype.slice.call(document.querySelectorAll(".agent-step"));
+    var activeGroup = null;
+
+    function setActive(group){
+      if(group === activeGroup) return;
+      activeGroup = group;
+      steps.forEach(function(s){
+        s.classList.toggle("active", s.getAttribute("data-group") === group);
+      });
+    }
+
+    // The -60% bottom rootMargin below means a short last section can never
+    // cross into the "active" band on pages not much taller than the
+    // viewport. Force the last stage active once scrolled to the bottom —
+    // checked every time the observer fires, since that reliably tracks
+    // scroll position (a plain "scroll" listener does not always fire on
+    // programmatic/instant scrolls).
+    var lastGroup = sections[sections.length - 1].getAttribute("data-group");
+    function isAtBottom(){
+      return (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 2);
+    }
+
+    var observer = new IntersectionObserver(function(entries){
+      if(isAtBottom()){
+        setActive(lastGroup);
+        return;
+      }
+      var best = null;
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          if(!best || e.intersectionRatio > best.intersectionRatio){
+            best = e;
+          }
+        }
+      });
+      if(best){
+        setActive(best.target.getAttribute("data-group"));
+      }
+    }, { rootMargin: "-100px 0px -60% 0px", threshold: [0.1, 0.25, 0.5] });
+
+    sections.forEach(function(s){ observer.observe(s); });
+    window.addEventListener("scroll", function(){ if(isAtBottom()) setActive(lastGroup); }, { passive: true });
+    window.addEventListener("resize", function(){ if(isAtBottom()) setActive(lastGroup); }, { passive: true });
+  }
+
+  /* ---- self-test ---- */
+  function runSelfTest(){
+    var results = [];
+
+    function assert(name, cond){
+      results.push({ name: name, pass: !!cond });
+    }
+
+    try {
+      assert("TRACES exists and is a non-empty array", Array.isArray(window.TRACES) && window.TRACES.length > 0);
+    } catch(e){ assert("TRACES exists and is a non-empty array", false); }
+
+    try {
+      var allTraces = window.TRACES || [];
+      var okShape = allTraces.length > 0 && allTraces.every(function(t){
+        return t && t.patient_id && typeof t.patient_text === "string" && Array.isArray(t.extraction);
+      });
+      assert("every trace has patient_id/patient_text/extraction[]", okShape);
+    } catch(e){ assert("every trace has patient_id/patient_text/extraction[]", false); }
+
+    try {
+      // Load-bearing for stage ①: the UI highlights evidence_quote by finding
+      // it verbatim inside patient_text. If a quote doesn't resolve, the
+      // highlight silently disappears — so check the actual match, not just
+      // that the field exists.
+      var okExtraction = (window.TRACES || []).every(function(t){
+        return (t.extraction || []).every(function(ex){
+          return ex && typeof ex.name === "string" && "value" in ex &&
+            typeof ex.evidence_quote === "string" &&
+            t.patient_text.indexOf(ex.evidence_quote) !== -1;
+        });
+      });
+      assert("every extraction evidence_quote resolves verbatim inside patient_text", okExtraction);
+    } catch(e){ assert("every extraction evidence_quote resolves verbatim inside patient_text", false); }
+
+    try {
+      var okTrials = (window.TRACES || []).every(function(t){
+        return Array.isArray(t.trials) && t.trials.length > 0 && t.trials.every(function(tr){
+          return tr && tr.nct_id && Array.isArray(tr.criteria) &&
+            ["ELIGIBLE","INELIGIBLE","UNCERTAIN"].indexOf(tr.eligibility) !== -1;
+        });
+      });
+      assert("every trace's trials[] non-empty with nct_id/criteria[]/valid eligibility", okTrials);
+    } catch(e){ assert("every trace's trials[] non-empty with nct_id/criteria[]/valid eligibility", false); }
+
+    try {
+      var okQuestions = (window.TRACES || []).every(function(t){
+        return !t.questions || t.questions.every(function(q){
+          return q && "field" in q && "question" in q && "why" in q;
+        });
+      });
+      assert("every trace's questions[] items (if any) have field/question/why", okQuestions);
+    } catch(e){ assert("every trace's questions[] items (if any) have field/question/why", false); }
+
+    var panel = document.getElementById("selftest-panel");
+    var passCount = results.filter(function(r){ return r.pass; }).length;
+    var allPass = passCount === results.length;
+    var html = "<h4>SELFTEST</h4><ul>";
+    results.forEach(function(r){
+      html += "<li class=\"" + (r.pass ? "pass" : "fail") + "\">" + (r.pass ? "PASS" : "FAIL") + " — " + escapeHtml(r.name) + "</li>";
+    });
+    html += "</ul><div class=\"overall\" style=\"color:" + (allPass ? "var(--met)" : "var(--not-met)") + ";\">" +
+      (allPass ? "ALL PASS" : "FAILED (" + (results.length - passCount) + "/" + results.length + ")") + "</div>";
+    panel.innerHTML = html;
+    panel.style.display = "block";
+  }
+
+  renderAll();
+  initScrollSpy();
+
+  var params = new URLSearchParams(window.location.search);
+  if(params.get("selftest") === "1"){
+    runSelfTest();
+  }
+})();
+</script>
+</body>
+</html>

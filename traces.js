@@ -1,0 +1,961 @@
+window.TRACES = [
+  {
+    "patient_id": "S001",
+    "patient_text": "54yo man, chronic alcohol use, severe epigastric pain radiating to back, nausea, vomiting, elevated lipase/amylase",
+    "extraction": [
+      {
+        "name": "age",
+        "value": "54",
+        "evidence_quote": "54yo"
+      },
+      {
+        "name": "sex",
+        "value": "male",
+        "evidence_quote": "man"
+      },
+      {
+        "name": "symptoms",
+        "value": "severe epigastric pain radiating to back, nausea, vomiting",
+        "evidence_quote": "severe epigastric pain radiating to back, nausea, vomiting"
+      },
+      {
+        "name": "lab findings",
+        "value": "elevated lipase/amylase",
+        "evidence_quote": "elevated lipase/amylase"
+      },
+      {
+        "name": "relevant history/risk factors",
+        "value": "chronic alcohol use",
+        "evidence_quote": "chronic alcohol use"
+      }
+    ],
+    "trials": [
+      {
+        "nct_id": "NCT06113419",
+        "title": "Timing of CHolecystectomy In Severe PAncreatitis",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Age ≥18 years",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "54yo",
+            "reasoning": "Age meets criteria"
+          },
+          {
+            "text": "Diagnosis of pancreatitis according to Atlanta guidelines, moderately severe or severe pancreatitis (APACHE score ≥8 on admittance)",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "severe epigastric pain radiating to back, nausea, vomiting, elevated lipase/amylase",
+            "reasoning": "Insufficient info on APACHE score"
+          },
+          {
+            "text": "Biliary pancreatitis diagnosed on imaging (be it ultrasound, magnetic resonance imaging and/or tomography)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No imaging results"
+          },
+          {
+            "text": "Recovery of pancreatitis by tolerance of oral intake (defined as 24 hours of food consumption of any consistency without emetic episodes and pain defined as 4/10 on the visual analogue score of pain)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on oral intake recovery"
+          },
+          {
+            "text": "Pregnancy",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "54yo man",
+            "reasoning": "Patient is male"
+          },
+          {
+            "text": "History of cholecystectomy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No history of cholecystectomy"
+          },
+          {
+            "text": "Chronic pancreatitis",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "chronic alcohol use",
+            "reasoning": "Chronic alcohol use may imply chronic pancreatitis"
+          },
+          {
+            "text": "Active malignant disease",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on malignant disease"
+          },
+          {
+            "text": "Septic shock",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on septic shock"
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 1,
+        "rationale": "Severe epigastric pain, elevated lipase/amylase, no chronic pancreatitis"
+      },
+      {
+        "nct_id": "NCT06401577",
+        "title": "Diabetes RElated to Acute Pancreatitis and Its Mechanisms: Metabolic Outcomes Using Novel CGM Metrics",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Diagnosis of acute pancreatitis (AP) 0-90 days prior to enrollment",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "severe epigastric pain radiating to back, nausea, vomiting, elevated lipase/amylase",
+            "reasoning": "Symptoms suggest AP, but no diagnosis"
+          },
+          {
+            "text": "Participant fully understands and is able to participate in all aspects of the study, including providing informed consent, completion of case report forms, telephone interviews, metabolic testing, and planned longitudinal follow-ups",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on patient understanding"
+          },
+          {
+            "text": "Diagnosis of definite chronic pancreatitis (CP) at enrollment based on either of the following criteria met by computed tomography (CT) scan or Magnetic Resonance Imaging (MRI) or Magnetic Resonance Cholangiopancreatography (MRCP): (a) Parenchymal or ductal calcifications on CT scan; (b) Intraductal filling defects suggestive of calcifications on MRI and/or MRCP",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No imaging results provided"
+          },
+          {
+            "text": "Potential participants with post-endoscopic retrograde cholangiopancreatography (ERCP) AP who are hospitalized for <48 hours",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No ERCP or hospitalization info"
+          },
+          {
+            "text": "Prior direct endoscopic necrosectomy of the pancreas or percutaneous necrosectomy or drainage of necrotic collection(s) before enrollment",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No necrosectomy or drainage info"
+          },
+          {
+            "text": "Pancreatic tumors, including ductal adenocarcinoma, neuroendocrine tumors, and metastasis",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No tumor info provided"
+          },
+          {
+            "text": "Confirmed or suspected cystic tumor associated with main pancreatic duct dilation, or believed to be the cause of AP",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No cystic tumor info"
+          },
+          {
+            "text": "Severe systemic illness that in the judgement of the investigative team will confound outcome assessments of diabetes mellitus and immunological outcomes or pose additional risk for harms, including history of solid organ transplant, acquired immunodeficiency syndrome (AIDS), active treatment for cancer within 12 months prior to enrollment, chronic kidney disease with estimated glomerular filtration rate (eGFR) < 30 or on dialysis prior to AP",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "chronic alcohol use",
+            "reasoning": "No severe systemic illness mentioned"
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 2,
+        "rationale": "Acute pancreatitis possible, but many unknowns"
+      },
+      {
+        "nct_id": "NCT06179459",
+        "title": "Registry of Patients Undergoing Endoscopic Management of Pancreatic Fluid Collections",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Age ≥ 18 years",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "age: 54",
+            "reasoning": "Patient is over 18"
+          },
+          {
+            "text": "All patients undergoing endoscopic treatment of pancreatic fluid collections",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on endoscopic treatment"
+          },
+          {
+            "text": "Age < 18 years",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "age: 54",
+            "reasoning": "Patient is not under 18"
+          },
+          {
+            "text": "Patients who did not receive endoscopic treatment of pancreatic fluid collections",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on endoscopic treatment"
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 3,
+        "rationale": "No clear indication of endoscopic treatment of pancreatic fluid collections"
+      },
+      {
+        "nct_id": "NCT07144917",
+        "title": "Immunoparalysis After Pancreaticoduodenectomy",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Any patient undergoing a Pancreaticoduodenectomy in one of the four participating centers for a benign or malignant tumor of the pancreatic head",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on surgery"
+          },
+          {
+            "text": "Age < 18 years",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "54yo",
+            "reasoning": "Age is above 18"
+          },
+          {
+            "text": "Pregnant, postpartum, or breastfeeding women",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "male",
+            "reasoning": "Patient is male"
+          },
+          {
+            "text": "Indication other than tumor-related (e.g., chronic pancreatitis)",
+            "type": "exclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "chronic alcohol use",
+            "reasoning": "Possible chronic pancreatitis"
+          },
+          {
+            "text": "Patient with an infectious syndrome at the time of inclusion",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on infection"
+          },
+          {
+            "text": "Preoperative immunosuppression",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on immunosuppression"
+          },
+          {
+            "text": "Patient with HIV (and CD4 < cells/mm³)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on HIV"
+          },
+          {
+            "text": "Immunosuppressive treatment other than chemotherapy : Biotherapy, Corticosteroid therapy >10 mg/day or cumulative dose >700 mg prednisolone equivalent",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on immunosuppressive treatment"
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 4,
+        "rationale": "No tumor-related indication for Pancreaticoduodenectomy"
+      }
+    ],
+    "questions": [
+      {
+        "field": "Medical history",
+        "question": "What are your known medical conditions?",
+        "why": "Rules out exclusions"
+      },
+      {
+        "field": "Immunosuppression status",
+        "question": "Are you taking any immunosuppressive medications?",
+        "why": "Evaluates patient safety"
+      },
+      {
+        "field": "Current treatment and hospitalization",
+        "question": "What is your current treatment plan and hospitalization status?",
+        "why": "Evaluates patient eligibility"
+      }
+    ],
+    "generated_at": "2026-07-08"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "29yo woman, palpitations, heat intolerance, weight loss, fine tremor, tachycardia, diffuse non-tender goiter",
+    "extraction": [
+      {
+        "name": "age",
+        "value": "29",
+        "evidence_quote": "29yo"
+      },
+      {
+        "name": "sex",
+        "value": "female",
+        "evidence_quote": "woman"
+      },
+      {
+        "name": "symptoms",
+        "value": "palpitations, heat intolerance, weight loss",
+        "evidence_quote": "palpitations, heat intolerance, weight loss"
+      },
+      {
+        "name": "exam findings",
+        "value": "fine tremor, tachycardia, diffuse non-tender goiter",
+        "evidence_quote": "fine tremor, tachycardia, diffuse non-tender goiter"
+      }
+    ],
+    "trials": [
+      {
+        "nct_id": "NCT05461820",
+        "title": "Effects of Different Treatment Schemes on the Regulation and Recurrence of Graves' Disease",
+        "phase": "PHASE4",
+        "criteria": [
+          {
+            "text": "Graves hyperthyroidism (responsible for doctors' clinical diagnosis)",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "diffuse non-tender goiter",
+            "reasoning": "Goiter present, but no explicit diagnosis"
+          },
+          {
+            "text": "Age 18-65, for both men and women",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "age: 29",
+            "reasoning": "Age within specified range"
+          },
+          {
+            "text": "Thyroid receptor antibody (TRAb) was positive",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No TRAb information"
+          },
+          {
+            "text": "Those who have used glucocorticoid or other immunosuppressants for a long time within 3 months before being selected",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No medication history"
+          },
+          {
+            "text": "Ill-controlled hypertension: diastolic blood pressure≥100mmHg, systolic blood pressure ≥160 mmHg",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No blood pressure information"
+          },
+          {
+            "text": "Blood routine: the total number of white blood cells < 3.0×10^9 or neutrophils < 1.5×10^9",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No blood routine results"
+          },
+          {
+            "text": "Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No liver enzyme information"
+          },
+          {
+            "text": "Renal insufficiency: serum creatinine is higher than the upper limit of normal value",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No serum creatinine information"
+          },
+          {
+            "text": "Patients with heart failure",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "palpitations, tachycardia",
+            "reasoning": "No heart failure mentioned"
+          },
+          {
+            "text": "Pregnant and lactating women cannot rule out the possibility of pregnancy",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "29yo woman",
+            "reasoning": "No pregnancy information, but not explicitly excluded"
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 1,
+        "rationale": "Graves hyperthyroidism uncertain, multiple unknowns"
+      },
+      {
+        "nct_id": "NCT06963203",
+        "title": "Thyroidectomy for Graves' Disease or Amiodarone-induced Thyrotoxicosis",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Adult patients (≥ 18 years of age)",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "29yo",
+            "reasoning": "Patient is over 18"
+          },
+          {
+            "text": "Patients providing signed informed consent",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on consent"
+          },
+          {
+            "text": "Children and minors (<18 years)",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "29yo",
+            "reasoning": "Patient is adult"
+          },
+          {
+            "text": "Pregnant women",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "29yo woman",
+            "reasoning": "No indication of pregnancy"
+          },
+          {
+            "text": "Patients unable or unwilling to provide informed consent due to language barriers or intellectual limitations",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on consent ability"
+          },
+          {
+            "text": "Patients undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism, lymph node clearance, or redo surgery",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "diffuse non-tender goiter",
+            "reasoning": "No parathyroidectomy mentioned"
+          },
+          {
+            "text": "Surgical procedures performed for other reasons than Graves' disease or AIT",
+            "type": "exclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "diffuse non-tender goiter",
+            "reasoning": "Possible Graves' disease"
+          },
+          {
+            "text": "Biochemically confirmed hyperthyroidism or on specific medication for the treatment of Graves' disease or AIT",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "palpitations, heat intolerance, weight loss",
+            "reasoning": "Symptoms suggest hyperthyroidism"
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 2,
+        "rationale": "Biochemically confirmed hyperthyroidism uncertain"
+      },
+      {
+        "nct_id": "NCT05678374",
+        "title": "Exploring Immunological Markers Associated With Mental Fatigue in Graves' Disease",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "diffuse non-tender goiter",
+            "reasoning": "Goiter suggests thyroid issue"
+          },
+          {
+            "text": "Diagnosis 15 to 60 months ago",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No diagnosis date given"
+          },
+          {
+            "text": "Thyroid hormones within normal range without anti thyroid drugs",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "weight loss, tachycardia",
+            "reasoning": "Symptoms suggest abnormal thyroid"
+          },
+          {
+            "text": "No thyroid disease",
+            "type": "inclusion",
+            "verdict": "NOT_MET",
+            "evidence": "diffuse non-tender goiter",
+            "reasoning": "Goiter indicates thyroid disease"
+          },
+          {
+            "text": "Mental Fatigue Score ≤8",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No Mental Fatigue Score given"
+          },
+          {
+            "text": "Person unable to follow protocol",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on ability to follow protocol"
+          },
+          {
+            "text": "Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, any other neurological disease",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on neurological diseases"
+          },
+          {
+            "text": "Pregnancy and breast-feeding",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "29yo woman",
+            "reasoning": "No indication of pregnancy"
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 3,
+        "rationale": "No thyroid disease required, patient has Graves"
+      },
+      {
+        "nct_id": "NCT06392906",
+        "title": "Orbital Radiotherapy in Grave's Ophthalmopathy 1 Week vs 2 Weeks (OraGO-1 Trial)",
+        "phase": "PHASE3",
+        "criteria": [
+          {
+            "text": "Patient with active moderate to severe thyroid eye disease with a CAS > 4 with/ without diplopia before starting IVMP",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No CAS score mentioned"
+          },
+          {
+            "text": "Patient with poor response to 3 doses of IVMP (CAS drop < 1) หรือ CAS score > 3 after 3 doses of IVMP",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No IVMP response mentioned"
+          },
+          {
+            "text": "Patients with diplopia after 3 doses of IVMP",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No diplopia after IVMP mentioned"
+          },
+          {
+            "text": "Patients with Graves' Ophthalmopathy who have maintained euthyroidism",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "diffuse non-tender goiter",
+            "reasoning": "Graves' suggested, euthyroidism unclear"
+          },
+          {
+            "text": "Non-pregnant adults (aged 35 years or older)",
+            "type": "inclusion",
+            "verdict": "NOT_MET",
+            "evidence": "age: 29",
+            "reasoning": "Age under 35"
+          },
+          {
+            "text": "Individuals with severe hypertension",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No hypertension info"
+          },
+          {
+            "text": "Individuals with diabetic retinopathy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No diabetic retinopathy info"
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 4,
+        "rationale": "Patient age does not meet inclusion criteria"
+      }
+    ],
+    "questions": [
+      {
+        "field": "lab_values",
+        "question": "What are your current TSH and free T4 levels?",
+        "why": "Assess thyroid function"
+      },
+      {
+        "field": "disease_diagnosis",
+        "question": "Have you been diagnosed with hyperthyroidism or Graves' disease, and if so, for how long?",
+        "why": "Determine disease status"
+      },
+      {
+        "field": "medication_use",
+        "question": "Are you currently taking any medications, including beta blockers or antithyroid drugs?",
+        "why": "Assess current treatment"
+      }
+    ],
+    "generated_at": "2026-07-08"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "60yo woman, progressive dyspnea, dry cough, finger clubbing, CT bilateral basal reticular opacities with honeycombing",
+    "extraction": [
+      {
+        "name": "age",
+        "value": "60",
+        "evidence_quote": "60yo"
+      },
+      {
+        "name": "sex",
+        "value": "female",
+        "evidence_quote": "woman"
+      },
+      {
+        "name": "symptom",
+        "value": "dyspnea",
+        "evidence_quote": "progressive dyspnea"
+      },
+      {
+        "name": "symptom",
+        "value": "dry cough",
+        "evidence_quote": "dry cough"
+      },
+      {
+        "name": "exam finding",
+        "value": "finger clubbing",
+        "evidence_quote": "finger clubbing"
+      },
+      {
+        "name": "imaging finding",
+        "value": "bilateral basal reticular opacities with honeycombing",
+        "evidence_quote": "CT bilateral basal reticular opacities with honeycombing"
+      }
+    ],
+    "trials": [
+      {
+        "nct_id": "NCT05674994",
+        "title": "Glucocorticoids Versus Placebo for the Treatment of Acute Exacerbation of Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE3",
+        "criteria": [
+          {
+            "text": "Patient is ≥ 18 years of age",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "60",
+            "reasoning": "Age is above 18"
+          },
+          {
+            "text": "IPF or IPF (likely) diagnosis defined on 2018 international recommendations",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "bilateral basal reticular opacities with honeycombing",
+            "reasoning": "Suggestive but not definitive"
+          },
+          {
+            "text": "Definite or suspected Acute Exacerbation defined by the international working group criteria after exclusion of alternative diagnoses of acute worsening",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "progressive dyspnea",
+            "reasoning": "Acute exacerbation unclear"
+          },
+          {
+            "text": "Previous or concurrent diagnosis of IPF",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "bilateral basal reticular opacities with honeycombing",
+            "reasoning": "IPF suggested but not confirmed"
+          },
+          {
+            "text": "Acute worsening or development of dyspnea typically < 1-month duration",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "progressive dyspnea",
+            "reasoning": "Dyspnea is worsening"
+          },
+          {
+            "text": "Identified etiology for acute worsening (i.e.: infectious disease)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on etiology"
+          },
+          {
+            "text": "Known hypersensitivity to glucocorticoids or to any component of the study treatment",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No hypersensitivity info"
+          },
+          {
+            "text": "Patient requiring mechanical ventilation or already on mechanical ventilation",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "no mention of mechanical ventilation",
+            "reasoning": "No ventilation mentioned"
+          },
+          {
+            "text": "Active bacterial, viral, fungal or parasitic infection",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No infection info"
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 1,
+        "rationale": "Dyspnea and honeycombing, but uncertain IPF diagnosis"
+      },
+      {
+        "nct_id": "NCT07447102",
+        "title": "Phase II Clinical Study of BC006 in Patients With Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE2",
+        "criteria": [
+          {
+            "text": "Must provide written informed consent form (ICF) indicating understanding of the study and voluntary participation.",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No ICF information"
+          },
+          {
+            "text": "Aged ≥40 years at the time of signing the ICF, with no gender restriction.",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "age: 60",
+            "reasoning": "Age meets criteria"
+          },
+          {
+            "text": "Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 American Thoracic Society/European Respiratory Society/Japanese Respiratory Society/Latin American Thoracic Society (ATS/ERS/JRS/ALAT) clinical practice guideline.",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "bilateral basal reticular opacities with honeycombing",
+            "reasoning": "Suggestive but not definitive"
+          },
+          {
+            "text": "Forced vital capacity percent predicted (FVC% predicted) ≥45% during the screening period.",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No FVC data"
+          },
+          {
+            "text": "Interstitial lung disease of known etiology (e.g., domestic and occupational environmental exposures, connective tissue disease, drug toxicity, etc.).",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "idiopathic implied by bilateral basal reticular opacities with honeycombing",
+            "reasoning": "No known etiology mentioned"
+          },
+          {
+            "text": "Other pulmonary diseases considered clinically significant by the investigator (e.g., asthma, chronic obstructive pulmonary disease, cavitary or pleural disease, etc.).",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No other pulmonary diseases mentioned"
+          },
+          {
+            "text": "Acute exacerbation of IPF within 3 months prior to screening or during the screening period, as judged by the investigator.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No exacerbation history"
+          },
+          {
+            "text": "Current or suspected malignancy, or history of malignancy within 5 years prior to screening (excluding basal cell carcinoma of the skin, squamous cell carcinoma of the skin, superficial bladder cancer, carcinoma in situ of the cervix, or other carcinoma in situ that has received curative treatment with no recurrence).",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No malignancy information"
+          },
+          {
+            "text": "Active autoimmune disease, or history of autoimmune disease that may relapse (e.g., systemic lupus erythematosus, rheumatoid arthritis, ulcerative colitis, Crohn's disease, autoimmune thyroid disease, multiple sclerosis, vasculitis, glomerulonephritis, etc., including but not limited to these diseases or syndromes).",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No autoimmune disease information"
+          },
+          {
+            "text": "Pregnant (female patients of childbearing potential confirmed by serum pregnancy test within 7 days prior to first dose of study drug) or lactating female.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No pregnancy or lactation information"
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 2,
+        "rationale": "Possible IPF, but uncertain diagnosis and FVC status"
+      },
+      {
+        "nct_id": "NCT07299695",
+        "title": "Intravenous Immunoglobulin for the Treatment of Acute Exacerbations of Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE3",
+        "criteria": [
+          {
+            "text": "Patients ≥ 18 years of age",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "60",
+            "reasoning": "Age meets criteria"
+          },
+          {
+            "text": "Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "bilateral basal reticular opacities with honeycombing",
+            "reasoning": "IPF diagnosis not explicitly stated"
+          },
+          {
+            "text": "Patients hospitalised with a definite or suspected AE-IPF diagnosis",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "Hospitalization status not mentioned"
+          },
+          {
+            "text": "Patients with acute worsening or development of dyspnoea typically < 1 month duration",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "progressive dyspnea",
+            "reasoning": "Duration of dyspnea not specified"
+          },
+          {
+            "text": "Patients with computed tomography with new bilateral ground-glass opacity and/or consolidation superimposed on a background pattern consistent with usual interstitial pneumonia pattern",
+            "type": "inclusion",
+            "verdict": "NOT_MET",
+            "evidence": "bilateral basal reticular opacities with honeycombing",
+            "reasoning": "No ground-glass opacity or consolidation mentioned"
+          },
+          {
+            "text": "Patients with deterioration not fully explained by cardiac failure or fluid overload",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": null,
+            "reasoning": "No info on cardiac failure or fluid overload"
+          },
+          {
+            "text": "Patients with acute worsening due to uncontrolled heart failure or pulmonary embolism",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No info on heart failure or pulmonary embolism"
+          },
+          {
+            "text": "Patients with known hypersensitivity to corticosteroids, IVIG or any component of the study treatment",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No hypersensitivity info mentioned"
+          },
+          {
+            "text": "Patients with known IgA deficiency (IgA level <7 mg/dL)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No IgA level mentioned"
+          },
+          {
+            "text": "Patients with active malignancy or currently receiving cancer treatment, except for basal cell or squamous cell skin cancer or low-risk prostate cancer (T1 or T2a stage with PSA <10 ng/dL)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No cancer or treatment info mentioned"
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 3,
+        "rationale": "No new bilateral ground-glass opacity and/or consolidation"
+      },
+      {
+        "nct_id": "NCT03297775",
+        "title": "Rheumatoid Arthritis Patients at Risk for Interstitial Lung Disease",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "≥ 45 years old",
+            "type": "inclusion",
+            "verdict": "MET",
+            "evidence": "60",
+            "reasoning": "Age meets criterion"
+          },
+          {
+            "text": "Diagnosis of RA using the 2010 American College of Rheumatology (ACR) criteria",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No RA diagnosis info"
+          },
+          {
+            "text": "Inability to give informed consent",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "evidence": null,
+            "reasoning": "No consent info"
+          },
+          {
+            "text": "Pregnant women",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "60yo woman",
+            "reasoning": "Patient is not pregnant"
+          },
+          {
+            "text": "History of interstitial lung disease",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "evidence": "bilateral basal reticular opacities with honeycombing",
+            "reasoning": "ILD present"
+          },
+          {
+            "text": "Evidence of other causes of diffuse parenchymal lung disease such as infection, drug toxicity, other autoimmune processes, etc.",
+            "type": "exclusion",
+            "verdict": "UNCERTAIN",
+            "evidence": "progressive dyspnea, dry cough, finger clubbing",
+            "reasoning": "Could be other causes"
+          },
+          {
+            "text": "Subjects over the age of 90 years old or less than 45 years old",
+            "type": "exclusion",
+            "verdict": "MET",
+            "evidence": "60",
+            "reasoning": "Age within range"
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 4,
+        "rationale": "No rheumatoid arthritis diagnosis, different lung disease focus"
+      }
+    ],
+    "questions": [
+      {
+        "field": "Pulmonary disease specifics",
+        "question": "Has a diagnosis of idiopathic pulmonary fibrosis (IPF) been confirmed?",
+        "why": "Determines IPF diagnosis"
+      },
+      {
+        "field": "Infection status",
+        "question": "Have you recently been tested for any infections, such as pneumonia or tuberculosis?",
+        "why": "Rules out alternative diagnoses"
+      },
+      {
+        "field": "Specific lab values",
+        "question": "What are your current FVC and DLCO values?",
+        "why": "Evaluates disease severity"
+      }
+    ],
+    "generated_at": "2026-07-08"
+  }
+];
