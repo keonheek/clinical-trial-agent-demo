@@ -8,9 +8,9 @@ This is a capability demo, not a validated clinical tool. See disclaimer at the 
 
 ## What it does
 
-1. Pulls REAL, currently-recruiting trials from ClinicalTrials.gov for 3 sample patients
-   (Graves/hyperthyroidism, idiopathic pulmonary fibrosis, acute pancreatitis).
-2. Runs a 6-role LLM pipeline (Groq free tier) that parses trial eligibility criteria,
+1. Pulls REAL, currently-recruiting trials from ClinicalTrials.gov for all 10 official sample patients
+   (S001-S010 from the challenge's synthetic-patients.json).
+2. Runs a 6-role LLM pipeline plus a re-evaluation loop (LLM backend switchable: Groq free tier by default, or local Claude Code subscription via LLM_BACKEND=claude) that parses trial eligibility criteria,
    extracts patient facts with verbatim evidence, matches each criterion, detects gaps in
    the patient's data, generates clarifying questions, and ranks the trials.
 3. Writes `traces.js` (`window.TRACES = [...]`) for the frontend (`demo.html`, owned by a

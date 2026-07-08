@@ -1,0 +1,2613 @@
+[
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06179459",
+    "criterion_text": "Age ≥ 18 years",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06179459",
+    "criterion_text": "Undergoing endoscopic treatment of pancreatic fluid collections",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06179459",
+    "criterion_text": "Age < 18 years",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06179459",
+    "criterion_text": "Patients who did not receive endoscopic treatment of pancreatic fluid collections",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Age ≥18 years",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Diagnosis of pancreatitis according to Atlanta guidelines",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Moderately severe or severe pancreatitis (APACHE score ≥8 on admittance)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Biliary pancreatitis diagnosed on imaging (ultrasound, MRI, and/or CT)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Tolerance of oral intake (24 hours of food consumption without emetic episodes) and pain ≤4/10 on visual analogue score",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Pregnancy",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "History of cholecystectomy",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Pancreatitis-associated complication before laparoscopic cholecystectomy (compartment syndrome, bleeding, and/or need for peripancreatic collection drainage)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Chronic pancreatitis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Active malignant disease",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Septic shock",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06113419",
+    "criterion_text": "Choledocholithiasis not resolved by ERCP, post-ERCP perforation, and post-ERCP concomitant pancreatitis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Diagnosis of acute pancreatitis (AP) 0-90 days prior to enrollment",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Participant fully understands and is able to participate in all aspects of the study, including providing informed consent, completion of case report forms, telephone interviews, metabolic testing, and planned longitudinal follow-ups",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Diagnosis of definite chronic pancreatitis (CP) at enrollment based on computed tomography (CT) scan, Magnetic Resonance Imaging (MRI), or Magnetic Resonance Cholangiopancreatography (MRCP) showing parenchymal or ductal calcifications or intraductal filling defects suggestive of calcifications",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Post-ERCP acute pancreatitis with hospitalization for less than 48 hours",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Prior direct endoscopic necrosectomy of the pancreas or percutaneous necrosectomy or drainage of necrotic collection(s)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Pancreatic tumors, including ductal adenocarcinoma, neuroendocrine tumors, and metastasis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Confirmed or suspected cystic tumor associated with main pancreatic duct dilation, or believed to be the cause of acute pancreatitis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Prior pancreatic surgery, including distal pancreatectomy, pancreaticoduodenectomy, pancreatic necrosectomy, or Frey procedure",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Severe systemic illness including history of solid organ transplant, AIDS, active cancer treatment within 12 months, chronic kidney disease with estimated glomerular filtration rate less than 30 or on dialysis prior to AP, decompensated cirrhosis, or life expectancy less than 12 months",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT06401577",
+    "criterion_text": "Known pregnancy at the time of enrollment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Any patient undergoing a Pancreaticoduodenectomy in one of the four participating centers for a benign or malignant tumor of the pancreatic head",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Age < 18 years",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Pregnant, postpartum, or breastfeeding women",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Indication other than tumor-related (e.g., chronic pancreatitis)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Patient with an infectious syndrome at the time of inclusion",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Preoperative immunosuppression",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Congenital or acquired immune deficiency",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Functional hyposplenism or asplenia, patient under long-term antibiotic prophylaxis for this reason",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Patient with HIV (and CD4 < cells/mm³)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Aplasia defined by circulating neutrophil count < 500 cells/mm³",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Corticosteroid therapy >10 mg/day or cumulative dose >700 mg prednisolone equivalent",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S001",
+    "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+    "nct_id": "NCT07144917",
+    "criterion_text": "Patient expected to receive immunosuppressive treatment within the first 7 postoperative days",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Graves hyperthyroidism (responsible for doctors' clinical diagnosis)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Age 18-65, for both men and women",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Thyroid receptor antibody (TRAb) was positive",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Take part in this research voluntarily and sign the informed consent form",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Those who have used glucocorticoid or other immunosuppressants for a long time within 3 months before being selected",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Those who have participated in any other drug trials within 3 months before being selected",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Patients with a history of malignant tumors",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Ill-controlled hypertension: diastolic blood pressure≥100mmHg, systolic blood pressure ≥160 mmHg",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Blood routine: the total number of white blood cells < 3.0×10^9 or neutrophils < 1.5× 10^9",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Other thyroid diseases: such as subacute thyroiditis, thyroid nodules, high-function adenoma",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit; When ALT or AST is less than 2 times of the normal upper limit, and the test of hepatitis B two half-and-half positive",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05461820",
+    "criterion_text": "Renal insufficiency: serum creatinine is higher than the upper limit of normal value",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Age ≥ 18 years",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Undergoing surgical treatment for Graves' disease or Amiodarone-induced thyrotoxicosis (AIT)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Biochemically confirmed hyperthyroidism or on specific medication for treatment of Graves' disease or Amiodarone-induced thyrotoxicosis (AIT)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Providing signed informed consent",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Age < 18 years",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Pregnant women",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Unable or unwilling to provide informed consent due to language barriers or intellectual limitations",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism, lymph node clearance, or redo surgery",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06963203",
+    "criterion_text": "Surgical procedures performed for reasons other than Graves' disease or Amiodarone-induced thyrotoxicosis (AIT)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Diagnosis 15 to 60 months ago. If recidive both episodes must have occurred within 15 months to 60 months",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Thyroid hormones within normal range without anti thyroid drugs",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "No thyroid disease",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Mental Fatigue Score ≤8 (cut off 10.5)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Mental Fatigue Score >13 and debut of symptoms of mental fatigue in parallel with debut of Graves' disease, without other obvious cause",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, any other neurological disease",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Traumatic brain injury with unconsciousness",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Other disease strongly associated with fatigue",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Pregnancy and breast-feeding",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "On-going or recent systemic treatment with steroids",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT05678374",
+    "criterion_text": "Radioiodine therapy within the last 18 months",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Active moderate to severe thyroid eye disease with CAS > 4 with or without diplopia before starting IVMP",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Poor response to 3 doses of IVMP with CAS drop < 1",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "CAS score > 3 after 3 doses of IVMP",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Diplopia after 3 doses of IVMP",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Graves' Ophthalmopathy with maintained euthyroidism",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Age 35 years or older",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Non-pregnant",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Severe hypertension",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S002",
+    "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
+    "nct_id": "NCT06392906",
+    "criterion_text": "Diabetic retinopathy",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Age between 2 and 17 years, regardless of gender",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Steroid-resistant nephrotic syndrome (SRNS) per 2021 KDIGO definition",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Calcineurin inhibitor-resistant after ≥6 months of adequate dosing, OR calcineurin inhibitor-intolerant with documented contraindications, OR inadequate response or disease relapse after treatment with ≥2 other immunosuppressive agents",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Renal biopsy confirms minimal change disease (MCD) or focal segmental glomerulosclerosis (FSGS)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "eGFR <60 mL/min/1.73 m² using the modified Bedside Schwartz formula",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Renal biopsy confirms IgA nephropathy, membranous nephropathy, or membranoproliferative glomerulonephritis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Genetic nephropathy confirmed by genetic testing",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Stroke or seizure within 6 months prior to screening, or other active central nervous system disorders",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Severe congenital heart disease, acute myocardial infarction within 6 months, severe arrhythmias, pericardial effusion, myocarditis, or unstable vital signs requiring vasopressors to maintain blood pressure",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Positive for hepatitis B surface antigen or hepatitis B core antibody with hepatitis B virus DNA above normal range, hepatitis C virus antibodies with hepatitis C virus RNA above normal range, HIV antibodies, syphilis, or cytomegalovirus DNA",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Moderate to severe neutropenia (≤1.0×10⁹/L), hemoglobin ≤90 g/L, thrombocytopenia (≤75×10⁹/L), or liver dysfunction (ALT, AST, or bilirubin >2.5 times the upper limit of normal)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06607991",
+    "criterion_text": "Positive blood pregnancy test",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT04571658",
+    "criterion_text": "Consented and eligible participant in the biopsied or non-biopsied cohorts of the NEPTUNE observational study",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT04571658",
+    "criterion_text": "Potentially eligible for the NEPTUNE Match partnering trials",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT04571658",
+    "criterion_text": "Regular nephrology healthcare provided at a NEPTUNE study site",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT04571658",
+    "criterion_text": "Willing and able to consent, and as appropriate assent, to participate in NEPTUNE Match",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT04571658",
+    "criterion_text": "Currently non-NEPTUNE observational study participant",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT04571658",
+    "criterion_text": "Non-English or non-Spanish speaking",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "Resistant to standard Immunosuppressive agents (if clinically indicated, e.g. primary/non-genetic forms)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "Persistent urinary protein-to-creatinine (UP/C) ratio >1.0 g/g",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "eGFR > 30 ml/min per 1.73 m2",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "Confirmed diagnosis by biopsy or disease-causing genetic mutation associated with nephrotic syndrome",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "Inability or unwillingness to comply with repeated assessments",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "Objections against participation at discretion of the investigator",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "Secondary nephrotic syndrome",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06162546",
+    "criterion_text": "Steroid-dependence or frequently relapsing disease, unless complete remission achieved",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06334692",
+    "criterion_text": "Adult (>18 years) males and females",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06334692",
+    "criterion_text": "Patients with biopsy-proven idiopathic MCD or FSGS (cases)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06334692",
+    "criterion_text": "Patients with biopsy-proven idiopathic membranous nephropathy (controls)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06334692",
+    "criterion_text": "Patients who provided consent to store their samples in the certified CRB biobank",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06334692",
+    "criterion_text": "Reasonable possibility of a secondary cause of NS (for cases) or MN (for controls) at time of blood collections",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S003",
+    "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "nct_id": "NCT06334692",
+    "criterion_text": "Active viral or bacterial infections at time of blood collections",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Age ≥ 18 years",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "ECOG Performance Status 0 - 2",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Muscle invasive bladder cancer that is cisplatin-ineligible or declined based on Galsky criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Absolute Neutrophil Count > 1.5K/UL",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Platelets > 100K/UL",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Hemoglobin ≥ 9 g/dL",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Serum creatinine ≤ 1.5 x upper limit of normal or calculated creatinine clearance ≥ 30 mL/min using the Cockcroft-Gault equation",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Normal Glucose-6-phosphate dehydrogenase (G6PD) status",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Pregnant or breastfeeding",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Active Grade 3 or 4 (per CTCAE Version 5.0) viral, bacterial, or fungal infection within 2 weeks prior to first dose of study treatment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Uncontrolled intercurrent illness, including ongoing or active infection, symptomatic congestive heart failure, uncontrolled hypertension, unstable angina pectoris, cardiac arrhythmia, interstitial lung disease, or serious chronic gastrointestinal conditions associated with diarrhea",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06493370",
+    "criterion_text": "Histology of pure adenocarcinoma, pure squamous cell carcinoma, or pure small cell carcinoma in the TURBT sample",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06709196",
+    "criterion_text": "Age at surgery ≥ 18 years",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06709196",
+    "criterion_text": "Ability to understand and sign an informed consent",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06709196",
+    "criterion_text": "Malignant or benign indication for undergoing cystectomy",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06709196",
+    "criterion_text": "Planned ileal conduit as urinary diversion",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06709196",
+    "criterion_text": "Previous severe allergic reaction to antimicrobial treatment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT06709196",
+    "criterion_text": "Long-term prophylactic antibiotic treatment which is expected to be continued after the cystectomy",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Male and female adults 18 years of age or older",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "English or Spanish speaking",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Receives cancer treatment at UCH-Aurora, UCH-Highlands Ranch, UCHealth North, UCHealth South-UCHealth Memorial Hospital, UCHealth Parkview Hospital, San Juan Cancer Center, RMCC-Pueblo, SCL-St. Mary's, or Parkview Medical Center",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Diagnosed with lung cancer (small cell lung cancer or non-small cell lung cancer) with ICD-O codes C34.0, C34.1, C34.2, C34.3, C34.8, C34.9, or C33.9",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Diagnosed with head and neck squamous cell carcinoma (HNSCC) with specified ICD-O codes for oral cavity, oropharynx, hypopharynx, or larynx",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Diagnosed with breast cancer (ICD-O codes C50.0, C50.1, C50.2, C50.3, C50.4, C50.5, C50.6, C50.8, C50.9), cervical cancer (ICD-O codes C53.0, C53.1, C53.8, C53.9), colorectal cancer (ICD-O codes C18, C20), or bladder cancer (ICD-O code C67.9)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Will receive surgery, radiation therapy, chemotherapy, or combination of modalities including neoadjuvant and adjuvant therapy",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Rural and medically underserved, defined as residing in a rural county with RUCC code 4-9 AND meeting health professional shortage area or medically underserved area/population criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Uninsured (no public or private insurance) OR underinsured (public insurance only OR 10% or more of annual income spent on out-of-pocket medical expenses)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Age under 18 years old",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "Has already initiated curative treatment for the current episode of cancer",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT04916990",
+    "criterion_text": "From vulnerable populations (inmates, individuals on probation, homeless individuals, or pregnant individuals) or decisionally-challenged with cognitive or personality impairment, suicidal ideation, or intoxication at time of consent",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Histologically or cytologically proven advanced solid tumour, refractory to conventional treatment, or for which no further conventional therapy is considered appropriate by the Investigator or is declined by the potential participant",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "At least 1 measurable lesion according to RECIST v1.1, which (in the Investigator's opinion) has had objective radiological progression on or after the last therapy",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Life expectancy of at least 12 weeks",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Eastern Cooperative Oncology Group performance status of 0 or 1",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Aged 18 years or over at the time consent is given",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Radiotherapy (except for palliative reasons), chemotherapy, non chemotherapy systemic anti-cancer therapy or investigational medicinal products during the 4 weeks prior to enrolment; or first dose of an immunotherapy during the previous 12 weeks before first dose of HTL0039732",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Any central nervous system metastases (unless potential participants have had local therapy and are asymptomatic, radiologically stable and have been off steroids for ≥4 weeks prior to enrolment)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Ongoing toxic manifestations of previous treatments that are Grade >1 per CTCAE v5.0",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Known history of current or latent tuberculosis, HIV or Hepatitis B or C infection",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Prior treatment with EP4 inhibitor",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Significant cardiovascular disease",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S004",
+    "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "nct_id": "NCT05944237",
+    "criterion_text": "Active autoimmune disease requiring systemic treatment in the 2 years prior to enrolment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Age ≥18",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Chronic migraine or status migrainosus, or craniofacial pain refractory to maximal medical therapy who are undergoing MMA IA lidocaine infusion",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Subject has provided informed consent",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Known allergies to lidocaine",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Seizure disorder, history of seizures, or increased seizure susceptibility",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Intracranial vascular malformations or dural AVF",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Hemodynamic instability, any condition where brief hemodynamic shifts may pose risk",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Previous MMA intervention or craniotomy that could result in MMA occlusion",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Any implanted electronic device (pacemaker, ICD, DBS, VNS, cochlear implant, spinal cord stimulator)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Significant cardiovascular disease (unstable angina, severe arrhythmias, recent MI)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Active systemic infection",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT07402954",
+    "criterion_text": "Vulnerable populations (pregnant individuals, children, prisoners, individuals lacking decision-making capacity, persons with cognitive impairment, those unable to provide informed consent)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Patients with diagnosed endometriosis, migraine, or both endometriosis and migraine",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Healthy control subjects with no history of chronic pain",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Age 12-45",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Assigned female sex at birth",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Pregnancy or breastfeeding",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Presence of prolactinoma",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Presence of psychiatric, neurological, endocrinological and/or developmental conditions and taking medications for these conditions",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "Current use of dopamine agonist or SSRI medications",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06785129",
+    "criterion_text": "For patients aged 12-17 not having a parent/legal guardian willing to sign the consent and answer surveys about their child's health",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Age between 18-44 years at enrollment",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Pregnant at time of enrollment",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Singleton pregnancy (one fetus/baby)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Headaches or migraines prior to pregnancy that continued into pregnancy",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Headaches or migraines began during first trimester of pregnancy",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Able to provide proof of active intrauterine pregnancy and estimated due date via online document upload",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Has access to email, text messages, smartphone or computer with internet access",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Willing and able to provide consent for registry participation",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Multigestational pregnancy (more than one fetus/baby)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06788977",
+    "criterion_text": "Any other condition which might preclude participation in the opinion of the patient's physician(s) or the study's principal investigator",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Participants aged 6 years to less than 12 years",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Documented medical history of migraine with or without aura for at least 6 months before the Screening Visit",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Weight >15 kg at the Screening Visit",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Evidence or history of clinically significant disease",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Continuous migraine (defined as an unrelenting headache) within 1 month prior to Screening Visit",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Atypical migraine types, complications of a migraine, or a confounding and clinically significant pain syndrome",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Conditions that may affect the administration or absorption of the nasal product",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Clinically significant depression (Promis Parent Proxy SF 2.0 Depressive Scale T score ≥70)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Suicidal ideation and behaviour (C-SSRS: any \"yes\" to items 2 to 5 or any \"yes\" to suicide behaviours)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Serum Total bilirubin >1.5 × ULN (Upper Limit of Normal), AST (Aspartate Transferase) or ALT (Alanine Transaminase) >2 × ULN",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S005",
+    "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "nct_id": "NCT06995729",
+    "criterion_text": "Abnormal ECG (Electrocardiogram) at screening visit",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "Men and women",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "Age 3 to 64 years old (18 to 64 years old for controls)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "Informed consent obtained; parental authority consent required for children",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "Patient social insured",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "For case group: Diagnosis of mucormycosis confirmed by conventional mycology data and/or positive q-PCR and/or anatomopathologic diagnosis with compatible clinical situation",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "For control group 1: Patient assessed for hematopoietic stem cell transplantation, at risk for invasive fungal infection, with pre-transplantation review excluding ongoing infection",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "For control group 2: Diagnosis of disseminated candidiasis or invasive pulmonary aspergillosis according to EORTC/MSG criteria or AspICU criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "Patients for whom the inclusion criteria are not met",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT05406037",
+    "criterion_text": "Co-infection mucormycosis/other invasive fungal infection",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07339800",
+    "criterion_text": "Patients aged 18 years or older",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07339800",
+    "criterion_text": "Treated at Strasbourg University Hospital between January 1, 2009, and June 3, 2025",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07339800",
+    "criterion_text": "With a diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07339800",
+    "criterion_text": "Having undergone at least one CT scan including the thoracic region",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07339800",
+    "criterion_text": "No CT scan including the thoracic region",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07339800",
+    "criterion_text": "No diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Age 18 years or older",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Presence of facial bone defects resulting from cystic or tumoral osteolytic lesions",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Acquired or congenital facial deformities associated with bony defects or facial asymmetry",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Patients requiring patient-specific 3D-printed titanium implants for maxillofacial reconstruction",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Aesthetic indications requiring custom facial implant design, including microgenia (chin retrusion)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Ability to provide written informed consent",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Active pathological lesions at the time of enrollment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Age below 18 years",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "History of radiotherapy within 12 months prior to enrollment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Chronic untreated vitamin D deficiency",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Uncontrolled diabetes mellitus",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT07654647",
+    "criterion_text": "Inability or unwillingness to comply with follow-up requirements",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT06440915",
+    "criterion_text": "Patients who intend to take isavuconazole for the treatment of invasive mycosis",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT06440915",
+    "criterion_text": "Aged 0-18 years, gender unlimited",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT06440915",
+    "criterion_text": "Subject and guardian willing to comply with the procedures and operations specified in the study protocol",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT06440915",
+    "criterion_text": "Guardian and subject (if of independent informed age) willing and able to provide written informed consent to participate in the study",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT06440915",
+    "criterion_text": "Known allergy to any azole antifungal therapy or other ingredients contained in the study drug",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S006",
+    "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "nct_id": "NCT06440915",
+    "criterion_text": "Any condition of the child that may interfere with study participation or other inappropriate conditions as determined by the researcher",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06031025",
+    "criterion_text": "infants with gestational age at birth < 31 weeks",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06031025",
+    "criterion_text": "infants with gestational age at birth < 37 weeks and major respiratory or neurologic morbidity",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06031025",
+    "criterion_text": "infants with history of perinatal asphyxia",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06031025",
+    "criterion_text": "lack of informed consent",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06031025",
+    "criterion_text": "diagnosis of congenital or other major gastrointestinal disease (i.e. inflammatory bowel disease, cancer)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Subject has short bowel syndrome, defined as 50% or less of expected bowel length based on subject age and/or height, and measured at the time of the subject's prior intestinal resection.",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Minimum residual bowel length of 3 cm.",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Male or female patients aged 3 months to 65 years inclusive.",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "The subject, parent or legal guardian is able to read, understand, and is willing to provide informed consent.",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "The subject or parent or legal guardian is able to understand the requirements of the study and is willing to bring the subject to all clinic visits and complete all study related procedures.",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Ultra-short bowel syndrome defined as less than 3 cm of bowel length.",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Diagnosed Inflammatory bowel disease-unclassified (not Crohn's or ulcerative colitis).",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Evidence of active or prior Crohn's disease.",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Primary intestinal failure (without loss or resection of intestinal tissue).",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Coagulopathy, as defined by INR > 1.4 or platelets < 100.",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Known immunocompromised status including organ transplantation, chemotherapy or radiotherapy within the past 12 months, clinically significant leukopenia, HIV positive, or immune status making the subject a poor candidate in the opinion of the Investigator.",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT05535361",
+    "criterion_text": "Subject is determined by the investigator to be unsuitable for participation in this trial for any reason.",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "Minor or adult patient ≥ 4 years of age",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "Patient with PIPO before age 18",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "Patient with PIPO meeting at least 2 of the ESPGHAN criteria (Thapar et al 2018) and carrying the R178, R257, R40 or A136 mutation of the ACTG2 gene",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "Patient whose assent has been obtained and whose legal guardians have given their written informed consent",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "Patient affiliated to the French Social Security system or benefiting from an equivalent plan",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "iPS cell lines MS573 or WT8288 or 202CT or SD378M, from the Nantes University Hospital biological collection and generated from samples from control patients without POIC who have consented to donate their samples",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "Patients with a history of radiotherapy treatment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT06687564",
+    "criterion_text": "Patient with lymphocyte lineage damage",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT04515251",
+    "criterion_text": "Male and female children",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT04515251",
+    "criterion_text": "Age ranging from 10 to 15 years, included",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT04515251",
+    "criterion_text": "Abdominal ultrasound examination to be performed for indications other than gastrointestinal evaluation",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT04515251",
+    "criterion_text": "Signed Informed Consent",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT04515251",
+    "criterion_text": "Presence of a disease that could distort the anatomy around the SMA (e.g., abdominal mass, lymphadenopathy, severe scoliosis, free abdominal fluid)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S007",
+    "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "nct_id": "NCT04515251",
+    "criterion_text": "Oncologic patients at risk of neoplastic cachexia",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 American Thoracic Society/European Respiratory Society/Japanese Respiratory Society/Latin American Thoracic Society (ATS/ERS/JRS/ALAT) clinical practice guideline",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "HRCT pattern consistent with usual interstitial pneumonia (UIP) or probable UIP for IPF confirmed by independent central imaging review, or if HRCT shows indeterminate UIP, diagnosis of IPF confirmed by histopathology from prior lung biopsy (surgical, video-assisted thoracoscopic, or bronchoscopic cryobiopsy)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Forced vital capacity percent predicted (FVC% predicted) ≥45% during the screening period",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Diffusing capacity of the lung for carbon monoxide percent predicted (DLCO% predicted), corrected for hemoglobin, ≥30% and ≤90% during the screening period",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Stable dose of nintedanib ≥100 mg BID or pirfenidone ≥400 mg TID for at least 8 weeks prior to screening and during screening, or no nintedanib or pirfenidone for at least 4 weeks prior to screening with no plans to initiate or re-initiate during the study",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Emphysema ≥50%, or emphysema greater than fibrosis, as determined by independent central imaging review of HRCT",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Acute exacerbation of IPF within 3 months prior to screening or during the screening period, as judged by the investigator",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "History of smoking within 3 months prior to screening or during the screening period, or inability to refrain from smoking (including cigarettes, cigars, pipes, and e-cigarettes) for the duration of the study",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "History of severe cardiovascular or cerebrovascular disease, including but not limited to: ventricular arrhythmia requiring clinical intervention; uncontrolled atrial arrhythmia; congestive heart failure NYHA Class ≥III; LVEF <35%; uncontrolled hypertension (systolic ≥160 mmHg or diastolic ≥100 mmHg); or acute coronary syndrome, stroke, or transient ischemic attack within 6 months",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Current or suspected malignancy, or history of malignancy within 5 years prior to screening (excluding basal cell carcinoma, squamous cell carcinoma of the skin, superficial bladder cancer, carcinoma in situ of the cervix, or other carcinoma in situ with curative treatment and no recurrence)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07447102",
+    "criterion_text": "Active hepatitis B (positive hepatitis B surface antigen and HBV DNA >upper limit of normal) or active hepatitis C (positive hepatitis C antibody and HCV RNA >upper limit of normal)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Patient is ≥ 18 years of age",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "IPF or IPF (likely) diagnosis defined on 2018 international recommendations",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Definite or suspected Acute Exacerbation defined by the international working group criteria after exclusion of alternative diagnoses of acute worsening",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "For women of childbearing age: efficient contraception for the duration of the study",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Identified etiology for acute worsening (i.e.: infectious disease)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Known hypersensitivity to glucocorticoids or to any component of the study treatment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Patient requiring mechanical ventilation or already on mechanical ventilation",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Active bacterial, viral, fungal or parasitic infection",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Active cancer",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Treatment with glucocorticoids > 1 mg/kg/d from more than 7 days in the last 15 days",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Documented pregnancy or lactation",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT05674994",
+    "criterion_text": "Patient on a lung transplantation waiting list",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients ≥ 18 years of age",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients hospitalised with a definite or suspected AE-IPF diagnosis, as defined by the international working group criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patient able to understand and sign a written informed consent form, or written informed consent form signed by the patients' legally authorized representative",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients with acute worsening due to uncontrolled heart failure or pulmonary embolism",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients with known hypersensitivity to corticosteroids, IVIG or any component of the study treatment",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients with known IgA deficiency (IgA level <7 mg/dL)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients without a definite diagnosis of IPF or AE-IPF based on clinical, radiological, laboratory evaluation, and multidisciplinary discussion",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients with active malignancy or currently receiving cancer treatment, except for basal cell or squamous cell skin cancer or low-risk prostate cancer (T1 or T2a stage with PSA <10 ng/dL)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients that have received treatment for >14 days within the preceding month with >20mg daily prednisone (or equivalent) or any treatment during the last month with immunosuppressants (e.g., cyclophosphamide, mycophenolate)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients participating in another interventional clinical trial",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT07299695",
+    "criterion_text": "Patients with documented pregnancy or lactation",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "≥ 45 years old",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "Diagnosis of RA using the 2010 American College of Rheumatology (ACR) criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "Inability to give informed consent",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "Pregnant women",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "History of interstitial lung disease",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "Evidence of other causes of diffuse parenchymal lung disease such as infection, drug toxicity, other autoimmune processes, etc.",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "Over the age of 90 years old",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S008",
+    "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
+    "nct_id": "NCT03297775",
+    "criterion_text": "Less than 45 years old",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Informed consent as documented by signature",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Confirmed primary EBV infection with compatible clinical presentation including malaise, headache, fever, tonsillitis, pharyngitis, or cervical lymph node enlargement",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Compatible laboratory picture with lymphocyte count elevation, LUC cells, reactive lymphocytes in manual differential, or elevated liver enzymes",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Serology compatible with primary EBV infection: anti-EBNA IgG negative, anti-VCA IgG negative, anti-VCA IgM positive",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Serology compatible with primary EBV infection: anti-EBNA IgG negative, anti-VCA IgG positive, anti-VCA IgM positive",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Clinical picture of upper respiratory tract infection including tonsillitis, pharyngitis, malaise, headache, cough, rhinitis, or cervical node enlargement",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Confirmed primary Cytomegalovirus (CMV) infection",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Suspicion or diagnosis of infectious mononucleosis as per judgment of treating clinician",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Primary or secondary immunodeficiency",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "Treatment with immunosuppressive medication including ≥10mg prednisone equivalent",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05127980",
+    "criterion_text": "History of autoimmune disease such as systemic lupus erythematosus or vasculitis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Age 1 year old and above",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Severe progressive illness that began as a primary EBV infection, or associated with positive EBV-specific antibody titers (IgG-VCA, ; EA or EBNA) not otherwise explained",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Evidence of major organ involvement such as lymphadenitis, hemophagocytosis, meningoencephalitis, persistent hepatitis, splenomegaly, interstitial pneumonitis, bone marrow hypoplasia, uveitis",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Detection of elevated levels of EBV DNA, RNA or proteins in affected tissues OR elevated levels of EBV DNA in the peripheral blood",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Any other condition that, in the opinion of the investigator, would make the patient unsuitable for enrollment or could interfere with the patient participating in the study",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Age 3 years and above",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Healthy relative of a CAEBV patient",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT00032513",
+    "criterion_text": "Age 18 years and above",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05778006",
+    "criterion_text": "ME/CFS diagnosis (ICD-10 G93.3) based on internationally established criteria",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05778006",
+    "criterion_text": "Informed consent by patients and/or guardian(s)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05778006",
+    "criterion_text": "No ME/CFS (ICD-10 G93.3)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT05778006",
+    "criterion_text": "No informed consent",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Written consent of the patient (or legal guardian for patients aged < 18 years)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Age 0-25 (including)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Documented or probable acute infectious disease at the onset of ME/CFS symptoms",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Diagnosis of ME/CFS according to the IOM criteria, the CCC, the diagnostic worksheet published by P.C. Rowe et al. (2017), or the pediatric case definition published by L.A. Jason et al. (2006)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Drug/medication abuse",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Major surgery within the last six months",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Presence of organ failure",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Hepatitis B/C",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Multiple sclerosis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Malignancy",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Major depression or other severe psychiatric illness",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S009",
+    "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "nct_id": "NCT06005246",
+    "criterion_text": "Severe endocrine disease (e.g., hypopituitarism, adrenal insufficiency)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Age ≥ 18 years old",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Able to give informed consent and comply with all study visits and procedures",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Present within 10 days of macula-off retinal detachment (based on patient-reported history of loss of central vision)",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Present to the hospital with a visual acuity of hand motion or better in the study eye",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Have had previous cataract surgery in the study eye",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Have clinical indication for standard retinal reattachment surgery by means of a pars plana vitrectomy and gas tamponade",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Any known significant ocular disease in the study eye (e.g., cornea opacity) which, in the opinion of the investigator, would preclude a visual acuity of at least 6/7.5 (20/25) following successful vitrectomy or limit adequate visibility of the retina",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "History of previous ocular surgery in the study eye other than uncomplicated cataract surgery with posterior chamber intraocular lens and intact posterior capsule or a refractive surgery (surgery must have occurred at least 3 months prior to the baseline visit)",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Known retinopathy, known hepatic disease (or history of significant chronic liver disease), or known renal disease",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "History of uncontrolled hypertension",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "History of stroke, transient ischemic attack, or major cardiac surgery within 3 months prior to study, or current treatment for systemic infection",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT06587945",
+    "criterion_text": "Females who are pregnant or lactating and women of childbearing potential",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "Uncomplicated rhegmatogenous retinal detachment",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "PVR",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "Recurrent RD",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "Tractional RD",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "Macular hole RD",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "Scleral buckling is indicated",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "Macular scarring",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07346560",
+    "criterion_text": "Previous PPV",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "Age 18-70 years old",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "RRD with inferior retinal breaks between 4- and 8-o'clock within the detached area regardless of PVR grade",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "RRD requiring retinotomy inferiorly between 4- and 8-o'clock due to severe inferior PVR or inferior retinal shortening",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "Free and informed consent to take part in the study",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "RRD with only anterior retina breaks or dialysis meeting indications for scleral buckling surgery",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "RRD with retinal breaks located between 4- and 8-o'clock positions not involved in the detached area",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "Pre-existing serious eye diseases such as corneal ulcers, glaucoma, uveitis",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07081945",
+    "criterion_text": "History of epilepsy or serious psychiatric diseases",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07228091",
+    "criterion_text": "Able to understand and sign an informed consent form (ICF) that has been approved by an ethics committee",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07228091",
+    "criterion_text": "Planned combined phacovitrectomy procedure at one of the selected surgical sites",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07228091",
+    "criterion_text": "Planned combined phacovitrectomy procedure with 25-gauge (G) vitrectomy tools",
+    "type": "inclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07228091",
+    "criterion_text": "Unplanned/emergency phacovitrectomy",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07228091",
+    "criterion_text": "Pregnant",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07228091",
+    "criterion_text": "Past history of phacovitrectomy, cataract, vitrectomy in the planned operative eye",
+    "type": "exclusion"
+  },
+  {
+    "patient_id": "S010",
+    "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "nct_id": "NCT07228091",
+    "criterion_text": "Other protocol-defined exclusion criteria may apply",
+    "type": "exclusion"
+  }
+]

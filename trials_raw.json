@@ -1,127 +1,9 @@
 {
-  "S002": {
-    "query_used": "Graves disease hyperthyroidism",
-    "trials": [
-      {
-        "nct_id": "NCT05461820",
-        "title": "Effects of Different Treatment Schemes on the Regulation and Recurrence of Graves' Disease",
-        "phase": "PHASE4",
-        "status": "RECRUITING",
-        "conditions": [
-          "Graves Disease",
-          "Relapse",
-          "Treatment",
-          "Drug Withdrawal"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Graves hyperthyroidism (responsible for doctors' clinical diagnosis)\n* Age 18-65, for both men and women\n* Thyroid receptor antibody (TRAb) was positive\n* Take part in this research voluntarily and sign the informed consent form\n\nExclusion Criteria:\n\n* Those who have used glucocorticoid or other immunosuppressants for a long time within 3 months before being selected\n* Those who have participated in any other drug trials within 3 months before being selected\n* Subjects who are participating in clinical research of other drugs\n* Patients with a history of malignant tumors\n* Ill-controlled hypertension: diastolic blood pressure≥100mmHg, systolic blood pressure ≥160 mmHg\n* Blood routine: the total number of white blood cells \\< 3.0×109 or neutrophils \\< 1.5× 109\n* Other thyroid diseases: such as subacute thyroiditis, thyroid nodules, high-function adenoma\n* Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit; When ALT or AST is less than 2 times of the normal upper limit, and the test of hepatitis B two half-and-half positive\n* Renal insufficiency: serum creatinine is higher than the upper limit of normal value\n* Patients with heart failure\n* Patients with coronary heart disease\n* Patients with other autoimmune diseases\n* Patients who are known to be allergic to any component of this medicine are allergic to the active ingredients or any auxiliary materials in the prescription\n* Patients with multiple drug allergies, allergic diseases, people with high sensitivity and drug addicts\n* Alcoholism, mental disorder or other observers who are not suitable for drug testing\n* Pregnant and lactating women cannot rule out the possibility of pregnancy\n* Taking any medicine with unknown ingredients or using traditional Chinese medicine, the researcher judges the medicine that may affect the curative effect of hyperthyroidism\n* According to the researcher's judgment, other medical history that reduces the possibility of joining the group or complicates the joining of the group, such as frequent changes in the working environment, may easily lead to lost follow-up.\n\nRejection Criteria:\n\n* The compliance of this clinical trial protocol is \\< 80% or \\> 120%;\n* Those who did not meet the inclusion criteria or the exclusion criteria were found during the experiment;\n* Those who can't cooperate, including those who can't complete the whole course of treatment, don't complete the follow-up as planned, and increase or decrease adjuvant drugs at will;\n* During the trial, use other drugs that may affect the curative effect of this trial.\n\nTermination of Research Criteria:\n\n* Those who are allergic or intolerant to this drug;\n* Adverse reactions or serious adverse events that patients can't tolerate occur;\n* Pregnant women of childbearing age in the experiment;\n* Other diseases appear during the treatment, and the treatment of accompanying diseases will interfere with the clinical observers of this medicine;\n* The researcher thinks it is inappropriate to continue the experiment."
-      },
-      {
-        "nct_id": "NCT05678374",
-        "title": "Exploring Immunological Markers Associated With Mental Fatigue in Graves' Disease",
-        "phase": "NA",
-        "status": "RECRUITING",
-        "conditions": [
-          "Graves Disease",
-          "Graves Ophthalmopathy",
-          "Mental Fatigue",
-          "Autoimmune Diseases",
-          "Thyroid Diseases"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria\n\n* If patient: Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis\n* Diagnosis15 to 60 months ago. If recidive both episodes must have occurred within 15 months to 60 months.\n* Thyroid hormones within normal range without anti thyroid drugs\n* If control: No thyroid disease\n* Patient and control without mental fatigue: Mental Fatigue Score ≤8 (cut off 10.5)\n* Patient with mental fatigue: Mental Fatigue Score \\>13 and debut of symptoms of mental fatigue in parallel with debut of Graves' disease, without other obvious cause\n\nExclusion Criteria\n\n* Person unable to follow protocol\n* Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, any other neurological disease\n* Traumatic brain injury with unconsciousness\n* Other disease strongly associated with fatigue\n* Pregnancy and breast-feeding\n* On-going or recent systemic treatment with steroids\n* Radioiodine therapy within the last 18 months"
-      },
-      {
-        "nct_id": "NCT06963203",
-        "title": "Thyroidectomy for Graves' Disease or Amiodarone-induced Thyrotoxicosis",
-        "phase": "NA",
-        "status": "RECRUITING",
-        "conditions": [
-          "Graves Disease",
-          "Amiodarone-Induced Thyrotoxicosis",
-          "Thyroidectomy"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Adult patients (≥ 18 years of age) undergoing surgical treatment for Graves' disease or Amiodarone-induced thyrotoxicosis (AIT) with biochemically confirmed hyperthyroidism or on specific medication for the treatment of Graves' disease or AIT.\n* Patients providing signed informed consent.\n\nExclusion Criteria:\n\n* Children and minors (\\<18 years).\n* Pregnant women.\n* Patients unable or unwilling to provide informed consent due to language barriers or intellectual limitations.\n* Patients undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism, lymph node clearance, or redo surgery.\n* Surgical procedures performed for other reasons than Graves' disease or AIT"
-      },
-      {
-        "nct_id": "NCT06392906",
-        "title": "Orbital Radiotherapy in Grave's Ophthalmopathy 1 Week vs 2 Weeks (OraGO-1 Trial)",
-        "phase": "PHASE3",
-        "status": "RECRUITING",
-        "conditions": [
-          "Thyroid Associated Ophthalmopathy"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Patient with active moderate to severe thyroid eye disease with a CAS \\> 4 with/ without diplopia before starting IVMP\n* Patient with poor response to 3 doses of IVMP (CAS drop \\< 1) หรือ CAS score \\> 3 after 3 doses of IVMP\n* Patients with diplopia after 3 doses of IVMP\n* Patients with Graves' Ophthalmopathy who have maintained euthyroidism\n* Non-pregnant adults (aged 35 years or older)\n\nExclusion Criteria:\n\n* Individuals with severe hypertension or diabetic retinopathy"
-      },
-      {
-        "nct_id": "NCT07333677",
-        "title": "In Vivo CAR-T for Refractory Graves' Disease",
-        "phase": "EARLY_PHASE1",
-        "status": "RECRUITING",
-        "conditions": [
-          "Graves' Disease"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria (Participants must meet all of the following criteria to be eligible for this study):\n\n* Age 18-75 years (inclusive), male or female.\n* Refractory Graves' disease, defined as meeting at least one of the following: a) Continuous antithyroid drug (ATD) therapy for ≥3 years without achieving criteria for ATD discontinuation; b) Meeting criteria for ATD discontinuation but experiencing ≥2 relapses after ATD withdrawal.\n* Positive serum TRAb.\n* Willing to use effective contraception for 12 months after study drug administration.\n* Voluntarily agrees to participate in the study, has signed the informed consent form, and is able to comply with study procedures and follow-up requirements.\n\nExclusion Criteria (Participants meeting any of the following criteria will be excluded from the study):\n\n* History of severe drug allergy or known allergic predisposition.\n* Presence or suspected presence of uncontrolled active infection.\n* History of major organ transplantation (e.g., heart, lung, liver, kidney) or bone marrow/hematopoietic stem cell transplantation.\n* Presence of significant heart disease, such as angina, myocardial infarction, heart failure, or clinically significant arrhythmias.\n* Receipt of any mRNA-LNP product or other lipid nanoparticle (LNP)-based therapy within the past 2 years.\n* Receipt of a live vaccine within 30 days prior to screening.\n* History of malignant tumors.\n* Positive hepatitis B surface antigen (HBsAg) or hepatitis B core antibody (HBcAb) with peripheral blood HBV DNA above the detection limit; positive hepatitis C virus (HCV) antibody with detectable HCV RNA; positive human immunodeficiency virus (HIV) antibody; or positive syphilis test.\n* Presence of psychiatric disorders or severe cognitive impairment.\n* Hematologic dysfuction at screening, defined as any of the following: a. Neutrophil count \\< 1.8 × 10⁹/L, b. Hemoglobin \\< 110 g/L, c. Platelet count \\< 50 × 10⁹/L\n* Impaired liver function, defined as any of the following: Alanine aminotransferase (ALT) \\> 3 × ULN, Aspartate aminotransferase (AST) \\> 3 × ULN, Total bilirubin \\> 2.5 × ULN.\n* Impaired renal function: creatinine clearance rate (CrCl) \\< 60 mL/min (Cockcroft-Gault formula).\n* Left ventricular ejection fraction (LVEF) \\< 55%.\n* Coagulation abnormalities, defined as either: International normalized ratio (INR) \\> 1.5 × ULN, Prothrombin time (PT) \\> 1.5 × ULN\n* Pregnant or breastfeeding women.\n* Any other condition that, in the opinion of the investigator, would make the participant unsuitable for the study."
-      }
-    ]
-  },
-  "S008": {
-    "query_used": "idiopathic pulmonary fibrosis",
-    "trials": [
-      {
-        "nct_id": "NCT05674994",
-        "title": "Glucocorticoids Versus Placebo for the Treatment of Acute Exacerbation of Idiopathic Pulmonary Fibrosis",
-        "phase": "PHASE3",
-        "status": "RECRUITING",
-        "conditions": [
-          "Acute Exacerbation of Idiopathic Pulmonary Fibrosis"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Patient is ≥ 18 years of age\n2. IPF or IPF (likely) diagnosis defined on 2018 international recommendations\n3. Definite or suspected Acute Exacerbation defined by the international working group criteria after exclusion of alternative diagnoses of acute worsening\n\n   \\*The criteria of IPF-AE are as follows:\n   * Previous or concurrent diagnosis of IPF (a)\n   * Acute worsening or development of dyspnea typically \\< 1-month duration\n   * Computed tomography with new bilateral ground-glass opacity and/or consolidation superimposed on a background pattern consistent with usual interstitial pneumonia pattern (b)\n   * Deterioration not fully explained by cardiac failure or fluid overload Patients who fail to meet all 4 criteria due to missing computed tomography should be considered as having \"suspected Acute Exacerbation\".\n\n     1. If the diagnosis of IPF is not previously established, this criterion can be met by the presence of radiologic and/or histopathologic changes consistent with usual interstitial pneumonia pattern on the current evaluation.\n     2. If no previous computed tomography is available, the qualifier \"new\" can be dropped from the third criterion.\n4. For women of childbearing age: efficient contraception for the duration of the study\\*\n\n   \\*Effective contraception is defined as any contraceptive method that is used consistently and appropriately and has a low failure rate (i.e., less than 1% per year)\n5. Affiliation to the social security\n6. Patient able to understand and sign a written informed consent form or in case of incapacity of the patient to a relative whom understand and sign a written informed consent form\n\nExclusion Criteria:\n\n1. Identified etiology for acute worsening (i.e.: infectious disease)\n2. Known hypersensitivity to glucocorticoids or to any component of the study treatment\n3. Patient requiring mechanical ventilation or already on mechanical ventilation\n4. Active bacterial, viral, fungal or parasitic infection. On swab collected, only positive for SARS-CoV-2, Influenzae A, Influenzae B and Respiratory Syncytial Virus (RSV) result, are considered active viral infection. The others viruses (i.e. Rhinovirus, Adenovirus…) are not considered to be responsible of pneumonia.\n5. Active cancer\n6. Patient on a lung transplantation waiting list\n7. Treatment with glucocorticoids \\> 1 mg/kg/d from more than 7 days in the last 15 days\n8. Patient participating to another interventional clinical trial\n9. Documented pregnancy or lactation\n10. Patient under tutorship or curatorship\n11. Patient deprived of liberty\n12. Patient under court protection"
-      },
-      {
-        "nct_id": "NCT07299695",
-        "title": "Intravenous Immunoglobulin for the Treatment of Acute Exacerbations of Idiopathic Pulmonary Fibrosis",
-        "phase": "PHASE3",
-        "status": "RECRUITING",
-        "conditions": [
-          "Idiopathic Pulmonary Fibrosis",
-          "Acute Exacerbation of Idiopathic Pulmonary Fibrosis"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Patients ≥ 18 years of age\n2. Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria.\n3. Patients hospitalised with a definite or suspected AE-IPF diagnosis, as defined by the international working group criteria and as ascertained by the responsible Primary Investigator.\n\n   The criteria of IPF-AE are as follows:\n   * Previous or concurrent diagnosis of IPF\n   * Acute worsening or development of dyspnoea typically \\< 1 month duration\n   * Computed tomography with new bilateral ground-glass opacity and/or consolidation superimposed on a background pattern consistent with usual interstitial pneumonia pattern\n   * Deterioration not fully explained by cardiac failure or fluid overload Patients who fail to meet all 4 criteria due to missing computed tomography should be considered as having \"suspected Acute Exacerbation\".\n\n   A) If the diagnosis of IPF is not previously established, this criterion can be met by the presence of radiologic and/or histopathologic changes consistent with usual interstitial pneumonia pattern on the current evaluation.\n\n   B) If no previous computed tomography is available, the qualifier \"new\" can be dropped from the third AE-IPF criterion.\n4. Patient able to understand and sign a written informed consent form. In case of incapacity of the patient, the written informed consent form will be signed by the patients' legally authorized representative.\n\nExclusion Criteria:\n\n1. Patients with acute worsening due to uncontrolled heart failure or pulmonary embolism.\n2. Patients with known hypersensitivity to corticosteroids, IVIG or any component of the study treatment.\n3. Patients with known IgA deficiency (IgA level \\<7 mg/dL)- to preclude IVIG reactions.\n4. Patients without a definite diagnosis of IPF or AE-IPF based on clinical, radiological, laboratory evaluation, and multidisciplinary discussion.\n5. Patients with active malignancy or currently receiving cancer treatment, except for basal cell or squamous cell skin cancer or low-risk prostate cancer (T1 or T2a stage with PSA \\<10 ng/dL). These criteria are aligned with current guidelines.\n6. Patients that have received treatment for \\>14 days within the preceding month with \\>20mg daily prednisone (or equivalent) or any treatment during the last month with immunosuppressants (e.g., cyclophosphamide, mycophenolate etc.) according to already published therapeutic protocols or \\> 1 mg/kg/d from more than 7 days in the last 15 days.\n7. Patients participating to another interventional clinical trial.\n8. Patients with documented pregnancy or lactation.\n9. Patients under tutorship or curatorship.\n10. Patients deprived of liberty or under court protection.\n11. Patients who refuse to participate or decline to provide written informed consent."
-      },
-      {
-        "nct_id": "NCT03297775",
-        "title": "Rheumatoid Arthritis Patients at Risk for Interstitial Lung Disease",
-        "phase": "NA",
-        "status": "RECRUITING",
-        "conditions": [
-          "Rheumatoid Arthritis",
-          "Interstitial Lung Disease"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. ≥ 45years old\n2. Diagnosis of RA using the 2010 American College of Rheumatology (ACR) criteria\n\nExclusion Criteria:\n\n1. Inability to give informed consent\n2. Pregnant women\n3. History of interstitial lung disease\n4. Evidence of other causes of diffuse parenchymal lung disease such as infection, drug toxicity, other autoimmune processes, etc.\n5. Subjects over the age of 90 years old or less than 45 years old"
-      },
-      {
-        "nct_id": "NCT07447102",
-        "title": "Phase II Clinical Study of BC006 in Patients With Idiopathic Pulmonary Fibrosis",
-        "phase": "PHASE2",
-        "status": "RECRUITING",
-        "conditions": [
-          "Idiopathic Pulmonary Fibrosis (IPF)"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Must provide written informed consent form (ICF) indicating understanding of the study and voluntary participation.\n* Aged ≥40 years at the time of signing the ICF, with no gender restriction.\n* Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 American Thoracic Society/European Respiratory Society/Japanese Respiratory Society/Latin American Thoracic Society (ATS/ERS/JRS/ALAT) clinical practice guideline.\n* HRCT pattern consistent with usual interstitial pneumonia (UIP) or probable UIP for IPF confirmed by independent central imaging review (acceptable-quality HRCT obtained within 12 months prior to screening or during the screening period). If HRCT shows indeterminate UIP, the diagnosis of IPF must be confirmed by histopathology from a prior lung biopsy (surgical/video-assisted thoracoscopic lung biopsy or bronchoscopic cryobiopsy) recognized by the investigator, if available.\n* Forced vital capacity percent predicted (FVC% predicted) ≥45% during the screening period.\n* Diffusing capacity of the lung for carbon monoxide percent predicted (DLCO% predicted), corrected for hemoglobin (Hb), ≥30% and ≤90% during the screening period.\n* Meets either of the following:\n\n  * The patient has been on a stable dose of nintedanib or pirfenidone for at least 8 weeks prior to screening and during screening (nintedanib ≥100 mg BID, pirfenidone ≥400 mg TID, no dose changes), tolerates the treatment, and plans to continue this background therapy during the study.\n  * The patient has not received nintedanib or pirfenidone for at least 4 weeks prior to screening and during screening (previous treatment discontinued or treatment-naïve), and does not plan to initiate or re-initiate nintedanib or pirfenidone during the study. No patient should discontinue approved therapy to participate in this study. Treatment-naïve patients must decline after full discussion with the investigator regarding the risks/benefits of such therapy.\n* Patients of reproductive potential (male and female) must agree to use highly effective contraceptive methods (hormonal, barrier, or abstinence) from signing the ICF until at least 6 months after the last dose of study drug.\n\nExclusion Criteria:\n\n* Interstitial lung disease of known etiology (e.g., domestic and occupational environmental exposures, connective tissue disease, drug toxicity, etc.).\n* Other pulmonary diseases considered clinically significant by the investigator (e.g., asthma, chronic obstructive pulmonary disease, cavitary or pleural disease, etc.).\n* Emphysema ≥ 50%, or emphysema greater than fibrosis, as determined by independent central imaging review of HRCT.\n* Acute exacerbation of IPF within 3 months prior to screening or during the screening period, as judged by the investigator.\n* Sustained improvement in IPF severity within 12 months prior to screening or during the screening period, as judged by the investigator based on changes in FVC, DLCO, and/or chest HRCT scan.\n* Pre-bronchodilator forced expiratory volume in 1 second (FEV1)/FVC \\< 0.70 during the screening period.\n* Known increase in FEV1 and/or FVC ≥ 12% and ≥ 200 mL post-bronchodilator.\n* History of smoking within 3 months prior to screening or during the screening period, or inability to refrain from smoking (including cigarettes, cigars, pipes, and e-cigarettes) for the duration of the study.\n* Completed a cardiopulmonary rehabilitation program focusing on exercise training within 8 weeks prior to screening, or planning to initiate such a program during the study.\n* Presence of pulmonary hypertension or cor pulmonale that, in the investigator's opinion, would significantly limit compliance with study requirements or may affect assessment of study safety or efficacy.\n* History of lung volume reduction surgery or lung transplantation, or planning to undergo lung volume reduction surgery or lung transplantation during the study (patients on a lung transplant waiting list are permitted).\n* Major surgery within 4 weeks prior to screening or during the screening period, or planning major surgery during the study (assessed as major surgery by the investigator).\n* History of severe cardiovascular or cerebrovascular disease, including but not limited to: ventricular arrhythmia requiring clinical intervention; uncontrolled atrial arrhythmia; congestive heart failure meeting New York Heart Association (NYHA) functional Class ≥ III; previous evidence of left ventricular ejection fraction (LVEF) \\< 35%; uncontrolled hypertension (systolic blood pressure ≥ 160 mmHg or diastolic blood pressure ≥ 100 mmHg) or poor compliance with antihypertensive medications; acute coronary syndrome, stroke, or transient ischemic attack within 6 months prior to screening.\n* Current or suspected malignancy, or history of malignancy within 5 years prior to screening (excluding basal cell carcinoma of the skin, squamous cell carcinoma of the skin, superficial bladder cancer, carcinoma in situ of the cervix, or other carcinoma in situ that has received curative treatment with no recurrence).\n* Active autoimmune disease, or history of autoimmune disease that may relapse (e.g., systemic lupus erythematosus, rheumatoid arthritis, ulcerative colitis, Crohn's disease, autoimmune thyroid disease, multiple sclerosis, vasculitis, glomerulonephritis, etc., including but not limited to these diseases or syndromes).\n* Acute respiratory or systemic bacterial, viral, or fungal infection requiring antimicrobial therapy within 4 weeks prior to screening or during the screening period.\n* Active hepatitis B or hepatitis C. Active hepatitis B is defined as positive hepatitis B surface antigen (HBsAg) and HBV DNA \\> upper limit of normal (ULN). Active hepatitis C is defined as positive hepatitis C antibody (HCV-Ab) and HCV RNA \\> ULN.\n* History of immunodeficiency, including positive human immunodeficiency virus (HIV) antibody test.\n* Positive interferon-γ release assay for tuberculosis during the screening period (testing is not required for patients who completed treatment for active or latent tuberculosis within 6 months prior to screening with no evidence of recurrent disease).\n* Presence of any of the following laboratory abnormalities during the screening period: AST or ALT \\> 1.5 × ULN; Total bilirubin \\> 1.5 × ULN; Creatinine (Cr) \\> 1.5 × ULN\n* Prior treatment with a highly selective small-molecule CSF-1R inhibitor (excluding nintedanib), or anti-CSF-1/CSF-1R antibody.\n* Known allergy or contraindication to the investigational product components or excipients, or history of hypersensitivity or severe infusion reaction to antibody-based products.\n* Received an investigational drug within 4 weeks prior to screening or within 5 half-lives (whichever is longer) or during the screening period.\n* Received other newly approved anti-fibrotic therapies other than nintedanib and pirfenidone within 4 weeks prior to screening or during the screening period, or planning to receive such therapies during the study.\n* Received combination therapy with nintedanib and pirfenidone within 8 weeks prior to screening or during the screening period.\n* Received cytotoxic, immunosuppressive, cytokine-modulating agents, or receptor antagonists (including but not limited to methotrexate, azathioprine, mycophenolate mofetil, cyclophosphamide, cyclosporine, everolimus) within 4 weeks prior to screening or during the screening period.\n* Received systemic corticosteroid therapy with prednisone \\> 15 mg/day or equivalent within 4 weeks prior to screening or during the screening period.\n\nPatients taking nintedanib: using or planning to use strong P-glycoprotein (P-gp) inhibitors (e.g., ketoconazole, erythromycin) or inducers (e.g., rifampicin, carbamazepine, phenytoin, St. John's Wort) during screening or the study.\n\nPatients taking pirfenidone: using or planning to use strong CYP1A2 inhibitors (e.g., fluvoxamine, enoxacin) or inducers (e.g., rifampicin) during screening or the study.\n\n* Unable to avoid use of the following medications: Short-acting bronchodilators within 4 hours prior to spirometry and DLCO measurements; Once-daily long-acting bronchodilators within 24 hours prior to spirometry and DLCO measurements; Twice-daily long-acting bronchodilators within 12 hours prior to spirometry and DLCO measurements.\n* Known or suspected history of alcohol or drug abuse within 2 years prior to screening or during the screening period.\n* Pregnant (female patients of childbearing potential confirmed by serum pregnancy test within 7 days prior to first dose of study drug) or lactating female.\n* Any disease, treatment, or abnormal laboratory finding that, in the investigator's opinion, may affect the patient's participation in the entire study, increase patient risk, or confound study results; or participation in the study is not in the patient's best interest, in the investigator's judgment."
-      },
-      {
-        "nct_id": "NCT06589219",
-        "title": "Study to Assess CMR316 in Healthy Volunteers and Patients With Idiopathic Pulmonary Fibrosis",
-        "phase": "PHASE1",
-        "status": "RECRUITING",
-        "conditions": [
-          "Pulmonary Fibroses, Idiopathic"
-        ],
-        "eligibility_criteria_raw": "Inclusion Criteria: Part 1 \\& 2\n\n* Healthy men or non-pregnant, non-lactating healthy women of non-childbearing potential, 18-60 years of age.\n* Must agree to use a highly effective method of contraception.\n* Body Mass Index (BMI) 18-33 kg/m2 as measured at screening.\n* Weight ≤100 kg at screening.\n* Normal lung function, defined as: FVC and FEV1 \\> 80% predicted (based on age, height, race, sex, SaO2 \\> 95% on room air.\n* Heart rate between 50 and 90 beats per minute (BPM).\n* Good state of health (mentally and physically) as indicated by a comprehensive clinical assessment (detailed medical history and a complete physical examination) and screening safety procedures.\n\nInclusion Criteria: Part 3\n\n* Diagnosis of IPF by American Thoracic Society/ERS (European Respiratory Society)/JRS (Japanese Respiratory Society)/ALAT (Latin America Thoracic Society) 2011 criteria within five years prior to consent.\n* Men or non-pregnant, non-lactating women of non-childbearing potential.\n* Age ≥ 40 years.\n* Mild to moderate IPF as defined by predicted FVC ≥ 55% of normal and predicted DLCO \\> 40% of normal at Screening.\n* Subjects receiving oral pirfenidone or nintedanib for treatment of IPF may participate if they have been on treatment with a stable, well-tolerated dose (as determined by the investigator), for at least 8 weeks prior to consent with no changes to therapy dose and schedule anticipated during the course of study participation.\n* Must be able to understand a written informed consent, which must be obtained prior to any study procedures.\n* Must be willing and able to comply with all study requirements\n\nExclusion Criteria: Part 1 \\& 2\n\n* Serious adverse reaction or serious hypersensitivity to any drug or the formulation excipients.\n* Presence or history of clinically significant hypersensitivity (e.g., anaphylaxis, angioedema, Stevens-Johnson syndrome) or allergy as judged by the investigator. Subjects with a history of seasonal rhinitis (hay fever) or childhood asthma may participate if these conditions are not active or expected to be active during the subject's participation.\n* History of clinically significant cardiovascular, skin, renal, hepatic, respiratory or gastrointestinal disease (except cholecystectomy), neurological or psychiatric disorder, illness/infection/hospitalization, or surgical procedure within 30 days prior to first dose of study drug. Subjects with a history of pancreatitis, heart failure, acute renal failure, bullous pemphigoid, or severe and disabling arthritis, conditions associated with postmarketing safety reports of oral gliptins, are excluded.\n* Have poor venous access that limits phlebotomy.\n* Alanine aminotransferase (ALT), aspartate aminotransferase (AST), and bilirubin above upper limit of normal (elevated bilirubin in subject's with Gilbert Syndrome is allowed) or other clinically significant abnormal clinical chemistry, hematology, or urinalysis as judged by the investigator.\n* Positive hepatitis B surface antigen (HBsAg), hepatitis C virus antibody (HCV Ab), or human immunodeficiency virus (HIV) antibody results.\n* Evidence of renal impairment at screening, as indicated by an estimated creatinine clearance (CLcr) of \\<90 mL/min using the 2021 Chronic Kidney Disease Epidemiology Collaboration (CKD-EPI) equation (Appendix 1: CKD-EPI Equation).\n* Subjects with a corrected QT interval by Fredericia (QTcF) of \\>450 msec at screening or first admission.\n* Positive highly sensitive serum pregnancy test at screening or highly sensitive urine pregnancy test at first admission. Those who are pregnant or lactating will be excluded.\n* Subjects who have received any investigational medicinal product (IMP) in a clinical research study within 5 half-lives or within 30 days prior to first dose (whichever is longer).\n* Subjects who have previously been administered IMP in this study. Subjects who have taken part in Part 1 are not permitted to take part in Part 2.\n* Subjects who have taken, any over-the-counter drug or herbal remedies in the 15 days prior to first IMP administration. Subjects taking prescribed medication in the 90 days prior to first IMP administration. Subjects taking up to 4 g per day of acetaminophen may participate if discontinued at least 15 days prior to first IMP administration. Subjects taking DPP4 inhibitors are prohibited. Subjects taking strong CYP3A inhibitors are prohibited.\n* History of any substance use disorder or alcohol use disorder in the past 2 years, as based on the diagnostic criteria in the Diagnostic and Statistical Manual Fifth Edition (DSM-5).\n* Regular alcohol consumption in men \\>21 units per week and women \\>14 units per week (1 unit = 12 oz 1 bottle/can of beer, 1 oz 40% spirit, or 5 oz glass of wine).\n* A confirmed positive alcohol breath test at screening or first admission.\n* Current smokers and those who have a smoking history of ≥ 10 pack-years. A confirmed positive urine cotinine test at screening or first admission.\n* Current users of e-cigarettes and nicotine replacement products and those who have used these products within the last 12 months.\n* Positive test result for common drugs of abuse on screening and first admission.\n* Men with pregnant or lactating partners.\n* Donation of a unit of blood (about 500 mL) within 2 months or donation of plasma within 7 days prior to first dose of study medication.\n* Subjects who are, or are immediate family members of, a study site or Sponsor employee.\n* Active respiratory infection requiring treatment with antibiotics within 4 weeks prior to signing of ICF.\n* Lack of suitability for participation in the trial, for any reason, as judged by the Investigator.\n\nExclusion Criteria: Part 3\n\n* Clinically significant deterioration between screening and Day 1.\n* Use of any investigational drugs within 30 days or 5 half-lives prior to consent, whichever is longer.\n* Serious adverse reaction or serious hypersensitivity to any DPP4 inhibitor (e.g., saxagliptin, sitagliptin) or the formulation excipients.\n* Use of supplemental oxygen for resting hypoxemia.\n* Evidence of significant renal impairment at screening, defined in this protocol as an estimated creatinine clearance (CLcr) of \\<50 mL/min using the CKD-EPI equation. Patients with renal insufficiency Clcr ≥ 50 mL/min with stable renal function (per clinical discretion, recommend based on average documented clinical chemistry values for at least 6 months) may participate.\n* History of clinically significant and uncontrolled medical illness or clinically significant abnormal clinical chemistry, hematology, or urinalysis that represents a meaningful risk to the subject during this trial, as judged by the Investigator (e.g., heart failure).\n* Subjects with a corrected QT interval by Fredericia (QTcF) of \\>450 msec at screening.\n* Life expectancy \\< one year.\n* Subject listed for lung transplant.\n* Hospitalization or serious illness (as determined by the investigator) within the 3 months prior to consent.\n* Alternative diagnoses that could lead to pulmonary fibrosis such as exposure to drugs, radiation, asbestos.\n* Connective tissue disease that can lead to pulmonary fibrosis such as scleroderma or rheumatoid arthritis.\n* Presence of clinically active, medically diagnosed asthma, chronic obstructive pulmonary disease, or active infection.\n* Lack of suitability for participation in the trial, for any reason, as judged by the Investigator.\n* History of severe hepatic impairment or AST or ALT greater than 3 times the upper limit of normal at screening.\n* The use of required concomitant medications that represents a significant risk to produce an adverse drug interaction with CMR316, assessed by the investigator (in consultation with sponsor and sponsor's medical monitor). Specifically, subjects with Type 1 and Type 2 diabetes are excluded.\n* Smoking within a year prior to consent."
-      }
-    ]
-  },
   "S001": {
     "query_used": "acute pancreatitis",
+    "primary_query": "acute pancreatitis",
+    "fallback_used": false,
+    "note": "",
     "trials": [
       {
         "nct_id": "NCT06401577",
@@ -188,6 +70,622 @@
           "Severe Acute Pancreatitis"
         ],
         "eligibility_criteria_raw": "Inclusion Criteria:\n\nAge: 18-70 years old Diagnosis: Meets the diagnostic criteria for severe acute pancreatitis (SAP)\n\n* Organ function: There may be organ failure and systemic complications that can be recovered within 48 hours\n* Stage of the disease: Approximately 2 weeks after onset (non acute phase), accompanied by accumulation of pancreatic fluid volume, and significant improvement in CTSI score compared to before (grade II)\n* Nutritional support: Enteral nutrition tube has been left in place Feasibility of transplantation: No absolute contraindications for gut microbiota transplantation\n* Informed Consent: Voluntarily sign a written informed consent form\n* Gastrointestinal status:\n\nAbdominal pressure (bladder pressure measurement)\\<12mmHg ◦ Existence of spontaneous defecation/exhaust Significant improvement in abdominal distension compared to before\n\nExclusion Criteria:\n\nSerious complications: combined gastrointestinal bleeding or intestinal fistula\n\n* Special population: Pregnant or lactating women\n* Informed refusal: Failure to sign informed consent form\n* Basic organ dysfunction: Prior to admission, there were chronic organ dysfunction in the heart, lungs, liver, kidneys, or blood system Malignant tumor: Suffering from incurable malignant tumors\n* Immune abnormalities:\n\nAutoimmune diseases\n\n◦ Immunosuppression status (solid organ/bone marrow transplantation history, AIDS, long-term use of immunosuppressants/hormones)\n\n* Enteral nutrition intolerance: unable to meet 50% of calorie requirements due to severe diarrhea, fibrotic intestinal stenosis, severe gastrointestinal edema, high flow intestinal fistula, etc\n* Systemic infection: meets the diagnostic criteria for systemic inflammatory response syndrome (SIRS)\n* Antibiotic dependence: broad-spectrum antibiotic intervention is required for combined extraintestinal organ infections\n* Immunodeficiency: Congenital or acquired immunodeficiency\n* Mental illness: severe mental disorders"
+      }
+    ]
+  },
+  "S002": {
+    "query_used": "Graves disease hyperthyroidism",
+    "primary_query": "Graves disease hyperthyroidism",
+    "fallback_used": false,
+    "note": "",
+    "trials": [
+      {
+        "nct_id": "NCT05461820",
+        "title": "Effects of Different Treatment Schemes on the Regulation and Recurrence of Graves' Disease",
+        "phase": "PHASE4",
+        "status": "RECRUITING",
+        "conditions": [
+          "Graves Disease",
+          "Relapse",
+          "Treatment",
+          "Drug Withdrawal"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Graves hyperthyroidism (responsible for doctors' clinical diagnosis)\n* Age 18-65, for both men and women\n* Thyroid receptor antibody (TRAb) was positive\n* Take part in this research voluntarily and sign the informed consent form\n\nExclusion Criteria:\n\n* Those who have used glucocorticoid or other immunosuppressants for a long time within 3 months before being selected\n* Those who have participated in any other drug trials within 3 months before being selected\n* Subjects who are participating in clinical research of other drugs\n* Patients with a history of malignant tumors\n* Ill-controlled hypertension: diastolic blood pressure≥100mmHg, systolic blood pressure ≥160 mmHg\n* Blood routine: the total number of white blood cells \\< 3.0×109 or neutrophils \\< 1.5× 109\n* Other thyroid diseases: such as subacute thyroiditis, thyroid nodules, high-function adenoma\n* Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit; When ALT or AST is less than 2 times of the normal upper limit, and the test of hepatitis B two half-and-half positive\n* Renal insufficiency: serum creatinine is higher than the upper limit of normal value\n* Patients with heart failure\n* Patients with coronary heart disease\n* Patients with other autoimmune diseases\n* Patients who are known to be allergic to any component of this medicine are allergic to the active ingredients or any auxiliary materials in the prescription\n* Patients with multiple drug allergies, allergic diseases, people with high sensitivity and drug addicts\n* Alcoholism, mental disorder or other observers who are not suitable for drug testing\n* Pregnant and lactating women cannot rule out the possibility of pregnancy\n* Taking any medicine with unknown ingredients or using traditional Chinese medicine, the researcher judges the medicine that may affect the curative effect of hyperthyroidism\n* According to the researcher's judgment, other medical history that reduces the possibility of joining the group or complicates the joining of the group, such as frequent changes in the working environment, may easily lead to lost follow-up.\n\nRejection Criteria:\n\n* The compliance of this clinical trial protocol is \\< 80% or \\> 120%;\n* Those who did not meet the inclusion criteria or the exclusion criteria were found during the experiment;\n* Those who can't cooperate, including those who can't complete the whole course of treatment, don't complete the follow-up as planned, and increase or decrease adjuvant drugs at will;\n* During the trial, use other drugs that may affect the curative effect of this trial.\n\nTermination of Research Criteria:\n\n* Those who are allergic or intolerant to this drug;\n* Adverse reactions or serious adverse events that patients can't tolerate occur;\n* Pregnant women of childbearing age in the experiment;\n* Other diseases appear during the treatment, and the treatment of accompanying diseases will interfere with the clinical observers of this medicine;\n* The researcher thinks it is inappropriate to continue the experiment."
+      },
+      {
+        "nct_id": "NCT05678374",
+        "title": "Exploring Immunological Markers Associated With Mental Fatigue in Graves' Disease",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Graves Disease",
+          "Graves Ophthalmopathy",
+          "Mental Fatigue",
+          "Autoimmune Diseases",
+          "Thyroid Diseases"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria\n\n* If patient: Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis\n* Diagnosis15 to 60 months ago. If recidive both episodes must have occurred within 15 months to 60 months.\n* Thyroid hormones within normal range without anti thyroid drugs\n* If control: No thyroid disease\n* Patient and control without mental fatigue: Mental Fatigue Score ≤8 (cut off 10.5)\n* Patient with mental fatigue: Mental Fatigue Score \\>13 and debut of symptoms of mental fatigue in parallel with debut of Graves' disease, without other obvious cause\n\nExclusion Criteria\n\n* Person unable to follow protocol\n* Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, any other neurological disease\n* Traumatic brain injury with unconsciousness\n* Other disease strongly associated with fatigue\n* Pregnancy and breast-feeding\n* On-going or recent systemic treatment with steroids\n* Radioiodine therapy within the last 18 months"
+      },
+      {
+        "nct_id": "NCT06963203",
+        "title": "Thyroidectomy for Graves' Disease or Amiodarone-induced Thyrotoxicosis",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Graves Disease",
+          "Amiodarone-Induced Thyrotoxicosis",
+          "Thyroidectomy"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Adult patients (≥ 18 years of age) undergoing surgical treatment for Graves' disease or Amiodarone-induced thyrotoxicosis (AIT) with biochemically confirmed hyperthyroidism or on specific medication for the treatment of Graves' disease or AIT.\n* Patients providing signed informed consent.\n\nExclusion Criteria:\n\n* Children and minors (\\<18 years).\n* Pregnant women.\n* Patients unable or unwilling to provide informed consent due to language barriers or intellectual limitations.\n* Patients undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism, lymph node clearance, or redo surgery.\n* Surgical procedures performed for other reasons than Graves' disease or AIT"
+      },
+      {
+        "nct_id": "NCT06392906",
+        "title": "Orbital Radiotherapy in Grave's Ophthalmopathy 1 Week vs 2 Weeks (OraGO-1 Trial)",
+        "phase": "PHASE3",
+        "status": "RECRUITING",
+        "conditions": [
+          "Thyroid Associated Ophthalmopathy"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Patient with active moderate to severe thyroid eye disease with a CAS \\> 4 with/ without diplopia before starting IVMP\n* Patient with poor response to 3 doses of IVMP (CAS drop \\< 1) หรือ CAS score \\> 3 after 3 doses of IVMP\n* Patients with diplopia after 3 doses of IVMP\n* Patients with Graves' Ophthalmopathy who have maintained euthyroidism\n* Non-pregnant adults (aged 35 years or older)\n\nExclusion Criteria:\n\n* Individuals with severe hypertension or diabetic retinopathy"
+      },
+      {
+        "nct_id": "NCT07333677",
+        "title": "In Vivo CAR-T for Refractory Graves' Disease",
+        "phase": "EARLY_PHASE1",
+        "status": "RECRUITING",
+        "conditions": [
+          "Graves' Disease"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria (Participants must meet all of the following criteria to be eligible for this study):\n\n* Age 18-75 years (inclusive), male or female.\n* Refractory Graves' disease, defined as meeting at least one of the following: a) Continuous antithyroid drug (ATD) therapy for ≥3 years without achieving criteria for ATD discontinuation; b) Meeting criteria for ATD discontinuation but experiencing ≥2 relapses after ATD withdrawal.\n* Positive serum TRAb.\n* Willing to use effective contraception for 12 months after study drug administration.\n* Voluntarily agrees to participate in the study, has signed the informed consent form, and is able to comply with study procedures and follow-up requirements.\n\nExclusion Criteria (Participants meeting any of the following criteria will be excluded from the study):\n\n* History of severe drug allergy or known allergic predisposition.\n* Presence or suspected presence of uncontrolled active infection.\n* History of major organ transplantation (e.g., heart, lung, liver, kidney) or bone marrow/hematopoietic stem cell transplantation.\n* Presence of significant heart disease, such as angina, myocardial infarction, heart failure, or clinically significant arrhythmias.\n* Receipt of any mRNA-LNP product or other lipid nanoparticle (LNP)-based therapy within the past 2 years.\n* Receipt of a live vaccine within 30 days prior to screening.\n* History of malignant tumors.\n* Positive hepatitis B surface antigen (HBsAg) or hepatitis B core antibody (HBcAb) with peripheral blood HBV DNA above the detection limit; positive hepatitis C virus (HCV) antibody with detectable HCV RNA; positive human immunodeficiency virus (HIV) antibody; or positive syphilis test.\n* Presence of psychiatric disorders or severe cognitive impairment.\n* Hematologic dysfuction at screening, defined as any of the following: a. Neutrophil count \\< 1.8 × 10⁹/L, b. Hemoglobin \\< 110 g/L, c. Platelet count \\< 50 × 10⁹/L\n* Impaired liver function, defined as any of the following: Alanine aminotransferase (ALT) \\> 3 × ULN, Aspartate aminotransferase (AST) \\> 3 × ULN, Total bilirubin \\> 2.5 × ULN.\n* Impaired renal function: creatinine clearance rate (CrCl) \\< 60 mL/min (Cockcroft-Gault formula).\n* Left ventricular ejection fraction (LVEF) \\< 55%.\n* Coagulation abnormalities, defined as either: International normalized ratio (INR) \\> 1.5 × ULN, Prothrombin time (PT) \\> 1.5 × ULN\n* Pregnant or breastfeeding women.\n* Any other condition that, in the opinion of the investigator, would make the participant unsuitable for the study."
+      }
+    ]
+  },
+  "S003": {
+    "query_used": "nephrotic syndrome",
+    "primary_query": "nephrotic syndrome",
+    "fallback_used": false,
+    "note": "Query returns a mix of adult+pediatric nephrotic-syndrome trials; several are explicitly pediatric (e.g. Blinatumomab for CNI-resistant SRNS in children, Telitacicept in pediatric frequently-relapsing/steroid-dependent NS) so used directly, no substitution needed.",
+    "trials": [
+      {
+        "nct_id": "NCT06334692",
+        "title": "Autoantibodies Against-nephrin in Idiopathic Nephrotic Syndrome",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Nephrotic Syndrome"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Adult (\\>18 years) males and females\n* Patients with biopsy-proven idiopathic MCD or FSGS (cases)\n* Patients with biopsy-proven idiopathic membranous nephropathy (controls)\n* Patients who provided consent to store their samples in the certified CRB biobank\n\nExclusion Criteria:\n\n* Reasonable possibility of a secondary cause of NS (for cases) or MN (for controls) at time of blood collections\n* Active viral or bacterial infections at time of blood collections"
+      },
+      {
+        "nct_id": "NCT06162546",
+        "title": "ARREST-NEPHROSIS - Austrian Resistant Nephrotic Syndrome Treatment Response Registry and Biobank",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Focal Segmental Glomerulosclerosis",
+          "Proteinuria",
+          "Nephrotic Syndrome",
+          "Nephrotic Syndrome Steroid-Resistant"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Resistant to standard Immunosuppressive agents (if clinically indicated, e.g. primary/non-genetic forms)\n* Persistent urinary protein-to-creatinine (UP/C) ratio \\>1.0 g/g\n* eGFR \\> 30 ml/min per 1.73 m2\n* biopsy or a disease-causing genetic mutation associated with nephrotic syndrome\n\nExclusion Criteria:\n\n* Inability or unwillingness to comply with repeated assessments\n* Objections against participation at discretion of the investigator\n* Secondary\n* Patients with steroid-dependence/frequently relapsing disease (but achievement of complete remission)"
+      },
+      {
+        "nct_id": "NCT06607991",
+        "title": "Blinatumomab for CNI-Resistant/Intolerant SRNS in Children",
+        "phase": "PHASE1",
+        "status": "RECRUITING",
+        "conditions": [
+          "CNI-resistant Steriod Resistant Nephrotic Syndrome",
+          "CNI-intolerent",
+          "Steriod Resistant Nephrotic Syndrome",
+          "Multidrug Resistant Nephrotic Syndrome"
+        ],
+        "eligibility_criteria_raw": "\\- Inclusion Criteria:\n\nSubjects must meet all of the following criteria to be included in the study:\n\n1.Age between 2 and 17 years, regardless of gender. 2.Meet the 2021 KDIGO definition of steroid-resistant nephrotic syndrome (SRNS), and fulfill either of the following:\n\n1. Have received an adequate dose of calcineurin inhibitors (CNIs) for more than 6 months without achieving at least partial remission.\n2. Or have contraindications to CNI use, including:\n\n1\\) Significant renal impairment, defined as estimated glomerular filtration rate (eGFR) \\< 60 mL/min/1.73 m², or presence of acute kidney injury at the time of diagnosis; 2) Renal biopsy showing prominent acute or chronic tubular injury, such as tubular atrophy or interstitial fibrosis involving more than 50% of the sampled tissue; 3) Elevated urinary markers (β2-microglobulin, α1-microglobulin, or retinol-binding protein) exceeding three times the upper limit of normal; 4) Abnormal glucose tolerance; 5) Severe uncontrolled hypertension, defined as systolic and/or diastolic blood pressure ≥ the 95th percentile + 12 mmHg for age, sex, and height, or ≥ 140/90 mmHg; 6) Concomitant use of medications known to have significant interactions with CNIs, leading to increased toxicity or reduced efficacy; 7) Known allergy or hypersensitivity to CNIs or any of their components. (3) Or have demonstrated inadequate response or disease relapse after treatment with at least two immunosuppressive agents, including CNIs and at least one of the following:\n\n1. Conventional immunosuppressive agents: cyclophosphamide, mycophenolate mofetil, azathioprine, methotrexate, cyclosporine, tacrolimus, sirolimus, leflunomide\n2. Biologic agents: abatacept, ofatumumab, obinutuzumab, rituximab Inadequate response is defined as failure to achieve complete remission after 12 months of therapy or relapse following initial response.\n\n3\\. Renal biopsy performed prior to screening confirms a diagnosis of minimal change disease (MCD) or focal segmental glomerulosclerosis (FSGS).\n\n4\\. The subject and/or their legal guardian must provide written informed consent, indicating understanding of the study's purpose and procedures, with the right to withdraw consent at any time without affecting the subject's future medical care.\n\n-Exclusion Criteria:\n\nSubjects who meet any of the following criteria will be excluded from the study:\n\n1. eGFR \\&lt; 60 mL/min/1.73 m² (using the modified Bedside Schwartz formula);\n2. Stroke or seizure within 6 months prior to screening, or other active central nervous system disorders;\n3. Genetic nephropathy confirmed by genetic testing;\n4. Renal biopsy confirming IgA nephropathy, membranous nephropathy, or membranoproliferative glomerulonephritis;\n5. Severe congenital heart disease or history of acute myocardial infarction within 6 months, or severe arrhythmias (e.g., frequent multifocal ventricular or supraventricular tachycardia, ventricular tachycardia), or moderate to large pericardial effusion, severe myocarditis, or unstable vital signs requiring vasopressors to maintain blood pressure;\n6. Positive for hepatitis B surface antigen (HBsAg) or hepatitis B core antibody (HBcAb) with hepatitis B virus (HBV) DNA levels above the normal range; positive for hepatitis C virus (HCV) antibodies with HCV RNA levels above the normal range; or positive for human immunodeficiency virus (HIV) antibodies, syphilis, or cytomegalovirus (CMV) DNA;\n7. Abnormal laboratory values prior to screening: moderate to severe neutropenia (≤1.0×10⁹/L); moderate to severe anemia (hemoglobin ≤90 g/L); thrombocytopenia (≤75×10⁹/L); or liver dysfunction (ALT, AST, or bilirubin greater than 2.5 times the upper limit of normal and persisting for 2 weeks);\n8. Subjects with tumors or other life-threatening diseases prior to screening;\n9. Positive blood pregnancy test;\n10. Participation in other clinical trials within 1 month prior to enrollment;\n11. Received rituximab or cyclophosphamide therapy within the past 3 months;\n12. Any other condition deemed by the investigator to be unsuitable for participation;\n13. Vaccination with live vaccines within 4 weeks prior to screening."
+      },
+      {
+        "nct_id": "NCT04571658",
+        "title": "NEPTUNE Match Study",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Nephrotic Syndrome in Children",
+          "Focal Segmental Glomerulosclerosis",
+          "Minimal Change Disease",
+          "Minimal Change Nephrotic Syndrome",
+          "Membranous Nephropathy",
+          "FSGS",
+          "MCD",
+          "MCD - Minimal Change Disease",
+          "Alport Syndrome"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Consented and eligible participants in the biopsied or non-biopsied cohorts of the NEPTUNE observational study\n2. Must be potentially eligible for the NEPTUNE Match partnering trials (e.g. if no trial is enrolling a participant under age 6, those under 6 are not eligible).\n\n   Note: NEPTUNE Match partnering trials and associated eligibility criteria are expected to be dynamic and change as trial protocols are developed, activated, and amended.\n3. Regular nephrology healthcare provided at a NEPTUNE study site.\n4. Willing and able to consent, and as appropriate assent, to participate in NEPTUNE Match\n\nExclusion Criteria:\n\nCurrently non-NEPTUNE observational study participants are not eligible to be matched to a clinical trial using these biomarker assessments.\n\nExclusion Criteria:\n\n1\\. Non-English or non-Spanish speaking"
+      },
+      {
+        "nct_id": "NCT01016613",
+        "title": "Clinical Phenotyping Resource and Biobank Core of the Michigan O'Brien Renal Center",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Chronic Kidney Disease",
+          "Glomerulopathy"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* persons of any age who have chronic kidney disease (abnormally high protein in urine or reduced kidney function determined by blood tests)\n* a small number of people without chronic kidney disease\n\nExclusion Criteria:\n\n* people on hemodialysis or peritoneal dialysis\n* people who have had a kidney transplant\n* people unable or unwilling to provide consent\n* women who are pregnant or nursing\n* adults who have polycystic kidney disease\n* institutionalized persons\n* people currently participating in a blinded interventional clinical trial"
+      },
+      {
+        "nct_id": "NCT04885179",
+        "title": "SPL Insufficiency Syndrome (SPLIS)/NPHS14: a SPLIS Observational Study and Patient Registry (International)",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Sphingolipidoses",
+          "Enzyme Deficiency"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria: Individuals of all ages diagnosed with SPLIS based on bi-allelic pathogenic variants of SGPL1, including children and neonates, as well as family members or caregivers, healthy volunteers and individuals with other sphingolipidoses.\n\nExclusion Criteria: the investigators will not include:\n\n* prisoners\n* pregnant women\n* healthy volunteers with:\n\n  * diabetes,\n  * infection,\n  * fever,\n  * known HIV/AIDS,\n  * cardiac disease\n  * or anemia."
+      }
+    ]
+  },
+  "S004": {
+    "query_used": "bladder cancer",
+    "primary_query": "bladder cancer",
+    "fallback_used": false,
+    "note": "",
+    "trials": [
+      {
+        "nct_id": "NCT06493370",
+        "title": "Intravenous Ascorbate Plus Gemcitabine/Carboplatin: A Novel and Cost-Effective Alternative With Evident Efficacy in Patients With Muscle Invasive Bladder Cancer",
+        "phase": "PHASE2",
+        "status": "RECRUITING",
+        "conditions": [
+          "Bladder Cancer"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Ability of participant to understand this study, and participant willingness to sign a written informed consent\n* Consent to participate in biorepository protocol number GUB-BCR-001, KU IRB Approved HSC # STUDY00141546\n* Males and females age ≥ 18 years\n* ECOG Performance Status (PS) 0 - 2\n* Women of childbearing potential must have a negative serum pregnancy test 72 hours prior to initiating treatment.\n* Diagnosis/disease status Cisplatin-ineligible or declined muscle invasive bladder cancer. Cisplatin ineligibility will be defined based on Galsky criteria: CTCAE ver. 5.0 Grade 2 or greater peripheral neuropathy; CTCAE ver. 5.0 Grade 2 or greater hearing loss; Creatinine clearance estimated or calculated \\< 60 ml/min; NYHA class II or greater congestive heart failure\n* Adequate organ function, defined as follows: Absolute Neutrophil Count \\>1.5K/UL. (NOTE: Patients with established diagnosis of benign neutropenia are eligible to participate with ANC between 1000-1500 based on discretion of the treating physician.); Platelets \\>100K/UL; Hemoglobin ≥ 9 g/dL; Serum creatinine ≤ 1.5 x upper limit of normal (ULN) or calculated creatinine clearance ≥ 30 mL/min using the Cockcroft-Gault equation; Total bilirubin ≤ 2.0 x ULN; Aspartate aminotransferase (AST \\[SGOT\\]) and alanine aminotransferase (ALT \\[SGPT\\]) ≤ 2.5 x ULN unless liver metastases are present, in which case they must be ≤ 5 x ULN; Normal Glucose-6-phosphate dehydrogenase (G6PD) status\n* Women of child-bearing potential (WOCBP) and men with partners of child-bearing potential must agree not to donate sperm (men), to practice sexual abstinence or to use the forms of contraception listed in Child-Bearing Potential/Pregnancy section for the duration of study participation and for WOMEN: 6 months after EOT, MEN: 3 months after EOT following completion of therapy.\n\nExclusion Criteria:\n\n* Simultaneously enrolled in any therapeutic clinical trial\n* Current or anticipating use of other anti-neoplastic or investigational agents while participating in this study\n* Diagnosed with a psychiatric illness or is in a social situation that would limit compliance with study requirements\n* Is pregnant or breastfeeding. There is a potential for congenital abnormalities and for this regimen to harm breast feeding infants\n* Women of childbearing age expecting to conceive children while receiving study treatment and for 6 months after the last dose of study treatment. Men expecting to conceive children while receiving study treatment and for 3 months after the last dose of study treatment\n* Has a severe known allergic reaction to any excipient contained in the study drug formulation\n* Active Grade 3 or 4 (per the National Cancer Institute (NCI) Common Terminology Criteria for Adverse Events (CTCAE), Version 5.0109) viral, bacterial, or fungal infection within 2 weeks prior to the first dose of study treatment.\n* Uncontrolled intercurrent illness, including but not limited to, ongoing or active infection, symptomatic congestive heart failure, uncontrolled hypertension, unstable angina pectoris, cardiac arrhythmia, interstitial lung disease, serious chronic gastrointestinal conditions associated with diarrhea, as determined per treating physician.\n* Histology of pure adenocarcinoma, pure squamous cell carcinoma, or pure small cell carcinoma in the TURBT sample\n* Current consumption of tobacco products, patients may be asked to quit for 2 weeks prior to enrollment\n* If tobacco use is suspected at any point during the trial, cotinine level will be obtained\n* History of G6PD deficiency\n* History of oxalate renal calculi - per discretion of treating physician"
+      },
+      {
+        "nct_id": "NCT04916990",
+        "title": "Improving Care for Rural Patients With Solid Tumors",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Lung Cancer",
+          "Head and Neck Cancer",
+          "Thyroid Cancer",
+          "Cervical Cancer",
+          "Breast Cancer",
+          "Bladder Cancer",
+          "Colon Cancer",
+          "Rectum Cancer"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria Assessed During Screening:\n\n1. Provision to sign and date the consent form.\n2. Stated willingness to comply with all study procedures and be available for the duration of the study.\n3. Male and female adults over 18 years old\n4. English or Spanish speaking\n5. Receives cancer treatment at UCH- Aurora, UCH-Highlands Ranch, UCHealth North, UCHealth South- UCHealth Memorial Hospital, UCHealth Parkview Hospital, San Juan Cancer Center, RMCC-Pueblo, SCL-St. Mary's, or Parkview Medical Center.\n6. Resides in any of the rural counties served by the UCH-Aurora, UCH-Highlands Ranch, UCHealth North, UCHealth South- UCHealth Memorial Hospital, UCHealth Parkview Hospital, San Juan Cancer Center, RMCC-Pueblo, SCL-St. Mary's, VA, Huntsman Cancer Institute, or Parkview Medical Center with Rural-Urban Continuum Codes (RUCC) codes 4-9.\n7. Diagnosed with lung cancer (LC): small cell lung cancer (SCLC), non-small cell lung cancer (NSCLC), using incident LC diagnosis according to the International Classification of Diseases for Oncology \\[ICD-O\\] codes: C34.0, C34.1, C34.2, C34.3, C34.8, C34.9, and C33.9, and other lung cancer variants\n8. Stage of diagnosis for SCLC (limited vs. extensive), NSCLC (Stages 0, I, II, IIA, IIIB, IV), according to the American Joint Committee on Cancer Staging \\[AJCC\\] Tumor Node Metastasis \\[TNM\\] stages: I-IV)\n9. Will receive the following types of breast, bladder, cervix, colon, rectum, lung, head-and-neck cancer treatments (surgery, radiation therapy, chemotherapy, or a combination of those modalities, including neoadjuvant and adjuvant therapy)\n10. Diagnosed with head and neck cancer (HNC) using head and neck squamous cell carcinoma (HNSCC) ICD-O codes for the oral cavity (including lip; codes C00.0-C00.6, C00.8, C00.9, C02.0-C02.3, C02.8, C0.2.9, C03.0, C03.1, C03.9-C04.1, C04.8-C05.0, C06.0-C06.2, C06.8, and C06.9), the oropharynx (codes C01.9, C02.4, C05.1, C05.2, C5.8, C5.9, C09.0, C09.1, C09.8-C10.4, C10.8, C10.9, C14.0, C14.2, and C14.8), the hypopharynx (codes C12.9-C13.2, C13.8, and C13.9), and the larynx (codes C32.0- C32.3 and C32.8-C32.9) and histology codes for squamous cell carcinoma (SCC) or its variants (codes 8032, 8050, 8052, 8070-8075, and 8083-8084), and salivary gland cancer (code C07 and variants), and other head and neck cancer variants\n11. Stage of diagnosis for HNC (Stages I, II, III, IV) according to the AJCC's TNM stages I-IV\n12. Diagnosed with malignant neoplasm of thyroid gland, ICD-10 code: C73, and other thyroid cancer variants\n13. Diagnosed with BC using malignant neoplasm of breast ICD-O codes for connective tissue of the breast, codes: C50.0, C50.1, C50.2, C50.3, C50.4, C50.5, C50.6, C50.8, C50.9, and other breast cancer variants.\n14. Diagnosed with CC using malignant neoplasm of cervix uteri ICD-O codes: C53.0, C53.1, C53.8, C53.9 and other cervical cancer variants.\n15. Diagnosed with CRC using colon and rectum malignant neoplasm ICD-O codes for colon (codes: C18, C18.1, C18.2, C18.3, C18.4, C18.5, C18.6, C18.7, C18.8, C18.9) and rectum (code C20), and other colon and rectum cancer variants.\n16. Diagnosed with BLC using malignant neoplasm of ICD-O codes: C67.9 and other bladder cancer varients.\n\n    Inclusion Criteria Confirmed via Baseline Survey:\n17. Rural and medically underserved, defined as meeting the following criteria:\n\n    * Rural: Resides in a rural county with a RUCC code 4-9 AND,\n    * Underserved population who come from counties meeting any of the \"health professional shortage areas\" OR \"Medically Underserved Areas/Populations\" AND/OR\n18. Uninsured: No health insurance (public or private insurance) AND/OR\n19. Underinsured: (c.1) Public insurance (e.g., Medicaid, Medicare Part B exclusive, VA) (c.2) 10% or more of annual income is spent on out-of-pocket medical expenses\n\nExclusion Criteria Assessed During Screening:\n\n1. Children under 18 years old\n2. Individuals who do not speak English or Spanish\n3. Individuals not receiving cancer treatment at UCH (Aurora, Highlands Ranch, UCHealth North, UCHealth Memorial Hospital), San Juan Cancer Center, RMCC-Pueblo, St. Mary's or Parkview Medical Center.\n4. Diagnosed with primary cancer other than breast, bladder, cervix, colon, rectum, lung, and/or head-and-neck cancer or other type of cancer not listed in the inclusion criteria.\n5. Diagnosed with a type of breast, bladder, cervix, colon, rectum, lung, and/or head-and-neck cancer listed under inclusion criteria but will not be treated at one of the collaborating hospital sites,\n6. Has already initiated curative treatment for the current episode of cancer.\n\n   Exclusion Criteria Assessed via Baseline Survey:\n7. Individuals from vulnerable populations (e.g., inmates or on probation, homeless\\*, and pregnant\\*)\n8. Decisionally-challenged with cognitive or personality impairment, suicidal ideation or intoxication (alcohol or drugs) at the time of consent or endorsed in baseline survey that interfere with ability to participate in the study.\n9. Unable to hear (not including individuals who can hear with an auditory aid).\\*\n10. Likely inability to track the individual over time (e.g. no permanent address at the time of consent) \\*Individuals who become homeless, pregnant, or lose their hearing or permanent address after they have consented and/or assigned to study condition may remain in the study until completion"
+      },
+      {
+        "nct_id": "NCT06709196",
+        "title": "Clinical Trial Testing Whether Targeted Antibiotic Prophylaxis Can Reduce Infections After Cystectomy Compared to Empiric Prophylaxis",
+        "phase": "PHASE4",
+        "status": "RECRUITING",
+        "conditions": [
+          "Cystectomy",
+          "Bladder Cancer Requiring Cystectomy",
+          "Postoperative Infections",
+          "Antibiotic Prophylaxis",
+          "Ileal Conduit"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Age at surgery ≥ 18 years\n* Ability to understand and sign an informed consent\n* Malignant or benign indication for undergoing cystectomy\n* Planned ileal conduit as urinary diversion\n\nExclusion Criteria:\n\n* Previous severe allergic reaction to antimicrobial treatment\n* Long-term prophylactic antibiotic treatment which is expected to be continued after the cystectomy"
+      },
+      {
+        "nct_id": "NCT05944237",
+        "title": "HTL0039732 in Participants With Advanced Solid Tumours",
+        "phase": "PHASE1",
+        "status": "RECRUITING",
+        "conditions": [
+          "Neoplasms",
+          "Prostatic Neoplasms, Castration-Resistant",
+          "Stomach Neoplasms",
+          "Esophageal Neoplasms",
+          "Head and Neck Neoplasms",
+          "Colorectal Neoplasms",
+          "Pancreatic Neoplasms",
+          "Lung Neoplasms",
+          "Urinary Bladder Neoplasms",
+          "Mesothelioma, Malignant",
+          "Uterine Cervical Neoplasms",
+          "Kidney Neoplasms",
+          "Sarcoma",
+          "Pheochromocytomas"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Written (signed and dated) informed consent and capable of co-operating with investigational medicinal product administration and follow-up.\n2. Phase 1, dose escalation phase\n\n   Part A (HTL0039732 monotherapy):\n   * Histologically or cytologically proven advanced solid tumour, refractory to conventional treatment, or for which no further conventional therapy is considered appropriate by the Investigator or is declined by the potential participant.\n   * At least 1 measurable lesion according to RECIST v1.1, which (in the Investigator's opinion) has had objective radiological progression on or after the last therapy, or at least one assessable lesion e.g. pleural or peritoneal thickening that does not fulfil RECIST v1.1 criteria for measurable disease.\n\n     a. Consent for fresh tumour biopsy sample(s) at time of PD, if the participant has accessible disease and is eligible to receive atezolizumab. Optional at time of disease progression.\n   * Consent to access and analysis of any available archival tissue or a fresh tumour sample at baseline, if archival tissue is unavailable.\n   * Consent for fresh tumour biopsy sample(s) at time of PD, if the participant has accessible disease and is eligible to receive atezolizumab. Optional at time of disease progression.\n\n   Phase 1 Part B:\n\n   \\- Histologically proven advanced solid tumour where PGE2/EP4 signalling is believed to be more prevalent or significant (such as microsatellite stable colorectal cancer (MSS CRC), gastro-esophageal cancer, head and neck squamous cell carcinoma (HNSCC), mCRPC, pancreatic cancer, lung cancer, bladder cancer, mesothelioma, cervical cancer, renal cancer, sarcoma, pheochromocytoma and cancers with PI3K/AKT/mTOR pathway activating mutations using a clinically-validated assay).\n\n   Phase 2a:\n\n   \\- Histologically proven advanced solid tumour, in line with indications listed below, refractory to conventional treatment, or for which no conventional therapy is considered appropriate by the Investigator or is declined by the potential participant:\n   1. MSS CRC with PIK3CA or HER2 mutation, and/or other driver mutation as agreed with the Sponsor (genomic alteration to have been previously identified using a validated next-generation sequencing method performed on either tumour tissue or circulating tumour DNA \\[ctDNA\\]);\n   2. Gastric or gastroesophageal junction (GOJ) adenocarcinoma;\n   3. Clear cell renal cell carcinoma;\n   4. mCRPC\n\n   Phase 1 Part B and Phase 2a:\n   * Consent to access and analysis of any available archival tissue.\n   * Consent for fresh tumour biopsy samples at baseline and on treatment. However, the following exceptions will be permitted if archival tissue is available at the recruiting site:\n\n     1. Patients with mCRPC: biopsies are not required for those whose only safely accessible lesions are bone metastases that lack an accessible soft tissue component.\n     2. For the first 12 participants in each indication: the on-trial biopsy is optional; and the baseline biopsy is mandatory if there is a safely accessible lesion but may be omitted for patients who have no safely accessible lesion, to permit their inclusion in the study. This will continually be assessed through the study.\n   * Disease refractory to conventional treatment, or for which no further conventional therapy is considered appropriate by the Investigator or is declined by the participant.\n   * Except for mCRPC, at least 1 measurable lesion according to RECIST v1.1, which (in the Investigator's opinion) has had objective radiological progression on or after the last therapy. Potential participants with mCRPC may instead have had PD according to PCWG3 criteria.\n\n     1. Previously irradiated lesions cannot be counted as target lesions unless clearly progressed after the radiotherapy.\n     2. Lesions that are intended to be biopsied should not be counted as target lesions (those undergoing biopsy must have at least one target lesion that is not intended to be biopsied).\n   * For indications where anti-PD-1/PD-L1 therapy is standard of care (such as clear cell renal cell carcinoma, or gastric or GOJ adenocarcinoma with elevated PD-L1 expression), patients must have received that therapy and must be considered to have had progressive disease by the Investigator either on, or within 6 months after, that treatment.\n3. Life expectancy of at least 12 weeks.\n4. Eastern Cooperative Oncology Group performance status of 0 or 1.\n5. Haematological and biochemical indices within the protocol specified ranges.\n6. Stable thyroid function tests. Stable doses of thyroxine replacement are permitted.\n7. Aged 18 years or over at the time consent is given.\n\nExclusion Criteria:\n\n1. Radiotherapy (except for palliative reasons), chemotherapy, non chemotherapy systemic anti-cancer therapy (apart from life-long hormone suppression such as luteinising hormone-releasing agents in participants with mCRPC) or investigational medicinal products during the 4 weeks prior to enrolment; or first dose of an immunotherapy during the previous 12 weeks before first dose of HTL0039732.\n2. Ongoing toxic manifestations of previous treatments that are Grade \\>1 per CTCAE v5.0.\n3. Any central nervous system metastases (unless potential participants have had local therapy and are asymptomatic, radiologically stable and have been off steroids for ≥4 weeks prior to enrolment).\n4. Women of child-bearing potential (or who are already pregnant or lactating). Exceptions apply.\n5. Men with partners of childbearing potential. Exceptions apply.\n6. Major thoracic or abdominal surgery from which the potential participant has not yet recovered.\n7. At high medical risk because of non-malignant systemic disease, including active uncontrolled infection.\n8. Known history of current or latent tuberculosis, HIV or Hepatitis B or C infection.\n9. Prior treatment with EP4 inhibitor.\n10. Treatment with selective cyclooxygenase-2 inhibitor in the 8 weeks prior to enrolment.\n11. Known hypersensitivity or intolerance to hydroxypropyl methylcellulose.\n12. Use of systemic immunosuppressive agent in the 2 weeks prior to enrolment. Exceptions apply.\n13. Significant cardiovascular disease.\n14. Known active peptic ulcer disease, or symptoms of gastritis, dyspepsia or gastro-esophageal reflux disease (one or more episodes per week).\n15. Current or planned participation in another interventional clinical trial, whilst taking part in this trial of HTL0039732.\n16. Limited ability to swallow or absorb oral medications.\n17. Any other condition that, in the Investigator's opinion, would mean that the trial is not in the best interests of the potential participant.\n\n    Phase 1 Part B and Phase 2a:\n18. Any live vaccines in the 4 weeks prior to enrolment.\n19. Diagnosis of immunodeficiency.\n20. Active autoimmune disease requiring systemic treatment in the 2 years prior to enrolment.\n21. History or clinical suspicion of interstitial lung disease, history of (non-infectious) pneumonitis that required steroids, or current pneumonitis.\n22. Hypersensitivity to atezolizumab or any of its excipients.\n23. Prior adverse reaction to cancer immunotherapy that required steroid or other immunosuppressive treatment or led to discontinuation of that treatment."
+      },
+      {
+        "nct_id": "NCT04947059",
+        "title": "Effectiveness of an Immediate Postoperative Intravesical Instillation With Either Gemcitabine or Epirubicin in Patients With Urinary Bladder Cancer (Gemcitabine Epirubicin Normal SAline)",
+        "phase": "PHASE3",
+        "status": "RECRUITING",
+        "conditions": [
+          "Bladder Cancer"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Primary urinary bladder tumor\n* Secondary urinary bladder tumor (recurrence)\n* Bipolar or monopolar resection\n* Creat \\<2.2mg/dl\n* 35% \\<Hct \\<52%\n* White bloode cells count WBC ≥3000 / μL\n* 75000 \\<PLT \\<500000 / μL\n* Urine culture: negative / sterile\n* Alkaline phosphatase, total bilirubin, SGOT, SGPT: values as high as 2 times above the upper normal limit\n* Good clinical condition (according to Eastern Cooperative Oncology Group PS ≤ 1)\n* CT Urography without findings suggesting an upper urinary tract tumor in the last 3 months before the transurethral resection of the bladder tumor\n\nExclusion Criteria:\n\n* More than 2 low grade / high differentiation (low grade / LG) histologically confirmed bladder tumors in the last 18 months before the transurethral resection of the bladder tumor\n* High grade / low differentiation (HG) histologically confirmed bladder tumor in the last 9 months before the transurethral resection of the bladder tumor\n* Those who undergo a transurethral resection of a bladder tumor according to the Guidelines of the European Association of Urology for non-muscle-invasive bladder cancer: incomplete resection of tumor, absence of muscle fibers in the sample with the exception of: Ta / LG-G1, primary Cis and finally, pT1 tumors\n* Intravesical instillation of chemotherapeutic agent or BCG in the last 6 months before the transurethral resection of the bladder tumor\n* History of non-urothelial bladder cancer\n* Stage of disease pT2 (muscle-invasive bladder cancer)\n* Presence of a tumor in the urethra\n* Upper urinary tract malignancy (present or anamnestically)\n* History of pelvic radiotherapy\n* Histrory of another malignancy in the last 5 years before the transurethral resection of the bladder tumor"
+      }
+    ]
+  },
+  "S005": {
+    "query_used": "migraine",
+    "primary_query": "migraine",
+    "fallback_used": false,
+    "note": "",
+    "trials": [
+      {
+        "nct_id": "NCT07402954",
+        "title": "Stimulation of External Carotid Artery Circulation",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Migraine"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Age ≥18\n* Chronic migraine or status migrainosus, or craniofacial pain refractory to maximal medical therapy who are undergoing MMA IA lidocaine infusion.\n* Subject has provided informed consent.\n\nExclusion Criteria:\n\n* Known allergies to lidocaine\n* Seizure disorder, history of seizures, or increased seizure susceptibility\n* Intracranial vascular malformations or dural AVF\n* Hemodynamic instability, any condition where brief hemodynamic shifts may pose risk\n* Previous MMA intervention or craniotomy that could result in MMA occlusion\n* Any implanted electronic device (pacemaker, ICD, DBS, VNS, cochlear implant, spinal cord stimulator)\n* Significant cardiovascular disease (unstable angina, severe arrhythmias, recent MI)\n* Severe autonomic dysfunction\n* Active systemic infection\n* Vulnerable populations (i.e. pregnant individuals, children, prisoners, individuals lacking decision-making capacity, persons with cognitive impairment, those unable to provide informed consent)"
+      },
+      {
+        "nct_id": "NCT06995729",
+        "title": "A Study to Learn About the Study Medicine Called Zavegepant (PF-07930207) in Children With a History of Migraine",
+        "phase": "PHASE1",
+        "status": "RECRUITING",
+        "conditions": [
+          "Acute Treatment of Migraine"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Participants aged 6 years to less than 12 years.\n2. Documented medical history of migraine with or without aura for at least 6 months before the Screening Visit.\n3. Weight \\>15 kg at the Screening Visit\n\nExclusion Criteria:\n\n1. Evidence or history of clinically significant disease.\n2. Continuous migraine (defined as an unrelenting headache) within 1 month prior to Screening Visit.\n3. Atypical migraine types, complications of a migraine, or a confounding and clinically significant pain syndrome.\n4. Conditions that may affect the administration or absorption of the nasal product\n5. Any psychiatric condition that is uncontrolled and/or untreated, including:\n\n   * Clinically significant depression (Promis Parent Proxy SF 2.0 Depressive Scale T score ≥70)\n   * Suicidal ideation and behaviour (C-SSRS: any \"yes\" to items 2 to 5 or any \"yes\" to suicide behaviours)\n6. Serum Total bilirubin \\>1.5 × ULN (Upper Limit of Normal), AST (Aspartate Transferase) or ALT (Alanine Transaminase) \\>2 × ULN\n7. Abnormal ECG (Electrocardiogram) at screening visit"
+      },
+      {
+        "nct_id": "NCT06788977",
+        "title": "External Trigeminal Nerve Stimulation for Migraine Treatment in Pregnancy",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Pregnancy",
+          "Migraine",
+          "Headache",
+          "Postpartum",
+          "Depression",
+          "Anxiety"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Patients willing and able to provide simple consent for registry participation.\n2. Has access to email, text messages via smartphone or computer with internet access\n3. Be between the ages of 18 to 44 years at enrollment.\n4. Pregnant with one fetus/baby at time of enrollment (singleton pregnancy)\n5. Have headaches or migraines prior to pregnancy and continued to have headaches or migraines into pregnancy OR headaches or migraines began while pregnant in the first trimester.\n6. Able to provide proof of active intrauterine pregnancy and estimated due date, via online document upload, using any of the following documents:\n\n   1. ultrasound report of current pregnancy\n   2. beta hcg lab report\n   3. a signed provider's medical documentation confirming intrauterine pregnancy with fetal heart sounds and estimated due date\n   4. a signed provider's note on a prescription sheet or physician letterhead confirming intrauterine pregnancy and estimated due date\n\nExclusion Criteria:\n\n1. Patients under the age of 18 or over the age of 44 at enrollment\n2. Not pregnant at time of enrollment\n3. Pregnant with more than one fetus/baby at time of enrollment (multigestational pregnancy)\n4. Patients with any other condition which might preclude participation in the opinion of the patient's physician(s) or the study's principal investigator\n5. No access to email, smartphone, or computer with internet access"
+      },
+      {
+        "nct_id": "NCT06785129",
+        "title": "Endometriosis and Migraine",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Migraine",
+          "Endometriosis"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Patients with diagnosed endometriosis, migraine, or both endometriosis and migraine\n2. Healthy control subjects with no history of chronic pain\n3. Age 12-45\n4. Assigned female sex at birth\n\nExclusion Criteria:\n\n1. Pregnancy or breastfeeding\n2. Presence of prolactinoma\n3. Presence of psychiatric, neurological, endocrinological and/or developmental conditions and taking medications for these conditions\n4. Current use of dopamine agonist or SSRI medications\n5. For patients aged 12-17 not having a parent/legal guardian willing to sign the consent and answer surveys about their child's health"
+      },
+      {
+        "nct_id": "NCT06670053",
+        "title": "Puberty, Testosterone, and Brain Development",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Gender Identity",
+          "Gender Dysphoria in Adolescents and Adults",
+          "Headache",
+          "Transgender"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. transmasculine and gender diverse\n2. assigned female at birth\n3. age 12-20 years at the time of enrollment\n4. plan to start testosterone clinically in \\< 6 months\n5. if taking gonadotropin releasing hormone agonist (GnRHa, puberty blocker), was started on this type of drug 3+ months prior to enrollment\n\nExclusion Criteria:\n\n1. cognitive or psychiatric impairment resulting in inability to tolerate or perform the study procedures\n2. known history of stroke, multiple sclerosis, or other serious neurologic condition\n3. prior diagnosis of Turner Syndrome (monosomy X) or other difference of sexual development\n4. prior diagnosis of polycystic ovarian syndrome (PCOS)\n5. uncontrolled or untreated hypothyroidism\n6. MRI-specific exclusion criteria: (Weight \\> 500 lbs, severe claustrophobia, certain type of metal in body)"
+      }
+    ]
+  },
+  "S006": {
+    "query_used": "mucormycosis",
+    "primary_query": "mucormycosis",
+    "fallback_used": false,
+    "note": "5 recruiting trials directly on mucormycosis exist (biomarkers, imaging prognosis, antifungal regimens, pediatric PK, facial reconstruction post rhino-orbital-cerebral disease) -- used directly, diabetes-complication fallback not needed.",
+    "trials": [
+      {
+        "nct_id": "NCT06440915",
+        "title": "Study on Theraputic Drug Monitoring and Phamacokinetics of Isavuconazole in Children",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Aspergillosis Invasive",
+          "Mucormycosis"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Patients who intend to take isavuconazole for the treatment of invasive mycosis;\n* Aged 0-18 years, gender unlimited;\n* The subject and his/her guardian are willing to comply with the procedures and operations specified in the study protocol;\n* The guardian of the subject and the subject of independent informed age are willing and able to provide written informed consent to participate in the study.\n\nExclusion Criteria:\n\n* The subject is known to be allergic to any azole antifungal therapy or other ingredients contained in the study drug;\n* The researcher believes that the condition of the child may interfere with study participation or other inappropriate conditions."
+      },
+      {
+        "nct_id": "NCT05406037",
+        "title": "Biomarkers for Invasive Mucormycosis",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Mucorales Infection",
+          "Mucormycosis"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Men and women\n* Age : Children and adults from 3 to 64 years old (18 to 64 for controls)\n* In patients whose consent has been collected after information. In the case of children, information on the study will be given to the holders of parental authority and then to the child to obtain their consent.\n* Patient social insured\n* Specific medical conditions :\n\n  1. For the case group :\n\n     Any patient hospitalized in one of the departments of the University Hospital of Lille, in which the diagnosis of mucormycosis was conducted on the following criteria:\n     * Conventional mycology data and / or\n     * Positivity of q-PRC and / or\n     * Anatomopathologic diagnosis Associated with a compatible clinical situation\n  2. For the control group 1 Patient assessed for hematopoietic stem cell transplantation, considered at risk for IFI but for whom the pre-transplantation review will have excluded an ongoing infection\n  3. For control group 2 Any patient hospitalized in a department of Lille University Hospital, in which the diagnosis of disseminated candidiasis or invasive pulmonary aspergillosis has been made according to specific classifications (EORTC/MSG criteria, AspICU criteria)\n\nExclusion Criteria:\n\n* Patients for whom the inclusion criteria are not met\n* Co-infection mucormycosis/other IFI"
+      },
+      {
+        "nct_id": "NCT07654647",
+        "title": "Clinical Evaluation of Patient-Specific 3D-Printed Titanium Implants for Facial Reconstruction.",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Hemifacial Microsomia",
+          "Mucormycosis",
+          "Oral Squamous Cell Carcinoma",
+          "Microgenia",
+          "Facial Asymmetry",
+          "Fibrous Dysplasia"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Age 18 years or older.\n* Presence of facial bone defects resulting from cystic or tumoral osteolytic lesions.\n* Acquired or congenital facial deformities associated with bony defects or facial asymmetry.\n* Patients requiring patient-specific 3D-printed titanium implants for maxillofacial reconstruction.\n* Aesthetic indications requiring custom facial implant design, including microgenia (chin retrusion).\n* Ability to provide written informed consent.\n\nExclusion Criteria:\n\n* Active pathological lesions at the time of enrollment.\n* Age below 18 years.\n* History of radiotherapy within 12 months prior to enrollment.\n* Chronic untreated vitamin D deficiency.\n* Uncontrolled diabetes mellitus.\n* Inability or unwillingness to comply with follow-up requirements."
+      },
+      {
+        "nct_id": "NCT07339800",
+        "title": "Chest CT Scan in Pulmonary Mucormycosis: Prognostic Value",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Pulmonary Mucormycosis"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Patients aged 18 years or older\n* Treated at Strasbourg University Hospital between January 1, 2009, and June 3, 2025\n* With a diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria\n* Having undergone at least one CT scan including the thoracic region\n\nExclusion Criteria:\n\n* No CT scan including the thoracic region\n* No diagnosis of probable or proven invasive pulmonary infection with Mucorales (EORTC/MSGERC 2020 criteria)"
+      },
+      {
+        "nct_id": "NCT07185503",
+        "title": "Liposomal Amphotericin B Plus Posaconazole/Isavuconazole for Mucormycosis in Hematologic Malignancies: Efficacy and Safety",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Mucormycosis in Hematologic Malignancies"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Confirmed diagnosis of a hematologic malignancy (e.g., leukemia, lymphoma, myelodysplastic syndrome).\n* Proven, probable, or possible invasive mucormycosis according to the 2019 European Organization for Research and Treatment of Cancer/Mycoses Study Group (EORTC/MSG) criteria.\n* Age ≥18 years and ≤65 years at enrollment.\n* Eastern Cooperative Oncology Group Performance Status (ECOG-PS) score of 0-2.\n* No clinically significant organ dysfunction (e.g., renal, hepatic, cardiac) at screening that would preclude protocol-defined therapies.\n* Ability to understand the study procedures and provide voluntary written informed consent.\n\nExclusion Criteria:\n\n* Prior treatment with non-liposomal amphotericin B formulations (e.g., amphotericin B deoxycholate) for ≥4 days.\n* Documented hypersensitivity, severe immediate allergic reaction, or intolerance to liposomal amphotericin B.\n* History of a second malignancy (other than the index hematologic malignancy) treated within the past 3 years.\n* Active HIV infection, hepatitis B virus (HBV) infection (HBsAg-positive), hepatitis C virus (HCV) infection (RNA-positive), or syphilis.\n* Psychiatric disorders, cognitive impairment, or other conditions impairing compliance with study procedures or assessments.\n* Pregnant females, breastfeeding females, or individuals of reproductive potential unwilling to use effective contraception during treatment and for ≥3 months post-therapy.\n* Serum creatinine ≥2.0 × upper limit of normal (ULN).\n* Liver transaminases (ALT/AST) or alkaline phosphatase ≥5.0 × ULN.\n* Total bilirubin ≥3.0 × ULN (isolated bilirubin ≥3.0 × ULN is permitted if due to Gilbert's syndrome or hemolysis).\n* Patients deemed ineligible by the investigator due to medical, ethical, or logistical reasons."
+      }
+    ]
+  },
+  "S007": {
+    "query_used": "infant vomiting + pediatric gastrointestinal obstruction",
+    "primary_query": "hypertrophic pyloric stenosis",
+    "fallback_used": true,
+    "note": "VERIFIED FALLBACK: 'hypertrophic pyloric stenosis' / 'infant pyloric stenosis' / 'infantile hypertrophic pyloric stenosis' all return zero or clinically irrelevant recruiting trials (ClinicalTrials.gov's fuzzy condition matching pulls unrelated pediatric oncology studies) -- checked by hand 2026-07-08. This makes clinical sense: pyloric stenosis is cured by a single pyloromyotomy, not an active drug/behavioral trial target. Nearest available real recruiting trial ('Prevalence and Natural History of Functional Gastrointestinal Disorders Among At-risk Infants', NCT06031025) plus other infant-GI trials substituted and flagged honestly here and in trials_raw.json as `fallback_used: true`.",
+    "trials": [
+      {
+        "nct_id": "NCT06031025",
+        "title": "Prevalence and Natural History of Functional Gastrointestinal Disorders Among At-risk Infants.",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Functional Gastrointestinal Disorders",
+          "Gastroesophageal Reflux",
+          "Constipation - Functional",
+          "Diarrhea",
+          "Dyschezia",
+          "Colic, Infantile",
+          "Vomiting; Cyclical"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* infants with gestational age at birth \\< 31 weeks\n* infants with gestational age at birth \\< 37 weeks and major respiratory or neurologic morbidity\n* infants with history of perinatal asphyxia\n\nExclusion Criteria:\n\n* lack of informed consent\n* diagnosis of congenital or other major gastrointestinal disease (i.e. inflammatory bowel disease, cancer)"
+      },
+      {
+        "nct_id": "NCT06687564",
+        "title": "Role of ACTG2 Variants in Smooth Muscle Determination and Function in Pediatric Intestinal Pseudo-obstruction.",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "PIPO"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\nPIPO Population:\n\n1. Minor or adult patient ≥ 4 years of age\n2. Patient with PIPO before age 18\n3. Male or female\n4. Patient with PIPO meeting at least 2 of the ESPGHAN criteria (Thapar et al 2018) and carrying the R178, R257, R40 or A136 mutation of the ACTG2 gene.\n5. Patient whose assent has been obtained and whose legal guardians have given their written informed consent\n6. Patient affiliated to the French Social Security system or benefiting from an equivalent plan\n\nWT population:\n\n\\- iPS cell lines MS573 or WT8288 or 202CT or SD378M, from the Nantes University Hospital biological collection and generated from samples from control patients without POIC who have consented to donate their samples.\n\nExclusion Criteria:\n\nPIPO population :\n\n1. Patients with a history of radiotherapy treatment\n2. Patient with lymphocyte lineage damage"
+      },
+      {
+        "nct_id": "NCT04515251",
+        "title": "Ultrasound Evaluation of Superior Mesenteric Artery Measurements in a Healthy Pediatric Population",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Superior Mesenteric Artery Syndrome"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Male and female children\n* Age ranging from10 to 15 years, included\n* Abdominal ultrasound examination to be performed for indications other than gastrointestinal evaluation\n* Signed Informed Consent\n\nExclusion Criteria:\n\n* Presence of a disease that could distort the anatomy around the SMA (e.g., abdominal mass, lymphadenopathy, severe scoliosis, free abdominal fluid)\n* Oncologic patients at risk of neoplastic cachexia."
+      },
+      {
+        "nct_id": "NCT05535361",
+        "title": "A Feasibility Study to Evaluate Safety and Probable Benefit of the Eclipse XL1 System for Distraction Enterogenesis in Adult and Pediatric Patients With Short Bowel Syndrome",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Short Bowel Syndrome"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Subject has short bowel syndrome, defined as 50% or less of expected bowel length based on subject age and/or height, and measured at the time of the subject's prior intestinal resection.\n* Minimum residual bowel length of 3 cm.\n* Male or female patients aged 3 mo to 65 years inclusive\n* The subject, parent or legal guardian of the subject is able to read, understand, and is willing to provide informed consent.\n* The subject or parent or legal guardian of the patient is able to understand the requirements of the study and is willing to bring the subject to all clinic visits and complete all study related procedures (as determined by the investigator).\n\nExclusion Criteria:\n\n* Ultra-short bowel syndrome defined as less than 3 cm of bowel length.\n* Diagnosed Inflammatory bowel disease-unclassified (not Crohn's or ulcerative colitis)\n* Evidence of active or prior Crohn's disease.\n* Primary intestinal failure (i.e., without loss or resection of intestinal tissue).\n* Coagulopathy, as defined by INR \\> 1.4 or platelets \\< 100.\n* Known immunocompromised status including, but not limited to, individuals who have undergone organ transplantation, chemotherapy or radiotherapy within the past 12 months, who have clinically significant leukopenia, who are positive for the human immunodeficiency virus (HIV) or whose immune status makes the subject a poor candidate for clinical trial participation in the opinion of the Investigator.\n* Subject is determined by the investigator to be unsuitable for participation in this trial for any reason."
+      },
+      {
+        "nct_id": "NCT05879835",
+        "title": "KiteLock 4% EDTA Lock Solution for the Prevention of Occlusions in Children With Intestinal Failure",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Pediatric Intestinal Failure"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Patients managed by the intestinal rehabilitation program at one of the participating centers.\n2. Diagnosis of intestinal failure defined as need for PN support for \\>60 days in previous 74 days for primary intestinal disease (short bowel syndrome, primary motility disorder, mucosal enteropathy).\n3. Expectation of the treating physician that the patient will require PN for at least 6 months following enrollment.\n4. Age less than 18 years at diagnosis but greater than 4 weeks chronological age or 40 weeks estimated gestational age, whichever is greater.\n5. Stable TPN cycling (4 hours off TPN minimum per day) enabling home TPN management\n6. Presence of a tunneled central venous catheter (CVC), port-a-catheter, or peripherally inserted central catheter (PICC).\n7. Clinical stability for at least 4 weeks and no acute medical comorbidities.\n8. A minimum dwell time of 4 consecutive hours daily.\n9. Care provider willing to provide informed consent to participate in the trial and willing to comply with randomization and study protocol.\n\nExclusion Criteria:\n\n1. A temporary CVC (jugular or femoral) or peripheral catheter.\n2. Patients receiving long-term PN, but not due to a primary intestinal disorder (i.e., oncology patients or premature neonates on PN due to intestinal immaturity).\n3. Known hypersensitivity, allergy, or reaction to EDTA.\n4. Pregnancy or nursing mother.\n5. Participation in another investigational device or drug trial within 30 days prior to enrollment (unless approved by the principal investigators of the trial).\n6. Severe coagulopathy (platelets \\<50,000, or INR \\> 1.5).\n7. Diagnosis of immunodeficiency disorder.\n8. Unstable medical condition requiring hospital admission\n9. Received antibiotic therapy for CLABSI within last 14 days."
+      }
+    ]
+  },
+  "S008": {
+    "query_used": "idiopathic pulmonary fibrosis",
+    "primary_query": "idiopathic pulmonary fibrosis",
+    "fallback_used": false,
+    "note": "",
+    "trials": [
+      {
+        "nct_id": "NCT05674994",
+        "title": "Glucocorticoids Versus Placebo for the Treatment of Acute Exacerbation of Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE3",
+        "status": "RECRUITING",
+        "conditions": [
+          "Acute Exacerbation of Idiopathic Pulmonary Fibrosis"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Patient is ≥ 18 years of age\n2. IPF or IPF (likely) diagnosis defined on 2018 international recommendations\n3. Definite or suspected Acute Exacerbation defined by the international working group criteria after exclusion of alternative diagnoses of acute worsening\n\n   \\*The criteria of IPF-AE are as follows:\n   * Previous or concurrent diagnosis of IPF (a)\n   * Acute worsening or development of dyspnea typically \\< 1-month duration\n   * Computed tomography with new bilateral ground-glass opacity and/or consolidation superimposed on a background pattern consistent with usual interstitial pneumonia pattern (b)\n   * Deterioration not fully explained by cardiac failure or fluid overload Patients who fail to meet all 4 criteria due to missing computed tomography should be considered as having \"suspected Acute Exacerbation\".\n\n     1. If the diagnosis of IPF is not previously established, this criterion can be met by the presence of radiologic and/or histopathologic changes consistent with usual interstitial pneumonia pattern on the current evaluation.\n     2. If no previous computed tomography is available, the qualifier \"new\" can be dropped from the third criterion.\n4. For women of childbearing age: efficient contraception for the duration of the study\\*\n\n   \\*Effective contraception is defined as any contraceptive method that is used consistently and appropriately and has a low failure rate (i.e., less than 1% per year)\n5. Affiliation to the social security\n6. Patient able to understand and sign a written informed consent form or in case of incapacity of the patient to a relative whom understand and sign a written informed consent form\n\nExclusion Criteria:\n\n1. Identified etiology for acute worsening (i.e.: infectious disease)\n2. Known hypersensitivity to glucocorticoids or to any component of the study treatment\n3. Patient requiring mechanical ventilation or already on mechanical ventilation\n4. Active bacterial, viral, fungal or parasitic infection. On swab collected, only positive for SARS-CoV-2, Influenzae A, Influenzae B and Respiratory Syncytial Virus (RSV) result, are considered active viral infection. The others viruses (i.e. Rhinovirus, Adenovirus…) are not considered to be responsible of pneumonia.\n5. Active cancer\n6. Patient on a lung transplantation waiting list\n7. Treatment with glucocorticoids \\> 1 mg/kg/d from more than 7 days in the last 15 days\n8. Patient participating to another interventional clinical trial\n9. Documented pregnancy or lactation\n10. Patient under tutorship or curatorship\n11. Patient deprived of liberty\n12. Patient under court protection"
+      },
+      {
+        "nct_id": "NCT07299695",
+        "title": "Intravenous Immunoglobulin for the Treatment of Acute Exacerbations of Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE3",
+        "status": "RECRUITING",
+        "conditions": [
+          "Idiopathic Pulmonary Fibrosis",
+          "Acute Exacerbation of Idiopathic Pulmonary Fibrosis"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Patients ≥ 18 years of age\n2. Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria.\n3. Patients hospitalised with a definite or suspected AE-IPF diagnosis, as defined by the international working group criteria and as ascertained by the responsible Primary Investigator.\n\n   The criteria of IPF-AE are as follows:\n   * Previous or concurrent diagnosis of IPF\n   * Acute worsening or development of dyspnoea typically \\< 1 month duration\n   * Computed tomography with new bilateral ground-glass opacity and/or consolidation superimposed on a background pattern consistent with usual interstitial pneumonia pattern\n   * Deterioration not fully explained by cardiac failure or fluid overload Patients who fail to meet all 4 criteria due to missing computed tomography should be considered as having \"suspected Acute Exacerbation\".\n\n   A) If the diagnosis of IPF is not previously established, this criterion can be met by the presence of radiologic and/or histopathologic changes consistent with usual interstitial pneumonia pattern on the current evaluation.\n\n   B) If no previous computed tomography is available, the qualifier \"new\" can be dropped from the third AE-IPF criterion.\n4. Patient able to understand and sign a written informed consent form. In case of incapacity of the patient, the written informed consent form will be signed by the patients' legally authorized representative.\n\nExclusion Criteria:\n\n1. Patients with acute worsening due to uncontrolled heart failure or pulmonary embolism.\n2. Patients with known hypersensitivity to corticosteroids, IVIG or any component of the study treatment.\n3. Patients with known IgA deficiency (IgA level \\<7 mg/dL)- to preclude IVIG reactions.\n4. Patients without a definite diagnosis of IPF or AE-IPF based on clinical, radiological, laboratory evaluation, and multidisciplinary discussion.\n5. Patients with active malignancy or currently receiving cancer treatment, except for basal cell or squamous cell skin cancer or low-risk prostate cancer (T1 or T2a stage with PSA \\<10 ng/dL). These criteria are aligned with current guidelines.\n6. Patients that have received treatment for \\>14 days within the preceding month with \\>20mg daily prednisone (or equivalent) or any treatment during the last month with immunosuppressants (e.g., cyclophosphamide, mycophenolate etc.) according to already published therapeutic protocols or \\> 1 mg/kg/d from more than 7 days in the last 15 days.\n7. Patients participating to another interventional clinical trial.\n8. Patients with documented pregnancy or lactation.\n9. Patients under tutorship or curatorship.\n10. Patients deprived of liberty or under court protection.\n11. Patients who refuse to participate or decline to provide written informed consent."
+      },
+      {
+        "nct_id": "NCT03297775",
+        "title": "Rheumatoid Arthritis Patients at Risk for Interstitial Lung Disease",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Rheumatoid Arthritis",
+          "Interstitial Lung Disease"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. ≥ 45years old\n2. Diagnosis of RA using the 2010 American College of Rheumatology (ACR) criteria\n\nExclusion Criteria:\n\n1. Inability to give informed consent\n2. Pregnant women\n3. History of interstitial lung disease\n4. Evidence of other causes of diffuse parenchymal lung disease such as infection, drug toxicity, other autoimmune processes, etc.\n5. Subjects over the age of 90 years old or less than 45 years old"
+      },
+      {
+        "nct_id": "NCT07447102",
+        "title": "Phase II Clinical Study of BC006 in Patients With Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE2",
+        "status": "RECRUITING",
+        "conditions": [
+          "Idiopathic Pulmonary Fibrosis (IPF)"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Must provide written informed consent form (ICF) indicating understanding of the study and voluntary participation.\n* Aged ≥40 years at the time of signing the ICF, with no gender restriction.\n* Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 American Thoracic Society/European Respiratory Society/Japanese Respiratory Society/Latin American Thoracic Society (ATS/ERS/JRS/ALAT) clinical practice guideline.\n* HRCT pattern consistent with usual interstitial pneumonia (UIP) or probable UIP for IPF confirmed by independent central imaging review (acceptable-quality HRCT obtained within 12 months prior to screening or during the screening period). If HRCT shows indeterminate UIP, the diagnosis of IPF must be confirmed by histopathology from a prior lung biopsy (surgical/video-assisted thoracoscopic lung biopsy or bronchoscopic cryobiopsy) recognized by the investigator, if available.\n* Forced vital capacity percent predicted (FVC% predicted) ≥45% during the screening period.\n* Diffusing capacity of the lung for carbon monoxide percent predicted (DLCO% predicted), corrected for hemoglobin (Hb), ≥30% and ≤90% during the screening period.\n* Meets either of the following:\n\n  * The patient has been on a stable dose of nintedanib or pirfenidone for at least 8 weeks prior to screening and during screening (nintedanib ≥100 mg BID, pirfenidone ≥400 mg TID, no dose changes), tolerates the treatment, and plans to continue this background therapy during the study.\n  * The patient has not received nintedanib or pirfenidone for at least 4 weeks prior to screening and during screening (previous treatment discontinued or treatment-naïve), and does not plan to initiate or re-initiate nintedanib or pirfenidone during the study. No patient should discontinue approved therapy to participate in this study. Treatment-naïve patients must decline after full discussion with the investigator regarding the risks/benefits of such therapy.\n* Patients of reproductive potential (male and female) must agree to use highly effective contraceptive methods (hormonal, barrier, or abstinence) from signing the ICF until at least 6 months after the last dose of study drug.\n\nExclusion Criteria:\n\n* Interstitial lung disease of known etiology (e.g., domestic and occupational environmental exposures, connective tissue disease, drug toxicity, etc.).\n* Other pulmonary diseases considered clinically significant by the investigator (e.g., asthma, chronic obstructive pulmonary disease, cavitary or pleural disease, etc.).\n* Emphysema ≥ 50%, or emphysema greater than fibrosis, as determined by independent central imaging review of HRCT.\n* Acute exacerbation of IPF within 3 months prior to screening or during the screening period, as judged by the investigator.\n* Sustained improvement in IPF severity within 12 months prior to screening or during the screening period, as judged by the investigator based on changes in FVC, DLCO, and/or chest HRCT scan.\n* Pre-bronchodilator forced expiratory volume in 1 second (FEV1)/FVC \\< 0.70 during the screening period.\n* Known increase in FEV1 and/or FVC ≥ 12% and ≥ 200 mL post-bronchodilator.\n* History of smoking within 3 months prior to screening or during the screening period, or inability to refrain from smoking (including cigarettes, cigars, pipes, and e-cigarettes) for the duration of the study.\n* Completed a cardiopulmonary rehabilitation program focusing on exercise training within 8 weeks prior to screening, or planning to initiate such a program during the study.\n* Presence of pulmonary hypertension or cor pulmonale that, in the investigator's opinion, would significantly limit compliance with study requirements or may affect assessment of study safety or efficacy.\n* History of lung volume reduction surgery or lung transplantation, or planning to undergo lung volume reduction surgery or lung transplantation during the study (patients on a lung transplant waiting list are permitted).\n* Major surgery within 4 weeks prior to screening or during the screening period, or planning major surgery during the study (assessed as major surgery by the investigator).\n* History of severe cardiovascular or cerebrovascular disease, including but not limited to: ventricular arrhythmia requiring clinical intervention; uncontrolled atrial arrhythmia; congestive heart failure meeting New York Heart Association (NYHA) functional Class ≥ III; previous evidence of left ventricular ejection fraction (LVEF) \\< 35%; uncontrolled hypertension (systolic blood pressure ≥ 160 mmHg or diastolic blood pressure ≥ 100 mmHg) or poor compliance with antihypertensive medications; acute coronary syndrome, stroke, or transient ischemic attack within 6 months prior to screening.\n* Current or suspected malignancy, or history of malignancy within 5 years prior to screening (excluding basal cell carcinoma of the skin, squamous cell carcinoma of the skin, superficial bladder cancer, carcinoma in situ of the cervix, or other carcinoma in situ that has received curative treatment with no recurrence).\n* Active autoimmune disease, or history of autoimmune disease that may relapse (e.g., systemic lupus erythematosus, rheumatoid arthritis, ulcerative colitis, Crohn's disease, autoimmune thyroid disease, multiple sclerosis, vasculitis, glomerulonephritis, etc., including but not limited to these diseases or syndromes).\n* Acute respiratory or systemic bacterial, viral, or fungal infection requiring antimicrobial therapy within 4 weeks prior to screening or during the screening period.\n* Active hepatitis B or hepatitis C. Active hepatitis B is defined as positive hepatitis B surface antigen (HBsAg) and HBV DNA \\> upper limit of normal (ULN). Active hepatitis C is defined as positive hepatitis C antibody (HCV-Ab) and HCV RNA \\> ULN.\n* History of immunodeficiency, including positive human immunodeficiency virus (HIV) antibody test.\n* Positive interferon-γ release assay for tuberculosis during the screening period (testing is not required for patients who completed treatment for active or latent tuberculosis within 6 months prior to screening with no evidence of recurrent disease).\n* Presence of any of the following laboratory abnormalities during the screening period: AST or ALT \\> 1.5 × ULN; Total bilirubin \\> 1.5 × ULN; Creatinine (Cr) \\> 1.5 × ULN\n* Prior treatment with a highly selective small-molecule CSF-1R inhibitor (excluding nintedanib), or anti-CSF-1/CSF-1R antibody.\n* Known allergy or contraindication to the investigational product components or excipients, or history of hypersensitivity or severe infusion reaction to antibody-based products.\n* Received an investigational drug within 4 weeks prior to screening or within 5 half-lives (whichever is longer) or during the screening period.\n* Received other newly approved anti-fibrotic therapies other than nintedanib and pirfenidone within 4 weeks prior to screening or during the screening period, or planning to receive such therapies during the study.\n* Received combination therapy with nintedanib and pirfenidone within 8 weeks prior to screening or during the screening period.\n* Received cytotoxic, immunosuppressive, cytokine-modulating agents, or receptor antagonists (including but not limited to methotrexate, azathioprine, mycophenolate mofetil, cyclophosphamide, cyclosporine, everolimus) within 4 weeks prior to screening or during the screening period.\n* Received systemic corticosteroid therapy with prednisone \\> 15 mg/day or equivalent within 4 weeks prior to screening or during the screening period.\n\nPatients taking nintedanib: using or planning to use strong P-glycoprotein (P-gp) inhibitors (e.g., ketoconazole, erythromycin) or inducers (e.g., rifampicin, carbamazepine, phenytoin, St. John's Wort) during screening or the study.\n\nPatients taking pirfenidone: using or planning to use strong CYP1A2 inhibitors (e.g., fluvoxamine, enoxacin) or inducers (e.g., rifampicin) during screening or the study.\n\n* Unable to avoid use of the following medications: Short-acting bronchodilators within 4 hours prior to spirometry and DLCO measurements; Once-daily long-acting bronchodilators within 24 hours prior to spirometry and DLCO measurements; Twice-daily long-acting bronchodilators within 12 hours prior to spirometry and DLCO measurements.\n* Known or suspected history of alcohol or drug abuse within 2 years prior to screening or during the screening period.\n* Pregnant (female patients of childbearing potential confirmed by serum pregnancy test within 7 days prior to first dose of study drug) or lactating female.\n* Any disease, treatment, or abnormal laboratory finding that, in the investigator's opinion, may affect the patient's participation in the entire study, increase patient risk, or confound study results; or participation in the study is not in the patient's best interest, in the investigator's judgment."
+      },
+      {
+        "nct_id": "NCT06589219",
+        "title": "Study to Assess CMR316 in Healthy Volunteers and Patients With Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE1",
+        "status": "RECRUITING",
+        "conditions": [
+          "Pulmonary Fibroses, Idiopathic"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria: Part 1 \\& 2\n\n* Healthy men or non-pregnant, non-lactating healthy women of non-childbearing potential, 18-60 years of age.\n* Must agree to use a highly effective method of contraception.\n* Body Mass Index (BMI) 18-33 kg/m2 as measured at screening.\n* Weight ≤100 kg at screening.\n* Normal lung function, defined as: FVC and FEV1 \\> 80% predicted (based on age, height, race, sex, SaO2 \\> 95% on room air.\n* Heart rate between 50 and 90 beats per minute (BPM).\n* Good state of health (mentally and physically) as indicated by a comprehensive clinical assessment (detailed medical history and a complete physical examination) and screening safety procedures.\n\nInclusion Criteria: Part 3\n\n* Diagnosis of IPF by American Thoracic Society/ERS (European Respiratory Society)/JRS (Japanese Respiratory Society)/ALAT (Latin America Thoracic Society) 2011 criteria within five years prior to consent.\n* Men or non-pregnant, non-lactating women of non-childbearing potential.\n* Age ≥ 40 years.\n* Mild to moderate IPF as defined by predicted FVC ≥ 55% of normal and predicted DLCO \\> 40% of normal at Screening.\n* Subjects receiving oral pirfenidone or nintedanib for treatment of IPF may participate if they have been on treatment with a stable, well-tolerated dose (as determined by the investigator), for at least 8 weeks prior to consent with no changes to therapy dose and schedule anticipated during the course of study participation.\n* Must be able to understand a written informed consent, which must be obtained prior to any study procedures.\n* Must be willing and able to comply with all study requirements\n\nExclusion Criteria: Part 1 \\& 2\n\n* Serious adverse reaction or serious hypersensitivity to any drug or the formulation excipients.\n* Presence or history of clinically significant hypersensitivity (e.g., anaphylaxis, angioedema, Stevens-Johnson syndrome) or allergy as judged by the investigator. Subjects with a history of seasonal rhinitis (hay fever) or childhood asthma may participate if these conditions are not active or expected to be active during the subject's participation.\n* History of clinically significant cardiovascular, skin, renal, hepatic, respiratory or gastrointestinal disease (except cholecystectomy), neurological or psychiatric disorder, illness/infection/hospitalization, or surgical procedure within 30 days prior to first dose of study drug. Subjects with a history of pancreatitis, heart failure, acute renal failure, bullous pemphigoid, or severe and disabling arthritis, conditions associated with postmarketing safety reports of oral gliptins, are excluded.\n* Have poor venous access that limits phlebotomy.\n* Alanine aminotransferase (ALT), aspartate aminotransferase (AST), and bilirubin above upper limit of normal (elevated bilirubin in subject's with Gilbert Syndrome is allowed) or other clinically significant abnormal clinical chemistry, hematology, or urinalysis as judged by the investigator.\n* Positive hepatitis B surface antigen (HBsAg), hepatitis C virus antibody (HCV Ab), or human immunodeficiency virus (HIV) antibody results.\n* Evidence of renal impairment at screening, as indicated by an estimated creatinine clearance (CLcr) of \\<90 mL/min using the 2021 Chronic Kidney Disease Epidemiology Collaboration (CKD-EPI) equation (Appendix 1: CKD-EPI Equation).\n* Subjects with a corrected QT interval by Fredericia (QTcF) of \\>450 msec at screening or first admission.\n* Positive highly sensitive serum pregnancy test at screening or highly sensitive urine pregnancy test at first admission. Those who are pregnant or lactating will be excluded.\n* Subjects who have received any investigational medicinal product (IMP) in a clinical research study within 5 half-lives or within 30 days prior to first dose (whichever is longer).\n* Subjects who have previously been administered IMP in this study. Subjects who have taken part in Part 1 are not permitted to take part in Part 2.\n* Subjects who have taken, any over-the-counter drug or herbal remedies in the 15 days prior to first IMP administration. Subjects taking prescribed medication in the 90 days prior to first IMP administration. Subjects taking up to 4 g per day of acetaminophen may participate if discontinued at least 15 days prior to first IMP administration. Subjects taking DPP4 inhibitors are prohibited. Subjects taking strong CYP3A inhibitors are prohibited.\n* History of any substance use disorder or alcohol use disorder in the past 2 years, as based on the diagnostic criteria in the Diagnostic and Statistical Manual Fifth Edition (DSM-5).\n* Regular alcohol consumption in men \\>21 units per week and women \\>14 units per week (1 unit = 12 oz 1 bottle/can of beer, 1 oz 40% spirit, or 5 oz glass of wine).\n* A confirmed positive alcohol breath test at screening or first admission.\n* Current smokers and those who have a smoking history of ≥ 10 pack-years. A confirmed positive urine cotinine test at screening or first admission.\n* Current users of e-cigarettes and nicotine replacement products and those who have used these products within the last 12 months.\n* Positive test result for common drugs of abuse on screening and first admission.\n* Men with pregnant or lactating partners.\n* Donation of a unit of blood (about 500 mL) within 2 months or donation of plasma within 7 days prior to first dose of study medication.\n* Subjects who are, or are immediate family members of, a study site or Sponsor employee.\n* Active respiratory infection requiring treatment with antibiotics within 4 weeks prior to signing of ICF.\n* Lack of suitability for participation in the trial, for any reason, as judged by the Investigator.\n\nExclusion Criteria: Part 3\n\n* Clinically significant deterioration between screening and Day 1.\n* Use of any investigational drugs within 30 days or 5 half-lives prior to consent, whichever is longer.\n* Serious adverse reaction or serious hypersensitivity to any DPP4 inhibitor (e.g., saxagliptin, sitagliptin) or the formulation excipients.\n* Use of supplemental oxygen for resting hypoxemia.\n* Evidence of significant renal impairment at screening, defined in this protocol as an estimated creatinine clearance (CLcr) of \\<50 mL/min using the CKD-EPI equation. Patients with renal insufficiency Clcr ≥ 50 mL/min with stable renal function (per clinical discretion, recommend based on average documented clinical chemistry values for at least 6 months) may participate.\n* History of clinically significant and uncontrolled medical illness or clinically significant abnormal clinical chemistry, hematology, or urinalysis that represents a meaningful risk to the subject during this trial, as judged by the Investigator (e.g., heart failure).\n* Subjects with a corrected QT interval by Fredericia (QTcF) of \\>450 msec at screening.\n* Life expectancy \\< one year.\n* Subject listed for lung transplant.\n* Hospitalization or serious illness (as determined by the investigator) within the 3 months prior to consent.\n* Alternative diagnoses that could lead to pulmonary fibrosis such as exposure to drugs, radiation, asbestos.\n* Connective tissue disease that can lead to pulmonary fibrosis such as scleroderma or rheumatoid arthritis.\n* Presence of clinically active, medically diagnosed asthma, chronic obstructive pulmonary disease, or active infection.\n* Lack of suitability for participation in the trial, for any reason, as judged by the Investigator.\n* History of severe hepatic impairment or AST or ALT greater than 3 times the upper limit of normal at screening.\n* The use of required concomitant medications that represents a significant risk to produce an adverse drug interaction with CMR316, assessed by the investigator (in consultation with sponsor and sponsor's medical monitor). Specifically, subjects with Type 1 and Type 2 diabetes are excluded.\n* Smoking within a year prior to consent."
+      }
+    ]
+  },
+  "S009": {
+    "query_used": "infectious mononucleosis",
+    "primary_query": "infectious mononucleosis",
+    "fallback_used": false,
+    "note": "Dedicated acute-infectious-mononucleosis treatment trials are rare on ClinicalTrials.gov; the 5 recruiting trials returned study EBV infection more broadly (one -- 'Occurrence of Antibodies Cross-reacting With Autoantigens in Primary EBV Infection' -- explicitly enrolls during primary/acute EBV infection). Used directly, flagged as a broader-EBV substitution rather than mono-specific.",
+    "trials": [
+      {
+        "nct_id": "NCT05778006",
+        "title": "Multi-Center Registry for ME/CFS",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "ME/CFS",
+          "CFS/ME",
+          "ME/CFS Following EBV-associated Infectious Mononucleosis",
+          "ME/CFS Following COVID-19"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* ME/CFS diagnosis (ICD-10 G93.3) based on internationally established criteria\n* Informed consent by patients and/or guardian(s)\n\nExclusion Criteria:\n\n* No ME/CFS (ICD-10 G93.3)\n* No informed consent"
+      },
+      {
+        "nct_id": "NCT06005246",
+        "title": "Munich ME/CFS Cohort Study",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Myalgic Encephalomyelitis/Chronic Fatigue Syndrome (ME/CFS) (ICD-10 G93.3)"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Written consent of the patient (or legal guardian for patients aged \\< 18 years).\n* Age 0 - 25 (including)\n* Documented or probable acute infectious disease at the onset of ME/CFS symptoms\n* Diagnosis of ME/CFS according to the IOM criteria, the CCC, the diagnostic worksheet published by P.C. Rowe et al. (2017), or the pediatric case definition published by L.A. Jason et al. (2006).\n\nExclusion Criteria:\n\n• drug/medication abuse, major surgery within the last six months, presence of organ failure, post-stroke/craniocerebral trauma with cognitive deficits, post-intensive care syndrome, syphilis, Lyme disease, AIDS, hepatitis B/C, multiple sclerosis, systemic lupus erythematosus, Sjörgren's syndrome, malignancy, major depression or other severe psychiatric illness, primary sleep disorder, severe endocrine disease (e.g., hypopituitarism, adrenal insufficiency), and other conditions that might explain ME/CFS symptoms."
+      },
+      {
+        "nct_id": "NCT00032513",
+        "title": "Genetic Studies of Chronic Active Epstein-Barr Disease",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Chronic Active Epstein-Barr Virus"
+        ],
+        "eligibility_criteria_raw": "* ELIGIBILITY CRITERIA\n\nCAEBV PATIENTS\n\nStudy size: up to 150 patients\n\nSex distribution: male and female\n\nAge range: 1 year old and above\n\nPatients with known or suspected CAEBV and their relatives will be recruited by referrals from health care providers. The rarity of this disease will markedly limit the number of patients available to study; therefore, we will enroll patients who are 1 year of age and older. However, children under the age of 3 years old will be enrolled as samples- only participants and not be evaluated at the Clinical Center.\n\nPatient recruitment is irrespective of racial and ethnic group or sex. NIAID investigators will be available to answer questions and discuss general aspects of CAEBV and identified genes or modifier genes with participants or their providers.\n\nEligibility criteria: To be considered having CAEBV, a patient must have:\n\n1. a severe progressive illness that began as a primary EBV infection, or associated with positive EBV-specific antibody titers (IgG-VCA, ; EA or EBNA) not otherwise explained AND\n2. evidence of major organ involvement such as lymphadenitis, hemophagocytosis, meningoencephalitis, persistent hepatitis, splenomegaly, interstitial pneumonitis, bone marrow hypoplasia, uveitis AND\n3. detection of elevated levels of EBV DNA, RNA or proteins in affected tissues OR elevated levels of EBV DNA in the peripheral blood\n\nExclusion Criteria:\n\n(a) Any other condition that, in the opinion of the investigator, would make the patient unsuitable for enrollment or could interfere with the patient participating in the study.\n\nRELATIVES OF CAEBV PATIENTS:\n\nStudy size: up to 150 relatives of CAEBV patients\n\nAge range: 3 years and above\n\nTo determine the genetic basis for this syndrome, the evaluation of blood, saliva and/or previously obtained tissue specimens from healthy relatives of CAEBV patients will serve as controls. No tissue biopsies will be performed on healthy relatives. We will\n\nperform some of the studies listed on samples from normal relatives.\n\nUNRELATED VOLUNTEERS\n\nStudy size: up to 300 persons\n\nAge range: 18 years and above\n\nPanels of anonymous blood samples will be obtained through NIH Clinical Center Blood Transfusion Medicine to determine if identified genetic changes are mutations or polymorphisms."
+      },
+      {
+        "nct_id": "NCT05127980",
+        "title": "Occurrence of Antibodies Cross-reacting With Autoantigens in Primary EBV Infection",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Epstein-Barr Virus (EBV) Infection"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\nParticipants fulfilling all of the following inclusion criteria are eligible for the infectious mononucleosis (IM) group:\n\n* Informed consent as documented by signature\n* Confirmed primary EBV infection as confirmed by the treating clinician and defined by:\n* Compatible clinical (infectious mononucleosis symptoms including but not limited to malaise, headache, fever, tonsillitis, pharyngitis, cervical lymph nodes enlargement) and laboratory picture (lymphocyte count elevation, LUC cells, reactive lymphocytes in manual differential, elevated liver enzymes; of note, not all typically described features have to be fulfilled)\n\nAND\n\n* serology compatible with primary EBV infection (anti-EBNA IgG negative, anti-VCA IgG negative, anti-VCA IgM positive OR anti-EBNA IgG negative, anti-VCA IgG positive, anti- VCA IgM positive).\n\nParticipants fulfilling all of the following inclusion criteria will be eligible for the control group:\n\n* Informed consent as documented by signature.\n* one of the following:\n\n  1. Clinical picture of upper respiratory tract infection (including but not limited to tonsillitis/pharyngitis, malaise, headache, cough, rhinitis, cervical node enlargement)\n  2. confirmed primary Cytomegalovirus (CMV) infection (an optimal control group; however, the number of patients with a diagnosis of primary CMV infection is limited).\n\nExclusion Criteria:\n\n* Suspicion/diagnosis of IM as per judgement of the treating clinician (control group only); this individual may be eligible later for the IM group if primary EBV infection is confirmed, subsequently.\n* Immunosuppression (broadly defined as primary/secondary immunodeficiency or treatment with an immunosuppressive medication including ≥ 10mg prednisone equivalent).\n* History of autoimmune disease (e.g. SLE, vasculitis etc.)"
+      },
+      {
+        "nct_id": "NCT06908096",
+        "title": "Epstein-Barr Virus (EBV) gH/gL/gp42-Ferritin Nanoparticle Vaccine With or Without gp350-Ferritin in Healthy Adults With or Without EBV Infection",
+        "phase": "PHASE1",
+        "status": "RECRUITING",
+        "conditions": [
+          "EBV",
+          "Epstein-Barr Virus Infection",
+          "Infectious Mononucleosis",
+          "Mono"
+        ],
+        "eligibility_criteria_raw": "* INCLUSION CRITERIA:\n\nTo be eligible to participate in this study, an individual must meet all of the following criteria:\n\n1. 18 to 29 years old.\n2. Able to provide informed consent.\n3. Willingness to allow storage of blood and saliva for future research.\n4. In good general health as evidenced by medical history, physical examination, and laboratory screening results.\n5. Participant is willing to forgo receipt of a licensed, live vaccine in the 30 days preceding each dose of vaccine or in the 30 days following each dose of vaccine. Any FDA-approved inactivated, subunit, or replication-defective vaccine (such as COVID-19, influenza, tetanus, etc.) can be used \\>=14 days before or \\>=14 days after administration of the study vaccine.\n6. Participants of reproductive potential who are sexually active with a partner who can impregnate them: use of highly effective continuous contraception for at least 30 days prior to Day 0 and agreement to continue use until 60 days after the last dose of vaccine.\n\nContraceptive requirements: Because the effects of EBV gH/gL/gp42-FNP and EBV gp350-ferritin vaccines on the developing human fetus are unknown, sexually active participants of childbearing potential must agree to use highly effective contraception as outlined below before study entry and until 60 days after the last dose of vaccine. Participants of childbearing potential must have a negative pregnancy test before receiving each dose of the EBV gH/gL/gp42-FNP vaccine. During the course of the study, if a participant becomes pregnant or suspects they are pregnant, then they should inform the study staff and their primary care physician immediately.\n\nAcceptable forms of contraception are:\n\n* Intrauterine device (IUD) or equivalent.\n* Hormonal contraceptive (eg, consistent, timely, and continuous use of contraceptive pill, patch, ring, implant, or injection that has reached full efficacy prior to dosing). If the participant uses a contraceptive pill, patch, or ring, then a barrier method (eg, internal/external condom, cap, or diaphragm plus spermicide) must also be used at the time of potentially reproductive sexual activity.\n* A stable, long-term monogamous relationship with a partner who does not pose any potential pregnancy risk, eg, has undergone a vasectomy at least 6 months prior to the first dose of vaccine or is of the same sex as the participant.\n* A hysterectomy and/or a bilateral tubal ligation or bilateral oophorectomy.\n\nAcceptable forms of contraception for participants who can impregnate a partner include one of the following:\n\n* External condom plus spermicide, used during sexual intercourse, even if the partner uses a contraceptive pill, patch, or ring.\n* A vasectomy completed at least 6 months before the first dose of vaccine.\n* Continuously and completely abstaining from sexual intercourse with a partner of childbearing potential from the first dose of vaccine until 30 days after the last dose.\n\nAcceptable contraception for partners of childbearing potential of participants who can impregnate them include one of the following:\n\n* IUD or equivalent.\n* Hormonal contraceptive (eg, pill, patch, ring, implant, or an injection used consistently and that has reached full effect prior to the first dose of vaccine).\n* Hysterectomy and/or a bilateral tubal ligation or bilateral oophorectomy.\n\nLaboratory Criteria within 30 days or less prior to enrollment:\n\n1. Hemoglobin within institutional normal limits or if not, then assessed and deemed not clinically significant by PI or designee\n2. White blood cell count and differential either within institutional normal reference range or if not then assessed and deemed not clinically significant by PI or designee\n3. Total lymphocyte count (lymphocyte absolute) \\> 800 cells/microL\n4. Platelet count equal to 125,000-500,000/microL\n5. Alanine aminotransferase \\<1.25 x upper limit of normal (ULN)\n6. Serum IgG \\>600 mg/dL\n\nEXCLUSION CRITERIA:\n\nAn individual who meets any of the following criteria will be excluded from participation in this study:\n\n1. Pregnant, breastfeeding, or planning to become pregnant while participating through 60 days after the last dose of vaccine.\n2. Participant has received any of the following:\n\n   1. More than 10 days of systemic immunosuppressive medications (\\>=10 mg prednisone dose or its equivalent) or cytotoxic medication within the 30 days prior to first dose of vaccine or immunomodulating therapy within 180 days prior to first dose of vaccine.\n   2. Blood products, including immunoglobulin products, within 120 days prior to first dose of vaccine.\n   3. Investigational research agents within 30 days prior to first dose or planning to receive investigational products while on study.\n   4. Allergy treatment with antigen injections, unless on a maintenance schedule of shots no more frequently than once per month.\n   5. Prior participant in an EBV vaccine clinical trial.\n3. Participant has any of the following:\n\n   1. Febrile illness within 14 days of the first dose of vaccine.\n   2. Body habitus such that it is difficult to confirm location of the deltoid muscle for safe intramuscular injection.\n   3. History of serious reactions to vaccines.\n   4. Hereditary, acquired, or idiopathic forms of angioedema.\n   5. Idiopathic urticaria within the past year.\n   6. Asthma that is not well-controlled or required emergent care, urgent care, hospitalization, or intubation during the past 2 years or that requires the use of oral or intravenous steroids.\n   7. Diabetes mellitus type 1 or type 2, excluding a history of gestational diabetes.\n   8. Clinically significant autoimmune disease or immunodeficiency.\n   9. Hypertension that is not well-controlled.\n   10. Thyroid disease that is not well-controlled.\n   11. Bleeding disorder diagnosed by doctor (eg, factor deficiency, coagulopathy, or platelet disorder requiring special precautions).\n   12. Significant bruising or bleeding difficulties with intramuscular injections or blood draws.\n   13. Malignancy that is active or treated malignancy for which there is no reasonable assurance of sustained cure or malignancy that is likely to recur during the study period.\n   14. Seizure disorder other than a history of 1) febrile seizures, 2) seizures secondary to alcohol withdrawal more than 3 years ago, or 3) seizures that have not required treatment within the past 3 years.\n   15. Asplenia, functional asplenia, or any condition resulting in absence or removal of the spleen.\n   16. History of Guillain-Barre Syndrome.\n   17. Alcohol or drug abuse or addiction.\n   18. HIV infection.\n4. Any medical, psychiatric, or social condition that, in the judgement of the investigator, is a contraindication to protocol participation or impairs the participant's ability to give informed consent."
+      }
+    ]
+  },
+  "S010": {
+    "query_used": "retinal detachment",
+    "primary_query": "retinal detachment",
+    "fallback_used": false,
+    "note": "",
+    "trials": [
+      {
+        "nct_id": "NCT07228091",
+        "title": "Surgical Procedure Efficiency Evaluation stuDy",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Cataract",
+          "Vitreous Hemorrhage",
+          "Retinal Detachment",
+          "Macular Pucker",
+          "Macular Holes"
+        ],
+        "eligibility_criteria_raw": "Key Inclusion Criteria:\n\n* Able to understand and sign an informed consent form (ICF) that has been approved by an ethics committee.\n* Planned combined phacovitrectomy procedure at one of the selected surgical sites.\n* Planned combined phacovitrectomy procedure with 25-gauge (G) vitrectomy tools.\n\nKey Exclusion Criteria:\n\n* Unplanned/emergency phacovitrectomy.\n* Pregnant.\n* Past history of phacovitrectomy. cataract, vitrectomy in the planned operative eye.\n* Other protocol-defined exclusion criteria may apply."
+      },
+      {
+        "nct_id": "NCT06587945",
+        "title": "Nicotinamide Riboside Oral Supplementation in Macula Off Retinal Detachment",
+        "phase": "PHASE4",
+        "status": "RECRUITING",
+        "conditions": [
+          "Retinal Detachment"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Age ≥ 18 years old\n* Able to give informed consent and comply with all study visits and procedures.\n* Present within 10 days of macula-off retinal detachment (based on patient-reported history of loss of central vision)\n* Present to the hospital with a visual acuity of hand motion or better in the study eye\n* Have had previous cataract surgery in the study eye\n* Have clinical indication for standard retinal reattachment surgery by means of a pars plana vitrectomy and gas tamponade\n* In the opinion of the investigator, be able to safely undergo all study procedures.\n\nKey exclusion Criteria:\n\n* Any known significant ocular disease in the study eye (e.g., cornea opacity) which, in the opinion of the investigator, would preclude a visual acuity of at least 6/7.5 (20/25) following successful vitrectomy or limit adequate visibility of the retina.\n* Any other ocular pathology in the study eye requiring treatment with topical ophthalmic drops or intravitreal injection.\n* History of previous ocular surgery in the study eye other than uncomplicated cataract surgery with posterior chamber intraocular lens and intact posterior capsule or a refractive surgery (surgery must have occurred at least 3 months prior to the baseline visit).\n* Participation in other clinical trials or use of any other investigational drugs or devices within 3 months prior to study participation.\n* Females who are pregnant or lactating and women of childbearing potential.\n* Known retinopathy, known hepatic disease (or history of significant chronic liver disease), or known renal disease. Patients Participants with diabetes and no known retinopathy may be enrolled.\n* History of uncontrolled hypertension.\n* History of stroke, transient ischemic attack, or major cardiac surgery within 3 months prior to study, or current treatment for systemic infection.\n* Any ocular or systemic condition that in the opinion of the investigator could compromise the safety of the patientparticipant, or may interfere with the safety and tolerability assessments or study procedures of the trial."
+      },
+      {
+        "nct_id": "NCT07081945",
+        "title": "hAM for Inferior RRD",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Rhegmatogenous Retinal Detachment"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Subjects having given free and informed consent to take part in the study.\n2. Subjects between 18 and 70 years old.\n3. Subjects suffering RRD (both primary and recurrent RRDs) with at least one of these conditions:\n\n   1. inferior retinal breaks between 4- and 8-o'clock within the detached area regardless of PVR grade;\n   2. requiring retinotomy inferiorly between 4- and 8-o'clock (due to severe inferior PVR or inferior retinal shortening).\n\nExclusion Criteria:\n\n1. Subjects with RRD with only anterior retina breaks or dialysis and meet the indications for scleral buckling surgery.\n2. Subjects with RRD whose retinal breaks located between the 4- and 8-o'clock positions and are not involved in the detached area.\n3. Subjects with pre-existing serious eye diseases (corneal ulcers, glaucoma, uveitis, etc).\n4. History of epilepsy or serious psychiatric diseases.\n5. Other conditions that the researcher found improper to be included into this study."
+      },
+      {
+        "nct_id": "NCT07346560",
+        "title": "1ry Versus 2ry ILM Peeling in RD",
+        "phase": "NA",
+        "status": "RECRUITING",
+        "conditions": [
+          "Retinal Detachment Rhegmatogenous",
+          "ILM Peeling"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n* Patients with uncomplicated rhegmatogenous retinal detcahment.\n\nExclusion Criteria:\n\n* PVR\n* Recurrent RD\n* Tractional RD\n* Macular hole RD\n* Scleral buckling is indicated\n* Macular scarring\n* Previous PPV"
+      },
+      {
+        "nct_id": "NCT06294847",
+        "title": "Ursodeoxycholic Acid (UDCA) as a Neuroprotective Adjuvant Treatment to Rhegmatogenous Retinal Detachment Surgery",
+        "phase": "PHASE3",
+        "status": "RECRUITING",
+        "conditions": [
+          "Retinal Detachment"
+        ],
+        "eligibility_criteria_raw": "Inclusion Criteria:\n\n1. Aged 18 years or older,\n2. Scheduled to undergo surgical intervention through vitrectomy,\n3. Aphakic or pseudophakic patients,\n4. Experiencing rhegmatogenous retinal detachment affecting 2 quadrants or more,\n5. Presenting with macula OFF (raised macula) for 7 days or less before the onset of symptoms,\n6. Has signed a consent form,\n7. Affiliated with a health insurance plan.\n\nExclusion Criteria:\n\n1. Patients who have previously undergone vitrectomy for retinal detachment,\n2. Patients with vitreous hemorrhage or any other associated retinal pathologies,\n3. Monophthalmic patients,\n4. Women of childbearing age without effective contraceptive methods,\n5. Pregnant or lactating women,\n6. Hypersensitivity to the active substance, bile acids, or any of the excipients in Ursolvan® (see §6.1.1 of this protocol),\n7. Patients with peptic ulcers, acute or chronic liver disease, acute infection or inflammation of the gallbladder or bile ducts, recurrent gallstones, or obstruction of the bile ducts (common bile duct or cystic duct obstruction),\n8. Patients with radiopaque calcified gallstones,\n9. Patients with severe pancreatic disorders,\n10. Patients with Crohn's disease, ulcerative colitis, or other intestinal diseases that may alter the enterohepatic circulation of bile acids,\n11. Patients on oral treatment with cholestyramine, colestipol, antacids containing aluminum or magnesium hydroxide and/or smectite (aluminum oxide), cyclosporine, ciprofloxacin, nitrendipine, or dapsone,\n12. Patients with galactose intolerance, Lapp lactase deficiency, or glucose and galactose malabsorption syndrome (rare hereditary diseases),\n13. Patients participating or in the exclusion period following an interventional research with the use of prohibited medications in this study,\n14. Patients under protective custody."
       }
     ]
   }

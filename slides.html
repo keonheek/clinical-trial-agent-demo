@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Clinical Trial Recommendation: 발표자료</title>
+<style>
+  :root{
+    --accent:#0f6e5a;
+    --accent-dark:#0b5646;
+    --accent-soft:#e6f2ef;
+    --ink:#1f2937;
+    --ink-soft:#6b7280;
+    --ink-faint:#9aa2ad;
+    --line:#e2e5e9;
+    --bg:#ffffff;
+    --bg-alt:#f7f8f9;
+    --met:#1f8a4c;      --met-bg:#e8f6ee;
+    --not-met:#b3261e;  --not-met-bg:#fbeceb;
+    --uncertain:#92660a;--uncertain-bg:#fdf3dd;
+    --unknown:#5f6b7a;  --unknown-bg:#eef0f2;
+    --slide-w:1280px;
+    --slide-h:720px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Noto Sans KR","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    background:#4b5158;
+    line-height:1.5;
+  }
+
+  .deck{
+    padding:32px 0 80px;
+  }
+
+  .slide{
+    width:var(--slide-w);
+    height:var(--slide-h);
+    background:var(--bg);
+    margin:0 auto 32px;
+    padding:56px 68px 48px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 6px 24px rgba(0,0,0,0.25);
+  }
+
+  .kicker{
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--accent);
+    text-transform:uppercase;
+    margin:0 0 10px;
+  }
+  h2.slide-title{
+    font-size:32px;
+    font-weight:700;
+    margin:0 0 4px;
+    line-height:1.28;
+    color:var(--ink);
+  }
+  p.slide-sub{
+    font-size:15.5px;
+    color:var(--ink-soft);
+    margin:0 0 22px;
+  }
+  .slide-body{
+    flex:1;
+    min-height:0;
+  }
+  .slide-foot{
+    position:absolute;
+    left:68px;
+    right:68px;
+    bottom:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    border-top:1px solid var(--line);
+    padding-top:10px;
+  }
+  .slide-foot .page-no{font-variant-numeric:tabular-nums;}
+
+  .card{
+    border:1px solid var(--line);
+    background:var(--bg-alt);
+    border-radius:6px;
+    padding:18px 20px;
+  }
+  .card h3{
+    font-size:15px;
+    margin:0 0 10px;
+    color:var(--ink);
+  }
+  .card p{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+  }
+  .mono{
+    font-family:"SF Mono","Menlo",ui-monospace,monospace;
+    font-size:12.5px;
+  }
+  .quote{
+    display:block;
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent);
+    padding:10px 12px;
+    font-size:13px;
+    color:var(--ink);
+    margin:8px 0;
+  }
+  .badge{
+    display:inline-block;
+    font-size:11.5px;
+    font-weight:700;
+    padding:2px 9px;
+    border-radius:20px;
+  }
+  .badge.met{color:var(--met);background:var(--met-bg);}
+  .badge.not-met{color:var(--not-met);background:var(--not-met-bg);}
+  .badge.uncertain{color:var(--uncertain);background:var(--uncertain-bg);}
+  .badge.unknown{color:var(--unknown);background:var(--unknown-bg);}
+  .badge.ineligible{color:var(--not-met);background:var(--not-met-bg);}
+
+  .tbd-box{
+    border:1.5px dashed var(--uncertain);
+    background:var(--uncertain-bg);
+    border-radius:6px;
+    padding:14px 18px;
+  }
+  .tbd-box .tbd-label{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    color:var(--uncertain);
+    background:#fff;
+    border:1px solid var(--uncertain);
+    border-radius:3px;
+    padding:1px 7px;
+    margin-bottom:8px;
+  }
+  .tbd-box p{font-size:13.5px;color:#5c4308;margin:6px 0;}
+
+  .stat-row{
+    display:flex;
+    gap:14px;
+  }
+  .stat-tile{
+    flex:1;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:14px 12px;
+    text-align:center;
+    background:#fff;
+  }
+  .stat-tile .num{
+    font-family:"SF Mono","Menlo",ui-monospace,monospace;
+    font-size:30px;
+    font-weight:700;
+    line-height:1.1;
+  }
+  .stat-tile .lbl{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .stat-tile.n-eligible .num{color:var(--ink-faint);}
+  .stat-tile.n-uncertain .num{color:var(--uncertain);}
+  .stat-tile.n-ineligible .num{color:var(--not-met);}
+  .stat-tile.n-met .num{color:var(--met);}
+  .stat-tile.n-notmet .num{color:var(--not-met);}
+  .stat-tile.n-unknown .num{color:var(--unknown);}
+
+  .cols-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+  .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+  ul.plain{margin:6px 0 0;padding-left:20px;}
+  ul.plain li{font-size:14.5px;margin-bottom:6px;color:var(--ink);}
+
+  ol.steps{margin:6px 0 0;padding-left:22px;}
+  ol.steps li{font-size:14.5px;margin-bottom:8px;}
+
+  a{color:var(--accent);}
+
+  .role-svg text{font-family:"Noto Sans KR","Apple SD Gothic Neo",-apple-system,sans-serif;}
+
+  /* ---------- print ---------- */
+  @page{
+    size:13.333in 7.5in;
+    margin:0;
+  }
+  @media print{
+    body{background:#fff;}
+    .deck{padding:0;}
+    .slide{
+      box-shadow:none;
+      margin:0;
+      page-break-after:always;
+      break-inside:avoid;
+      width:13.333in;
+      height:7.5in;
+    }
+    .slide:last-child{page-break-after:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- S1 : TITLE -->
+  <section class="slide" id="s1">
+    <div class="slide-body" style="display:flex;flex-direction:column;justify-content:center;">
+      <p class="kicker">SKKU Healthcare Agentic AI Challenge 2026</p>
+      <h2 class="slide-title" style="font-size:44px;margin-bottom:14px;">Interactive Clinical Trial Recommendation</h2>
+      <p style="font-size:22px;color:var(--ink-soft);margin:0 0 40px;">멀티 에이전트 시스템: 근거 기반 임상시험 매칭 및 추천</p>
+      <div style="border-top:1px solid var(--line);padding-top:18px;font-size:15px;color:var(--ink-soft);">
+        <strong style="color:var(--ink);">[팀명]</strong> &nbsp;/&nbsp; 2026
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Interactive Clinical Trial Recommendation</span>
+      <span class="page-no">01 / 10</span>
+    </div>
+  </section>
+
+  <!-- S2 : PROBLEM -->
+  <section class="slide" id="s2">
+    <p class="kicker">문제 정의</p>
+    <h2 class="slide-title">임상시험 참여조건 매칭이 왜 어려운가</h2>
+    <p class="slide-sub">환자와 임상시험 사이의 정보 격차는 세 가지 다른 층위에서 동시에 발생한다.</p>
+    <div class="slide-body cols-3">
+      <div class="card">
+        <h3>1. 조건 복잡성</h3>
+        <p>포함/제외 기준 한 문장 안에 임상 스코어링과 진단 가이드라인이 그대로 묶여 있다.</p>
+        <span class="quote mono">"Diagnosis of pancreatitis according to Atlanta guidelines, moderately severe or severe pancreatitis (APACHE score ≥8 on admittance)"</span>
+        <p style="font-size:12px;color:var(--ink-faint);">- NCT06113419 포함기준, S001</p>
+      </div>
+      <div class="card">
+        <h3>2. 정보 부족</h3>
+        <p>환자 정보는 한 줄짜리 vignette인데, 조건은 수치화된 검사 결과를 요구한다.</p>
+        <span class="quote mono">"29yo woman, palpitations, heat intolerance, weight loss, fine tremor, tachycardia, diffuse non-tender goiter"</span>
+        <p>이 한 문장만으로는 <span class="mono">"Thyroid receptor antibody (TRAb) was positive"</span> 같은 조건을 판정할 수 없다: 실제로 전체 10환자 데이터에서 <strong>373개 기준 중 218개(58%)가 UNKNOWN</strong>으로 남았다.</p>
+      </div>
+      <div class="card">
+        <h3>3. 근거 요구</h3>
+        <p>판정에는 원문 근거가 함께 있어야 신뢰할 수 있다. 근거가 없으면 추측 대신 정직하게 모른다고 답해야 한다.</p>
+        <span class="quote mono">evidence: null<br>reasoning: "No imaging results"</span>
+        <p style="font-size:12px;color:var(--ink-faint);">- NCT06113419 포함기준(영상 소견), S001, verdict UNKNOWN</p>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Interactive Clinical Trial Recommendation</span>
+      <span class="page-no">02 / 10</span>
+    </div>
+  </section>
+
+  <!-- S3 : AGENT DIAGRAM -->
+  <section class="slide" id="s3">
+    <p class="kicker">시스템 구조</p>
+    <h2 class="slide-title">에이전트 구성도: 7개 역할 파이프라인</h2>
+    <p class="slide-sub">각 박스는 독립된 system prompt를 가진 개별 Groq 호출이며, 결과는 디스크에 캐시되어 재실행 비용은 $0이다.</p>
+    <div class="slide-body" style="display:flex;align-items:center;justify-content:center;">
+      <svg class="role-svg" viewBox="0 0 1200 440" width="1140" height="418" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#4b5158"/>
+          </marker>
+          <marker id="arrow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#9aa2ad"/>
+          </marker>
+        </defs>
+
+        <!-- orchestrator outer frame -->
+        <rect x="30" y="34" width="1140" height="182" rx="14" fill="none" stroke="#0f6e5a" stroke-width="1.6" stroke-dasharray="6 5"/>
+        <rect x="46" y="18" width="240" height="26" fill="#ffffff"/>
+        <text x="52" y="36" font-size="13" font-weight="700" fill="#0f6e5a">ORCHESTRATOR (pipeline.py)</text>
+
+        <!-- 7 role boxes -->
+        <!-- box template: x, width 152, y=70, height 118 -->
+        <g font-size="13">
+          <!-- 1 -->
+          <rect x="46" y="70" width="152" height="118" rx="7" fill="#ffffff" stroke="#1f2937" stroke-width="1.3"/>
+          <circle cx="62" cy="84" r="10" fill="#0f6e5a"/><text x="62" y="88" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">1</text>
+          <text x="122" y="106" text-anchor="middle" font-weight="700" fill="#1f2937">기준 파싱</text>
+          <text x="122" y="122" text-anchor="middle" font-size="10" fill="#6b7280">(criteria-parser)</text>
+          <text x="122" y="146" text-anchor="middle" font-size="10" fill="#6b7280">trial 텍스트 →</text>
+          <text x="122" y="160" text-anchor="middle" font-size="10" fill="#6b7280">atomic criteria</text>
+
+          <!-- 2 -->
+          <rect x="208" y="70" width="152" height="118" rx="7" fill="#ffffff" stroke="#1f2937" stroke-width="1.3"/>
+          <circle cx="224" cy="84" r="10" fill="#0f6e5a"/><text x="224" y="88" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+          <text x="284" y="106" text-anchor="middle" font-weight="700" fill="#1f2937">환자 정보 추출</text>
+          <text x="284" y="122" text-anchor="middle" font-size="10" fill="#6b7280">(patient-extractor)</text>
+          <text x="284" y="146" text-anchor="middle" font-size="10" fill="#6b7280">vignette →</text>
+          <text x="284" y="160" text-anchor="middle" font-size="10" fill="#6b7280">필드 + 검증된 근거</text>
+
+          <!-- 3 -->
+          <rect x="370" y="70" width="152" height="118" rx="7" fill="#ffffff" stroke="#1f2937" stroke-width="1.3"/>
+          <circle cx="386" cy="84" r="10" fill="#0f6e5a"/><text x="386" y="88" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+          <text x="446" y="106" text-anchor="middle" font-weight="700" fill="#1f2937">매칭·추론</text>
+          <text x="446" y="122" text-anchor="middle" font-size="10" fill="#6b7280">(matcher)</text>
+          <text x="446" y="146" text-anchor="middle" font-size="10" fill="#6b7280">criteria × 환자 →</text>
+          <text x="446" y="160" text-anchor="middle" font-size="10" fill="#6b7280">verdict + 근거</text>
+
+          <!-- 4 -->
+          <rect x="532" y="70" width="152" height="118" rx="7" fill="#ffffff" stroke="#1f2937" stroke-width="1.3"/>
+          <circle cx="548" cy="84" r="10" fill="#0f6e5a"/><text x="548" y="88" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">4</text>
+          <text x="608" y="106" text-anchor="middle" font-weight="700" fill="#1f2937">부족정보 탐지</text>
+          <text x="608" y="122" text-anchor="middle" font-size="10" fill="#6b7280">(gap-detector)</text>
+          <text x="608" y="146" text-anchor="middle" font-size="10" fill="#6b7280">UNKNOWN/UNCERTAIN</text>
+          <text x="608" y="160" text-anchor="middle" font-size="10" fill="#6b7280">→ 고유 gap 목록</text>
+
+          <!-- 5 -->
+          <rect x="694" y="70" width="152" height="118" rx="7" fill="#ffffff" stroke="#1f2937" stroke-width="1.3"/>
+          <circle cx="710" cy="84" r="10" fill="#0f6e5a"/><text x="710" y="88" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">5</text>
+          <text x="770" y="106" text-anchor="middle" font-weight="700" fill="#1f2937">질문 생성</text>
+          <text x="770" y="122" text-anchor="middle" font-size="10" fill="#6b7280">(question-generator)</text>
+          <text x="770" y="146" text-anchor="middle" font-size="10" fill="#6b7280">gap →</text>
+          <text x="770" y="160" text-anchor="middle" font-size="10" fill="#6b7280">확인질문 최대 3개</text>
+
+          <!-- 6 -->
+          <rect x="856" y="70" width="152" height="118" rx="7" fill="#ffffff" stroke="#1f2937" stroke-width="1.3"/>
+          <circle cx="872" cy="84" r="10" fill="#0f6e5a"/><text x="872" y="88" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">6</text>
+          <text x="932" y="106" text-anchor="middle" font-weight="700" fill="#1f2937">재평가</text>
+          <text x="932" y="122" text-anchor="middle" font-size="10" fill="#6b7280">(reeval)</text>
+          <text x="932" y="146" text-anchor="middle" font-size="10" fill="#6b7280">가상 답변 →</text>
+          <text x="932" y="160" text-anchor="middle" font-size="10" fill="#6b7280">영향 기준 재매칭</text>
+
+          <!-- 7 -->
+          <rect x="1018" y="70" width="152" height="118" rx="7" fill="#ffffff" stroke="#1f2937" stroke-width="1.3"/>
+          <circle cx="1034" cy="84" r="10" fill="#0f6e5a"/><text x="1034" y="88" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">7</text>
+          <text x="1094" y="106" text-anchor="middle" font-weight="700" fill="#1f2937">추천·설명</text>
+          <text x="1094" y="122" text-anchor="middle" font-size="10" fill="#6b7280">(recommender)</text>
+          <text x="1094" y="146" text-anchor="middle" font-size="10" fill="#6b7280">순위 매기기 +</text>
+          <text x="1094" y="160" text-anchor="middle" font-size="10" fill="#6b7280">근거 있는 rationale</text>
+        </g>
+
+        <!-- horizontal chain arrows -->
+        <g stroke="#4b5158" stroke-width="1.6" marker-end="url(#arrow)" fill="none">
+          <path d="M198,129 L206,129"/>
+          <path d="M360,129 L368,129"/>
+          <path d="M522,129 L530,129"/>
+          <path d="M684,129 L692,129"/>
+          <path d="M846,129 L854,129"/>
+          <path d="M1008,129 L1016,129"/>
+        </g>
+
+        <!-- bus line from Groq up to each box -->
+        <g stroke="#9aa2ad" stroke-width="1.3" fill="none">
+          <line x1="122" y1="248" x2="122" y2="188"/>
+          <line x1="284" y1="248" x2="284" y2="188"/>
+          <line x1="446" y1="248" x2="446" y2="188"/>
+          <line x1="608" y1="248" x2="608" y2="188"/>
+          <line x1="770" y1="248" x2="770" y2="188"/>
+          <line x1="932" y1="248" x2="932" y2="188"/>
+          <line x1="1094" y1="248" x2="1094" y2="188"/>
+          <line x1="122" y1="248" x2="1094" y2="248"/>
+        </g>
+        <line x1="608" y1="248" x2="608" y2="300" stroke="#9aa2ad" stroke-width="1.6" marker-end="url(#arrow-soft)"/>
+        <text x="618" y="270" font-size="10.5" fill="#6b7280">역할별 system prompt로 개별 호출 (JSON mode)</text>
+
+        <!-- tool boxes -->
+        <rect x="40" y="300" width="260" height="72" rx="7" fill="#e6f2ef" stroke="#0f6e5a" stroke-width="1.3"/>
+        <text x="170" y="330" text-anchor="middle" font-weight="700" font-size="13" fill="#0b5646">ClinicalTrials.gov API v2</text>
+        <text x="170" y="348" text-anchor="middle" font-size="10.5" fill="#3f6b62">공개 데이터, 실시간 조회</text>
+        <text x="170" y="362" text-anchor="middle" font-size="10.5" fill="#3f6b62">query_used 기록</text>
+
+        <rect x="460" y="300" width="280" height="72" rx="7" fill="#e6f2ef" stroke="#0f6e5a" stroke-width="1.3"/>
+        <text x="600" y="330" text-anchor="middle" font-weight="700" font-size="13" fill="#0b5646">Groq: llama-3.3-70b-versatile</text>
+        <text x="600" y="348" text-anchor="middle" font-size="10.5" fill="#3f6b62">무료 티어, JSON mode 응답</text>
+        <text x="600" y="362" text-anchor="middle" font-size="10.5" fill="#3f6b62">cache/ 에 디스크 캐시 (재실행 $0)</text>
+
+        <line x1="170" y1="300" x2="122" y2="192" stroke="#0b5646" stroke-width="1.4" marker-end="url(#arrow-soft)"/>
+      </svg>
+    </div>
+    <div class="slide-foot">
+      <span>3 환자 × 평균 4개 시험, 환자당 최대 12회 Groq 호출 (원문: README 산식)</span>
+      <span class="page-no">03 / 10</span>
+    </div>
+  </section>
+
+  <!-- S4 : TRUST MECHANISM -->
+  <section class="slide" id="s4">
+    <p class="kicker">신뢰 메커니즘</p>
+    <h2 class="slide-title">환각을 폼까지 보내지 않는다</h2>
+    <p class="slide-sub">두 가지 원칙을 서버 쪽에서 강제한다: 근거 문자열 일치, 그리고 성급한 확정 판정 금지.</p>
+    <div class="slide-body cols-2">
+      <div class="card" style="display:flex;flex-direction:column;">
+        <h3>근거 인용은 서버가 강제한다</h3>
+        <p><span class="mono">assert_traces.py</span>는 <strong>extraction[].evidence_quote가 환자 원문(patient_text)의 완전한 부분 문자열인지</strong>를 하드 어서션으로 검사한다. 하나라도 위반하면 전체 검증이 실패(exit code 1)한다.</p>
+        <p>판정 스키마도 자유 텍스트가 아니라 고정된 4값 열거형(MET / NOT_MET / UNCERTAIN / UNKNOWN)으로 제한된다.</p>
+        <p style="margin-top:auto;font-size:13px;color:var(--ink);"><strong>결과:</strong> vignette에 없는 사실(예: 언급 없는 TRAb 양성)은 검증을 통과할 수 없고, 통과하지 못한 결과는 화면/폼에 도달하지 않는다.</p>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;">
+        <h3>불확실성 보존: ELIGIBLE은 40건 중 1건뿐</h3>
+        <p style="margin-bottom:10px;">10환자 × 4시험 = 40건의 시험 단위 판정에서 <strong>ELIGIBLE은 1건(2.5%)에 그쳤다</strong>: 정보가 부족하면 확정하지 않는다는 원칙이 수치로 드러난다.</p>
+        <div class="stat-row" style="margin-bottom:14px;">
+          <div class="stat-tile n-eligible"><div class="num">1</div><div class="lbl">ELIGIBLE</div></div>
+          <div class="stat-tile n-uncertain"><div class="num">16</div><div class="lbl">UNCERTAIN</div></div>
+          <div class="stat-tile n-ineligible"><div class="num">23</div><div class="lbl">INELIGIBLE</div></div>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-faint);margin-bottom:8px;">기준(criterion) 단위 373건 판정:</p>
+        <div class="stat-row">
+          <div class="stat-tile n-unknown"><div class="num">218</div><div class="lbl">UNKNOWN (58%)</div></div>
+          <div class="stat-tile n-met"><div class="num">87</div><div class="lbl">MET</div></div>
+          <div class="stat-tile n-uncertain"><div class="num">28</div><div class="lbl">UNCERTAIN</div></div>
+          <div class="stat-tile n-notmet"><div class="num">40</div><div class="lbl">NOT_MET</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>출처: traces.json (10 patients × 4 trials, 2026-07-08 생성) 직접 집계</span>
+      <span class="page-no">04 / 10</span>
+    </div>
+  </section>
+
+  <!-- S5 : CASE STUDY -->
+  <section class="slide" id="s5">
+    <p class="kicker">실제 사례</p>
+    <h2 class="slide-title">S002 (29세, Graves 의심): 근거로 제외 판정</h2>
+    <p class="slide-sub">나이 하나만으로도 오판을 막는다: 시스템이 원문 조건 문자열을 직접 대조해 근거와 함께 제시한 사례.</p>
+    <div class="slide-body cols-2">
+      <div class="card">
+        <h3>환자 S002</h3>
+        <span class="quote mono">"29yo woman, palpitations, heat intolerance, weight loss, fine tremor, tachycardia, diffuse non-tender goiter"</span>
+        <p>추출 필드: age=29 (근거 "29yo"), sex=female (근거 "woman")</p>
+      </div>
+      <div class="card">
+        <h3>NCT06392906</h3>
+        <p style="font-weight:600;color:var(--ink);margin-bottom:2px;">Orbital Radiotherapy in Grave's Ophthalmopathy 1 Week vs 2 Weeks (OraGO-1 Trial)</p>
+        <p style="font-size:12px;color:var(--ink-faint);">Phase 3 / 포함기준</p>
+        <span class="quote mono">"Non-pregnant adults (aged 35 years or older)"</span>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+          <span class="badge not-met">NOT_MET</span>
+          <span style="font-size:13px;color:var(--ink-soft);">근거: <span class="mono">"age: 29"</span>: 사유: "Age under 35"</span>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <p style="margin:0;font-size:14px;"><strong>시험 단위 결과:</strong> eligibility = <span class="badge ineligible">INELIGIBLE</span> (4개 후보 중 순위 4위)</p>
+        <p style="margin:4px 0 0;font-size:13px;color:var(--ink-soft);">rationale: "Patient age does not meet inclusion criteria"</p>
+      </div>
+      <p style="max-width:340px;font-size:13px;color:var(--ink);margin:0;">→ 사람이 그대로 재확인 가능한 감사 추적: 조건 원문, 판정, 근거, 사유가 한 줄에 함께 남는다.</p>
+    </div>
+    <div class="slide-foot">
+      <span>출처: traces.json, patient_id=S002, nct_id=NCT06392906 (원문 그대로 인용)</span>
+      <span class="page-no">05 / 10</span>
+    </div>
+  </section>
+
+  <!-- S6 : REEVAL LOOP -->
+  <section class="slide" id="s6">
+    <p class="kicker">재평가 루프</p>
+    <h2 class="slide-title">질문 → 가상 답변 → 판정 변화</h2>
+    <p class="slide-sub">부족한 정보를 되물어 채운 뒤, 영향을 받는 기준만 다시 매칭한다.</p>
+    <div class="slide-body" style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <h3>메커니즘 (pipeline.py, 이미 구현됨)</h3>
+        <ol class="steps" style="margin-top:2px;">
+          <li><strong>reeval-record-answer-generator</strong>: 진단과 부합하는 가상의 확장 기록(extended_record)과, 각 확인질문에 대한 답변을 생성한다. 답변의 evidence_quote는 새로 만든 extended_record의 완전한 부분 문자열이어야 한다: 근거 검증을 재귀적으로 다시 적용.</li>
+          <li><strong>reeval-targeted-rematcher</strong>: 답변이 실제로 영향을 주는 기준만 골라 재매칭하고, <span class="mono">verdict_changes: [{nct_id, criterion, before, after}]</span> 형태로 변화를 기록한다.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>실측 결과 (traces.json, 2026-07-08 실행)</h3>
+        <p>환자 10명 전원에서 재평가 루프가 실행되어 총 <strong>88건의 판정 변화</strong>가 발생했다. 대표 사례 (S001, 급성 췌장염 의심):</p>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;">
+          <thead><tr style="text-align:left;color:#5c4308;">
+            <th style="padding:4px 8px;border-bottom:1px solid #e3c565;">nct_id</th>
+            <th style="padding:4px 8px;border-bottom:1px solid #e3c565;">criterion</th>
+            <th style="padding:4px 8px;border-bottom:1px solid #e3c565;">before → after</th>
+          </tr></thead>
+          <tbody><tr>
+            <td style="padding:4px 8px;" class="mono">NCT06113419</td>
+            <td style="padding:4px 8px;">Biliary pancreatitis diagnosed on imaging (ultrasound, MRI, and/or CT)</td>
+            <td style="padding:4px 8px;" class="mono">UNKNOWN → NOT_MET</td>
+          </tr></tbody>
+        </table>
+        <p style="font-size:12.5px;color:var(--ink-faint);margin-top:8px;">확장 기록의 영상 소견(담석·담관 확장 없음)이 답변으로 반영되자, 정보 부족(UNKNOWN)이던 기준이 근거 있는 NOT_MET으로 확정되었다.</p>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>확인: traces.json → 10/10 환자 reeval, 판정 변화 88건 (2026-07-08)</span>
+      <span class="page-no">06 / 10</span>
+    </div>
+  </section>
+
+  <!-- S7 : SELF-EVAL -->
+  <section class="slide" id="s7">
+    <p class="kicker">자체 평가</p>
+    <h2 class="slide-title">평가 축 (30% 배점): 매칭 정확도 72.5%</h2>
+    <p class="slide-sub">블라인드로 작성된 정답 라벨 40건과 비교해 측정했다 (독립 라벨러 2명, 일치율 95%).</p>
+    <div class="slide-body" style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <h3>측정 방법 (eval.py, 이미 작성됨)</h3>
+        <p>재평가 이전(pre-reeval) matcher 판정을 <span class="mono">eval_labels.json</span>과 비교한다. 라벨은 <strong>매칭 결과를 보지 않고</strong> 조건 원문 + 환자 vignette만 읽어 6명 이상 환자에 걸쳐 약 40개 (환자, 시험, 기준) 행을 사람이 직접 작성한다: 순환 검증(matcher가 자기 자신을 채점)을 피하기 위함.</p>
+        <p>출력: 정확도(accuracy), 판정별 혼동행렬(confusion matrix), 그리고 혼동행렬 숫자에서 직접 계산한 오류 분석(가장 약한 판정 클래스, UNKNOWN→확정판정 오분류 건수).</p>
+      </div>
+      <div class="card">
+        <h3>결과 (eval_results.json, 2026-07-08)</h3>
+        <p><strong>정확도 72.5% (29/40 일치, 텍스트 미매칭 0건).</strong> 라벨은 매칭 결과를 보지 않은 독립 라벨러 2명이 작성했고(일치 38/40 = 95%), 불일치 2건은 제3의 심판이 조정했다.</p>
+        <p>가장 약한 클래스: <span class="mono">NOT_MET</span> (재현율 20%). 가장 중요한 실패 유형: 정답이 UNKNOWN인데 확정 판정을 내린 <strong>4건</strong>, 즉 근거 없는 확신의 제조다. 나머지 오류 7건은 UNCERTAIN 경계 판정으로, 상대적으로 저위험 오류다.</p>
+      </div>
+      <div class="card">
+        <h3>보수성 트레이드오프, 이제 정량으로</h3>
+        <p>정답 라벨 40건 중 <strong>27건(67.5%)이 UNKNOWN</strong>: 짧은 vignette 특성상 절반 이상은 원문이 침묵한다. 시스템은 이 27건 중 22건을 올바르게 UNKNOWN으로 유지했다(재현율 81%). 과잉확신 방지라는 설계 목표는 지켜졌고, 다음 개선 대상은 NOT_MET 감지력이다.</p>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>확인: python3 eval.py → accuracy 0.725, n=40 (2026-07-08)</span>
+      <span class="page-no">07 / 10</span>
+    </div>
+  </section>
+
+  <!-- S8 : LIVE DEMO -->
+  <section class="slide" id="s8">
+    <p class="kicker">라이브 데모</p>
+    <h2 class="slide-title">직접 실행해볼 수 있습니다</h2>
+    <p class="slide-sub">전체 파이프라인은 표준 라이브러리 + Groq 무료 티어만으로 동작하며, 재실행 비용은 $0이다.</p>
+    <div class="slide-body" style="display:flex;flex-direction:column;gap:18px;justify-content:center;">
+      <div class="card">
+        <h3>데모 링크</h3>
+        <p style="font-size:16px;"><a href="https://keonheek.github.io/clinical-trial-agent-demo/">https://keonheek.github.io/clinical-trial-agent-demo/</a></p>
+      </div>
+      <div class="card">
+        <h3>저장소</h3>
+        <p style="font-size:16px;"><a href="https://github.com/keonheek/clinical-trial-agent-demo">https://github.com/keonheek/clinical-trial-agent-demo</a></p>
+      </div>
+      <div class="card">
+        <h3>재현 방법 (1줄)</h3>
+        <p class="mono" style="font-size:14px;background:#fff;border:1px solid var(--line);padding:10px 12px;">python3 fetch_trials.py && python3 pipeline.py && python3 assert_traces.py</p>
+        <p style="font-size:12.5px;color:var(--ink-faint);">GROQ_API_KEY 환경변수 필요 (.env). 모든 LLM 호출은 cache/에 디스크 캐시되어 재실행은 $0.</p>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Interactive Clinical Trial Recommendation</span>
+      <span class="page-no">08 / 10</span>
+    </div>
+  </section>
+
+  <!-- S9 : DATA / LICENSE / DISCLAIMER -->
+  <section class="slide" id="s9">
+    <p class="kicker">데이터 · 라이선스 · 면책</p>
+    <h2 class="slide-title">사용 데이터와 책임 범위</h2>
+    <div class="slide-body" style="display:flex;flex-direction:column;gap:16px;">
+      <div class="cols-2">
+        <div class="card">
+          <h3>데이터 출처</h3>
+          <ul class="plain">
+            <li><strong>ClinicalTrials.gov</strong>(미국 NLM/NIH): 시험 레코드, 제목, phase, 참여조건 원문은 미국 정부 저작물로 공개 도메인. 현재 모집 중인 실제 시험 16건을 API v2로 직접 조회했다(가상 데이터 아님).</li>
+            <li><strong>환자 vignette</strong>(S001/S002/S008): 과제 브리핑에 공개된 예시 환자를 그대로 인용한 가상 데이터이며, 실제 환자 정보가 아니다.</li>
+            <li><strong>Groq</strong>(무료 티어, llama-3.3-70b-versatile): 모든 에이전트 호출에 사용. 유료 Anthropic API는 어디에도 사용하지 않았다.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>의학적 면책</h3>
+          <p style="font-weight:700;">출력 결과는 의학적 자문이 아닌 참고용입니다.</p>
+          <p>이 시스템은 해커톤 역량 시연(capability demo)이며 임상적으로 검증되지 않았다. 시험 참여 자격은 반드시 해당 시험의 연구팀과 자격을 갖춘 의료진을 통해 최종 확인해야 하며, 이 시스템의 판정만으로 등록 여부를 결정해서는 안 된다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>출처: README.md "Data sources & licenses" / "Medical disclaimer" 원문 요약</span>
+      <span class="page-no">09 / 10</span>
+    </div>
+  </section>
+
+  <!-- S10 : ROLE SPLIT -->
+  <section class="slide" id="s10">
+    <p class="kicker">역할 분담 제안</p>
+    <h2 class="slide-title">팀 구성 및 역할</h2>
+    <div class="slide-body cols-3">
+      <div class="card">
+        <h3>아키텍처 · 파이프라인</h3>
+        <p style="font-weight:700;color:var(--ink);">건희</p>
+        <ul class="plain">
+          <li>pipeline.py 7-역할 오케스트레이션</li>
+          <li>fetch_trials.py (ClinicalTrials.gov 연동)</li>
+          <li>assert_traces.py 검증 스크립트</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>데이터 · 평가 라벨링</h3>
+        <p style="font-weight:700;color:var(--ink);">팀원</p>
+        <ul class="plain">
+          <li>eval_worksheet.json 블라인드 라벨링 → eval_labels.json</li>
+          <li>patients_all10.json 확장 케이스 검토</li>
+          <li>eval.py 실행 및 오류 분석 리뷰</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>발표 · 슬라이드</h3>
+        <p style="font-weight:700;color:var(--ink);">팀원</p>
+        <ul class="plain">
+          <li>발표 스토리라인 및 시연 시나리오</li>
+          <li>라이브 데모 진행</li>
+          <li>Q&A 대응</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Interactive Clinical Trial Recommendation</span>
+      <span class="page-no">10 / 10</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+{
+  "accuracy": 0.725,
+  "n": 40,
+  "n_total_labels": 40,
+  "n_unmatched": 0,
+  "confusion": {
+    "MET": {
+      "MET": 4,
+      "UNCERTAIN": 1
+    },
+    "NOT_MET": {
+      "MET": 2,
+      "NOT_MET": 1,
+      "UNKNOWN": 2
+    },
+    "UNCERTAIN": {
+      "UNCERTAIN": 2,
+      "UNKNOWN": 1
+    },
+    "UNKNOWN": {
+      "MET": 2,
+      "NOT_MET": 2,
+      "UNCERTAIN": 1,
+      "UNKNOWN": 22
+    }
+  },
+  "errors": [
+    {
+      "patient_id": "S001",
+      "nct_id": "NCT07144917",
+      "criterion_text": "Functional hyposplenism or asplenia, patient under long-term antibiotic prophylaxis for this reason",
+      "expected": "UNKNOWN",
+      "predicted": "MET"
+    },
+    {
+      "patient_id": "S003",
+      "nct_id": "NCT06607991",
+      "criterion_text": "Calcineurin inhibitor-resistant after ≥6 months of adequate dosing, OR calcineurin inhibitor-intolerant with documented contraindications, OR inadequate response or disease relapse after treatment with ≥2 other immunosuppressive agents",
+      "expected": "NOT_MET",
+      "predicted": "UNKNOWN"
+    },
+    {
+      "patient_id": "S003",
+      "nct_id": "NCT06162546",
+      "criterion_text": "Steroid-dependence or frequently relapsing disease, unless complete remission achieved",
+      "expected": "NOT_MET",
+      "predicted": "UNKNOWN"
+    },
+    {
+      "patient_id": "S004",
+      "nct_id": "NCT06493370",
+      "criterion_text": "Muscle invasive bladder cancer that is cisplatin-ineligible or declined based on Galsky criteria",
+      "expected": "UNKNOWN",
+      "predicted": "UNCERTAIN"
+    },
+    {
+      "patient_id": "S004",
+      "nct_id": "NCT04916990",
+      "criterion_text": "Age under 18 years old",
+      "expected": "NOT_MET",
+      "predicted": "MET"
+    },
+    {
+      "patient_id": "S005",
+      "nct_id": "NCT06995729",
+      "criterion_text": "Continuous migraine (defined as an unrelenting headache) within 1 month prior to Screening Visit",
+      "expected": "NOT_MET",
+      "predicted": "MET"
+    },
+    {
+      "patient_id": "S006",
+      "nct_id": "NCT07339800",
+      "criterion_text": "No diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria",
+      "expected": "UNKNOWN",
+      "predicted": "NOT_MET"
+    },
+    {
+      "patient_id": "S007",
+      "nct_id": "NCT04515251",
+      "criterion_text": "Male and female children",
+      "expected": "MET",
+      "predicted": "UNCERTAIN"
+    },
+    {
+      "patient_id": "S007",
+      "nct_id": "NCT04515251",
+      "criterion_text": "Oncologic patients at risk of neoplastic cachexia",
+      "expected": "UNKNOWN",
+      "predicted": "MET"
+    },
+    {
+      "patient_id": "S009",
+      "nct_id": "NCT00032513",
+      "criterion_text": "Detection of elevated levels of EBV DNA, RNA or proteins in affected tissues OR elevated levels of EBV DNA in the peripheral blood",
+      "expected": "UNCERTAIN",
+      "predicted": "UNKNOWN"
+    },
+    {
+      "patient_id": "S009",
+      "nct_id": "NCT00032513",
+      "criterion_text": "Any other condition that, in the opinion of the investigator, would make the patient unsuitable for enrollment or could interfere with the patient participating in the study",
+      "expected": "UNKNOWN",
+      "predicted": "NOT_MET"
+    }
+  ],
+  "analysis": "Overall accuracy is 72% (29/40 labeled criteria matched exactly, n=40 total labels, 0 unmatched due to criterion-text drift). The weakest verdict class is NOT_MET at 20% recall, meaning the matcher most often mislabels this ground-truth category as something else. 4 case(s) where the true label is UNKNOWN (vignette genuinely silent) were instead called MET or NOT_MET -- the matcher's most consequential failure mode, since it manufactures certainty the source data doesn't support. The remaining 7 error(s) are boundary calls between UNCERTAIN and a definite verdict, which is a lower-stakes miss than the UNKNOWN-to-definite case. Labels were hand-written from criterion text + vignette alone, blind to the matcher's own output, so this number reflects genuine matcher accuracy rather than label leakage."
+}

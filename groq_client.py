@@ -96,7 +96,7 @@ def call_groq(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=T
                     parsed = json.loads(raw)
                 except json.JSONDecodeError as je:
                     last_err = je
-                    print(f"  [groq] {role}: malformed JSON (attempt {attempt+1}/{max_retries}), retrying in {backoff}s")
+                    print(f"  [groq] {role}: malformed JSON (attempt {attempt+1}/{max_retries}), retrying in {backoff}s", flush=True)
                     time.sleep(backoff)
                     backoff *= 2
                     continue
@@ -109,14 +109,17 @@ def call_groq(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=T
             if e.code == 429 or e.code >= 500:
                 retry_after = e.headers.get("Retry-After")
                 wait = float(retry_after) if retry_after else backoff
-                print(f"  [groq] {role}: HTTP {e.code}, retrying in {wait}s (attempt {attempt+1}/{max_retries})")
+                # Never trust a multi-hour Retry-After verbatim (daily-quota 429s hand back
+                # tens of thousands of seconds — slept 10.5h on one of these on 2026-07-08).
+                wait = min(wait, 900.0)
+                print(f"  [groq] {role}: HTTP {e.code}, retrying in {wait}s (attempt {attempt+1}/{max_retries})", flush=True)
                 time.sleep(wait)
                 backoff *= 2
                 continue
             raise RuntimeError(f"Groq API error {e.code} for role={role}: {body_txt}") from e
         except (urllib.error.URLError, TimeoutError) as e:
             last_err = e
-            print(f"  [groq] {role}: {e}, retrying in {backoff}s (attempt {attempt+1}/{max_retries})")
+            print(f"  [groq] {role}: {e}, retrying in {backoff}s (attempt {attempt+1}/{max_retries})", flush=True)
             time.sleep(backoff)
             backoff *= 2
 

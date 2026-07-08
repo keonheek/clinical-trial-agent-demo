@@ -12,8 +12,11 @@ Roles (each = one independent Groq LLM call, own system prompt):
   (e) question-generator  gaps                    -> <=3 clarifying questions
   (f) recommender         trial matches            -> ranked trials + overall eligibility
 
-LLM = Groq free tier only (see groq_client.py). Every call is cached to disk in cache/ so
-re-running this script after the first successful build makes ZERO new API calls.
+LLM backend is switchable via LLM_BACKEND env var:
+    claude (default) — headless `claude -p` on the local subscription (claude_client.py)
+    groq             — Groq free tier (groq_client.py); daily quota crawls under load
+Every call is cached to disk in cache/ (keyed per backend model), so re-running this
+script after the first successful build makes ZERO new LLM calls.
 
 Run:
     python3 pipeline.py
@@ -26,12 +29,16 @@ import os
 import sys
 import time
 
-from groq_client import call_groq, stats, DEFAULT_MODEL
+if os.environ.get("LLM_BACKEND", "groq") == "groq":
+    from groq_client import call_groq, stats, DEFAULT_MODEL
+else:
+    from claude_client import call_llm as call_groq, stats, DEFAULT_MODEL
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TRIALS_PER_PATIENT = 4
 MAX_REASONING_WORDS = 25
 MAX_RATIONALE_WORDS = 30
+MAX_EXTENDED_RECORD_WORDS = 180
 
 VALID_VERDICTS = {"MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"}
 VALID_ELIGIBILITY = {"ELIGIBLE", "INELIGIBLE", "UNCERTAIN"}
@@ -335,6 +342,203 @@ Rank these trials and assign eligibility per your instructions."""
 
 
 # ---------------------------------------------------------------------------
+# (g) reeval: record-and-answer generator
+# ---------------------------------------------------------------------------
+RECORD_ANSWER_SYS = """You are simulating a realistic clinical follow-up encounter.
+You are given a patient vignette and a short list of clarifying questions a clinician asked
+to resolve missing information gaps for clinical-trial matching. Generate PLAUSIBLE, CLINICALLY
+CONSISTENT synthetic follow-up data (labs, exam findings, history, imaging) that a real patient
+matching this vignette's diagnosis would plausibly have, and that directly answers each question.
+Do not contradict anything already stated in the vignette. Prefer concrete numeric values
+(e.g. TSH, fT4, creatinine, dates) over vague statements where clinically appropriate.
+
+Then write ONE combined "extended_record" paragraph (<=180 words) containing all this new
+synthetic follow-up information as plain clinical prose (this is the ONLY place this new
+information lives -- do not put facts in an answer that are not ALSO in extended_record).
+
+For each question, write a short "answer" and an "evidence_quote" that MUST be an EXACT
+verbatim substring copied character-for-character from your own extended_record (same spelling,
+spacing, punctuation) that supports the answer. Never paraphrase the quote.
+
+Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
+{"extended_record": "<paragraph, <=180 words, synthetic but clinically plausible>",
+ "answers": [{"question": "<question text, copied verbatim from the question given>",
+              "answer": "<short answer>",
+              "evidence_quote": "<verbatim substring of extended_record>"}]}
+Return exactly one answer object per question given."""
+
+
+def generate_extended_record(patient, questions):
+    if not questions:
+        return "", []
+    q_lines = "\n".join(f"- {q['question']}" for q in questions)
+    user = f"""Patient vignette (id {patient['patient_id']}, condition: {patient.get('condition', '')}):
+\"\"\"
+{patient['text']}
+\"\"\"
+
+Clarifying questions asked during follow-up:
+{q_lines}
+
+Generate the extended_record and answers per your instructions."""
+    result = call_groq("reeval-record-answer", RECORD_ANSWER_SYS, user)
+    extended_record = truncate_words(str(result.get("extended_record", "")).strip(), MAX_EXTENDED_RECORD_WORDS)
+    answers_raw = result.get("answers", [])
+    verified = []
+    for a in answers_raw:
+        question = str(a.get("question", "")).strip()
+        answer = str(a.get("answer", "")).strip()
+        quote = str(a.get("evidence_quote", "")).strip()
+        if not question or not answer or not quote:
+            continue
+        if quote in extended_record:
+            verified.append({"question": question, "answer": answer, "evidence_quote": quote})
+        # else: dropped -- fails the same verbatim-grounding bar as (b) patient-extractor
+    return extended_record, verified
+
+
+# ---------------------------------------------------------------------------
+# (h) reeval: targeted rematcher (only criteria the answers actually affect)
+# ---------------------------------------------------------------------------
+REEVAL_MATCHER_SYS = """You are a clinical-trial eligibility matcher doing a RE-EVALUATION pass.
+The patient's original vignette was insufficient to decide some criteria (UNKNOWN/UNCERTAIN).
+Follow-up information has since been obtained (the "extended record"). Re-decide ONLY the
+listed criteria using the ORIGINAL vignette PLUS the extended record together.
+Use the same verdict semantics as a standard matcher:
+  "MET": patient's data now directly satisfies this criterion (inclusion) or patient clearly
+         does NOT have the excluded condition (exclusion).
+  "NOT_MET": patient's data now directly contradicts/fails this criterion (inclusion), or the
+         patient DOES have the excluded condition (exclusion).
+  "UNCERTAIN": partial/ambiguous info that could still go either way.
+  "UNKNOWN": still no information addressing this criterion, even after the extended record.
+`evidence` must be a short quote from the vignette or extended record, or null if UNKNOWN.
+`reasoning` must be <= 25 words.
+Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
+{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "evidence": "<quote>"|null, "reasoning": "<short reasoning>"}]}
+Return exactly one match object per criterion given, using the given index numbers."""
+
+
+def rematch_affected_criteria(patient, extended_record, affected):
+    """affected: list of {nct_id, trial_idx, crit_idx, text, type, before_verdict}"""
+    if not affected:
+        return []
+    lines = "\n".join(
+        f"{i+1}. [{a['nct_id']}] [{a['type']}] {a['text']}" for i, a in enumerate(affected)
+    )
+    user = f"""Original patient vignette:
+\"\"\"
+{patient['text']}
+\"\"\"
+
+Extended record (new follow-up information obtained since the original vignette):
+\"\"\"
+{extended_record}
+\"\"\"
+
+Criteria to re-evaluate (numbered, [trial NCT ID] [inclusion/exclusion]):
+{lines}
+
+Re-evaluate each numbered criterion per your instructions."""
+    result = call_groq("reeval-matcher", REEVAL_MATCHER_SYS, user)
+    matches = result.get("matches", [])
+    by_index = {}
+    for m in matches:
+        try:
+            idx = int(m.get("index"))
+        except (TypeError, ValueError):
+            continue
+        verdict = str(m.get("verdict", "")).strip().upper()
+        if verdict not in VALID_VERDICTS:
+            verdict = "UNCERTAIN"
+        evidence = m.get("evidence")
+        evidence = str(evidence).strip() if evidence else None
+        reasoning = truncate_words(str(m.get("reasoning", "")).strip(), MAX_REASONING_WORDS)
+        by_index[idx] = {"verdict": verdict, "evidence": evidence, "reasoning": reasoning}
+
+    out = []
+    for i, a in enumerate(affected):
+        r = by_index.get(i + 1, {"verdict": a["before_verdict"], "evidence": None,
+                                  "reasoning": "reeval-matcher did not return a verdict; kept prior verdict"})
+        out.append({**a, "after_verdict": r["verdict"], "after_evidence": r["evidence"],
+                     "after_reasoning": r["reasoning"]})
+    return out
+
+
+def run_reeval(patient, gaps, questions, trials_out):
+    """Stage 5 (재평가): simulate the answer round, re-match only affected criteria, re-rank."""
+    empty = {
+        "extended_record": "", "answers": [], "verdict_changes": [],
+        "final_ranking": [{"nct_id": t["nct_id"], "rank": t["rank"],
+                            "eligibility": t["eligibility"], "rationale": t["rationale"]}
+                           for t in trials_out],
+    }
+    if not questions or not gaps:
+        return empty
+
+    print(f"  [reeval] simulating extended patient record + answer round...")
+    extended_record, answers = generate_extended_record(patient, questions)
+    if not extended_record or not answers:
+        print(f"    -> record/answer generation failed grounding check, skipping reeval")
+        return empty
+
+    gaps_by_field = {g["field"]: g for g in gaps}
+    answered_fields = {q["field"] for q in questions
+                        if any(a["question"] == q["question"] for a in answers)}
+    target_criteria_texts = set()
+    for field in answered_fields:
+        g = gaps_by_field.get(field)
+        if g:
+            target_criteria_texts.update(g.get("related_criteria", []))
+
+    affected = []
+    for t_idx, t in enumerate(trials_out):
+        for c_idx, c in enumerate(t["criteria"]):
+            if c["text"] in target_criteria_texts and c["verdict"] in ("UNKNOWN", "UNCERTAIN"):
+                affected.append({
+                    "nct_id": t["nct_id"], "trial_idx": t_idx, "crit_idx": c_idx,
+                    "text": c["text"], "type": c["type"], "before_verdict": c["verdict"],
+                })
+
+    if not affected:
+        print(f"    -> no criteria matched to answered gaps, skipping rematch")
+        return {**empty, "extended_record": extended_record, "answers": answers}
+
+    print(f"  [reeval] re-matching {len(affected)} affected criteria...")
+    rematched = rematch_affected_criteria(patient, extended_record, affected)
+
+    verdict_changes = []
+    updated_trials = [dict(t, criteria=[dict(c) for c in t["criteria"]]) for t in trials_out]
+    for r in rematched:
+        crit = updated_trials[r["trial_idx"]]["criteria"][r["crit_idx"]]
+        crit["verdict"] = r["after_verdict"]
+        if r["after_evidence"]:
+            crit["evidence"] = r["after_evidence"]
+        crit["reasoning"] = r["after_reasoning"]
+        if r["after_verdict"] != r["before_verdict"]:
+            verdict_changes.append({
+                "nct_id": r["nct_id"], "criterion": r["text"],
+                "before": r["before_verdict"], "after": r["after_verdict"],
+            })
+
+    print(f"    -> {len(verdict_changes)} verdict change(s)")
+    print(f"  [reeval] re-ranking with updated criteria...")
+    recs = recommend(patient, updated_trials)
+    final_ranking = []
+    for t in updated_trials:
+        r = recs.get(t["nct_id"], {"eligibility": t["eligibility"], "rank": t["rank"], "rationale": t["rationale"]})
+        final_ranking.append({"nct_id": t["nct_id"], "rank": r["rank"],
+                               "eligibility": r["eligibility"], "rationale": r["rationale"]})
+    final_ranking.sort(key=lambda r: r["rank"])
+
+    return {
+        "extended_record": extended_record,
+        "answers": answers,
+        "verdict_changes": verdict_changes,
+        "final_ranking": final_ranking,
+    }
+
+
+# ---------------------------------------------------------------------------
 # main orchestration
 # ---------------------------------------------------------------------------
 def run_patient(patient, trials_raw_for_patient):
@@ -387,12 +591,15 @@ def run_patient(patient, trials_raw_for_patient):
 
     trials_out.sort(key=lambda t: t["rank"])
 
+    reeval = run_reeval(patient, gaps, questions, trials_out)
+
     return {
         "patient_id": pid,
         "patient_text": patient["text"],
         "extraction": fields,
         "trials": trials_out,
         "questions": questions,
+        "reeval": reeval,
         "generated_at": "2026-07-08",
     }
 

@@ -28,9 +28,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TRACES_JSON = os.path.join(HERE, "traces.json")
 TRACES_JS = os.path.join(HERE, "traces.js")
 
-REQUIRED_TRACE_KEYS = {"patient_id", "patient_text", "extraction", "trials", "questions", "generated_at"}
+REQUIRED_TRACE_KEYS = {"patient_id", "patient_text", "extraction", "trials", "questions", "reeval", "generated_at"}
 REQUIRED_TRIAL_KEYS = {"nct_id", "title", "phase", "criteria", "eligibility", "rank", "rationale"}
 REQUIRED_CRITERION_KEYS = {"text", "type", "verdict", "evidence", "reasoning"}
+REQUIRED_REEVAL_KEYS = {"extended_record", "answers", "verdict_changes", "final_ranking"}
+REQUIRED_ANSWER_KEYS = {"question", "answer", "evidence_quote"}
+REQUIRED_VERDICT_CHANGE_KEYS = {"nct_id", "criterion", "before", "after"}
 VALID_VERDICTS = {"MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"}
 VALID_ELIGIBILITY = {"ELIGIBLE", "INELIGIBLE", "UNCERTAIN"}
 
@@ -159,6 +162,92 @@ def check_structural_shape(traces):
     return n_trials, n_criteria
 
 
+def check_reeval_structure_and_grounding(traces):
+    print("\n--- Check 6: reeval block structure + HARD grounding (answers <- extended_record) ---")
+    total_answers = 0
+    ungrounded_answers = 0
+    total_changes = 0
+    bad_change_refs = 0
+    patients_with_reeval_content = 0
+
+    for trace in traces:
+        pid = trace.get("patient_id", "?")
+        reeval = trace.get("reeval")
+        if reeval is None:
+            fail(f"[{pid}] missing 'reeval' key entirely")
+            continue
+        missing = REQUIRED_REEVAL_KEYS - set(reeval.keys())
+        if missing:
+            fail(f"[{pid}] reeval block missing keys: {missing}")
+            continue
+
+        extended_record = reeval.get("extended_record", "")
+        answers = reeval.get("answers", [])
+        verdict_changes = reeval.get("verdict_changes", [])
+        final_ranking = reeval.get("final_ranking", [])
+
+        if extended_record or answers or verdict_changes:
+            patients_with_reeval_content += 1
+
+        # HARD: every answer's evidence_quote must be a verbatim substring of extended_record
+        for a in answers:
+            total_answers += 1
+            missing_a = REQUIRED_ANSWER_KEYS - set(a.keys())
+            if missing_a:
+                fail(f"[{pid}] reeval answer missing keys: {missing_a}")
+                ungrounded_answers += 1
+                continue
+            quote = a.get("evidence_quote", "")
+            if not quote or quote not in extended_record:
+                ungrounded_answers += 1
+                fail(f"[{pid}] reeval answer NOT grounded: evidence_quote={quote!r} "
+                     f"not a verbatim substring of this patient's extended_record")
+
+        # HARD: every verdict_changes[].criterion must reference a REAL criterion text that
+        # exists under that nct_id in this patient's trials[].criteria[]
+        criteria_by_nct = {}
+        for trial in trace.get("trials", []):
+            criteria_by_nct[trial.get("nct_id")] = {c["text"] for c in trial.get("criteria", [])}
+        for vc in verdict_changes:
+            total_changes += 1
+            missing_vc = REQUIRED_VERDICT_CHANGE_KEYS - set(vc.keys())
+            if missing_vc:
+                fail(f"[{pid}] verdict_change missing keys: {missing_vc}")
+                bad_change_refs += 1
+                continue
+            nct_id = vc.get("nct_id")
+            criterion = vc.get("criterion")
+            valid_texts = criteria_by_nct.get(nct_id, set())
+            if criterion not in valid_texts:
+                bad_change_refs += 1
+                fail(f"[{pid}] verdict_change references a criterion NOT found under "
+                     f"{nct_id}'s trial criteria: {criterion!r}")
+            if vc.get("before") not in VALID_VERDICTS or vc.get("after") not in VALID_VERDICTS:
+                fail(f"[{pid}] verdict_change has invalid before/after verdict: "
+                     f"{vc.get('before')!r} -> {vc.get('after')!r}")
+            if vc.get("before") == vc.get("after"):
+                fail(f"[{pid}] verdict_change has identical before/after ({vc.get('before')!r}) "
+                     f"-- not a real change")
+
+        # sanity: final_ranking entries must reference real trials for this patient
+        real_ncts = set(criteria_by_nct.keys())
+        for fr in final_ranking:
+            if fr.get("nct_id") not in real_ncts:
+                fail(f"[{pid}] final_ranking references unknown nct_id: {fr.get('nct_id')!r}")
+            if fr.get("eligibility") not in VALID_ELIGIBILITY:
+                fail(f"[{pid}] final_ranking has invalid eligibility: {fr.get('eligibility')!r}")
+
+    if total_answers:
+        ok(f"reeval answers grounded: {total_answers - ungrounded_answers}/{total_answers} "
+           f"verbatim-in-extended_record across {len(traces)} patients")
+    else:
+        warn("no reeval answers found across any patient (no gaps needed re-answering?)")
+    if total_changes:
+        ok(f"verdict_changes reference real criteria: {total_changes - bad_change_refs}/{total_changes} valid")
+    print(f"INFO: {patients_with_reeval_content}/{len(traces)} patients produced non-empty reeval content")
+    return total_answers, ungrounded_answers, total_changes, bad_change_refs
+
+
 def check_matcher_evidence_soft(traces):
     print("\n--- Check 5 (soft/informational): criteria[].evidence verbatim in patient_text ---")
     total_with_evidence = 0
@@ -189,6 +278,7 @@ def main():
 
     check_evidence_quotes_verbatim(traces)
     check_structural_shape(traces)
+    check_reeval_structure_and_grounding(traces)
     check_matcher_evidence_soft(traces)
 
     print("\n=== SUMMARY ===")

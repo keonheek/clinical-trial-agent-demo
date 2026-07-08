@@ -53,7 +53,37 @@
     margin:0 auto;
   }
   header.topbar h1{font-size:1.5rem;margin:0 0 6px;}
-  header.topbar .subtitle{margin:0;color:var(--ink-soft);font-size:0.95rem;}
+  header.topbar .subtitle{margin:0 0 14px;color:var(--ink-soft);font-size:0.95rem;}
+
+  /* ---- eval panel + "what this demo shows" box ---- */
+  .eval-panel{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 16px;
+    margin-bottom:10px;
+    font-size:0.86rem;
+    background:var(--bg);
+  }
+  .eval-panel strong{color:var(--accent-dark);}
+  .eval-panel .eval-sub{display:block;margin-top:3px;color:var(--ink-soft);font-size:0.78rem;}
+
+  .demo-shows{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 16px;
+    background:var(--bg-alt);
+    font-size:0.85rem;
+  }
+  .demo-shows strong{
+    display:block;
+    margin-bottom:6px;
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+  }
+  .demo-shows ul{margin:0;padding-left:18px;}
+  .demo-shows li{margin-bottom:2px;}
 
   /* ---- agent map strip ---- */
   .agent-map{
@@ -287,6 +317,75 @@
   .rec-card .rationale{font-size:0.88rem;color:var(--ink);}
   .rec-card .phase{font-size:0.78rem;color:var(--ink-soft);}
 
+  /* ---- stage (5) reeval ---- */
+  .stage-sub{margin:20px 0 14px;}
+  .stage-sub h3{font-size:0.92rem;margin:0 0 8px;color:var(--ink);}
+  .stage-sub .hint{font-size:0.78rem;color:var(--ink-soft);margin:0 0 8px;}
+
+  .reeval-qa-card{
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent);
+    border-radius:6px;
+    padding:10px 14px;
+    margin-bottom:10px;
+  }
+  .reeval-qa-card .field{font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;}
+  .reeval-qa-card .q{font-weight:600;margin:2px 0 4px;}
+  .reeval-qa-card .a{color:var(--accent-dark);font-weight:600;}
+  .reeval-qa-card .a .label{color:var(--ink-soft);font-weight:400;}
+
+  .verdict-change-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 14px;
+    margin-bottom:8px;
+  }
+  .verdict-change-row .vc-crit{flex:1 1 260px;min-width:0;}
+  .verdict-change-row .vc-crit .nct{display:block;font-size:0.74rem;color:var(--ink-soft);margin-bottom:2px;}
+  .verdict-change-row .vc-badges{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+  .verdict-change-row .arrow{font-weight:700;color:var(--accent);font-size:1.05rem;}
+
+  .final-rank-card{
+    display:grid;
+    grid-template-columns:44px 1fr auto auto;
+    gap:14px;
+    align-items:start;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .final-rank-card .rank{font-size:1.3rem;font-weight:700;color:var(--accent);text-align:center;}
+  .final-rank-card h3{font-size:0.98rem;margin:0 0 4px;}
+  .final-rank-card .nct{font-size:0.8rem;color:var(--ink-soft);margin-bottom:6px;}
+  .final-rank-card .rationale{font-size:0.88rem;color:var(--ink);}
+  .final-rank-card .elig-change{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+
+  .delta{
+    display:inline-block;
+    font-size:0.74rem;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:99px;
+    white-space:nowrap;
+  }
+  .delta-up{background:var(--met-bg);color:var(--met);}
+  .delta-down{background:var(--not-met-bg);color:var(--not-met);}
+  .delta-flat{background:var(--unknown-bg);color:var(--unknown);}
+
+  .no-change-note{
+    border:1px dashed var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+    color:var(--ink-soft);
+    font-size:0.88rem;
+    margin-bottom:14px;
+  }
+
   .empty-note{
     border:1px dashed var(--line);
     border-radius:8px;
@@ -336,6 +435,16 @@
 <header class="topbar">
   <h1>Interactive Clinical Trial Recommendation</h1>
   <p class="subtitle">임상시험 프로토콜과 환자 정보를 매칭하는 멀티 에이전트 시스템 데모</p>
+  <div class="eval-panel" id="evalPanel"></div>
+  <div class="demo-shows">
+    <strong>이 데모가 보여주는 것</strong>
+    <ul>
+      <li>근거 인용 검증: 모든 인용은 원문 문자열 일치를 강제합니다</li>
+      <li>불확실성 보존: 정보가 부족하면 과대판정하지 않고 UNCERTAIN/UNKNOWN으로 남깁니다</li>
+      <li>재평가 루프: 질문 → 답변 → 재매칭 → 재순위 결정까지 전 과정을 추적합니다</li>
+      <li>자체 정확도 측정: 라벨링된 정답과 대조한 매칭 정확도를 공개합니다</li>
+    </ul>
+  </div>
 </header>
 
 <nav class="agent-map" id="agentMap">
@@ -345,6 +454,7 @@
   <div class="agent-step" data-group="questions"><span class="n">4</span>부족정보 탐지</div>
   <div class="agent-step" data-group="questions"><span class="n">5</span>질문 생성</div>
   <div class="agent-step" data-group="recommend"><span class="n">6</span>추천·설명</div>
+  <div class="agent-step" data-group="reeval"><span class="n">7</span>재평가</div>
 </nav>
 
 <div class="shell">
@@ -355,7 +465,7 @@
 
   <main id="mainContent">
     <div class="empty-note" id="emptyNote" style="display:none;">
-      traces.js 없음 — <code>python3 pipeline.py</code> 실행 후 새로고침 해주세요.
+      traces.js 없음: <code>python3 pipeline.py</code> 실행 후 새로고침 해주세요.
     </div>
 
     <section class="stage" id="stage-extraction" data-group="extraction">
@@ -383,6 +493,11 @@
       <div class="stage-head"><span class="num">④</span><h2>최종 추천</h2></div>
       <div id="recommendBody"></div>
     </section>
+
+    <section class="stage" id="stage-reeval" data-group="reeval">
+      <div class="stage-head"><span class="num">⑤</span><h2>질문 → 답변 반영 → 재평가</h2></div>
+      <div id="reevalBody"></div>
+    </section>
   </main>
 </div>
 
@@ -393,6 +508,7 @@
 <div id="selftest-panel" style="display:none;"></div>
 
 <script src="traces.js"></script>
+<script src="eval_results.js"></script>
 <script>
 (function(){
   "use strict";
@@ -438,19 +554,17 @@
     });
   }
 
-  function renderExtraction(trace){
-    var vignette = document.getElementById("vignetteBox");
-    var body = document.getElementById("extractionBody");
-    var text = trace.patient_text || "";
-    var extraction = trace.extraction || [];
-
-    // build a combined highlight over the vignette for all evidence quotes
+  // build a combined highlight over `text` for every quote in `quotes` (skips
+  // quotes that don't resolve verbatim, and skips overlapping matches).
+  // Shared by stage ① (vignette vs extraction quotes) and stage ⑤ (extended
+  // record vs reeval answer quotes).
+  function highlightQuotesInText(text, quotes){
     var marks = [];
-    extraction.forEach(function(ex){
-      if(ex.evidence_quote){
-        var idx = text.indexOf(ex.evidence_quote);
+    (quotes || []).forEach(function(quote){
+      if(quote){
+        var idx = text.indexOf(quote);
         if(idx !== -1){
-          marks.push({start: idx, end: idx + ex.evidence_quote.length});
+          marks.push({start: idx, end: idx + quote.length});
         }
       }
     });
@@ -464,6 +578,16 @@
       cursor = m.end;
     });
     html += escapeHtml(text.slice(cursor));
+    return html;
+  }
+
+  function renderExtraction(trace){
+    var vignette = document.getElementById("vignetteBox");
+    var body = document.getElementById("extractionBody");
+    var text = trace.patient_text || "";
+    var extraction = trace.extraction || [];
+
+    var html = highlightQuotesInText(text, extraction.map(function(ex){ return ex.evidence_quote; }));
     vignette.innerHTML = html || "<em>환자 텍스트 없음</em>";
 
     body.innerHTML = "";
@@ -513,8 +637,8 @@
           "<td>" + escapeHtml(c.text) + "</td>" +
           "<td><span class=\"tag " + typeClass + "\">" + typeLabel + "</span></td>" +
           "<td><span class=\"" + badgeClass("verdict", c.verdict) + "\">" + escapeHtml(c.verdict || "UNKNOWN") + "</span></td>" +
-          "<td>" + escapeHtml(c.evidence || "—") + "</td>" +
-          "<td>" + escapeHtml(c.reasoning || "—") + "</td>";
+          "<td>" + escapeHtml(c.evidence || "-") + "</td>" +
+          "<td>" + escapeHtml(c.reasoning || "-") + "</td>";
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
@@ -530,7 +654,7 @@
     container.innerHTML = "";
     var questions = trace.questions || [];
     if(questions.length === 0){
-      container.innerHTML = "<p>추가 확인 질문 없음 — 모든 필요 정보가 충분합니다.</p>";
+      container.innerHTML = "<p>추가 확인 질문 없음: 모든 필요 정보가 충분합니다.</p>";
       return;
     }
     questions.forEach(function(q){
@@ -561,7 +685,7 @@
       card.className = "rec-card";
       var url = "https://clinicaltrials.gov/study/" + encodeURIComponent(trial.nct_id || "");
       card.innerHTML =
-        "<div class=\"rank\">" + escapeHtml(trial.rank != null ? trial.rank : "—") + "</div>" +
+        "<div class=\"rank\">" + escapeHtml(trial.rank != null ? trial.rank : "-") + "</div>" +
         "<div>" +
           "<h3>" + escapeHtml(trial.title || "") + "</h3>" +
           "<div class=\"nct\"><a href=\"" + url + "\" target=\"_blank\" rel=\"noopener\">" + escapeHtml(trial.nct_id || "") + "</a>" +
@@ -570,6 +694,152 @@
         "</div>" +
         "<span class=\"" + badgeClass("elig", trial.eligibility) + "\">" + escapeHtml(trial.eligibility || "UNKNOWN") + "</span>";
       container.appendChild(card);
+    });
+  }
+
+  function renderEvalPanel(){
+    var el = document.getElementById("evalPanel");
+    if(!el) return;
+    var ev = (typeof window.EVAL !== "undefined") ? window.EVAL : null;
+    if(ev && typeof ev.accuracy === "number" && typeof ev.n === "number"){
+      var pct = Math.round(ev.accuracy * 100);
+      el.innerHTML = "<strong>자체 평가:</strong> 매칭 정확도 " + pct + "% (n=" + ev.n + " labeled criteria)" +
+        (ev.analysis ? "<span class=\"eval-sub\">" + escapeHtml(ev.analysis) + "</span>" : "");
+    } else {
+      el.innerHTML = "<strong>자체 평가:</strong> 준비 중: eval_labels.json 라벨링 및 <code>python3 eval.py</code> 실행 후 이 자리에 정확도가 표시됩니다.";
+    }
+  }
+
+  function renderReeval(trace){
+    var container = document.getElementById("reevalBody");
+    container.innerHTML = "";
+    var reeval = trace.reeval;
+
+    if(!reeval){
+      container.innerHTML = "<div class=\"no-change-note\">이 환자의 재평가(reeval) 데이터가 아직 없습니다: <code>python3 pipeline.py</code> 재실행 후 traces.js를 갱신해주세요.</div>";
+      return;
+    }
+
+    var extendedRecord = reeval.extended_record || "";
+    var answers = reeval.answers || [];
+    var verdictChanges = reeval.verdict_changes || [];
+    var finalRanking = reeval.final_ranking || [];
+
+    // (a) extended record + the simulated Q&A round
+    if(extendedRecord){
+      var recSub = document.createElement("div");
+      recSub.className = "stage-sub";
+      recSub.innerHTML = "<h3>확장된 환자 기록 (시뮬레이션된 후속 진료)</h3>" +
+        "<div class=\"vignette\" id=\"reevalRecordBox\"></div>";
+      container.appendChild(recSub);
+      document.getElementById("reevalRecordBox").innerHTML =
+        highlightQuotesInText(extendedRecord, answers.map(function(a){ return a.evidence_quote; })) ||
+        "<em>기록 없음</em>";
+
+      var qaSub = document.createElement("div");
+      qaSub.className = "stage-sub";
+      var qaHtml = "<h3>질문에 대한 답변</h3>";
+      if(answers.length === 0){
+        qaHtml += "<p class=\"hint\">이 라운드에서 생성된 답변이 없습니다.</p>";
+      } else {
+        answers.forEach(function(a){
+          qaHtml += "<div class=\"reeval-qa-card\">" +
+            "<div class=\"q\">Q. " + escapeHtml(a.question || "") + "</div>" +
+            "<div class=\"a\"><span class=\"label\">A. </span>" + escapeHtml(a.answer || "") + "</div>" +
+            "</div>";
+        });
+      }
+      qaSub.innerHTML = qaHtml;
+      container.appendChild(qaSub);
+    } else {
+      var noneSub = document.createElement("div");
+      noneSub.className = "no-change-note";
+      noneSub.textContent = (trace.questions && trace.questions.length > 0)
+        ? "질문은 생성되었지만 재평가에 필요한 확장 기록이 만들어지지 않았습니다 (근거 검증 실패 또는 관련 기준 없음)."
+        : "이 환자는 확인이 필요한 기준이 없어 질문-답변 재평가 라운드가 트리거되지 않았습니다.";
+      container.appendChild(noneSub);
+    }
+
+    // (b) verdict-change rows: the headline delta of this stage
+    var vcSub = document.createElement("div");
+    vcSub.className = "stage-sub";
+    var vcHtml = "<h3>판정 변화 (" + verdictChanges.length + "건)</h3>";
+    if(verdictChanges.length === 0){
+      vcHtml += "<p class=\"hint\">답변 반영 후에도 확정적으로 바뀐 판정은 없습니다.</p>";
+      vcSub.innerHTML = vcHtml;
+      container.appendChild(vcSub);
+    } else {
+      vcSub.innerHTML = vcHtml;
+      container.appendChild(vcSub);
+      verdictChanges.forEach(function(vc){
+        var row = document.createElement("div");
+        row.className = "verdict-change-row";
+        row.innerHTML =
+          "<div class=\"vc-crit\"><span class=\"nct\">" + escapeHtml(vc.nct_id || "") + "</span>" + escapeHtml(vc.criterion || "") + "</div>" +
+          "<div class=\"vc-badges\">" +
+            "<span class=\"" + badgeClass("verdict", vc.before) + "\">" + escapeHtml(vc.before || "") + "</span>" +
+            "<span class=\"arrow\">→</span>" +
+            "<span class=\"" + badgeClass("verdict", vc.after) + "\">" + escapeHtml(vc.after || "") + "</span>" +
+          "</div>";
+        vcSub.appendChild(row);
+      });
+    }
+
+    // (c) final ranking, with delta vs the pre-reeval rank/eligibility
+    var origByNct = {};
+    (trace.trials || []).forEach(function(t){ origByNct[t.nct_id] = t; });
+
+    var rankSub = document.createElement("div");
+    rankSub.className = "stage-sub";
+    rankSub.innerHTML = "<h3>재평가 후 업데이트된 순위</h3>";
+    container.appendChild(rankSub);
+
+    if(finalRanking.length === 0){
+      var noRank = document.createElement("p");
+      noRank.className = "hint";
+      noRank.textContent = "업데이트된 순위 없음";
+      rankSub.appendChild(noRank);
+      return;
+    }
+
+    var sorted = finalRanking.slice().sort(function(a,b){
+      var ra = (a.rank == null) ? 999 : a.rank;
+      var rb = (b.rank == null) ? 999 : b.rank;
+      return ra - rb;
+    });
+    sorted.forEach(function(fr){
+      var orig = origByNct[fr.nct_id] || {};
+      var card = document.createElement("div");
+      card.className = "final-rank-card";
+
+      var deltaHtml = "<span class=\"delta delta-flat\">순위 변동 없음</span>";
+      if(orig.rank != null && fr.rank != null){
+        var diff = orig.rank - fr.rank; // positive = moved up (rank number decreased)
+        if(diff > 0) deltaHtml = "<span class=\"delta delta-up\">▲ " + diff + "단계 상승</span>";
+        else if(diff < 0) deltaHtml = "<span class=\"delta delta-down\">▼ " + Math.abs(diff) + "단계 하락</span>";
+      }
+
+      var eligHtml;
+      if(orig.eligibility && orig.eligibility !== fr.eligibility){
+        eligHtml = "<div class=\"elig-change\">" +
+          "<span class=\"" + badgeClass("elig", orig.eligibility) + "\">" + escapeHtml(orig.eligibility) + "</span>" +
+          "<span class=\"arrow\">→</span>" +
+          "<span class=\"" + badgeClass("elig", fr.eligibility) + "\">" + escapeHtml(fr.eligibility) + "</span>" +
+        "</div>";
+      } else {
+        eligHtml = "<span class=\"" + badgeClass("elig", fr.eligibility) + "\">" + escapeHtml(fr.eligibility || "UNKNOWN") + "</span>";
+      }
+
+      card.innerHTML =
+        "<div class=\"rank\">" + escapeHtml(fr.rank != null ? fr.rank : "-") + "</div>" +
+        "<div>" +
+          "<h3>" + escapeHtml(orig.title || fr.nct_id || "") + "</h3>" +
+          "<div class=\"nct\">" + escapeHtml(fr.nct_id || "") + "</div>" +
+          "<div class=\"rationale\">" + escapeHtml(fr.rationale || "") + "</div>" +
+        "</div>" +
+        "<div>" + deltaHtml + "</div>" +
+        "<div>" + eligHtml + "</div>";
+      rankSub.appendChild(card);
     });
   }
 
@@ -587,6 +857,7 @@
     renderMatching(trace);
     renderQuestions(trace);
     renderRecommend(trace);
+    renderReeval(trace);
   }
 
   /* ---- scroll-spy over agent map ---- */
@@ -606,7 +877,7 @@
 
     // The -60% bottom rootMargin below means a short last section can never
     // cross into the "active" band on pages not much taller than the
-    // viewport. Force the last stage active once scrolled to the bottom —
+    // viewport. Force the last stage active once scrolled to the bottom -
     // checked every time the observer fires, since that reliably tracks
     // scroll position (a plain "scroll" listener does not always fire on
     // programmatic/instant scrolls).
@@ -661,7 +932,7 @@
     try {
       // Load-bearing for stage ①: the UI highlights evidence_quote by finding
       // it verbatim inside patient_text. If a quote doesn't resolve, the
-      // highlight silently disappears — so check the actual match, not just
+      // highlight silently disappears: so check the actual match, not just
       // that the field exists.
       var okExtraction = (window.TRACES || []).every(function(t){
         return (t.extraction || []).every(function(ex){
@@ -692,12 +963,87 @@
       assert("every trace's questions[] items (if any) have field/question/why", okQuestions);
     } catch(e){ assert("every trace's questions[] items (if any) have field/question/why", false); }
 
+    try {
+      // Stage (5): every trace must carry a reeval block with all four required
+      // keys (matches pipeline.py's run_reeval() / assert_traces.py's
+      // REQUIRED_REEVAL_KEYS). This is expected to FAIL against real traces.js
+      // until the pipeline agent's reeval-producing run lands: that failure is
+      // a correct signal, not a bug in this check.
+      var okReevalShape = (window.TRACES || []).length > 0 && (window.TRACES || []).every(function(t){
+        var r = t.reeval;
+        return r && typeof r.extended_record === "string" &&
+          Array.isArray(r.answers) && Array.isArray(r.verdict_changes) && Array.isArray(r.final_ranking);
+      });
+      assert("every trace has reeval{extended_record,answers[],verdict_changes[],final_ranking[]}", okReevalShape);
+    } catch(e){ assert("every trace has reeval{extended_record,answers[],verdict_changes[],final_ranking[]}", false); }
+
+    try {
+      // HARD grounding check mirroring assert_traces.py Check 6: every reeval
+      // answer's evidence_quote must resolve verbatim inside THAT patient's
+      // extended_record, or the stage ⑤ highlight silently renders nothing.
+      var okReevalGrounding = (window.TRACES || []).every(function(t){
+        var r = t.reeval;
+        if(!r) return true; // covered by the shape check above
+        return (r.answers || []).every(function(a){
+          return a && typeof a.question === "string" && typeof a.answer === "string" &&
+            typeof a.evidence_quote === "string" &&
+            r.extended_record.indexOf(a.evidence_quote) !== -1;
+        });
+      });
+      assert("every reeval answer's evidence_quote resolves verbatim inside its own extended_record", okReevalGrounding);
+    } catch(e){ assert("every reeval answer's evidence_quote resolves verbatim inside its own extended_record", false); }
+
+    try {
+      // verdict_changes must use valid verdict enums and reference nct_ids that
+      // actually exist in that trace's trials[] (loose ref check; full
+      // criterion-text cross-check is assert_traces.py's job, not the browser's).
+      var validVerdicts = ["MET","NOT_MET","UNCERTAIN","UNKNOWN"];
+      var okVerdictChanges = (window.TRACES || []).every(function(t){
+        var r = t.reeval;
+        if(!r) return true;
+        var ncts = (t.trials || []).map(function(tr){ return tr.nct_id; });
+        return (r.verdict_changes || []).every(function(vc){
+          return vc && "nct_id" in vc && "criterion" in vc &&
+            validVerdicts.indexOf(vc.before) !== -1 && validVerdicts.indexOf(vc.after) !== -1 &&
+            ncts.indexOf(vc.nct_id) !== -1;
+        });
+      });
+      assert("every reeval verdict_change has valid before/after verdict + a real nct_id", okVerdictChanges);
+    } catch(e){ assert("every reeval verdict_change has valid before/after verdict + a real nct_id", false); }
+
+    try {
+      var okFinalRanking = (window.TRACES || []).every(function(t){
+        var r = t.reeval;
+        if(!r) return true;
+        return Array.isArray(r.final_ranking) && r.final_ranking.every(function(fr){
+          return fr && "nct_id" in fr && typeof fr.rank !== "undefined" &&
+            ["ELIGIBLE","INELIGIBLE","UNCERTAIN"].indexOf(fr.eligibility) !== -1;
+        });
+      });
+      assert("every reeval final_ranking[] entry has nct_id/rank/valid eligibility", okFinalRanking);
+    } catch(e){ assert("every reeval final_ranking[] entry has nct_id/rank/valid eligibility", false); }
+
+    try {
+      // window.EVAL is optional (may not exist yet), but if present it must be
+      // either the explicit null placeholder or carry accuracy/n/confusion.
+      var ev = (typeof window.EVAL !== "undefined") ? window.EVAL : null;
+      var okEval = (ev === null) || (typeof ev.accuracy === "number" && typeof ev.n === "number" && ev.confusion);
+      assert("window.EVAL is null placeholder or has accuracy/n/confusion", okEval);
+    } catch(e){ assert("window.EVAL is null placeholder or has accuracy/n/confusion", false); }
+
+    try {
+      // 10-patient layout guard: the sidebar must render one button per
+      // patient without silently truncating (scroll handles overflow, CSS-side).
+      var okPatientButtons = document.querySelectorAll("#patientList .patient-btn").length === (window.TRACES || []).length;
+      assert("patient selector renders one button per trace (no silent truncation)", okPatientButtons);
+    } catch(e){ assert("patient selector renders one button per trace (no silent truncation)", false); }
+
     var panel = document.getElementById("selftest-panel");
     var passCount = results.filter(function(r){ return r.pass; }).length;
     var allPass = passCount === results.length;
     var html = "<h4>SELFTEST</h4><ul>";
     results.forEach(function(r){
-      html += "<li class=\"" + (r.pass ? "pass" : "fail") + "\">" + (r.pass ? "PASS" : "FAIL") + " — " + escapeHtml(r.name) + "</li>";
+      html += "<li class=\"" + (r.pass ? "pass" : "fail") + "\">" + (r.pass ? "PASS" : "FAIL") + ": " + escapeHtml(r.name) + "</li>";
     });
     html += "</ul><div class=\"overall\" style=\"color:" + (allPass ? "var(--met)" : "var(--not-met)") + ";\">" +
       (allPass ? "ALL PASS" : "FAILED (" + (results.length - passCount) + "/" + results.length + ")") + "</div>";
@@ -705,6 +1051,7 @@
     panel.style.display = "block";
   }
 
+  renderEvalPanel();
   renderAll();
   initScrollSpy();
 

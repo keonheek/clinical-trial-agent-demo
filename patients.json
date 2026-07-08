@@ -1,17 +1,52 @@
 [
   {
     "patient_id": "S001",
-    "text": "54yo man, chronic alcohol use, severe epigastric pain radiating to back, nausea, vomiting, elevated lipase/amylase",
+    "text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
     "condition": "acute pancreatitis (alcohol-related)"
   },
   {
     "patient_id": "S002",
-    "text": "29yo woman, palpitations, heat intolerance, weight loss, fine tremor, tachycardia, diffuse non-tender goiter",
+    "text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
     "condition": "Graves disease / hyperthyroidism"
   },
   {
+    "patient_id": "S003",
+    "text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
+    "condition": "nephrotic syndrome (pediatric)"
+  },
+  {
+    "patient_id": "S004",
+    "text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
+    "condition": "bladder cancer"
+  },
+  {
+    "patient_id": "S005",
+    "text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+    "condition": "migraine with aura"
+  },
+  {
+    "patient_id": "S006",
+    "text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
+    "condition": "rhino-orbital-cerebral mucormycosis (diabetic)"
+  },
+  {
+    "patient_id": "S007",
+    "text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
+    "condition": "infantile hypertrophic pyloric stenosis"
+  },
+  {
     "patient_id": "S008",
-    "text": "60yo woman, progressive dyspnea, dry cough, finger clubbing, CT bilateral basal reticular opacities with honeycombing",
+    "text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
     "condition": "idiopathic pulmonary fibrosis"
+  },
+  {
+    "patient_id": "S009",
+    "text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
+    "condition": "infectious mononucleosis (EBV)"
+  },
+  {
+    "patient_id": "S010",
+    "text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
+    "condition": "rhegmatogenous retinal detachment"
   }
 ]
