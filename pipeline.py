@@ -29,8 +29,11 @@ import os
 import sys
 import time
 
-if os.environ.get("LLM_BACKEND", "groq") == "groq":
+_BACKEND = os.environ.get("LLM_BACKEND", "groq")
+if _BACKEND == "groq":
     from groq_client import call_groq, stats, DEFAULT_MODEL
+elif _BACKEND == "anthropic":
+    from anthropic_client import call_llm as call_groq, stats, DEFAULT_MODEL
 else:
     from claude_client import call_llm as call_groq, stats, DEFAULT_MODEL
 
@@ -42,6 +45,32 @@ MAX_EXTENDED_RECORD_WORDS = 180
 
 VALID_VERDICTS = {"MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"}
 VALID_ELIGIBILITY = {"ELIGIBLE", "INELIGIBLE", "UNCERTAIN"}
+VALID_EFFECTS = {"PASS", "FAIL", "REVIEW"}
+
+# Two-layer verdict model.
+#
+# Layer 1 (verdict): is the criterion STATEMENT true of this patient? This is a plain
+# reading-comprehension question, identical for inclusion and exclusion criteria, and is what
+# the matcher LLM is asked. MET = the statement describes the patient.
+#
+# Layer 2 (effect): does that make the patient pass or fail this trial? This depends on whether
+# the criterion is inclusion or exclusion, and is pure logic -- so it is computed here in code,
+# never inferred by a model. An exclusion criterion the patient MEETS excludes them.
+#
+# Before this split, "MET" silently meant "statement is true" to the human labelers and
+# "patient passes" to the matcher, and the recommender prompt used both readings in adjacent
+# sentences. Exclusion criteria were therefore scored inverted. See EVAL-NOTES.md.
+EFFECT_TABLE = {
+    ("inclusion", "MET"): "PASS",
+    ("inclusion", "NOT_MET"): "FAIL",
+    ("exclusion", "MET"): "FAIL",
+    ("exclusion", "NOT_MET"): "PASS",
+}
+
+
+def effect_of(criterion_type, verdict):
+    """Map (criterion type, criterion-truth verdict) -> eligibility effect. Pure function."""
+    return EFFECT_TABLE.get((criterion_type, verdict), "REVIEW")
 
 
 def truncate_words(text, n):
@@ -131,13 +160,22 @@ Extract fields per your instructions. Remember: evidence_quote must be copied ve
 # ---------------------------------------------------------------------------
 MATCHER_SYS = """You are a clinical-trial eligibility matcher.
 You receive a patient's extracted clinical fields and a numbered list of trial eligibility
-criteria (each labelled inclusion or exclusion). For EACH criterion, decide:
-  - "MET": the patient's data directly satisfies this criterion (for inclusion) or the
-           patient clearly does NOT have the excluded condition (for exclusion).
-  - "NOT_MET": the patient's data directly contradicts/fails this criterion (for inclusion),
-           or the patient DOES have the excluded condition (for exclusion).
-  - "UNCERTAIN": there is partial/ambiguous patient info that could go either way.
+criteria (each labelled inclusion or exclusion).
+
+For EACH criterion, answer ONE question only: is the criterion STATEMENT true of this patient?
+Do NOT reason about whether the patient qualifies for the trial. Do NOT invert your answer for
+exclusion criteria. Whether a true statement helps or hurts the patient is decided downstream,
+not by you. Judge the sentence exactly as written.
+  - "MET": the statement is TRUE of this patient (the patient has/does what it describes).
+           Example: criterion "Age under 18 years old", patient is 9 -> MET.
+           Example: criterion "Age under 18 years old", patient is 54 -> NOT_MET.
+           This holds regardless of whether the criterion is inclusion or exclusion.
+  - "NOT_MET": the statement is FALSE of this patient (the patient's data contradicts it).
+  - "UNCERTAIN": partial/ambiguous patient info that could go either way.
   - "UNKNOWN": the vignette contains NO information addressing this criterion at all (a gap).
+Absence of evidence is NOT evidence of absence: if the vignette simply never mentions the
+condition, that is UNKNOWN, not NOT_MET. A criterion resting on the investigator's discretion
+or opinion is never decidable from the record; return UNKNOWN for it.
 `evidence` must be a short quote copied from the patient's fields/vignette that supports your
 verdict, or null if verdict is UNKNOWN. `reasoning` must be <= 25 words, plain clinical language.
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
@@ -186,6 +224,7 @@ Evaluate each numbered criterion per your instructions."""
             "text": c["text"],
             "type": c["type"],
             "verdict": m["verdict"],
+            "effect": effect_of(c["type"], m["verdict"]),
             "evidence": m["evidence"],
             "reasoning": m["reasoning"],
         })
@@ -283,61 +322,93 @@ Generate at most 3 clarifying questions per your instructions."""
 # ---------------------------------------------------------------------------
 # (f) recommender
 # ---------------------------------------------------------------------------
-RECOMMENDER_SYS = """You are a clinical-trial recommendation ranker.
-You receive a patient vignette and, for each candidate trial, its criteria with verdicts
-(MET/NOT_MET/UNCERTAIN/UNKNOWN per criterion). Decide an overall eligibility label per trial:
-  - "ELIGIBLE": no exclusion criteria are MET (i.e. patient doesn't have excluded condition)
-    and all/most inclusion criteria are MET, with no NOT_MET inclusion criteria.
-  - "INELIGIBLE": at least one exclusion criterion verdict indicates the patient HAS the
-    excluded condition (NOT_MET on an exclusion item means patient fails it -- re-read verdict
-    semantics carefully), or a required inclusion criterion is clearly NOT_MET.
-  - "UNCERTAIN": mixed picture, or too many UNKNOWN/UNCERTAIN criteria to decide confidently.
-Then RANK the trials for this patient (1 = best match), favoring ELIGIBLE trials and trials
-with fewer UNKNOWN/UNCERTAIN gaps. Give a rationale <= 30 words per trial citing the concrete
-clinical reason (e.g. "TRAb-positive Graves confirmed by goiter+tachycardia; no exclusions met").
+RECOMMENDER_SYS = """You are a clinical-trial recommendation writer.
+You receive a patient vignette and, for each candidate trial, its eligibility status and the
+criteria that drove it. The eligibility status and the ranking have ALREADY been decided by a
+deterministic rule and are given to you. Do not dispute them, re-derive them, or re-order the
+trials -- your only job is to write the human-readable rationale for each.
+Write <= 30 words per trial, citing the concrete clinical reason, in plain clinical language
+(e.g. "TRAb-positive Graves confirmed by goiter and tachycardia; no exclusion criteria triggered"
+or "Excluded: patient is 9 years old and the trial bars anyone under 18").
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"recommendations": [{"nct_id": "<id>", "rank": <int>, "eligibility": "ELIGIBLE"|"INELIGIBLE"|"UNCERTAIN", "rationale": "<short rationale>"}]}
+{"rationales": [{"nct_id": "<id>", "rationale": "<short rationale>"}]}
 Include exactly one entry per trial given."""
 
 
+def decide_eligibility(criteria):
+    """Deterministic eligibility from criterion effects. No LLM, so polarity cannot be inferred
+    wrong. Hierarchy (a hard failure is never averaged away by a pile of passes):
+      1. any FAIL   -> INELIGIBLE   (excluded condition present, or required inclusion contradicted)
+      2. any REVIEW -> UNCERTAIN    (something undecidable remains)
+      3. else       -> ELIGIBLE
+    """
+    fails = [c for c in criteria if c.get("effect") == "FAIL"]
+    reviews = [c for c in criteria if c.get("effect") == "REVIEW"]
+    if fails:
+        eligibility = "INELIGIBLE"
+    elif reviews:
+        eligibility = "UNCERTAIN"
+    else:
+        eligibility = "ELIGIBLE"
+    return eligibility, fails, reviews
+
+
+ELIGIBILITY_ORDER = {"ELIGIBLE": 0, "UNCERTAIN": 1, "INELIGIBLE": 2}
+
+
 def recommend(patient, trials_with_criteria):
-    trial_blocks = []
+    # Layer 1: decide + rank in code.
+    decided = []
     for t in trials_with_criteria:
-        lines = "\n".join(
-            f"  - [{c['type']}] {c['text']} -> {c['verdict']}" for c in t["criteria"]
+        eligibility, fails, reviews = decide_eligibility(t["criteria"])
+        decided.append({
+            "nct_id": t["nct_id"], "title": t["title"], "phase": t["phase"],
+            "eligibility": eligibility, "fails": fails, "reviews": reviews,
+        })
+    # Best match first: eligible before uncertain before ineligible; within a class, the trial
+    # with the fewest unresolved criteria wins (a more confidently-established match).
+    decided.sort(key=lambda d: (ELIGIBILITY_ORDER[d["eligibility"]], len(d["reviews"]), len(d["fails"])))
+    for i, d in enumerate(decided):
+        d["rank"] = i + 1
+
+    # Layer 2: the model only narrates the decision it was handed.
+    trial_blocks = []
+    for d in decided:
+        drivers = []
+        for c in d["fails"][:3]:
+            drivers.append(f"  FAILS [{c['type']}] {c['text']} (patient verdict: {c['verdict']})")
+        for c in d["reviews"][:3]:
+            drivers.append(f"  UNRESOLVED [{c['type']}] {c['text']} (patient verdict: {c['verdict']})")
+        if not drivers:
+            drivers.append("  all criteria pass")
+        trial_blocks.append(
+            f"{d['nct_id']} ({d['title']}, phase {d['phase']}) -> {d['eligibility']}, rank {d['rank']}\n"
+            + "\n".join(drivers)
         )
-        trial_blocks.append(f"{t['nct_id']} ({t['title']}, phase {t['phase']}):\n{lines}")
     user = f"""Patient vignette:
 \"\"\"
 {patient['text']}
 \"\"\"
 
-Candidate trials with per-criterion verdicts:
+Candidate trials, with their already-decided eligibility and the criteria that drove it:
 {chr(10).join(trial_blocks)}
 
-Rank these trials and assign eligibility per your instructions."""
+Write one rationale per trial per your instructions."""
     result = call_groq("recommender", RECOMMENDER_SYS, user)
-    recs = result.get("recommendations", [])
-    by_id = {}
-    for r in recs:
+    rationales = {}
+    for r in result.get("rationales", []):
         nct_id = str(r.get("nct_id", "")).strip()
-        if not nct_id:
-            continue
-        elig = str(r.get("eligibility", "")).strip().upper()
-        if elig not in VALID_ELIGIBILITY:
-            elig = "UNCERTAIN"
-        try:
-            rank = int(r.get("rank"))
-        except (TypeError, ValueError):
-            rank = 99
-        rationale = truncate_words(str(r.get("rationale", "")).strip(), MAX_RATIONALE_WORDS)
-        by_id[nct_id] = {"eligibility": elig, "rank": rank, "rationale": rationale}
+        if nct_id:
+            rationales[nct_id] = truncate_words(
+                str(r.get("rationale", "")).strip(), MAX_RATIONALE_WORDS)
 
-    # fallback for any trial the model forgot
-    for i, t in enumerate(trials_with_criteria):
-        if t["nct_id"] not in by_id:
-            by_id[t["nct_id"]] = {"eligibility": "UNCERTAIN", "rank": 99 + i,
-                                   "rationale": "recommender did not return a rationale for this trial"}
+    by_id = {}
+    for d in decided:
+        by_id[d["nct_id"]] = {
+            "eligibility": d["eligibility"],
+            "rank": d["rank"],
+            "rationale": rationales.get(d["nct_id"], "no rationale returned for this trial"),
+        }
     return by_id
 
 
@@ -404,11 +475,12 @@ REEVAL_MATCHER_SYS = """You are a clinical-trial eligibility matcher doing a RE-
 The patient's original vignette was insufficient to decide some criteria (UNKNOWN/UNCERTAIN).
 Follow-up information has since been obtained (the "extended record"). Re-decide ONLY the
 listed criteria using the ORIGINAL vignette PLUS the extended record together.
-Use the same verdict semantics as a standard matcher:
-  "MET": patient's data now directly satisfies this criterion (inclusion) or patient clearly
-         does NOT have the excluded condition (exclusion).
-  "NOT_MET": patient's data now directly contradicts/fails this criterion (inclusion), or the
-         patient DOES have the excluded condition (exclusion).
+Answer ONE question per criterion: is the criterion STATEMENT true of this patient? Do not
+reason about whether the patient qualifies, and do not invert your answer for exclusion
+criteria. Judge the sentence exactly as written; the pass/fail consequence is decided elsewhere.
+  "MET": the statement is now TRUE of this patient (e.g. criterion "Age under 18", patient
+         is 9 -> MET; patient is 54 -> NOT_MET). Same rule for inclusion and exclusion.
+  "NOT_MET": the statement is FALSE of this patient (the record contradicts it).
   "UNCERTAIN": partial/ambiguous info that could still go either way.
   "UNKNOWN": still no information addressing this criterion, even after the extended record.
 `evidence` must be a short quote from the vignette or extended record, or null if UNKNOWN.
@@ -511,6 +583,7 @@ def run_reeval(patient, gaps, questions, trials_out):
     for r in rematched:
         crit = updated_trials[r["trial_idx"]]["criteria"][r["crit_idx"]]
         crit["verdict"] = r["after_verdict"]
+        crit["effect"] = effect_of(crit["type"], r["after_verdict"])
         if r["after_evidence"]:
             crit["evidence"] = r["after_evidence"]
         crit["reasoning"] = r["after_reasoning"]

@@ -29,6 +29,7 @@ from pipeline import (
     generate_questions,
     recommend,
     rematch_affected_criteria,
+    effect_of,
     TRIALS_PER_PATIENT,
 )
 
@@ -240,6 +241,7 @@ def handle_answer(session, question_text, answer_text):
         for r in rematched:
             crit = session["trials_out"][r["trial_idx"]]["criteria"][r["crit_idx"]]
             crit["verdict"] = r["after_verdict"]
+            crit["effect"] = effect_of(crit["type"], r["after_verdict"])
             if r["after_evidence"]:
                 crit["evidence"] = r["after_evidence"]
             crit["reasoning"] = r["after_reasoning"]

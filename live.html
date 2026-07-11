@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Interactive Clinical Trial Recommendation — Live</title>
+<title>Interactive Clinical Trial Recommendation (Live)</title>
 <style>
   :root{
     --accent:#0f6e5a;
@@ -156,6 +156,13 @@
   .badge-ELIGIBLE{background:var(--met-bg);color:var(--met);}
   .badge-INELIGIBLE{background:var(--not-met-bg);color:var(--not-met);}
 
+  .badge.quiet{background:#fff;border:1px solid var(--line);color:var(--ink-soft);font-weight:600;}
+  .badge-PASS{background:var(--met-bg);color:var(--met);}
+  .badge-FAIL{background:var(--not-met-bg);color:var(--not-met);}
+  .badge-REVIEW{background:var(--uncertain-bg);color:var(--uncertain);}
+
+  .stage-note{color:var(--ink-soft);font-size:0.85rem;margin:0 0 14px;}
+
   .tag{display:inline-block;font-size:0.7rem;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--ink-soft);}
   .tag.inclusion{border-color:#bcd8ce;color:var(--accent-dark);}
   .tag.exclusion{border-color:#e3c2bd;color:#8a3a33;}
@@ -173,9 +180,10 @@
   .trial-card .rationale{font-size:0.85rem;color:var(--ink-soft);margin:0 0 10px;}
 
   .crit-row{
-    display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:start;
+    display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start;
     padding:8px 0;border-top:1px solid var(--line);
   }
+  .crit-row .badge{margin-right:4px;}
   .crit-row:first-of-type{border-top:none;}
   .crit-row .crit-text{font-size:0.85rem;}
   .crit-row .crit-evidence{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:0.76rem;color:var(--ink-soft);margin-top:3px;}
@@ -245,6 +253,7 @@
     <div class="empty-note" id="emptyNote">왼쪽에서 환자를 선택하거나 새 환자 정보를 입력하세요.</div>
 
     <div id="vignetteBox" class="vignette" style="display:none;"></div>
+    <p class="stage-note" id="verdictLegend" style="display:none;">각 기준에는 두 가지가 표시됩니다. 적격성 효과(PASS, FAIL, REVIEW)는 참여 가능 여부에 미치는 영향이고, 그 옆의 조건 판정(MET, NOT_MET, UNKNOWN)은 기준 문장이 환자에게 해당하는지만 나타냅니다. 제외 기준의 조건 판정이 MET이면 환자가 그 조건을 가지고 있다는 뜻이므로 적격성 효과는 FAIL이 됩니다.</p>
     <div id="trialsBody"></div>
     <div id="questionsDock" class="questions-dock" style="display:none;">
       <h2>확인 질문</h2>
@@ -281,6 +290,30 @@ function el(tag, cls, html){
 
 function badge(kind, text){
   return '<span class="badge badge-' + kind + '">' + escapeHtml(text) + '</span>';
+}
+
+// `effect` is computed once, in pipeline.py, by a lookup table (effect_of). It is deliberately
+// NOT recomputed here: one definition of the rule, in one place, is the whole point of the fix.
+//
+// It is also not derived for criteria that lack the field. Data generated before the fix used
+// the opposite convention on exclusion criteria (MET meant "the patient does not have the
+// excluded condition"), so feeding those verdicts through the current table inverts them and an
+// adult patient would display as FAILING "Age under 18". Old data can only be regenerated, not
+// converted. Say we do not know rather than confidently show a lie.
+function getEffect(c){
+  if (c && c.effect) return String(c.effect).toUpperCase();
+  return null;
+}
+
+// The effect is the headline, because it is the clinical consequence. The verdict sits beside
+// it, quiet, as the plain reading it was derived from.
+function verdictPair(c){
+  var v = (c.verdict || "UNKNOWN").toUpperCase();
+  var e = getEffect(c);
+  var effectChip = e
+    ? '<span class="badge badge-' + e + '">' + escapeHtml(e) + '</span>'
+    : '<span class="badge quiet">산출 전</span>';
+  return effectChip + '<span class="badge quiet">' + escapeHtml(v) + '</span>';
 }
 
 // ---- patient list ----
@@ -384,7 +417,13 @@ function renderVignette(patient){
 
 function renderTrials(trials){
   var box = document.getElementById("trialsBody");
-  if (!trials || trials.length === 0){ box.innerHTML = ""; return; }
+  var legend = document.getElementById("verdictLegend");
+  if (!trials || trials.length === 0){
+    box.innerHTML = "";
+    if (legend) legend.style.display = "none";
+    return;
+  }
+  if (legend) legend.style.display = "";
   var sorted = trials.slice().sort(function(a,b){ return (a.rank||99) - (b.rank||99); });
   box.innerHTML = "";
   sorted.forEach(function(t){
@@ -408,7 +447,7 @@ function renderTrials(trials){
       row.dataset.nct = t.nct_id;
       row.dataset.critText = c.text;
       row.innerHTML =
-        '<div>' + badge(c.verdict, c.verdict) + '<br><span class="tag ' + c.type + '">' + (c.type === "inclusion" ? "포함" : "제외") + '</span></div>' +
+        '<div>' + verdictPair(c) + '<br><span class="tag ' + c.type + '">' + (c.type === "inclusion" ? "포함" : "제외") + '</span></div>' +
         '<div><div class="crit-text">' + escapeHtml(c.text) + '</div>' +
         (c.evidence ? '<div class="crit-evidence">&quot;' + escapeHtml(c.evidence) + '&quot;</div>' : '') +
         (c.reasoning ? '<div class="crit-reason">' + escapeHtml(c.reasoning) + '</div>' : '') + '</div>';

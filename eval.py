@@ -20,6 +20,8 @@ import json
 import os
 from collections import defaultdict
 
+from pipeline import effect_of
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 VERDICTS = ["MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"]
 
@@ -38,6 +40,73 @@ def build_pipeline_lookup(traces):
             for c in trial["criteria"]:
                 lookup[(pid, trial["nct_id"], c["text"])] = c["verdict"]
     return lookup
+
+
+def compute_safety_metrics(labels, traces):
+    """Metrics that overall accuracy hides.
+
+    Accuracy weights every criterion equally, so a model can score well while systematically
+    missing the criteria that actually make a patient ineligible. In trial matching the failure
+    modes are not symmetric: telling an ineligible patient they qualify is far worse than being
+    unsure about an eligible one. These three separate the dangerous errors from the harmless.
+
+    All three are derived from the existing labels plus the effect table -- no relabelling
+    needed, because `effect` is a pure function of (criterion type, criterion-truth verdict).
+    """
+    # (patient, nct, criterion) -> (type, predicted verdict)
+    info = {}
+    for t in traces:
+        for trial in t["trials"]:
+            for c in trial["criteria"]:
+                info[(t["patient_id"], trial["nct_id"], c["text"])] = (c["type"], c["verdict"])
+
+    missed_fails = []          # truth says this criterion excludes the patient; we did not
+    false_certainty = []       # record is silent; we asserted a definite verdict anyway
+    n_true_fail = 0
+    n_true_unknown = 0
+
+    for row in labels:
+        key = (row["patient_id"], row["nct_id"], row["criterion_text"])
+        if key not in info:
+            continue
+        ctype, predicted = info[key]
+        expected = row["expected_verdict"]
+
+        expected_effect = effect_of(ctype, expected)
+        predicted_effect = effect_of(ctype, predicted)
+
+        if expected_effect == "FAIL":
+            n_true_fail += 1
+            if predicted_effect != "FAIL":
+                missed_fails.append({
+                    "patient_id": row["patient_id"], "nct_id": row["nct_id"],
+                    "criterion_text": row["criterion_text"], "type": ctype,
+                    "expected": expected, "predicted": predicted,
+                    "predicted_effect": predicted_effect,
+                })
+
+        if expected == "UNKNOWN":
+            n_true_unknown += 1
+            if predicted in ("MET", "NOT_MET"):
+                false_certainty.append({
+                    "patient_id": row["patient_id"], "nct_id": row["nct_id"],
+                    "criterion_text": row["criterion_text"], "predicted": predicted,
+                })
+
+    def rate(hit, total):
+        return round(hit / total, 4) if total else None
+
+    return {
+        # Of the criteria that should disqualify the patient, how many did we catch?
+        # This is the number that decides whether the system is safe to show anyone.
+        "disqualifying_criterion_recall": rate(n_true_fail - len(missed_fails), n_true_fail),
+        "n_disqualifying_criteria": n_true_fail,
+        "missed_disqualifying_criteria": missed_fails,
+        # How often did we invent certainty the record does not support?
+        "false_certainty_rate": rate(len(false_certainty), n_true_unknown),
+        "n_record_silent_criteria": n_true_unknown,
+        "false_certainty_cases": false_certainty,
+    }
 
 
 def main():
@@ -78,6 +147,8 @@ def main():
     accuracy = (n_correct / n_matched) if n_matched else 0.0
 
     confusion_out = {v: {v2: confusion[v][v2] for v2 in VERDICTS if confusion[v][v2]} for v in VERDICTS}
+
+    safety = compute_safety_metrics(labels, traces)
 
     # ---- error analysis, computed directly from the confusion numbers, not LLM-generated ----
     total_labeled = len(labels)
@@ -125,6 +196,7 @@ def main():
         "n_total_labels": total_labeled,
         "n_unmatched": n_missing,
         "confusion": confusion_out,
+        "safety": safety,
         "errors": errors,
         "analysis": analysis,
     }
@@ -134,6 +206,20 @@ def main():
 
     print(f"Accuracy: {accuracy:.1%} ({n_correct}/{n_matched}, {n_missing} unmatched)")
     print(f"Confusion matrix: {json.dumps(confusion_out, indent=2)}")
+
+    dr = safety["disqualifying_criterion_recall"]
+    fc = safety["false_certainty_rate"]
+    print("\n--- Safety metrics (what overall accuracy hides) ---")
+    print(f"Disqualifying-criterion recall: "
+          f"{dr:.0%} ({safety['n_disqualifying_criteria'] - len(safety['missed_disqualifying_criteria'])}"
+          f"/{safety['n_disqualifying_criteria']})" if dr is not None else
+          "Disqualifying-criterion recall: n/a (no disqualifying criteria in the label set)")
+    print(f"  of the criteria that should rule the patient OUT, this is the share we caught")
+    print(f"False certainty rate: "
+          f"{fc:.0%} ({len(safety['false_certainty_cases'])}/{safety['n_record_silent_criteria']})"
+          if fc is not None else "False certainty rate: n/a")
+    print(f"  of the criteria the record is SILENT on, this is the share we answered anyway")
+
     print(f"\nAnalysis:\n{analysis}")
     print("\nWrote eval_results.json")
 
