@@ -2,3 +2,7 @@ cache/
 __pycache__/
 .venv/
 *.pyc
+
+# internal planning docs — never publish (public Pages repo)
+EARLYBIRD-FORM-ANSWERS.md
+TEAM-RESEARCH-SPLIT.md
