@@ -51,10 +51,17 @@ _stats = {"api_calls": 0, "cache_hits": 0, "in_tokens": 0, "out_tokens": 0, "usd
 _FENCE_RE = re.compile(r"```(?:json)?\s*|```", re.IGNORECASE)
 
 
+# ANTHROPIC_NEW_KEY first: the original ANTHROPIC_API_KEY authenticates but carries a zero
+# credit balance, so every call it makes dies with "credit balance is too low" AFTER passing
+# auth -- which looks like a working key right up until the request fails. Prefer the funded one.
+KEY_NAMES = ("ANTHROPIC_NEW_KEY", "ANTHROPIC_API_KEY")
+
+
 def _get_api_key():
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if key:
-        return key
+    for name in KEY_NAMES:
+        key = os.environ.get(name)
+        if key:
+            return key
     here = os.path.dirname(os.path.abspath(__file__))
     for candidate in (
         os.path.join(here, "..", "..", ".env.local"),
@@ -63,12 +70,18 @@ def _get_api_key():
         path = os.path.abspath(candidate)
         if not os.path.exists(path):
             continue
+        env = {}
         with open(path) as f:
             for line in f:
                 line = line.strip()
-                if line.startswith("ANTHROPIC_API_KEY="):
-                    return line.split("=", 1)[1].strip().strip('"').strip("'")
-    raise RuntimeError("ANTHROPIC_API_KEY not found in environment or repo-root .env")
+                for name in KEY_NAMES:
+                    if line.startswith(name + "="):
+                        env[name] = line.split("=", 1)[1].strip().strip('"').strip("'")
+        for name in KEY_NAMES:
+            if env.get(name):
+                return env[name]
+    raise RuntimeError(
+        f"no Anthropic key found. Set one of {KEY_NAMES} in the environment or repo-root .env")
 
 
 def _cache_key(role, model, system_prompt, user_prompt):
