@@ -1,0 +1,17 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/site.html" }
+  ],
+  "functions": {
+    "api/answer.py": {
+      "includeFiles": "{pipeline.py,anthropic_client.py,groq_client.py,claude_client.py,patients.json}",
+      "maxDuration": 60
+    },
+    "api/trace.py": {
+      "includeFiles": "traces.json"
+    },
+    "api/patients.py": {
+      "includeFiles": "patients.json"
+    }
+  }
+}
