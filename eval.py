@@ -96,11 +96,25 @@ def compute_safety_metrics(labels, traces):
     def rate(hit, total):
         return round(hit / total, 4) if total else None
 
+    # Not all misses are equal, and collapsing them into one number hides the only distinction
+    # that matters clinically. If a criterion should disqualify the patient and we instead said
+    # PASS, we have waved an ineligible patient through: that is the failure that could actually
+    # hurt someone. If we said REVIEW, we did not decide -- the criterion is flagged and the
+    # system asks about it. That is the system working as designed, not a safety failure.
+    wrongly_passed = [m for m in missed_fails if m["predicted_effect"] == "PASS"]
+    deferred = [m for m in missed_fails if m["predicted_effect"] == "REVIEW"]
+
     return {
-        # Of the criteria that should disqualify the patient, how many did we catch?
-        # This is the number that decides whether the system is safe to show anyone.
+        # Of the criteria that should disqualify the patient, how many did we catch outright?
         "disqualifying_criterion_recall": rate(n_true_fail - len(missed_fails), n_true_fail),
         "n_disqualifying_criteria": n_true_fail,
+        # THE number that decides whether this is safe to put in front of anyone.
+        # A disqualifying criterion we confidently marked as passing.
+        "wrongly_passed_rate": rate(len(wrongly_passed), n_true_fail),
+        "n_wrongly_passed": len(wrongly_passed),
+        "wrongly_passed": wrongly_passed,
+        # Disqualifying criteria we declined to decide. These become clarifying questions.
+        "n_deferred_to_review": len(deferred),
         "missed_disqualifying_criteria": missed_fails,
         # How often did we invent certainty the record does not support?
         "false_certainty_rate": rate(len(false_certainty), n_true_unknown),
@@ -207,18 +221,23 @@ def main():
     print(f"Accuracy: {accuracy:.1%} ({n_correct}/{n_matched}, {n_missing} unmatched)")
     print(f"Confusion matrix: {json.dumps(confusion_out, indent=2)}")
 
-    dr = safety["disqualifying_criterion_recall"]
-    fc = safety["false_certainty_rate"]
+    n_disq = safety["n_disqualifying_criteria"]
+    n_missed = len(safety["missed_disqualifying_criteria"])
     print("\n--- Safety metrics (what overall accuracy hides) ---")
-    print(f"Disqualifying-criterion recall: "
-          f"{dr:.0%} ({safety['n_disqualifying_criteria'] - len(safety['missed_disqualifying_criteria'])}"
-          f"/{safety['n_disqualifying_criteria']})" if dr is not None else
-          "Disqualifying-criterion recall: n/a (no disqualifying criteria in the label set)")
-    print(f"  of the criteria that should rule the patient OUT, this is the share we caught")
-    print(f"False certainty rate: "
-          f"{fc:.0%} ({len(safety['false_certainty_cases'])}/{safety['n_record_silent_criteria']})"
-          if fc is not None else "False certainty rate: n/a")
-    print(f"  of the criteria the record is SILENT on, this is the share we answered anyway")
+    if n_disq:
+        print(f"Criteria that should rule the patient OUT: {n_disq}")
+        print(f"  caught outright (FAIL)      : {n_disq - n_missed}")
+        print(f"  deferred to review          : {safety['n_deferred_to_review']}  "
+              f"(not decided; becomes a clarifying question)")
+        print(f"  WRONGLY PASSED              : {safety['n_wrongly_passed']}  "
+              f"(the failure that could actually hurt someone)")
+    else:
+        print("No disqualifying criteria in the label set.")
+    fc = safety["false_certainty_rate"]
+    if fc is not None:
+        print(f"False certainty rate: {fc:.0%} "
+              f"({len(safety['false_certainty_cases'])}/{safety['n_record_silent_criteria']})")
+        print("  of the criteria the record is SILENT on, the share we answered anyway")
 
     print(f"\nAnalysis:\n{analysis}")
     print("\nWrote eval_results.json")

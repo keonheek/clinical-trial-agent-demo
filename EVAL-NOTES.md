@@ -68,6 +68,56 @@ A single hard exclusion can no longer be averaged away by a pile of satisfied cr
 the failure mode a single fitness score invites. The recommender model no longer decides
 eligibility or ranking at all; it is handed the decision and only writes the rationale.
 
+## Results after the fix
+
+The pipeline was re-run end to end on all 10 official patients under the new semantics
+(Sonnet 5). Because the criteria-parser re-reads each trial, the criterion wording changed and
+21 of the 40 old labels no longer joined. Scoring on the 19 that survived would have given
+94.7%, but those are the criteria whose wording happened to stay stable, which biases toward the
+easy ones. So the label set was rebuilt: a fresh, deterministic, verdict-blind sample of 40
+(20 inclusion, 20 exclusion, all 10 patients) was re-annotated by an annotator that never saw
+the system's answers. All 40 join.
+
+| | Old run, colliding conventions | Old run, conventions reconciled | New run, fixed schema |
+|---|---|---|---|
+| Criterion accuracy | 72.5% (n=40) | 77.5% (n=40) | **82.5% (n=40)** |
+
+The first two columns are the clean apples-to-apples comparison: same data, same labels, nothing
+changed but the reading of the labels. That 5-point gap is the measurement bug alone. The third
+column is a fresh baseline and is not strictly comparable (new criterion set, new annotator, new
+model), so it should not be quoted as "the fix bought 10 points".
+
+### The safety numbers, which matter more than accuracy
+
+Of the 5 criteria in the label set that should rule a patient out of a trial:
+
+| Outcome | Count | Reading |
+|---|---|---|
+| Caught outright (FAIL) | 3 | correctly excluded |
+| Deferred to review | 2 | not decided; the system raises a clarifying question instead |
+| **Wrongly passed** | **0** | **an ineligible patient confidently waved through. None.** |
+
+False certainty rate: **4% (1 of 27)**. Of the criteria the vignette is genuinely silent on, the
+system invented an answer once.
+
+The distinction between "deferred" and "wrongly passed" is the entire safety argument, and
+collapsing them into a single recall number destroys it. Both of the deferred cases are ones
+where the annotator inferred a lab abnormality from a symptom cluster (a hyperthyroid
+presentation implying out-of-range thyroid hormones) while the matcher held out for the actual
+value. The matcher being conservative there is not a defect: it produces a question rather than
+a guess, which is exactly the behaviour the design is trying to buy.
+
+### Interactive loop
+
+Across the 10 patients the answer round produced 95 verdict changes, 84 of which turned an
+UNKNOWN or UNCERTAIN into a decided verdict. Six trials moved from UNCERTAIN to INELIGIBLE:
+the questions surfaced disqualifying facts that had been hidden behind missing information.
+
+No trial is ELIGIBLE before the question round, by design. Real vignettes never address all of a
+trial's criteria, and the hierarchy refuses to certify eligibility while anything material is
+unverified. Eligibility has to be earned by resolving the unknowns, which is what makes the
+interaction load-bearing rather than decorative.
+
 ## Why this matters beyond the bug
 
 The competition scores matching accuracy at 30%. An accuracy number computed against a ground
