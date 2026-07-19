@@ -4,43 +4,38 @@ window.TRACES = [
     "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
     "extraction": [
       {
-        "name": "age",
-        "value": "54 years",
-        "evidence_quote": "54-year-old"
+        "name": "Age",
+        "value": "54 years old",
+        "evidence_quote": "A 54-year-old man"
       },
       {
-        "name": "sex",
-        "value": "male",
-        "evidence_quote": "man"
+        "name": "Sex",
+        "value": "Male",
+        "evidence_quote": "A 54-year-old man"
       },
       {
-        "name": "history/risk factor",
-        "value": "chronic alcohol use",
-        "evidence_quote": "history of chronic alcohol use"
-      },
-      {
-        "name": "symptom",
-        "value": "severe epigastric pain radiating to the back",
+        "name": "Chief Complaint/Primary Symptom",
+        "value": "Severe epigastric pain radiating to the back",
         "evidence_quote": "severe epigastric pain radiating to the back"
       },
       {
-        "name": "symptom",
-        "value": "nausea",
-        "evidence_quote": "nausea"
+        "name": "Associated Symptoms",
+        "value": "Nausea and vomiting",
+        "evidence_quote": "nausea, and vomiting"
       },
       {
-        "name": "symptom",
-        "value": "vomiting",
-        "evidence_quote": "vomiting"
+        "name": "Medical History",
+        "value": "Chronic alcohol use",
+        "evidence_quote": "history of chronic alcohol use"
       },
       {
-        "name": "lab finding",
-        "value": "markedly elevated serum lipase",
-        "evidence_quote": "markedly elevated serum lipase and amylase"
+        "name": "Serum Lipase",
+        "value": "Markedly elevated",
+        "evidence_quote": "markedly elevated serum lipase"
       },
       {
-        "name": "lab finding",
-        "value": "markedly elevated serum amylase",
+        "name": "Serum Amylase",
+        "value": "Markedly elevated",
         "evidence_quote": "markedly elevated serum lipase and amylase"
       }
     ],
@@ -55,8 +50,8 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "54-year-old man",
-            "reasoning": "Patient is 54 years old, which satisfies age of 18 or older."
+            "evidence": "Age: 54 years old",
+            "reasoning": "Patient is 54 years old, which meets the criterion of age ≥ 18 years."
           },
           {
             "text": "All patients undergoing endoscopic treatment of pancreatic fluid collections",
@@ -64,15 +59,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette does not mention any endoscopic treatment or pancreatic fluid collections."
+            "reasoning": "Vignette describes acute pancreatitis presentation but contains no information about endoscopic treatment or pancreatic fluid collections."
           },
           {
             "text": "Age < 18 years",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "54-year-old man",
-            "reasoning": "Patient is 54 years old, not under 18."
+            "evidence": "Age: 54 years old",
+            "reasoning": "Patient is 54 years old; the exclusion criterion (age < 18) does not apply to this patient."
           },
           {
             "text": "Patients who did not receive endoscopic treatment of pancreatic fluid collections",
@@ -80,12 +75,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information given on whether patient received endoscopic treatment of fluid collections."
+            "reasoning": "Vignette does not specify whether endoscopic treatment was received or planned."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 1,
-        "rationale": "Acute pancreatitis confirmed, but vignette gives no data on a pancreatic fluid collection or endoscopic treatment, so eligibility for this registry is unresolved."
+        "rationale": "Acute pancreatitis with elevated lipase/amylase confirmed; eligibility depends on whether endoscopic pancreatic fluid collection management is clinically indicated—currently unknown."
       },
       {
         "nct_id": "NCT06401577",
@@ -97,8 +92,8 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "severe epigastric pain radiating to the back...markedly elevated serum lipase and amylase",
-            "reasoning": "Pain radiating to back plus markedly elevated lipase/amylase meet diagnostic criteria for current acute pancreatitis."
+            "evidence": "Severe epigastric pain radiating to the back, markedly elevated serum lipase and amylase, consistent with acute pancreatitis presentation",
+            "reasoning": "Clinical presentation and markedly elevated pancreatic enzymes diagnostic of acute pancreatitis"
           },
           {
             "text": "Participant fully understands and is able to participate in all aspects of the study, including providing informed consent, completion of case report forms, telephone interviews, metabolic testing, and planned longitudinal follow-ups",
@@ -106,31 +101,31 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about capacity or willingness to complete study procedures."
+            "reasoning": "No information provided about patient's understanding, capacity for informed consent, or ability to participate"
           },
           {
-            "text": "Diagnosis of definite chronic pancreatitis (CP) at enrollment based on CT scan (including non-contrast enhanced), MRI, or MRCP: parenchymal or ductal calcifications on CT scan (after excluding the possibility that calcifications are vascular), or intraductal filling defects suggestive of calcifications on MRI and/or MRCP",
+            "text": "Diagnosis of definite chronic pancreatitis (CP) at enrollment based on parenchymal or ductal calcifications on CT scan, or intraductal filling defects suggestive of calcifications on MRI and/or MRCP",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No CT, MRI, or MRCP findings reported to assess for chronic pancreatitis calcifications."
+            "reasoning": "No imaging findings (CT, MRI, MRCP) reported; cannot assess for calcifications or parenchymal changes"
           },
           {
-            "text": "Potential participants with post-endoscopic retrograde cholangiopancreatography (ERCP) AP who are hospitalized for <48 hours",
+            "text": "Post-endoscopic retrograde cholangiopancreatography (ERCP) acute pancreatitis with hospitalization for less than 48 hours",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of ERCP or hospitalization duration in the vignette."
+            "reasoning": "No mention of ERCP procedure or hospitalization duration; cannot determine if criterion applies"
           },
           {
-            "text": "Prior (before enrollment) direct endoscopic necrosectomy of the pancreas or percutaneous necrosectomy or drainage of necrotic collection(s)",
+            "text": "Prior direct endoscopic necrosectomy of the pancreas or percutaneous necrosectomy or drainage of necrotic collection(s) before enrollment",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of prior necrosectomy or drainage procedures."
+            "reasoning": "No prior surgical history documented regarding endoscopic or percutaneous necrosectomy"
           },
           {
             "text": "Pancreatic tumors, including ductal adenocarcinoma, neuroendocrine tumors, and metastasis",
@@ -138,23 +133,23 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No imaging or pathology findings addressing pancreatic tumors reported."
+            "reasoning": "No imaging or tumor screening results provided; pancreatic malignancy not addressed"
           },
           {
-            "text": "Confirmed or suspected cystic tumor associated with main pancreatic duct dilation, or believed to be the cause of AP (in the site-PI's judgement)",
+            "text": "Confirmed or suspected cystic tumor associated with main pancreatic duct dilation, or believed to be the cause of acute pancreatitis",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of cystic tumor or duct dilation; also rests partly on PI judgement."
+            "reasoning": "No imaging findings reported regarding cystic tumors or pancreatic duct dilation"
           },
           {
-            "text": "Prior pancreatic surgery, including, but not limited to: distal pancreatectomy, pancreaticoduodenectomy, pancreatic necrosectomy, Frey procedure",
+            "text": "Prior pancreatic surgery, including distal pancreatectomy, pancreaticoduodenectomy, pancreatic necrosectomy, or Frey procedure",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No surgical history provided in the vignette."
+            "reasoning": "No prior pancreatic surgical history documented in available information"
           },
           {
             "text": "Use of disallowed concomitant medications within 30 days prior to enrollment",
@@ -162,23 +157,23 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No medication history is given in the vignette."
+            "reasoning": "Medications used in past 30 days not specified; trial's disallowed medication list unknown"
           },
           {
-            "text": "Severe systemic illness that in the judgement of the investigative team will confound outcome assessments of diabetes mellitus and immunological outcomes or pose additional risk for harms, including: history of solid organ transplant, acquired immunodeficiency syndrome (AIDS), active treatment for cancer (except non-melanoma skin cancer) within 12 months prior to enrollment, chronic kidney disease with estimated glomerular filtration rate (eGFR) < 30 or on dialysis prior to AP, and decompensated cirrhosis (based on imaging or biopsy), or any other medical condition that in the opinion of the site-PI carries a life expectancy of <12 months",
+            "text": "History of solid organ transplant, acquired immunodeficiency syndrome (AIDS), active treatment for cancer (except non-melanoma skin cancer) within 12 months prior to enrollment, chronic kidney disease with estimated glomerular filtration rate (eGFR) less than 30 or on dialysis prior to acute pancreatitis, decompensated cirrhosis, or any other medical condition with life expectancy less than 12 months",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on transplant, AIDS, cancer treatment, renal function, or cirrhosis provided."
+            "reasoning": "No documented history of transplant, AIDS, cancer treatment, kidney disease, or cirrhosis status"
           },
           {
             "text": "Known pregnancy at the time of enrollment",
             "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "sex: male",
-            "reasoning": "Patient is male, so pregnancy is not applicable."
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Patient is male; pregnancy status not applicable but not explicitly addressed"
           },
           {
             "text": "Incarceration",
@@ -186,118 +181,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about incarceration status in the vignette."
+            "reasoning": "No information provided regarding incarceration status"
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 2,
-        "rationale": "Alcohol-related acute pancreatitis fits the study population, but consent capacity, chronic-pancreatitis imaging findings, and post-ERCP hospitalization duration are not stated."
-      },
-      {
-        "nct_id": "NCT06113419",
-        "title": "Timing of CHolecystectomy In Severe PAncreatitis",
-        "phase": "NA",
-        "criteria": [
-          {
-            "text": "Age ≥18 years",
-            "type": "inclusion",
-            "verdict": "MET",
-            "effect": "PASS",
-            "evidence": "54-year-old man",
-            "reasoning": "Patient is 54 years old, satisfying age >=18."
-          },
-          {
-            "text": "Diagnosis of pancreatitis according to Atlanta guidelines, moderately severe or severe pancreatitis (APACHE score ≥8 on admittance)",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Labs/pain support a pancreatitis diagnosis, but no APACHE score or Atlanta severity grade given."
-          },
-          {
-            "text": "Biliary pancreatitis diagnosed on imaging (ultrasound, magnetic resonance imaging and/or tomography)",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No imaging (ultrasound/MRI/CT) findings reported to establish biliary etiology."
-          },
-          {
-            "text": "Recovery of pancreatitis by tolerance of oral intake (defined as 24 hours of food consumption of any consistency without emetic episodes and pain defined as 4/10 on the visual analogue score of pain)",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette describes acute presentation only; no data on oral intake tolerance or recovery."
-          },
-          {
-            "text": "Written informed consent",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Informed consent status is not addressed anywhere in the vignette."
-          },
-          {
-            "text": "Pregnancy",
-            "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "54-year-old man",
-            "reasoning": "Patient is male, so pregnancy is not possible."
-          },
-          {
-            "text": "History of cholecystectomy",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of prior cholecystectomy in history."
-          },
-          {
-            "text": "Planned open cholecystectomy",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No surgical plan is described in the vignette."
-          },
-          {
-            "text": "Pancreatitis-associated complication before laparoscopic cholecystectomy (compartment syndrome, bleeding and/or need for peripancreatic collection drainage)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No complications like compartment syndrome, bleeding, or collections mentioned."
-          },
-          {
-            "text": "Chronic pancreatitis",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Only chronic alcohol use is noted; chronic pancreatitis diagnosis itself is not addressed."
-          },
-          {
-            "text": "Active malignant disease",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information on malignant disease is given."
-          },
-          {
-            "text": "Septic shock",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No vitals or shock/sepsis indicators reported."
-          }
-        ],
-        "eligibility": "UNCERTAIN",
-        "rank": 3,
-        "rationale": "Acute pancreatitis present, but severity grade (APACHE score), biliary versus alcoholic etiology on imaging, and oral-intake recovery status are not reported."
+        "rationale": "Acute pancreatitis meets inclusion intent; eligibility hinges on absence of chronic pancreatitis on imaging and ability to complete longitudinal follow-up—both unresolved."
       },
       {
         "nct_id": "NCT07144917",
@@ -310,31 +199,31 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette describes acute pancreatitis symptoms; no mention of surgery, tumor, or participating center."
+            "reasoning": "No mention of pancreaticoduodenectomy procedure or pancreatic head tumor diagnosis in vignette."
           },
           {
             "text": "Age < 18 years",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "54-year-old man",
-            "reasoning": "Patient is 54 years old, not under 18."
+            "evidence": "Age: 54 years old",
+            "reasoning": "Patient is 54 years old, not under 18 years."
           },
           {
             "text": "Pregnant, postpartum, or breastfeeding women",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "54-year-old man",
-            "reasoning": "Patient is male; cannot be pregnant, postpartum, or breastfeeding."
+            "evidence": "Sex: Male",
+            "reasoning": "Patient is male; criterion applies only to women."
           },
           {
             "text": "Indication other than tumor-related (e.g., chronic pancreatitis)",
             "type": "exclusion",
             "verdict": "MET",
             "effect": "FAIL",
-            "evidence": "markedly elevated serum lipase and amylase",
-            "reasoning": "Presentation with alcohol history and elevated lipase/amylase indicates pancreatitis, a non-tumor indication."
+            "evidence": "Chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+            "reasoning": "Clinical presentation consistent with acute pancreatitis, likely chronic pancreatitis indication, not tumor-related."
           },
           {
             "text": "Patient with an infectious syndrome at the time of inclusion",
@@ -342,7 +231,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about an infectious syndrome at inclusion."
+            "reasoning": "No information provided about active infectious syndrome at time of inclusion."
           },
           {
             "text": "Preoperative immunosuppression",
@@ -350,7 +239,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of preoperative immunosuppression status in the vignette."
+            "reasoning": "No mention of preoperative immunosuppression in patient history."
           },
           {
             "text": "Congenital or acquired immune deficiency",
@@ -358,7 +247,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on congenital or acquired immune deficiency provided."
+            "reasoning": "No information about congenital or acquired immune deficiency."
           },
           {
             "text": "Functional hyposplenism or asplenia, patient under long-term antibiotic prophylaxis for this reason",
@@ -366,7 +255,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of splenic function or antibiotic prophylaxis in the vignette."
+            "reasoning": "No mention of functional hyposplenism, asplenia, or antibiotic prophylaxis."
           },
           {
             "text": "Patient with HIV (and CD4 < cells/mm³)",
@@ -374,7 +263,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No HIV status or CD4 count provided in the vignette."
+            "reasoning": "No HIV status documented in vignette."
           },
           {
             "text": "Aplasia defined by circulating neutrophil count < 500 cells/mm³",
@@ -382,91 +271,302 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No neutrophil count or aplasia information given in the vignette."
+            "reasoning": "No neutrophil count provided in patient data."
           },
           {
-            "text": "Immunosuppressive treatment other than chemotherapy: Biotherapy, Corticosteroid therapy >10 mg/day or cumulative dose >700 mg prednisolone equivalent",
+            "text": "Immunosuppressive treatment other than chemotherapy: Biotherapy, Corticosteroid therapy >10 mg/day or cumulative dose >700 mg prednisolone equivalent, or patient expected to receive immunosuppressive treatment within the first 7 postoperative days",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on biotherapy or corticosteroid dosing provided."
+            "reasoning": "No information about immunosuppressive treatments, biotherapy, or corticosteroids."
           },
           {
-            "text": "Patient expected to receive immunosuppressive treatment within the first 7 postoperative days",
+            "text": "Individuals deprived of liberty by judicial or administrative decision",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on planned postoperative immunosuppressive treatment in vignette."
+            "reasoning": "No mention of judicial or administrative liberty deprivation."
+          },
+          {
+            "text": "Adults under legal protection (guardianship or curatorship)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about legal protection status or guardianship."
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 3,
+        "rationale": "Excluded: indication is acute pancreatitis from alcohol use, not tumor-related pancreaticoduodenectomy candidate."
+      },
+      {
+        "nct_id": "NCT06113419",
+        "title": "Timing of CHolecystectomy In Severe PAncreatitis",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Age ≥18 years",
+            "type": "inclusion",
+            "verdict": "MET",
+            "effect": "PASS",
+            "evidence": "54-year-old man",
+            "reasoning": "Patient is 54 years old, which meets age ≥18 years requirement."
+          },
+          {
+            "text": "Diagnosis of pancreatitis according to Atlanta guidelines",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Severe epigastric pain radiating to the back, nausea, vomiting, markedly elevated serum lipase and amylase",
+            "reasoning": "Clinical presentation and labs consistent with pancreatitis, but Atlanta guidelines require imaging and additional criteria not fully documented."
+          },
+          {
+            "text": "Moderately severe or severe pancreatitis (APACHE score ≥8 on admittance)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "APACHE score on admission not provided in vignette; cannot assess severity threshold."
+          },
+          {
+            "text": "Biliary pancreatitis diagnosed on imaging (ultrasound, magnetic resonance imaging and/or tomography)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No imaging results (ultrasound, MRI, CT) provided to confirm biliary etiology or exclude other causes."
+          },
+          {
+            "text": "Recovery of pancreatitis by tolerance of oral intake defined as 24 hours of food consumption of any consistency without emetic episodes and pain ≤4/10 on the visual analogue score of pain",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Patient currently in acute phase with vomiting; no information on recovery status or pain resolution."
+          },
+          {
+            "text": "Written informed consent",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Consent status not addressed in clinical vignette."
+          },
+          {
+            "text": "Pregnancy",
+            "type": "exclusion",
+            "verdict": "MET",
+            "effect": "FAIL",
+            "evidence": "Male",
+            "reasoning": "Patient is male; criterion excludes pregnancy, which is not applicable."
+          },
+          {
+            "text": "History of cholecystectomy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No history of cholecystectomy mentioned or explicitly denied."
+          },
+          {
+            "text": "Planned open cholecystectomy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No surgical planning information provided in vignette."
+          },
+          {
+            "text": "Pancreatitis-associated complication before laparoscopic cholecystectomy (compartment syndrome, bleeding and/or need for peripancreatic collection drainage)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No documentation of complications such as compartment syndrome, bleeding, or drainage procedures."
+          },
+          {
+            "text": "Chronic pancreatitis",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "History indicates chronic alcohol use but does not explicitly state chronic pancreatitis diagnosis."
+          },
+          {
+            "text": "More than one episode of pancreatitis",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Number of prior pancreatitis episodes not documented in vignette."
+          },
+          {
+            "text": "Active malignant disease",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No malignant disease history mentioned or excluded in vignette."
+          },
+          {
+            "text": "Septic shock",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Septic shock status not addressed; patient is acutely ill but no sepsis documentation."
+          },
+          {
+            "text": "Choledocholithiasis not resolved by ERCP, post-ERCP perforation and post-ERCP concomitant pancreatitis",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information on choledocholithiasis, ERCP, or post-ERCP complications provided."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: alcohol-related acute pancreatitis is not a tumor indication for pancreaticoduodenectomy, which the trial's exclusion criterion explicitly bars."
+        "rationale": "Excluded: patient is male, triggering pregnancy exclusion criterion (likely administrative error); pancreatitis severity and biliary etiology unconfirmed."
       }
     ],
     "questions": [
       {
-        "field": "immune_infection_status",
-        "question": "Does the patient have any immunosuppressive conditions, active infections, or significant comorbidities (e.g., HIV, diabetes, renal or hepatic disease)?",
-        "why": "Resolves exclusion criteria tied to immune status and comorbidities, affecting the most trials."
+        "field": "Current medications and contraindicated conditions",
+        "question": "What medications is the patient currently taking, and does he have any history of liver disease, kidney disease, or other significant medical conditions?",
+        "why": "Affects 6 trial criteria; identifies contraindicated drugs and major comorbidities."
       },
       {
-        "field": "prior_pancreatic_biliary_procedures",
-        "question": "Has the patient had any prior pancreatic or biliary surgery, ERCP, or other endoscopic interventions?",
-        "why": "Prior procedures are a common inclusion/exclusion factor across multiple trials."
+        "field": "Imaging findings (CT/MRI/MRCP)",
+        "question": "Has imaging been performed to confirm pancreatitis and assess for complications like necrosis, fluid collections, or ductal obstruction?",
+        "why": "Affects 3 criteria; determines pancreatitis type/severity and trial eligibility."
       },
       {
-        "field": "pancreatic_imaging_malignancy",
-        "question": "What do CT, MRI, or MRCP imaging results show regarding pancreatic structure, biliary obstruction, or malignancy?",
-        "why": "Confirms etiology and rules out malignancy required for several trials' eligibility."
+        "field": "Pancreatitis history and complications",
+        "question": "Is this his first episode of pancreatitis, or does he have a history of recurrent or chronic pancreatitis?",
+        "why": "Affects 4 criteria; distinguishes acute from chronic and identifies exclusionary complications."
       }
     ],
     "reeval": {
-      "extended_record": "Comorbidity review is notable for alcohol-related hepatic steatosis confirmed on prior ultrasound, with no known HIV, no diabetes mellitus, and no active infection on this admission; renal function is preserved with creatinine 0.9 mg/dL and eGFR 92 mL/min/1.73m2, and he is not on any immunosuppressive therapy. He denies any prior pancreatic or biliary surgery, and has never undergone ERCP or other endoscopic pancreaticobiliary intervention. Contrast-enhanced CT abdomen performed on hospital day 2 shows diffuse pancreatic enlargement with peripancreatic fat stranding and a 3.2 cm nonenhancing area in the pancreatic body consistent with necrosis, without pseudocyst formation; CT severity index is 6. MRCP shows a nondilated common bile duct measuring 4 mm with no choledocholithiasis, no ductal stricture, and no mass lesion suspicious for malignancy. The main pancreatic duct is mildly irregular but patent, with no evidence of obstructing calculus or ductal disruption.",
+      "extended_record": "Patient presents with acute pancreatitis confirmed on CT abdomen/pelvis showing pancreatic edema and peripancreatic inflammation without necrosis or fluid collections; main pancreatic duct is patent. This is his third documented episode of acute pancreatitis in 18 months, with prior episodes in June 2022 and March 2023, all attributed to alcohol use. Current medications include omeprazole 20 mg daily for GERD and lisinopril 10 mg daily for hypertension. Past medical history includes hypertension, GERD, and mild hepatic steatosis noted on ultrasound 2 years ago. Liver function tests today show AST 78 U/L, ALT 62 U/L, alkaline phosphatase 95 U/L, total bilirubin 1.2 mg/dL; INR 1.1. Serum creatinine 0.9 mg/dL and BUN 16 mg/dL, indicating preserved renal function. Current lipase 1,240 U/L and amylase 890 U/L. Patient denies active hepatitis symptoms and reports no prior kidney disease.",
       "answers": [
         {
-          "question": "Does the patient have any immunosuppressive conditions, active infections, or significant comorbidities (e.g., HIV, diabetes, renal or hepatic disease)?",
-          "answer": "No HIV, diabetes, or immunosuppressive therapy; he has alcohol-related hepatic steatosis, preserved renal function (creatinine 0.9 mg/dL, eGFR 92), and no active infection.",
-          "evidence_quote": "with no known HIV, no diabetes mellitus, and no active infection on this admission; renal function is preserved with creatinine 0.9 mg/dL and eGFR 92 mL/min/1.73m2, and he is not on any immunosuppressive therapy"
+          "question": "What medications is the patient currently taking, and does he have any history of liver disease, kidney disease, or other significant medical conditions?",
+          "answer": "Currently taking omeprazole 20 mg daily and lisinopril 10 mg daily. Has history of GERD, hypertension, and mild hepatic steatosis. No kidney disease; liver function tests show mild elevation of transaminases but preserved synthetic function.",
+          "evidence_quote": "Current medications include omeprazole 20 mg daily for GERD and lisinopril 10 mg daily for hypertension. Past medical history includes hypertension, GERD, and mild hepatic steatosis noted on ultrasound 2 years ago. Liver function tests today show AST 78 U/L, ALT 62 U/L, alkaline phosphatase 95 U/L, total bilirubin 1.2 mg/dL; INR 1.1. Serum creatinine 0.9 mg/dL and BUN 16 mg/dL, indicating preserved renal function."
         },
         {
-          "question": "Has the patient had any prior pancreatic or biliary surgery, ERCP, or other endoscopic interventions?",
-          "answer": "No prior pancreatic or biliary surgery and no history of ERCP or other endoscopic pancreaticobiliary intervention.",
-          "evidence_quote": "He denies any prior pancreatic or biliary surgery, and has never undergone ERCP or other endoscopic pancreaticobiliary intervention."
+          "question": "Has imaging been performed to confirm pancreatitis and assess for complications like necrosis, fluid collections, or ductal obstruction?",
+          "answer": "CT abdomen/pelvis confirms acute pancreatitis with pancreatic edema and peripancreatic inflammation. No evidence of necrosis, fluid collections, or ductal obstruction; main pancreatic duct is patent.",
+          "evidence_quote": "CT abdomen/pelvis showing pancreatic edema and peripancreatic inflammation without necrosis or fluid collections; main pancreatic duct is patent."
         },
         {
-          "question": "What do CT, MRI, or MRCP imaging results show regarding pancreatic structure, biliary obstruction, or malignancy?",
-          "answer": "CT shows pancreatic enlargement with a 3.2 cm necrotic area (CTSI 6) but no pseudocyst; MRCP shows a nondilated bile duct with no stricture, stones, or mass suggesting malignancy, and a patent though mildly irregular pancreatic duct.",
-          "evidence_quote": "MRCP shows a nondilated common bile duct measuring 4 mm with no choledocholithiasis, no ductal stricture, and no mass lesion suspicious for malignancy."
+          "question": "Is this his first episode of pancreatitis, or does he have a history of recurrent or chronic pancreatitis?",
+          "answer": "This is his third documented episode of acute pancreatitis. Prior episodes occurred in June 2022 and March 2023, all attributed to alcohol use.",
+          "evidence_quote": "This is his third documented episode of acute pancreatitis in 18 months, with prior episodes in June 2022 and March 2023, all attributed to alcohol use."
         }
       ],
-      "verdict_changes": [],
+      "verdict_changes": [
+        {
+          "nct_id": "NCT06401577",
+          "criterion": "Diagnosis of definite chronic pancreatitis (CP) at enrollment based on parenchymal or ductal calcifications on CT scan, or intraductal filling defects suggestive of calcifications on MRI and/or MRCP",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06401577",
+          "criterion": "Confirmed or suspected cystic tumor associated with main pancreatic duct dilation, or believed to be the cause of acute pancreatitis",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06401577",
+          "criterion": "Use of disallowed concomitant medications within 30 days prior to enrollment",
+          "before": "UNKNOWN",
+          "after": "UNCERTAIN"
+        },
+        {
+          "nct_id": "NCT07144917",
+          "criterion": "Patient with an infectious syndrome at the time of inclusion",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07144917",
+          "criterion": "Functional hyposplenism or asplenia, patient under long-term antibiotic prophylaxis for this reason",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06113419",
+          "criterion": "Biliary pancreatitis diagnosed on imaging (ultrasound, magnetic resonance imaging and/or tomography)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06113419",
+          "criterion": "Pancreatitis-associated complication before laparoscopic cholecystectomy (compartment syndrome, bleeding and/or need for peripancreatic collection drainage)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06113419",
+          "criterion": "Chronic pancreatitis",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06113419",
+          "criterion": "More than one episode of pancreatitis",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT06113419",
+          "criterion": "Active malignant disease",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06113419",
+          "criterion": "Septic shock",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06113419",
+          "criterion": "Choledocholithiasis not resolved by ERCP, post-ERCP perforation and post-ERCP concomitant pancreatitis",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        }
+      ],
       "final_ranking": [
         {
           "nct_id": "NCT06179459",
           "rank": 1,
           "eligibility": "UNCERTAIN",
-          "rationale": "Acute pancreatitis confirmed, but vignette gives no data on a pancreatic fluid collection or endoscopic treatment, so eligibility for this registry is unresolved."
+          "rationale": "Acute pancreatitis suspected, but unclear if pancreatic fluid collections present or whether endoscopic management will be performed."
         },
         {
           "nct_id": "NCT06401577",
           "rank": 2,
           "eligibility": "UNCERTAIN",
-          "rationale": "Alcohol-related acute pancreatitis fits the study population, but consent capacity, chronic-pancreatitis imaging findings, and post-ERCP hospitalization duration are not stated."
+          "rationale": "Acute pancreatitis confirmed by elevated lipase/amylase; unclear if post-ERCP etiology, hospitalization duration, or prior necrosectomy history."
         },
         {
           "nct_id": "NCT06113419",
           "rank": 3,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Acute pancreatitis present, but severity grade (APACHE score), biliary versus alcoholic etiology on imaging, and oral-intake recovery status are not reported."
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: no imaging evidence of biliary etiology demonstrated; history of chronic alcohol use suggests prior pancreatitis episodes."
         },
         {
           "nct_id": "NCT07144917",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: alcohol-related acute pancreatitis is not a tumor indication for pancreaticoduodenectomy, which the trial's exclusion criterion explicitly bars."
+          "rationale": "Excluded: acute pancreatitis from chronic alcohol use is non-tumor indication; trial requires tumor-related pancreaticoduodenectomy only."
         }
       ]
     },
@@ -477,43 +577,43 @@ window.TRACES = [
     "patient_text": "A 29-year-old woman presents with intermittent palpitations, heat intolerance, and unintentional weight loss. Physical exam reveals a fine tremor, tachycardia, and a diffusely enlarged, non-tender thyroid gland.",
     "extraction": [
       {
-        "name": "age",
-        "value": "29 years",
-        "evidence_quote": "29-year-old"
+        "name": "Age",
+        "value": "29 years old",
+        "evidence_quote": "A 29-year-old woman"
       },
       {
-        "name": "sex",
-        "value": "female",
-        "evidence_quote": "woman"
+        "name": "Sex",
+        "value": "Female",
+        "evidence_quote": "29-year-old woman"
       },
       {
-        "name": "symptom_palpitations",
-        "value": "intermittent palpitations",
+        "name": "Palpitations",
+        "value": "Present, intermittent",
         "evidence_quote": "intermittent palpitations"
       },
       {
-        "name": "symptom_heat_intolerance",
-        "value": "heat intolerance",
+        "name": "Heat Intolerance",
+        "value": "Present",
         "evidence_quote": "heat intolerance"
       },
       {
-        "name": "symptom_weight_loss",
-        "value": "unintentional weight loss",
+        "name": "Unintentional Weight Loss",
+        "value": "Present",
         "evidence_quote": "unintentional weight loss"
       },
       {
-        "name": "exam_tremor",
-        "value": "fine tremor",
+        "name": "Tremor",
+        "value": "Fine tremor noted on exam",
         "evidence_quote": "a fine tremor"
       },
       {
-        "name": "exam_heart_rate",
-        "value": "tachycardia",
+        "name": "Heart Rate",
+        "value": "Tachycardia",
         "evidence_quote": "tachycardia"
       },
       {
-        "name": "exam_thyroid",
-        "value": "diffusely enlarged, non-tender thyroid gland",
+        "name": "Thyroid Gland",
+        "value": "Diffusely enlarged, non-tender",
         "evidence_quote": "a diffusely enlarged, non-tender thyroid gland"
       }
     ],
@@ -529,15 +629,23 @@ window.TRACES = [
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "29-year-old woman",
-            "reasoning": "Patient is 29 years old, meeting the adult (>=18) threshold."
+            "reasoning": "Patient is 29 years old, clearly ≥18 years of age."
           },
           {
-            "text": "Undergoing surgical treatment for Graves' disease or Amiodarone-induced thyrotoxicosis (AIT) with biochemically confirmed hyperthyroidism, or on specific medication for the treatment of Graves' disease or AIT",
+            "text": "Undergoing surgical treatment for Graves' disease or Amiodarone-induced thyrotoxicosis (AIT)",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette describes symptoms only; no mention of surgery, biochemical confirmation, or medication for Graves'/AIT."
+            "reasoning": "Vignette describes clinical presentation consistent with Graves' disease but does not confirm diagnosis or mention surgical treatment."
+          },
+          {
+            "text": "Biochemically confirmed hyperthyroidism or on specific medication for the treatment of Graves' disease or AIT",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Clinical signs suggest hyperthyroidism but no biochemical labs or medication information provided to confirm."
           },
           {
             "text": "Patients providing signed informed consent",
@@ -545,15 +653,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information given about informed consent."
+            "reasoning": "No information provided regarding informed consent status."
           },
           {
-            "text": "Children and minors (<18 years)",
+            "text": "Children and minors (< 18 years)",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
             "evidence": "29-year-old woman",
-            "reasoning": "Patient is 29, not a child or minor under 18."
+            "reasoning": "Patient is 29 years old; exclusion for <18 years does not apply."
           },
           {
             "text": "Pregnant women",
@@ -561,7 +669,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Pregnancy status is not mentioned anywhere in the vignette or fields."
+            "reasoning": "No information provided regarding pregnancy status."
           },
           {
             "text": "Patients unable or unwilling to provide informed consent due to language barriers or intellectual limitations",
@@ -569,15 +677,31 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about language barriers or intellectual limitations affecting consent."
+            "reasoning": "No information about language barriers or intellectual limitations."
           },
           {
-            "text": "Patients undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism, lymph node clearance, or redo surgery",
+            "text": "Patients undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No surgery of any kind is mentioned, so concurrent procedures cannot be assessed."
+            "reasoning": "No mention of parathyroidectomy or hyperparathyroidism."
+          },
+          {
+            "text": "Patients undergoing concurrent lymph node clearance",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No mention of concurrent lymph node clearance procedure."
+          },
+          {
+            "text": "Patients undergoing redo surgery",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about prior thyroid surgery or redo status."
           },
           {
             "text": "Surgical procedures performed for other reasons than Graves' disease or AIT",
@@ -585,12 +709,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No surgical procedure or its indication is mentioned in the vignette."
+            "reasoning": "Clinical presentation suggests thyroid disease but surgical indication not explicitly stated."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 1,
-        "rationale": "Symptoms are consistent with Graves' disease, but treatment status (surgery vs. medication), informed consent, and pregnancy remain unconfirmed, so eligibility is uncertain."
+        "rationale": "Clinical presentation consistent with Graves' disease (goiter, tremor, tachycardia, weight loss); eligibility uncertain pending biochemical confirmation and surgical candidacy determination."
       },
       {
         "nct_id": "NCT05461820",
@@ -602,16 +726,16 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "diffusely enlarged, non-tender thyroid gland",
-            "reasoning": "Symptoms/exam are classic for Graves but no explicit clinician diagnosis stated in vignette."
+            "evidence": "Diffusely enlarged thyroid, palpitations, heat intolerance, weight loss, tremor, tachycardia consistent with hyperthyroidism, but clinical diagnosis attribution to Graves disease specifically not confirmed in vignette",
+            "reasoning": "Clinical presentation consistent with Graves but no explicit diagnosis stated; requires TRAb confirmation."
           },
           {
             "text": "Age 18-65, for both men and women",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "age: 29 years",
-            "reasoning": "29 falls within the 18-65 age range."
+            "evidence": "Age: 29 years old",
+            "reasoning": "Patient age 29 falls within 18-65 year inclusion range."
           },
           {
             "text": "Thyroid receptor antibody (TRAb) was positive",
@@ -619,7 +743,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No TRAb or antibody lab result mentioned in vignette."
+            "reasoning": "TRAb status not mentioned in vignette or extracted fields."
           },
           {
             "text": "Take part in this research voluntarily and sign the informed consent form",
@@ -627,7 +751,23 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Consent/participation not addressed in clinical vignette."
+            "reasoning": "Voluntariness and informed consent status not addressed in clinical vignette."
+          },
+          {
+            "text": "Those who have used glucocorticoid or other immunosuppressants for a long time within 3 months before being selected",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about glucocorticoid or immunosuppressant use history."
+          },
+          {
+            "text": "Those who have participated in any other drug trials within 3 months before being selected",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about prior participation in other drug trials."
           },
           {
             "text": "Patients with a history of malignant tumors",
@@ -635,7 +775,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of malignancy history."
+            "reasoning": "No malignancy history mentioned in vignette."
           },
           {
             "text": "Ill-controlled hypertension: diastolic blood pressure≥100mmHg, systolic blood pressure ≥160 mmHg",
@@ -643,31 +783,31 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No blood pressure values provided."
+            "reasoning": "Blood pressure values not provided in vignette."
           },
           {
-            "text": "Blood routine: the total number of white blood cells < 3.0×10^9 or neutrophils < 1.5×10^9",
+            "text": "Blood routine: the total number of white blood cells < 3.0×109 or neutrophils < 1.5× 109",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No white blood cell or neutrophil counts given."
+            "reasoning": "Complete blood count and differential not reported in vignette."
           },
           {
             "text": "Other thyroid diseases: such as subacute thyroiditis, thyroid nodules, high-function adenoma",
             "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "diffusely enlarged, non-tender thyroid gland",
-            "reasoning": "Diffuse, non-tender goiter argues against nodular disease or tender subacute thyroiditis."
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Diffusely enlarged thyroid gland noted; no mention of nodules, subacute thyroiditis, or adenoma",
+            "reasoning": "Diffuse enlargement fits Graves but nodules/adenoma not explicitly excluded."
           },
           {
-            "text": "Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit; when ALT or AST is less than 2 times of the normal upper limit, and the test of hepatitis B two half-and-half positive",
+            "text": "Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit; or when ALT or AST is less than 2 times of the normal upper limit and the test of hepatitis B two half-and-half positive",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No liver enzyme or hepatitis B results provided."
+            "reasoning": "Liver function tests and hepatitis B serology not provided."
           },
           {
             "text": "Renal insufficiency: serum creatinine is higher than the upper limit of normal value",
@@ -675,28 +815,52 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No serum creatinine value given."
+            "reasoning": "Serum creatinine and renal function not mentioned."
           },
           {
             "text": "Patients with heart failure",
             "type": "exclusion",
-            "verdict": "UNKNOWN",
+            "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Tachycardia noted but no heart failure signs or diagnosis mentioned."
+            "evidence": "Tachycardia present; no clinical signs of heart failure documented, but cardiac assessment incomplete",
+            "reasoning": "Tachycardia present but no mention of congestion, edema, or formal heart failure diagnosis."
           },
           {
-            "text": "Pregnant and lactating women cannot rule out the possibility of pregnancy",
+            "text": "Patients with coronary heart disease",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No pregnancy or lactation status mentioned."
+            "reasoning": "No information provided about coronary artery disease history."
+          },
+          {
+            "text": "Patients with other autoimmune diseases",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No other autoimmune diseases mentioned; cannot exclude possibility."
+          },
+          {
+            "text": "Patients who are known to be allergic to any component of this medicine, allergic to the active ingredients or any auxiliary materials in the prescription",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No allergy history documented in vignette."
+          },
+          {
+            "text": "Pregnant and lactating women or women who cannot rule out the possibility of pregnancy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Pregnancy/lactation status not addressed in clinical vignette."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 2,
-        "rationale": "Presentation is consistent with Graves' hyperthyroidism, but clinical diagnosis, TRAb positivity, and informed consent are unconfirmed, leaving eligibility uncertain."
+        "rationale": "Clinical diagnosis of Graves' disease likely based on presentation; eligibility uncertain pending TRAb positivity confirmation and consent."
       },
       {
         "nct_id": "NCT06392906",
@@ -704,12 +868,12 @@ window.TRACES = [
         "phase": "PHASE3",
         "criteria": [
           {
-            "text": "Patient with active moderate to severe thyroid eye disease with a CAS > 4 with/without diplopia before starting IVMP",
+            "text": "Patient with active moderate to severe thyroid eye disease with a CAS > 4 with or without diplopia before starting IVMP",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette has no mention of thyroid eye disease, CAS score, or IVMP treatment."
+            "reasoning": "No mention of thyroid eye disease, CAS score, or diplopia in vignette."
           },
           {
             "text": "Patient with poor response to 3 doses of IVMP (CAS drop < 1) or CAS score > 3 after 3 doses of IVMP",
@@ -717,7 +881,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on IVMP dosing or response; IVMP treatment not mentioned at all."
+            "reasoning": "No information about IVMP treatment or CAS scoring provided."
           },
           {
             "text": "Patients with diplopia after 3 doses of IVMP",
@@ -725,36 +889,44 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of diplopia or IVMP treatment in the vignette."
+            "reasoning": "No mention of diplopia or IVMP treatment response."
           },
           {
             "text": "Patients with Graves' Ophthalmopathy who have maintained euthyroidism",
             "type": "inclusion",
-            "verdict": "NOT_MET",
-            "effect": "FAIL",
-            "evidence": "intermittent palpitations, heat intolerance, and unintentional weight loss",
-            "reasoning": "Active thyrotoxic symptoms indicate patient is not euthyroid; no ophthalmopathy noted."
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No documentation of Graves' Ophthalmopathy or thyroid function status."
           },
           {
-            "text": "Non-pregnant adults (aged 35 years or older)",
+            "text": "Non-pregnant adults aged 35 years or older",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
-            "evidence": "29-year-old woman",
-            "reasoning": "Patient is 29, below the required age threshold of 35 years or older."
+            "evidence": "Age: 29 years old",
+            "reasoning": "Patient is 29 years old; criterion requires 35 years or older."
           },
           {
-            "text": "Individuals with severe hypertension or diabetic retinopathy",
+            "text": "Individuals with severe hypertension",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of hypertension or diabetic retinopathy anywhere in the vignette."
+            "reasoning": "No blood pressure measurements or hypertension diagnosis documented."
+          },
+          {
+            "text": "Individuals with diabetic retinopathy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No ophthalmologic examination or diabetic retinopathy screening mentioned."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 3,
-        "rationale": "Excluded: at 29 she is below the trial's 35-year age minimum and is actively hyperthyroid, not the required euthyroid state."
+        "rationale": "Ineligible: patient is 29 years old; trial requires age ≥35 years. No thyroid eye disease mentioned in vignette."
       },
       {
         "nct_id": "NCT05678374",
@@ -762,20 +934,20 @@ window.TRACES = [
         "phase": "NA",
         "criteria": [
           {
-            "text": "If patient: Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis",
+            "text": "Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Symptoms suggest hyperthyroidism but no TSH-receptor antibody or thyroid hormone level data given."
+            "reasoning": "TSH-receptor antibodies, thyroid hormone levels at diagnosis not provided in vignette."
           },
           {
-            "text": "Diagnosis 15 to 60 months ago. If recidive, both episodes must have occurred within 15 months to 60 months.",
+            "text": "Diagnosis 15 to 60 months ago, or if recidive both episodes must have occurred within 15 months to 60 months",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No diagnosis date provided in vignette or extracted fields."
+            "reasoning": "No information about diagnosis timing or recidive episodes provided."
           },
           {
             "text": "Thyroid hormones within normal range without anti thyroid drugs",
@@ -783,39 +955,47 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No thyroid hormone lab values or anti-thyroid drug status recorded."
+            "reasoning": "Current thyroid hormone levels and anti-thyroid drug use not documented."
           },
           {
-            "text": "If control: No thyroid disease",
+            "text": "No thyroid disease if control participant",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
             "evidence": "diffusely enlarged, non-tender thyroid gland",
-            "reasoning": "Exam shows an enlarged thyroid with hyperthyroid symptoms, so thyroid disease is present."
+            "reasoning": "Patient has thyroid disease (enlarged gland with clinical hyperthyroidism), disqualifying for control."
           },
           {
-            "text": "Patient and control without mental fatigue: Mental Fatigue Score ≤8 (cut off 10.5)",
+            "text": "Mental Fatigue Score ≤8 if patient and control without mental fatigue",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No Mental Fatigue Score or mental fatigue status recorded."
+            "reasoning": "Mental Fatigue Score not assessed in vignette."
           },
           {
-            "text": "Patient with mental fatigue: Mental Fatigue Score >13 and debut of symptoms of mental fatigue in parallel with debut of Graves' disease, without other obvious cause",
+            "text": "Mental Fatigue Score >13 and debut of symptoms of mental fatigue in parallel with debut of Graves' disease, without other obvious cause if patient with mental fatigue",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No Mental Fatigue Score or symptom-onset timing data recorded."
+            "reasoning": "Mental Fatigue Score and temporal relationship with disease onset not documented."
           },
           {
-            "text": "Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, any other neurological disease",
+            "text": "Person unable to follow protocol",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette does not mention MS, CFS/ME, or other neurological disease."
+            "reasoning": "No information about protocol adherence ability provided."
+          },
+          {
+            "text": "Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, or any other neurological disease",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No history of MS, ME/CFS, or other neurological disease documented."
           },
           {
             "text": "Traumatic brain injury with unconsciousness",
@@ -823,7 +1003,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No history of traumatic brain injury or unconsciousness mentioned."
+            "reasoning": "No history of traumatic brain injury mentioned."
           },
           {
             "text": "Other disease strongly associated with fatigue",
@@ -831,7 +1011,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No other fatigue-associated disease mentioned in the vignette."
+            "reasoning": "No other chronic fatigue-associated diseases documented in vignette."
           },
           {
             "text": "Pregnancy and breast-feeding",
@@ -839,7 +1019,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Pregnancy or breastfeeding status not addressed in the record."
+            "reasoning": "Pregnancy and breast-feeding status not documented."
           },
           {
             "text": "On-going or recent systemic treatment with steroids",
@@ -847,7 +1027,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of steroid treatment, ongoing or recent."
+            "reasoning": "Systemic steroid use not mentioned in vignette."
           },
           {
             "text": "Radioiodine therapy within the last 18 months",
@@ -855,73 +1035,55 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of radioiodine therapy or its timing."
+            "reasoning": "Radioiodine therapy history not documented."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: has active thyroid disease so fails the control-arm criterion, while eligibility as a Graves' patient case remains unconfirmed."
+        "rationale": "Ineligible: patient is newly presenting with Graves' disease; trial requires diagnosis 15-60 months prior. Biochemical confirmation and TSH-receptor antibody status unknown."
       }
     ],
     "questions": [
       {
-        "field": "Specific lab/diagnostic values (thyroid & safety labs)",
-        "question": "What are her recent TSH, free T4/T3, TRAb/TSI, CBC, and liver/renal panel results?",
-        "why": "Confirms Graves' diagnosis and screens for lab-based exclusions across 7 criteria."
+        "field": "Thyroid-specific serology and hormone levels",
+        "question": "What are the patient's current TSH, free T4, free T3, and TPO/TSI antibody levels?",
+        "why": "Confirms Graves' disease and current thyroid status; affects 4 trial criteria"
       },
       {
-        "field": "Relevant comorbid medical history",
-        "question": "Does she have any history of cancer, cardiac disease, hypertension, neurological conditions, or chronic fatigue?",
-        "why": "Determines exclusion eligibility affecting 7 criteria."
+        "field": "Cardiac assessment and blood pressure",
+        "question": "What is the patient's current heart rate, blood pressure, and has cardiac evaluation (EKG or echocardiogram) been performed?",
+        "why": "Identifies cardiac contraindications and arrhythmias from thyrotoxicosis; affects 4 criteria"
       },
       {
-        "field": "Disease timeline and treatment/medication history",
-        "question": "When was she diagnosed, and what medications, prior antithyroid treatments, or surgeries has she had?",
-        "why": "Establishes diagnosis timing and treatment history affecting 6 criteria."
+        "field": "Prior treatments and comorbid neurological/autoimmune conditions",
+        "question": "What prior thyroid treatments (antithyroids, radioiodine, surgery) has the patient received, and does she have any other autoimmune or neurological conditions?",
+        "why": "Excludes contraindicated therapies and confounding systemic diseases; affects 6 criteria"
       }
     ],
     "reeval": {
-      "extended_record": "Laboratory results from her diagnostic workup (obtained 2026-04-15) show a suppressed TSH of <0.01 mIU/L, elevated free T4 of 3.6 ng/dL (reference 0.8-1.8), and elevated free T3 of 8.9 pg/mL (reference 2.3-4.2). TSH receptor antibody (TRAb) is positive at 7.8 IU/L (reference <1.75), and thyroid-stimulating immunoglobulin (TSI) is elevated at 260% of baseline (reference <140%), confirming Graves disease. CBC shows mild normocytic anemia with hemoglobin 11.2 g/dL and a normal white cell count of 6.8 x10^9/L. Liver panel reveals mildly elevated ALT of 52 U/L and AST of 48 U/L, consistent with thyrotoxicosis-related hepatic stress; renal panel is normal with creatinine 0.7 mg/dL. She has no history of cancer, cardiac disease, hypertension, neurological conditions, or chronic fatigue syndrome. She was diagnosed with Graves disease on 2026-04-15 and started methimazole 10 mg twice daily one week later; she has had no prior antithyroid treatments, no radioactive iodine therapy, and no thyroid or other surgeries.",
+      "extended_record": "Patient presents at 8 weeks post-initial diagnosis. Current laboratory studies show TSH <0.01 mIU/L (ref 0.4–4.0), free T4 4.2 ng/dL (ref 0.8–1.8), and free T3 8.5 pg/mL (ref 2.3–4.2), consistent with active hyperthyroidism. TSI (thyroid-stimulating immunoglobulin) is markedly elevated at 8.2 IU/L (ref <1.75), confirming Graves disease; TPO antibodies negative. Vital signs today: heart rate 118 bpm (regular), blood pressure 128/76 mmHg. Twelve-lead EKG performed last week showed sinus tachycardia without ischemic changes; transthoracic echocardiogram demonstrates normal left ventricular ejection fraction (58%), mild left atrial enlargement, and no valvular pathology. Patient initiated on propranolol 40 mg twice daily 6 weeks ago for symptom control and methimazole 10 mg three times daily 5 weeks ago; no prior radioiodine or thyroidectomy. No history of other autoimmune conditions (negative tissue transglutaminase, normal CBC). Neurological exam normal; no tremor documented today after propranolol initiation.",
       "answers": [
         {
-          "question": "What are her recent TSH, free T4/T3, TRAb/TSI, CBC, and liver/renal panel results?",
-          "answer": "TSH is suppressed at <0.01 mIU/L with elevated free T4 (3.6 ng/dL) and free T3 (8.9 pg/mL); TRAb is positive (7.8 IU/L) and TSI elevated (260% of baseline), confirming Graves disease. CBC shows mild normocytic anemia (Hgb 11.2 g/dL, WBC 6.8 x10^9/L); liver panel shows mildly elevated ALT/AST (52/48 U/L); renal panel is normal (creatinine 0.7 mg/dL).",
-          "evidence_quote": "show a suppressed TSH of <0.01 mIU/L, elevated free T4 of 3.6 ng/dL (reference 0.8-1.8), and elevated free T3 of 8.9 pg/mL (reference 2.3-4.2). TSH receptor antibody (TRAb) is positive at 7.8 IU/L (reference <1.75), and thyroid-stimulating immunoglobulin (TSI) is elevated at 260% of baseline (reference <140%), confirming Graves disease. CBC shows mild normocytic anemia with hemoglobin 11.2 g/dL and a normal white cell count of 6.8 x10^9/L. Liver panel reveals mildly elevated ALT of 52 U/L and AST of 48 U/L, consistent with thyrotoxicosis-related hepatic stress; renal panel is normal with creatinine 0.7 mg/dL."
+          "question": "What are the patient's current TSH, free T4, free T3, and TPO/TSI antibody levels?",
+          "answer": "TSH <0.01 mIU/L, free T4 4.2 ng/dL, free T3 8.5 pg/mL, TSI 8.2 IU/L (elevated), TPO antibodies negative.",
+          "evidence_quote": "Current laboratory studies show TSH <0.01 mIU/L (ref 0.4–4.0), free T4 4.2 ng/dL (ref 0.8–1.8), and free T3 8.5 pg/mL (ref 2.3–4.2), consistent with active hyperthyroidism. TSI (thyroid-stimulating immunoglobulin) is markedly elevated at 8.2 IU/L (ref <1.75), confirming Graves disease; TPO antibodies negative."
         },
         {
-          "question": "Does she have any history of cancer, cardiac disease, hypertension, neurological conditions, or chronic fatigue?",
-          "answer": "No — she denies any history of cancer, cardiac disease, hypertension, neurological conditions, or chronic fatigue syndrome.",
-          "evidence_quote": "She has no history of cancer, cardiac disease, hypertension, neurological conditions, or chronic fatigue syndrome."
+          "question": "What is the patient's current heart rate, blood pressure, and has cardiac evaluation (EKG or echocardiogram) been performed?",
+          "answer": "Heart rate 118 bpm (regular), blood pressure 128/76 mmHg. EKG shows sinus tachycardia without ischemic changes; echocardiogram demonstrates normal LVEF (58%), mild left atrial enlargement, and no valvular pathology.",
+          "evidence_quote": "Vital signs today: heart rate 118 bpm (regular), blood pressure 128/76 mmHg. Twelve-lead EKG performed last week showed sinus tachycardia without ischemic changes; transthoracic echocardiogram demonstrates normal left ventricular ejection fraction (58%), mild left atrial enlargement, and no valvular pathology."
         },
         {
-          "question": "When was she diagnosed, and what medications, prior antithyroid treatments, or surgeries has she had?",
-          "answer": "Diagnosed with Graves disease on 2026-04-15; started methimazole 10 mg twice daily one week later. No prior antithyroid treatments, no radioactive iodine therapy, and no thyroid or other surgeries.",
-          "evidence_quote": "She was diagnosed with Graves disease on 2026-04-15 and started methimazole 10 mg twice daily one week later; she has had no prior antithyroid treatments, no radioactive iodine therapy, and no thyroid or other surgeries."
+          "question": "What prior thyroid treatments (antithyroids, radioiodine, surgery) has the patient received, and does she have any other autoimmune or neurological conditions?",
+          "answer": "Patient initiated on methimazole 10 mg three times daily and propranolol 40 mg twice daily approximately 5–6 weeks ago; no prior radioiodine or thyroidectomy. No other autoimmune conditions identified; neurological exam normal.",
+          "evidence_quote": "Patient initiated on propranolol 40 mg twice daily 6 weeks ago for symptom control and methimazole 10 mg three times daily 5 weeks ago; no prior radioiodine or thyroidectomy. No history of other autoimmune conditions (negative tissue transglutaminase, normal CBC). Neurological exam normal; no tremor documented today after propranolol initiation."
         }
       ],
       "verdict_changes": [
         {
           "nct_id": "NCT06963203",
-          "criterion": "Undergoing surgical treatment for Graves' disease or Amiodarone-induced thyrotoxicosis (AIT) with biochemically confirmed hyperthyroidism, or on specific medication for the treatment of Graves' disease or AIT",
+          "criterion": "Biochemically confirmed hyperthyroidism or on specific medication for the treatment of Graves' disease or AIT",
           "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT06963203",
-          "criterion": "Patients undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism, lymph node clearance, or redo surgery",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06963203",
-          "criterion": "Surgical procedures performed for other reasons than Graves' disease or AIT",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05461820",
-          "criterion": "Graves hyperthyroidism (responsible for doctors' clinical diagnosis)",
-          "before": "UNCERTAIN",
           "after": "MET"
         },
         {
@@ -932,7 +1094,7 @@ window.TRACES = [
         },
         {
           "nct_id": "NCT05461820",
-          "criterion": "Patients with a history of malignant tumors",
+          "criterion": "Those who have used glucocorticoid or other immunosuppressants for a long time within 3 months before being selected",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
@@ -944,45 +1106,33 @@ window.TRACES = [
         },
         {
           "nct_id": "NCT05461820",
-          "criterion": "Blood routine: the total number of white blood cells < 3.0×10^9 or neutrophils < 1.5×10^9",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05461820",
-          "criterion": "Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit; when ALT or AST is less than 2 times of the normal upper limit, and the test of hepatitis B two half-and-half positive",
-          "before": "UNKNOWN",
-          "after": "UNCERTAIN"
-        },
-        {
-          "nct_id": "NCT05461820",
-          "criterion": "Renal insufficiency: serum creatinine is higher than the upper limit of normal value",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05461820",
           "criterion": "Patients with heart failure",
+          "before": "UNCERTAIN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT05461820",
+          "criterion": "Patients with coronary heart disease",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT05461820",
+          "criterion": "Patients with other autoimmune diseases",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
         {
           "nct_id": "NCT06392906",
-          "criterion": "Individuals with severe hypertension or diabetic retinopathy",
-          "before": "UNKNOWN",
-          "after": "UNCERTAIN"
-        },
-        {
-          "nct_id": "NCT05678374",
-          "criterion": "If patient: Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT05678374",
-          "criterion": "Diagnosis 15 to 60 months ago. If recidive, both episodes must have occurred within 15 months to 60 months.",
+          "criterion": "Individuals with severe hypertension",
           "before": "UNKNOWN",
           "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT05678374",
+          "criterion": "Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis",
+          "before": "UNKNOWN",
+          "after": "MET"
         },
         {
           "nct_id": "NCT05678374",
@@ -992,21 +1142,15 @@ window.TRACES = [
         },
         {
           "nct_id": "NCT05678374",
-          "criterion": "Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, any other neurological disease",
+          "criterion": "Multiple sclerosis, myalgic encephalomyelitis/chronic fatigue syndrome, or any other neurological disease",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
         {
           "nct_id": "NCT05678374",
-          "criterion": "Traumatic brain injury with unconsciousness",
+          "criterion": "On-going or recent systemic treatment with steroids",
           "before": "UNKNOWN",
-          "after": "UNCERTAIN"
-        },
-        {
-          "nct_id": "NCT05678374",
-          "criterion": "Other disease strongly associated with fatigue",
-          "before": "UNKNOWN",
-          "after": "UNCERTAIN"
+          "after": "NOT_MET"
         },
         {
           "nct_id": "NCT05678374",
@@ -1020,25 +1164,25 @@ window.TRACES = [
           "nct_id": "NCT06963203",
           "rank": 1,
           "eligibility": "UNCERTAIN",
-          "rationale": "Clinical presentation consistent with Graves' disease (tachycardia, tremor, goiter); eligibility pending confirmation of informed consent and pregnancy status."
+          "rationale": "Clinical presentation consistent with Graves' disease; eligibility depends on whether patient undergoes thyroidectomy and consents to participation."
         },
         {
           "nct_id": "NCT05461820",
           "rank": 2,
           "eligibility": "UNCERTAIN",
-          "rationale": "Graves' disease presentation fits recurrence-treatment trial; eligibility pending consent, liver enzyme results, and pregnancy status confirmation."
+          "rationale": "Clinical diagnosis of Graves' hyperthyroidism appears likely based on presentation; eligibility contingent on informed consent and no recent trial participation."
         },
         {
           "nct_id": "NCT06392906",
           "rank": 3,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: patient is 29, below the trial's 35-year age minimum, and remains hyperthyroid rather than euthyroid."
+          "rationale": "Excluded: patient is 29 years old; trial requires age ≥35 years. No evidence of thyroid eye disease documented."
         },
         {
           "nct_id": "NCT05678374",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: presentation is new-onset (not 15-60 months post-diagnosis) with untreated active hyperthyroidism, not thyroid hormones in normal range."
+          "rationale": "Excluded: trial requires euthyroid state without antithyroid drugs; patient has active hyperthyroidism requiring treatment."
         }
       ]
     },
@@ -1049,43 +1193,43 @@ window.TRACES = [
     "patient_text": "A 7-year-old boy with a 3-week history of periorbital edema and frothy urine. Urinalysis shows heavy proteinuria without hematuria, and serum albumin is low.",
     "extraction": [
       {
-        "name": "age",
-        "value": "7 years",
-        "evidence_quote": "7-year-old"
+        "name": "Age",
+        "value": "7 years old",
+        "evidence_quote": "A 7-year-old boy"
       },
       {
-        "name": "sex",
+        "name": "Sex",
         "value": "male",
-        "evidence_quote": "boy"
+        "evidence_quote": "7-year-old boy"
       },
       {
-        "name": "symptom_duration",
-        "value": "3 weeks",
-        "evidence_quote": "3-week history"
+        "name": "Symptom: Periorbital edema",
+        "value": "present",
+        "evidence_quote": "3-week history of periorbital edema"
       },
       {
-        "name": "symptom",
-        "value": "periorbital edema",
-        "evidence_quote": "periorbital edema"
-      },
-      {
-        "name": "symptom",
-        "value": "frothy urine",
+        "name": "Symptom: Frothy urine",
+        "value": "present",
         "evidence_quote": "frothy urine"
       },
       {
-        "name": "lab_finding",
-        "value": "heavy proteinuria",
-        "evidence_quote": "heavy proteinuria"
+        "name": "Duration of symptoms",
+        "value": "3 weeks",
+        "evidence_quote": "3-week history of periorbital edema and frothy urine"
       },
       {
-        "name": "lab_finding",
-        "value": "absence of hematuria",
-        "evidence_quote": "without hematuria"
+        "name": "Urinalysis: Proteinuria",
+        "value": "heavy",
+        "evidence_quote": "Urinalysis shows heavy proteinuria"
       },
       {
-        "name": "lab_finding",
-        "value": "low serum albumin",
+        "name": "Urinalysis: Hematuria",
+        "value": "absent",
+        "evidence_quote": "heavy proteinuria without hematuria"
+      },
+      {
+        "name": "Serum albumin",
+        "value": "low",
         "evidence_quote": "serum albumin is low"
       }
     ],
@@ -1101,15 +1245,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no info on NEPTUNE observational study enrollment or consent status."
+            "reasoning": "No information provided about NEPTUNE study enrollment or consent status."
           },
           {
-            "text": "Must be potentially eligible for the NEPTUNE Match partnering trials (e.g. if no trial is enrolling a participant under age 6, those under 6 are not eligible)",
+            "text": "Must be potentially eligible for the NEPTUNE Match partnering trials",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on which NEPTUNE Match partnering trials are currently enrolling for this patient."
+            "reasoning": "No information about eligibility for NEPTUNE Match partnering trials available."
           },
           {
             "text": "Regular nephrology healthcare provided at a NEPTUNE study site",
@@ -1117,7 +1261,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about care being provided at a NEPTUNE study site."
+            "reasoning": "No information about whether nephrology care is provided at a NEPTUNE site."
           },
           {
             "text": "Willing and able to consent, and as appropriate assent, to participate in NEPTUNE Match",
@@ -1125,7 +1269,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about willingness or ability to consent/assent to NEPTUNE Match."
+            "reasoning": "No information about patient/guardian willingness or ability to consent/assent provided."
           },
           {
             "text": "Currently non-NEPTUNE observational study participants are not eligible to be matched to a clinical trial using these biomarker assessments",
@@ -1133,7 +1277,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on whether patient is currently a NEPTUNE observational study participant."
+            "reasoning": "No information about current NEPTUNE observational study participation status."
           },
           {
             "text": "Non-English or non-Spanish speaking",
@@ -1141,12 +1285,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information given about the patient's spoken language."
+            "reasoning": "No information about patient or guardian language spoken provided."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 1,
-        "rationale": "Nephrotic syndrome presentation fits NEPTUNE's scope, but NEPTUNE cohort enrollment, site affiliation, and eligibility for partnering trials are not documented in the vignette."
+        "rationale": "Patient may have nephrotic syndrome requiring kidney biopsy and nephrology care at NEPTUNE site; prior NEPTUNE enrollment status unknown."
       },
       {
         "nct_id": "NCT06162546",
@@ -1154,20 +1298,20 @@ window.TRACES = [
         "phase": "NA",
         "criteria": [
           {
-            "text": "Resistant to standard Immunosuppressive agents (if clinically indicated, e.g. primary/non-genetic forms)",
+            "text": "Resistant to standard immunosuppressive agents (if clinically indicated, e.g. primary/non-genetic forms)",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of immunosuppressive treatment or response to it in vignette."
+            "reasoning": "No information about previous immunosuppressive treatment or response provided."
           },
           {
             "text": "Persistent urinary protein-to-creatinine (UP/C) ratio >1.0 g/g",
             "type": "inclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "heavy proteinuria",
-            "reasoning": "Heavy proteinuria suggests high UP/C but no numeric ratio or persistence confirmed."
+            "evidence": "Heavy proteinuria without hematuria",
+            "reasoning": "Heavy proteinuria present, but UP/C ratio not numerically quantified; cannot confirm >1.0 g/g threshold."
           },
           {
             "text": "eGFR > 30 ml/min per 1.73 m2",
@@ -1175,15 +1319,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No creatinine or eGFR value reported."
+            "reasoning": "No eGFR or serum creatinine value provided in vignette."
           },
           {
-            "text": "biopsy or a disease-causing genetic mutation associated with nephrotic syndrome",
+            "text": "Biopsy or a disease-causing genetic mutation associated with nephrotic syndrome",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No biopsy or genetic testing results mentioned."
+            "reasoning": "No biopsy findings or genetic mutation testing results documented."
           },
           {
             "text": "Inability or unwillingness to comply with repeated assessments",
@@ -1191,7 +1335,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about compliance ability or willingness."
+            "reasoning": "No information about patient or family willingness to comply with assessments."
           },
           {
             "text": "Objections against participation at discretion of the investigator",
@@ -1199,28 +1343,28 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Investigator discretion item, not decidable from record."
+            "reasoning": "Investigator discretion criterion; cannot be determined from clinical data alone."
           },
           {
-            "text": "Secondary",
+            "text": "Secondary nephrotic syndrome",
+            "type": "exclusion",
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Periorbital edema, frothy urine, heavy proteinuria, low serum albumin",
+            "reasoning": "Clinical presentation consistent with nephrotic syndrome, but no secondary causes (infection, malignancy, drugs) documented or ruled out."
+          },
+          {
+            "text": "Steroid-dependence or frequently relapsing disease (except achievement of complete remission)",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data indicating primary vs secondary cause of nephrotic syndrome."
-          },
-          {
-            "text": "Patients with steroid-dependence/frequently relapsing disease (but achievement of complete remission)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No treatment history; steroid-dependence or relapse status not addressed."
+            "reasoning": "No prior steroid treatment history, relapse pattern, or remission status documented."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 2,
-        "rationale": "Heavy proteinuria and low albumin suggest nephrotic syndrome, but steroid-resistance status, quantified UP/C ratio, and renal function (eGFR) are not reported."
+        "rationale": "Presents with nephrotic syndrome; steroid-resistance status, exact proteinuria level, and renal function need confirmation to assess eligibility."
       },
       {
         "nct_id": "NCT06607991",
@@ -1232,16 +1376,24 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "age: 7 years",
-            "reasoning": "Patient is 7 years old, male; within the 2-17 year range regardless of gender."
+            "evidence": "Age: 7 years old",
+            "reasoning": "Patient is 7 years old, which falls within the 2-17 year age range."
           },
           {
-            "text": "Meets the 2021 KDIGO definition of steroid-resistant nephrotic syndrome (SRNS), and either: has received an adequate dose of calcineurin inhibitors (CNIs) for more than 6 months without achieving at least partial remission; or has contraindications to CNI use (e.g., eGFR < 60 mL/min/1.73 m², prominent tubular injury on biopsy, elevated urinary markers > 3x ULN, abnormal glucose tolerance, severe uncontrolled hypertension, significant drug interactions, or known CNI allergy); or has shown inadequate response or relapse after treatment with at least two immunosuppressive agents (including a CNI and at least one other conventional or biologic agent), defined as failure to achieve complete remission after 12 months of therapy or relapse following initial response",
+            "text": "Meet the 2021 KDIGO definition of steroid-resistant nephrotic syndrome (SRNS)",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No treatment history, steroid response, or CNI exposure mentioned; new presentation only."
+            "reasoning": "Vignette does not provide information about prior steroid response or steroid resistance status."
+          },
+          {
+            "text": "Have received an adequate dose of calcineurin inhibitors (CNIs) for more than 6 months without achieving at least partial remission, OR have contraindications to CNI use, OR have demonstrated inadequate response or disease relapse after treatment with at least two immunosuppressive agents",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about prior CNI therapy, duration, response, or other immunosuppressive treatments."
           },
           {
             "text": "Renal biopsy performed prior to screening confirms a diagnosis of minimal change disease (MCD) or focal segmental glomerulosclerosis (FSGS)",
@@ -1249,7 +1401,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No renal biopsy results are mentioned in the vignette."
+            "reasoning": "Vignette does not mention renal biopsy results or pathologic diagnosis."
           },
           {
             "text": "The subject and/or their legal guardian must provide written informed consent",
@@ -1257,7 +1409,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about informed consent status."
+            "reasoning": "No information about informed consent status; investigator discretion required."
           },
           {
             "text": "eGFR < 60 mL/min/1.73 m² (using the modified Bedside Schwartz formula)",
@@ -1265,7 +1417,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No eGFR or creatinine value provided in the vignette."
+            "reasoning": "No eGFR or serum creatinine values provided to calculate kidney function."
           },
           {
             "text": "Stroke or seizure within 6 months prior to screening, or other active central nervous system disorders",
@@ -1273,7 +1425,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No history of stroke, seizure, or CNS disorder mentioned."
+            "reasoning": "No information about stroke, seizure, or CNS disorders in past 6 months."
           },
           {
             "text": "Genetic nephropathy confirmed by genetic testing",
@@ -1281,7 +1433,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No genetic testing results are mentioned in the vignette."
+            "reasoning": "No genetic testing results mentioned in vignette."
           },
           {
             "text": "Renal biopsy confirming IgA nephropathy, membranous nephropathy, or membranoproliferative glomerulonephritis",
@@ -1289,44 +1441,36 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No biopsy performed or mentioned, so no confirmation of these diagnoses."
+            "reasoning": "Renal biopsy pathology not specified; cannot exclude IgA, membranous, or MPGN."
           },
           {
-            "text": "Severe congenital heart disease or history of acute myocardial infarction within 6 months, or severe arrhythmias, or moderate to large pericardial effusion, severe myocarditis, or unstable vital signs requiring vasopressors to maintain blood pressure",
+            "text": "Positive for hepatitis B surface antigen (HBsAg), hepatitis B core antibody (HBcAb) with HBV DNA levels above normal range, hepatitis C virus (HCV) antibodies with HCV RNA levels above normal range, human immunodeficiency virus (HIV) antibodies, syphilis, or cytomegalovirus (CMV) DNA",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No cardiac history, vital sign, or hemodynamic information provided."
+            "reasoning": "No infectious serology or viral/bacterial screening results provided."
           },
           {
-            "text": "Positive for HBsAg or HBcAb with HBV DNA above normal range; positive for HCV antibodies with HCV RNA above normal range; or positive for HIV antibodies, syphilis, or CMV DNA",
+            "text": "Moderate to severe neutropenia (≤1.0×10⁹/L), moderate to severe anemia (hemoglobin ≤90 g/L), thrombocytopenia (≤75×10⁹/L), or liver dysfunction (ALT, AST, or bilirubin greater than 2.5 times the upper limit of normal persisting for 2 weeks)",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No infectious disease serology (HBV, HCV, HIV, syphilis, CMV) mentioned."
+            "reasoning": "No CBC, liver function tests, or hemoglobin values documented."
           },
           {
-            "text": "Abnormal laboratory values prior to screening: moderate to severe neutropenia (≤1.0×10⁹/L), moderate to severe anemia (hemoglobin ≤90 g/L), thrombocytopenia (≤75×10⁹/L), or liver dysfunction (ALT, AST, or bilirubin > 2.5x ULN persisting for 2 weeks)",
+            "text": "Received rituximab or cyclophosphamide therapy within the past 3 months",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No CBC counts or liver enzyme values provided; only proteinuria and albumin given."
-          },
-          {
-            "text": "Subjects with tumors or other life-threatening diseases prior to screening",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of tumors or other life-threatening disease in the vignette."
+            "reasoning": "No prior rituximab or cyclophosphamide therapy history mentioned."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 3,
-        "rationale": "Nephrotic features are present, but steroid-resistance per KDIGO criteria, CNI treatment history, biopsy-confirmed MCD/FSGS diagnosis, and consent status are all unknown."
+        "rationale": "Clinical picture consistent with steroid-resistant nephrotic syndrome in children; requires biopsy confirmation of MCD/FSGS and CNI-resistance documentation."
       },
       {
         "nct_id": "NCT06334692",
@@ -1338,8 +1482,8 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
-            "evidence": "7-year-old boy",
-            "reasoning": "Patient is 7 years old, not an adult over 18."
+            "evidence": "Age: 7 years old",
+            "reasoning": "Patient is 7 years old; criterion requires age >18 years."
           },
           {
             "text": "Patients with biopsy-proven idiopathic MCD or FSGS (cases)",
@@ -1347,7 +1491,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette describes nephrotic-range proteinuria but no biopsy result is mentioned."
+            "reasoning": "No kidney biopsy results provided; cannot confirm MCD or FSGS diagnosis."
           },
           {
             "text": "Patients with biopsy-proven idiopathic membranous nephropathy (controls)",
@@ -1355,7 +1499,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No biopsy information given; membranous nephropathy status not addressed."
+            "reasoning": "No kidney biopsy results provided; cannot confirm membranous nephropathy diagnosis."
           },
           {
             "text": "Patients who provided consent to store their samples in the certified CRB biobank",
@@ -1363,15 +1507,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about consent or biobank enrollment."
+            "reasoning": "Vignette contains no information about consent or biobank storage."
           },
           {
             "text": "Reasonable possibility of a secondary cause of NS (for cases) or MN (for controls) at time of blood collections",
             "type": "exclusion",
-            "verdict": "UNKNOWN",
+            "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No workup for secondary causes of nephrotic syndrome is mentioned."
+            "evidence": "7-year-old boy with periorbital edema, frothy urine, heavy proteinuria, low albumin; no hematuria",
+            "reasoning": "Clinical presentation suggests MCNS, but secondary causes cannot be ruled out without full workup."
           },
           {
             "text": "Active viral or bacterial infections at time of blood collections",
@@ -1379,75 +1523,136 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about active infection at time of blood collection."
+            "reasoning": "Vignette does not mention presence or absence of active infections at time of blood collection."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: trial requires adults over 18 years old; patient is a 7-year-old child, failing the age inclusion criterion."
+        "rationale": "Excluded: patient is 7 years old; trial requires adults over 18 years."
       }
     ],
     "questions": [
       {
-        "field": "Consent and trial/registry enrollment status",
-        "question": "Has the patient/guardian consented to research, and are they already enrolled in the NEPTUNE registry or another nephrotic syndrome trial?",
-        "why": "Enrollment/consent status gates eligibility for 10 trial criteria"
+        "field": "Renal biopsy findings and diagnosis",
+        "question": "Has a kidney biopsy been performed? If so, what was the histologic diagnosis (minimal change disease, FSGS, membranous nephropathy, or other)?",
+        "why": "Biopsy diagnosis is critical for trial eligibility and affects 4 trial criteria."
       },
       {
-        "field": "Renal biopsy / genetic diagnosis",
-        "question": "Has a renal biopsy or genetic panel been done, and if so, what histologic subtype (MCD/FSGS/MN/IgA/MPGN) or genetic cause was identified?",
-        "why": "Confirmed histologic/genetic diagnosis required by 6 trial criteria"
+        "field": "Steroid responsiveness and immunosuppressive treatment history",
+        "question": "How did the patient respond to initial corticosteroid therapy, and has he received any prior immunosuppressive agents (calcineurin inhibitors, rituximab, cyclophosphamide)? If so, for how long and with what response?",
+        "why": "Steroid-responsiveness and prior CNI/biologic use determine trial enrollment and affect 4 criteria."
       },
       {
-        "field": "Secondary cause / active infection workup",
-        "question": "Has workup for secondary nephrotic syndrome (infection serologies, autoimmune markers) been completed, and is any active infection present?",
-        "why": "Rules out exclusionary secondary NS or active infection, affecting 4 criteria"
+        "field": "Recent infections and infectious serology",
+        "question": "What are the results of recent screening for HBV, HCV, HIV, syphilis, and CMV? Are there any active infections currently?",
+        "why": "Infectious status is a common exclusion criterion and affects 2 trial criteria."
       }
     ],
     "reeval": {
-      "extended_record": "Guardian provided written informed consent for research participation on 2026-07-05 and the family is being referred for screening in the NEPTUNE nephrotic syndrome registry; formal enrollment is pending confirmation and the child is not currently enrolled in any other trial. Given the boy's age, classic steroid-sensitive presentation, normal blood pressure, and absence of hematuria or renal insufficiency (creatinine 0.4 mg/dL), a renal biopsy was not performed and no genetic panel was sent; the presumptive diagnosis is minimal change disease (MCD), pending response to an 8-week course of oral prednisolone 2 mg/kg/day. Secondary-cause workup was completed and unremarkable: ASO titer and streptozyme panel negative, C3 and C4 complement within normal limits, ANA negative, hepatitis B surface antigen and hepatitis C antibody negative, HIV negative, urine culture negative, and the child is afebrile with no signs of active infection or peritonitis.",
+      "extended_record": "At 6-week follow-up, the patient presented with persistent periorbial edema and frothy urine. Kidney biopsy performed via ultrasound guidance on day 14 of illness showed diffuse foot process effacement on electron microscopy with intact glomerular basement membrane and normal immunofluorescence, consistent with minimal change disease. Serum albumin improved from 1.8 g/dL to 2.4 g/dL after 4 weeks of prednisone 2 mg/kg/day. Complete remission of proteinuria (urine protein <4 mg/kg/day) achieved by week 5 of corticosteroid therapy. No prior calcineurin inhibitors, rituximab, or cyclophosphamide required. Infectious disease screening completed: HBsAg negative, anti-HCV negative, HIV 4th generation assay negative, RPR non-reactive, and CMV IgG positive with negative CMV PCR (prior exposure, no active infection). Patient remains edema-free at current follow-up with normal renal function and urine protein excretion.",
       "answers": [
         {
-          "question": "Has the patient/guardian consented to research, and are they already enrolled in the NEPTUNE registry or another nephrotic syndrome trial?",
-          "answer": "Guardian has consented to research participation. The family is being referred for NEPTUNE registry screening but is not yet formally enrolled, and the child is not enrolled in any other nephrotic syndrome trial.",
-          "evidence_quote": "Guardian provided written informed consent for research participation on 2026-07-05 and the family is being referred for screening in the NEPTUNE nephrotic syndrome registry; formal enrollment is pending confirmation and the child is not currently enrolled in any other trial."
+          "question": "Has a kidney biopsy been performed? If so, what was the histologic diagnosis (minimal change disease, FSGS, membranous nephropathy, or other)?",
+          "answer": "Yes, kidney biopsy was performed on day 14 of illness. The histologic diagnosis is minimal change disease, characterized by foot process effacement on electron microscopy with intact basement membrane and normal immunofluorescence.",
+          "evidence_quote": "Kidney biopsy performed via ultrasound guidance on day 14 of illness showed diffuse foot process effacement on electron microscopy with intact glomerular basement membrane and normal immunofluorescence, consistent with minimal change disease."
         },
         {
-          "question": "Has a renal biopsy or genetic panel been done, and if so, what histologic subtype (MCD/FSGS/MN/IgA/MPGN) or genetic cause was identified?",
-          "answer": "No biopsy or genetic panel has been performed, consistent with standard initial management of typical childhood nephrotic syndrome; the presumptive diagnosis is minimal change disease (MCD), pending steroid response.",
-          "evidence_quote": "a renal biopsy was not performed and no genetic panel was sent; the presumptive diagnosis is minimal change disease (MCD), pending response to an 8-week course of oral prednisolone 2 mg/kg/day."
+          "question": "How did the patient respond to initial corticosteroid therapy, and has he received any prior immunosuppressive agents (calcineurin inhibitors, rituximab, cyclophosphamide)? If so, for how long and with what response?",
+          "answer": "The patient achieved complete remission of proteinuria by week 5 of prednisone 2 mg/kg/day therapy with serum albumin improvement from 1.8 to 2.4 g/dL over 4 weeks. He has not received any calcineurin inhibitors, rituximab, or cyclophosphamide.",
+          "evidence_quote": "Serum albumin improved from 1.8 g/dL to 2.4 g/dL after 4 weeks of prednisone 2 mg/kg/day. Complete remission of proteinuria (urine protein <4 mg/kg/day) achieved by week 5 of corticosteroid therapy. No prior calcineurin inhibitors, rituximab, or cyclophosphamide required."
         },
         {
-          "question": "Has workup for secondary nephrotic syndrome (infection serologies, autoimmune markers) been completed, and is any active infection present?",
-          "answer": "Secondary-cause workup is complete and entirely negative (infection serologies, complement levels, and autoimmune markers), and there is no active infection.",
-          "evidence_quote": "Secondary-cause workup was completed and unremarkable: ASO titer and streptozyme panel negative, C3 and C4 complement within normal limits, ANA negative, hepatitis B surface antigen and hepatitis C antibody negative, HIV negative, urine culture negative, and the child is afebrile with no signs of active infection or peritonitis."
+          "question": "What are the results of recent screening for HBV, HCV, HIV, syphilis, and CMV? Are there any active infections currently?",
+          "answer": "Infectious screening shows: HBsAg negative, anti-HCV negative, HIV 4th generation assay negative, RPR non-reactive, and CMV IgG positive with negative CMV PCR indicating prior exposure without active infection. No active infections present.",
+          "evidence_quote": "Infectious disease screening completed: HBsAg negative, anti-HCV negative, HIV 4th generation assay negative, RPR non-reactive, and CMV IgG positive with negative CMV PCR (prior exposure, no active infection)."
         }
       ],
-      "verdict_changes": [],
+      "verdict_changes": [
+        {
+          "nct_id": "NCT06162546",
+          "criterion": "Resistant to standard immunosuppressive agents (if clinically indicated, e.g. primary/non-genetic forms)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06162546",
+          "criterion": "Steroid-dependence or frequently relapsing disease (except achievement of complete remission)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06607991",
+          "criterion": "Meet the 2021 KDIGO definition of steroid-resistant nephrotic syndrome (SRNS)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06607991",
+          "criterion": "Have received an adequate dose of calcineurin inhibitors (CNIs) for more than 6 months without achieving at least partial remission, OR have contraindications to CNI use, OR have demonstrated inadequate response or disease relapse after treatment with at least two immunosuppressive agents",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06607991",
+          "criterion": "Renal biopsy performed prior to screening confirms a diagnosis of minimal change disease (MCD) or focal segmental glomerulosclerosis (FSGS)",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT06607991",
+          "criterion": "Renal biopsy confirming IgA nephropathy, membranous nephropathy, or membranoproliferative glomerulonephritis",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06607991",
+          "criterion": "Positive for hepatitis B surface antigen (HBsAg), hepatitis B core antibody (HBcAb) with HBV DNA levels above normal range, hepatitis C virus (HCV) antibodies with HCV RNA levels above normal range, human immunodeficiency virus (HIV) antibodies, syphilis, or cytomegalovirus (CMV) DNA",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06334692",
+          "criterion": "Patients with biopsy-proven idiopathic MCD or FSGS (cases)",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT06334692",
+          "criterion": "Patients with biopsy-proven idiopathic membranous nephropathy (controls)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06334692",
+          "criterion": "Active viral or bacterial infections at time of blood collections",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        }
+      ],
       "final_ranking": [
         {
           "nct_id": "NCT04571658",
           "rank": 1,
           "eligibility": "UNCERTAIN",
-          "rationale": "Nephrotic syndrome presentation fits NEPTUNE's scope, but NEPTUNE cohort enrollment, site affiliation, and eligibility for partnering trials are not documented in the vignette."
-        },
-        {
-          "nct_id": "NCT06162546",
-          "rank": 2,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Heavy proteinuria and low albumin suggest nephrotic syndrome, but steroid-resistance status, quantified UP/C ratio, and renal function (eGFR) are not reported."
-        },
-        {
-          "nct_id": "NCT06607991",
-          "rank": 3,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Nephrotic features are present, but steroid-resistance per KDIGO criteria, CNI treatment history, biopsy-confirmed MCD/FSGS diagnosis, and consent status are all unknown."
+          "rationale": "Patient with nephrotic syndrome presentation may qualify if enrolled in NEPTUNE observational cohort and eligible for partnering trials; NEPTUNE site participation status unknown."
         },
         {
           "nct_id": "NCT06334692",
+          "rank": 2,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: patient is 7 years old; trial requires adults >18 years. Also requires biopsy-proven membranous nephropathy, not yet established."
+        },
+        {
+          "nct_id": "NCT06162546",
+          "rank": 3,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: no evidence of resistance to standard immunosuppressants; patient is newly presenting with nephrotic syndrome, not yet treated."
+        },
+        {
+          "nct_id": "NCT06607991",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: trial requires adults over 18 years old; patient is a 7-year-old child, failing the age inclusion criterion."
+          "rationale": "Excluded: patient does not meet steroid-resistant nephrotic syndrome criteria; no documented inadequate CNI response or multi-agent failure yet."
         }
       ]
     },
@@ -1458,34 +1663,29 @@ window.TRACES = [
     "patient_text": "A 68-year-old man with a long smoking history presents with painless gross hematuria. CT urography reveals a mass in the bladder wall.",
     "extraction": [
       {
-        "name": "age",
-        "value": "68 years",
-        "evidence_quote": "68-year-old"
+        "name": "Age",
+        "value": "68 years old",
+        "evidence_quote": "A 68-year-old man"
       },
       {
-        "name": "sex",
-        "value": "male",
-        "evidence_quote": "man"
+        "name": "Sex",
+        "value": "Male",
+        "evidence_quote": "A 68-year-old man"
       },
       {
-        "name": "risk_factor_smoking",
-        "value": "long smoking history",
-        "evidence_quote": "long smoking history"
+        "name": "Smoking History",
+        "value": "Long smoking history",
+        "evidence_quote": "with a long smoking history"
       },
       {
-        "name": "symptom",
-        "value": "painless gross hematuria",
-        "evidence_quote": "painless gross hematuria"
+        "name": "Chief Complaint",
+        "value": "Painless gross hematuria",
+        "evidence_quote": "presents with painless gross hematuria"
       },
       {
-        "name": "imaging_study",
-        "value": "CT urography",
-        "evidence_quote": "CT urography"
-      },
-      {
-        "name": "imaging_finding",
-        "value": "mass in the bladder wall",
-        "evidence_quote": "mass in the bladder wall"
+        "name": "Imaging Finding",
+        "value": "Mass in the bladder wall",
+        "evidence_quote": "CT urography reveals a mass in the bladder wall"
       }
     ],
     "trials": [
@@ -1499,8 +1699,8 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "68-year-old man",
-            "reasoning": "Patient is 68 years old, well above the 18-year threshold."
+            "evidence": "Age: 68 years old",
+            "reasoning": "Patient is 68, which meets the ≥18 years requirement."
           },
           {
             "text": "Ability to understand and sign an informed consent",
@@ -1508,15 +1708,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about capacity to understand or sign consent."
+            "reasoning": "No information provided about patient's cognitive ability or capacity to consent."
           },
           {
             "text": "Malignant or benign indication for undergoing cystectomy",
             "type": "inclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "CT urography reveals a mass in the bladder wall",
-            "reasoning": "Bladder mass with hematuria suggests possible malignancy, but no confirmed diagnosis or cystectomy plan stated."
+            "evidence": "Mass in the bladder wall",
+            "reasoning": "Mass suggests malignancy but histologic confirmation and surgical indication not explicitly stated."
           },
           {
             "text": "Planned ileal conduit as urinary diversion",
@@ -1524,7 +1724,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of planned urinary diversion method in the vignette."
+            "reasoning": "Vignette does not specify planned type of urinary diversion."
           },
           {
             "text": "Previous severe allergic reaction to antimicrobial treatment",
@@ -1532,7 +1732,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information given about prior allergic reactions to antimicrobials."
+            "reasoning": "No history of allergic reactions to antimicrobials documented."
           },
           {
             "text": "Long-term prophylactic antibiotic treatment which is expected to be continued after the cystectomy",
@@ -1540,118 +1740,118 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information given about long-term prophylactic antibiotic use."
+            "reasoning": "No information about current or planned prophylactic antibiotic use."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 1,
-        "rationale": "Cystectomy candidacy plausible given bladder mass, but consent capacity, benign vs malignant indication, and planned ileal conduit diversion remain unconfirmed."
+        "rationale": "Bladder mass likely requires cystectomy; unresolved: consent capacity, malignant indication confirmation, and ileal conduit as planned diversion."
       },
       {
-        "nct_id": "NCT06493370",
-        "title": "Intravenous Ascorbate Plus Gemcitabine/Carboplatin: A Novel and Cost-Effective Alternative With Evident Efficacy in Patients With Muscle Invasive Bladder Cancer",
-        "phase": "PHASE2",
+        "nct_id": "NCT05944237",
+        "title": "HTL0039732 in Participants With Advanced Solid Tumours",
+        "phase": "PHASE1",
         "criteria": [
           {
-            "text": "Males and females age ≥ 18 years",
+            "text": "Histologically or cytologically proven advanced solid tumour, refractory to conventional treatment, or for which no further conventional therapy is considered appropriate by the Investigator or is declined by the potential participant.",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Mass identified but histologic/cytologic confirmation and treatment history not documented."
+          },
+          {
+            "text": "At least 1 measurable lesion according to RECIST v1.1, which (in the Investigator's opinion) has had objective radiological progression on or after the last therapy, or at least one assessable lesion e.g. pleural or peritoneal thickening that does not fulfil RECIST v1.1 criteria for measurable disease.",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Mass present but RECIST measurability and prior therapy response not specified in vignette."
+          },
+          {
+            "text": "Life expectancy of at least 12 weeks.",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about life expectancy estimate."
+          },
+          {
+            "text": "Eastern Cooperative Oncology Group performance status of 0 or 1.",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Performance status not documented in clinical vignette."
+          },
+          {
+            "text": "Aged 18 years or over at the time consent is given.",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "68-year-old man",
-            "reasoning": "Patient is male and 68 years old, satisfying age ≥18 and sex criteria."
+            "reasoning": "Patient is 68 years old, exceeding the 18-year minimum requirement."
           },
           {
-            "text": "ECOG Performance Status (PS) 0 - 2",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No ECOG performance status information provided in vignette."
-          },
-          {
-            "text": "Diagnosis/disease status Cisplatin-ineligible or declined muscle invasive bladder cancer. Cisplatin ineligibility will be defined based on Galsky criteria: CTCAE ver. 5.0 Grade 2 or greater peripheral neuropathy; CTCAE ver. 5.0 Grade 2 or greater hearing loss; Creatinine clearance estimated or calculated < 60 ml/min; NYHA class II or greater congestive heart failure",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No confirmed MIBC diagnosis or cisplatin-eligibility (Galsky) data given; only imaging finding."
-          },
-          {
-            "text": "Adequate organ function: Absolute Neutrophil Count >1.5K/UL (patients with established diagnosis of benign neutropenia are eligible with ANC between 1000-1500 based on discretion of the treating physician); Platelets >100K/UL; Hemoglobin ≥ 9 g/dL; Serum creatinine ≤ 1.5 x upper limit of normal (ULN) or calculated creatinine clearance ≥ 30 mL/min using the Cockcroft-Gault equation; Total bilirubin ≤ 2.0 x ULN; Aspartate aminotransferase (AST [SGOT]) and alanine aminotransferase (ALT [SGPT]) ≤ 2.5 x ULN unless liver metastases are present, in which case they must be ≤ 5 x ULN",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No lab values (ANC, platelets, hemoglobin, creatinine, bilirubin, transaminases) provided."
-          },
-          {
-            "text": "Normal Glucose-6-phosphate dehydrogenase (G6PD) status",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No G6PD testing or status mentioned in vignette."
-          },
-          {
-            "text": "Is pregnant or breastfeeding. There is a potential for congenital abnormalities and for this regimen to harm breast feeding infants",
-            "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "68-year-old man",
-            "reasoning": "Patient is male, so cannot be pregnant or breastfeeding."
-          },
-          {
-            "text": "Has a severe known allergic reaction to any excipient contained in the study drug formulation",
+            "text": "Radiotherapy (except for palliative reasons), chemotherapy, non chemotherapy systemic anti-cancer therapy (apart from life-long hormone suppression such as luteinising hormone-releasing agents in participants with mCRPC) or investigational medicinal products during the 4 weeks prior to enrolment; or first dose of an immunotherapy during the previous 12 weeks before first dose of HTL0039732.",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about drug allergies or excipient reactions."
+            "reasoning": "Prior treatment history and timing relative to enrolment not documented."
           },
           {
-            "text": "Active Grade 3 or 4 (per the National Cancer Institute (NCI) Common Terminology Criteria for Adverse Events (CTCAE), Version 5.0109) viral, bacterial, or fungal infection within 2 weeks prior to the first dose of study treatment",
+            "text": "Ongoing toxic manifestations of previous treatments that are Grade >1 per CTCAE v5.0.",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No infection history or status mentioned in vignette."
+            "reasoning": "No prior treatment toxicities documented in vignette."
           },
           {
-            "text": "Uncontrolled intercurrent illness, including but not limited to, ongoing or active infection, symptomatic congestive heart failure, uncontrolled hypertension, unstable angina pectoris, cardiac arrhythmia, interstitial lung disease, serious chronic gastrointestinal conditions associated with diarrhea, as determined per treating physician",
+            "text": "Any central nervous system metastases (unless potential participants have had local therapy and are asymptomatic, radiologically stable and have been off steroids for ≥4 weeks prior to enrolment).",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Determination rests on treating physician discretion; not decidable from record."
+            "reasoning": "No information about CNS metastases status."
           },
           {
-            "text": "Histology of pure adenocarcinoma, pure squamous cell carcinoma, or pure small cell carcinoma in the TURBT sample",
+            "text": "Known history of current or latent tuberculosis, HIV or Hepatitis B or C infection.",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No TURBT or histology results reported, only imaging finding of a mass."
+            "reasoning": "No documented history of TB, HIV, Hepatitis B or C."
           },
           {
-            "text": "History of G6PD deficiency",
+            "text": "Prior treatment with EP4 inhibitor.",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No history of G6PD deficiency mentioned in vignette."
+            "reasoning": "Prior EP4 inhibitor treatment not mentioned in vignette."
           },
           {
-            "text": "History of oxalate renal calculi - per discretion of treating physician",
+            "text": "Known active peptic ulcer disease, or symptoms of gastritis, dyspepsia or gastro-esophageal reflux disease (one or more episodes per week).",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Rests on physician discretion and no renal calculi history provided."
+            "reasoning": "No documentation of peptic ulcer disease, gastritis, dyspepsia, or GERD symptoms."
+          },
+          {
+            "text": "For Phase 1 Part B and Phase 2a: History or clinical suspicion of interstitial lung disease, history of (non-infectious) pneumonitis that required steroids, or current pneumonitis.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No history or symptoms of interstitial lung disease or pneumonitis documented."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 2,
-        "rationale": "Bladder mass suggests possible MIBC, but ECOG status, cisplatin-eligibility criteria, and organ function labs (ANC, platelets, creatinine, bilirubin) are unconfirmed."
+        "rationale": "Bladder mass is advanced solid tumor; unresolved: histologic confirmation, RECIST-measurable progression, and 12-week life expectancy."
       },
       {
         "nct_id": "NCT04916990",
@@ -1664,7 +1864,7 @@ window.TRACES = [
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "68-year-old man",
-            "reasoning": "Patient is a 68-year-old male adult, satisfying age and sex criteria."
+            "reasoning": "Patient is male adult over 18 years old."
           },
           {
             "text": "English or Spanish speaking",
@@ -1672,7 +1872,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about the patient's spoken language."
+            "reasoning": "Language ability not mentioned in vignette."
           },
           {
             "text": "Receives cancer treatment at UCH-Aurora, UCH-Highlands Ranch, UCHealth North, UCHealth South-UCHealth Memorial Hospital, UCHealth Parkview Hospital, San Juan Cancer Center, RMCC-Pueblo, SCL-St. Mary's, or Parkview Medical Center",
@@ -1680,31 +1880,63 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of which hospital or site provides the patient's care."
+            "reasoning": "Treatment location not specified in vignette."
           },
           {
-            "text": "Resides in a rural county served by the specified hospital sites with Rural-Urban Continuum Code (RUCC) 4-9",
+            "text": "Resides in any of the rural counties served by the participating centers with Rural-Urban Continuum Codes (RUCC) codes 4-9",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on patient's county of residence or RUCC classification."
+            "reasoning": "Residence location and RUCC code not provided."
           },
           {
-            "text": "Diagnosed with lung cancer (SCLC or NSCLC), head and neck cancer (HNSCC), thyroid cancer, breast cancer, cervical cancer, colorectal cancer, or bladder cancer per specified ICD-O/ICD-10 diagnostic codes, and will receive surgery, radiation therapy, chemotherapy, or a combination (including neoadjuvant and adjuvant therapy)",
+            "text": "Diagnosed with lung cancer (SCLC or NSCLC) with ICD-O codes C34.0, C34.1, C34.2, C34.3, C34.8, C34.9, or C33.9, or other lung cancer variants",
             "type": "inclusion",
-            "verdict": "UNCERTAIN",
-            "effect": "REVIEW",
-            "evidence": "mass in the bladder wall",
-            "reasoning": "Imaging suggests possible bladder cancer, but diagnosis unconfirmed and no treatment plan stated."
+            "verdict": "NOT_MET",
+            "effect": "FAIL",
+            "evidence": "Mass in the bladder wall",
+            "reasoning": "Patient has bladder cancer, not lung cancer."
           },
           {
-            "text": "Rural and medically underserved (resides in a county meeting Health Professional Shortage Area or Medically Underserved Area/Population criteria), and/or uninsured (no public or private health insurance), and/or underinsured (public insurance only, e.g., Medicaid, Medicare Part B exclusive, VA; or 10% or more of annual income spent on out-of-pocket medical expenses)",
+            "text": "Diagnosed with head and neck squamous cell carcinoma (HNSCC) or salivary gland cancer with specified ICD-O codes, or other head and neck cancer variants",
+            "type": "inclusion",
+            "verdict": "NOT_MET",
+            "effect": "FAIL",
+            "evidence": "Mass in the bladder wall",
+            "reasoning": "Patient has bladder cancer, not head and neck squamous cell carcinoma."
+          },
+          {
+            "text": "Diagnosed with breast, cervical, colorectal, thyroid, or bladder cancer with specified ICD-O codes",
+            "type": "inclusion",
+            "verdict": "MET",
+            "effect": "PASS",
+            "evidence": "CT urography reveals a mass in the bladder wall",
+            "reasoning": "Patient has bladder cancer, which is an included cancer type."
+          },
+          {
+            "text": "Will receive surgery, radiation therapy, chemotherapy, or a combination of those modalities (including neoadjuvant and adjuvant therapy)",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on rural/underserved status, insurance, or income given."
+            "reasoning": "Treatment plan not yet discussed in vignette."
+          },
+          {
+            "text": "Rural and medically underserved, defined as residing in a rural county with RUCC code 4-9 AND meeting health professional shortage areas or Medically Underserved Areas/Populations criteria",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Rural status, RUCC code, and underserved area criteria not documented."
+          },
+          {
+            "text": "Uninsured or underinsured (no health insurance, public insurance only, or 10% or more of annual income spent on out-of-pocket medical expenses)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Insurance status and out-of-pocket expenses not mentioned."
           },
           {
             "text": "Children under 18 years old",
@@ -1712,31 +1944,15 @@ window.TRACES = [
             "verdict": "NOT_MET",
             "effect": "PASS",
             "evidence": "68-year-old man",
-            "reasoning": "Patient is 68 years old, not a child under 18."
+            "reasoning": "Patient is 68 years old, not under 18."
           },
           {
-            "text": "Individuals who do not speak English or Spanish",
+            "text": "Diagnosed with primary cancer other than breast, bladder, cervix, colon, rectum, lung, head-and-neck cancer, or thyroid cancer",
             "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette gives no information about the patient's spoken language."
-          },
-          {
-            "text": "Not receiving cancer treatment at UCH (Aurora, Highlands Ranch, UCHealth North, UCHealth Memorial Hospital), San Juan Cancer Center, RMCC-Pueblo, St. Mary's, or Parkview Medical Center, or diagnosed with a listed cancer type but will not be treated at one of the collaborating hospital sites",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information on treatment site, so collaborating-site status can't be determined."
-          },
-          {
-            "text": "Diagnosed with a primary cancer other than breast, bladder, cervix, colon, rectum, lung, and/or head-and-neck cancer, or other type of cancer not listed in the inclusion criteria",
-            "type": "exclusion",
-            "verdict": "UNCERTAIN",
-            "effect": "REVIEW",
-            "evidence": "mass in the bladder wall",
-            "reasoning": "Finding suggests bladder involvement, but no confirmed diagnosis to rule out another cancer type."
+            "verdict": "NOT_MET",
+            "effect": "PASS",
+            "evidence": "Mass in the bladder wall",
+            "reasoning": "Bladder cancer is an included primary cancer type, not excluded."
           },
           {
             "text": "Has already initiated curative treatment for the current episode of cancer",
@@ -1744,268 +1960,264 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of any treatment already initiated for the cancer."
+            "reasoning": "Whether curative treatment has been initiated not documented."
           },
           {
-            "text": "From a vulnerable population (e.g., inmates or on probation, homeless, pregnant), decisionally-challenged with cognitive or personality impairment, suicidal ideation or intoxication at the time of consent, unable to hear (not including individuals who can hear with an auditory aid), or likely unable to be tracked over time (e.g., no permanent address at the time of consent)",
+            "text": "From vulnerable populations (inmates or on probation, homeless, or pregnant)",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on incarceration, homelessness, pregnancy, cognitive status, or trackability."
+            "reasoning": "Vulnerable population status not addressed in vignette."
+          },
+          {
+            "text": "Decisionally-challenged with cognitive or personality impairment, suicidal ideation, or intoxication (alcohol or drugs) at the time of consent that interferes with ability to participate in the study",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Decisional capacity and mental status not evaluated in vignette."
+          },
+          {
+            "text": "Unable to hear (not including individuals who can hear with an auditory aid)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Hearing ability not documented."
+          },
+          {
+            "text": "Likely inability to track the individual over time (e.g., no permanent address at the time of consent)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Residence stability and contact information not provided."
           }
         ],
-        "eligibility": "UNCERTAIN",
+        "eligibility": "INELIGIBLE",
         "rank": 3,
-        "rationale": "Eligibility depends on unconfirmed factors: English/Spanish fluency, treatment at a specified UCHealth-affiliated site, and rural county residence (RUCC 4-9)."
+        "rationale": "Excluded: trial requires lung cancer or head/neck squamous cell carcinoma; patient has bladder cancer."
       },
       {
-        "nct_id": "NCT05944237",
-        "title": "HTL0039732 in Participants With Advanced Solid Tumours",
-        "phase": "PHASE1",
+        "nct_id": "NCT06493370",
+        "title": "Intravenous Ascorbate Plus Gemcitabine/Carboplatin: A Novel and Cost-Effective Alternative With Evident Efficacy in Patients With Muscle Invasive Bladder Cancer",
+        "phase": "PHASE2",
         "criteria": [
           {
-            "text": "Written (signed and dated) informed consent and capable of co-operating with investigational medicinal product administration and follow-up.",
+            "text": "Ability of participant to understand this study, and participant willingness to sign a written informed consent",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of consent or cooperation capacity in vignette."
+            "reasoning": "No information provided about patient's cognitive ability or willingness to consent."
           },
           {
-            "text": "Histologically or cytologically proven advanced solid tumour, refractory to conventional treatment, or for which no further conventional therapy is considered appropriate by the Investigator or is declined by the potential participant.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No histological/cytological confirmation or treatment-refractory status given."
-          },
-          {
-            "text": "At least 1 measurable lesion according to RECIST v1.1, which (in the Investigator's opinion) has had objective radiological progression on or after the last therapy, or at least one assessable lesion e.g. pleural or peritoneal thickening that does not fulfil RECIST v1.1 criteria for measurable disease.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No RECIST measurement or progression data provided."
-          },
-          {
-            "text": "Life expectancy of at least 12 weeks.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Life expectancy not addressed in vignette."
-          },
-          {
-            "text": "Eastern Cooperative Oncology Group performance status of 0 or 1.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "ECOG performance status not mentioned."
-          },
-          {
-            "text": "Haematological and biochemical indices within the protocol specified ranges.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No lab/haematological or biochemical values given."
-          },
-          {
-            "text": "Aged 18 years or over at the time consent is given.",
+            "text": "Males and females age ≥ 18 years",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "68-year-old man",
-            "reasoning": "Patient is 68, over the 18-year age threshold."
+            "reasoning": "Patient is male and 68 years old, which meets age ≥18 years requirement."
           },
           {
-            "text": "Radiotherapy (except for palliative reasons), chemotherapy, non chemotherapy systemic anti-cancer therapy (apart from life-long hormone suppression such as luteinising hormone-releasing agents in participants with mCRPC) or investigational medicinal products during the 4 weeks prior to enrolment; or first dose of an immunotherapy during the previous 12 weeks before first dose of HTL0039732.",
+            "text": "ECOG Performance Status (PS) 0 - 2",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "ECOG Performance Status not documented in vignette."
+          },
+          {
+            "text": "Diagnosis/disease status Cisplatin-ineligible or declined muscle invasive bladder cancer",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Mass in the bladder wall",
+            "reasoning": "Bladder mass present but cisplatin eligibility status and muscle invasiveness not explicitly confirmed."
+          },
+          {
+            "text": "Absolute Neutrophil Count > 1.5K/UL (or between 1000-1500 for patients with established benign neutropenia at treating physician discretion)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Absolute Neutrophil Count not provided in patient fields."
+          },
+          {
+            "text": "Platelets > 100K/UL",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Platelet count not provided in patient fields."
+          },
+          {
+            "text": "Hemoglobin ≥ 9 g/dL",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Hemoglobin level not provided in patient fields."
+          },
+          {
+            "text": "Serum creatinine ≤ 1.5 x upper limit of normal (ULN) or calculated creatinine clearance ≥ 30 mL/min using the Cockcroft-Gault equation",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Serum creatinine or creatinine clearance not provided."
+          },
+          {
+            "text": "Normal Glucose-6-phosphate dehydrogenase (G6PD) status",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "G6PD status not documented in vignette."
+          },
+          {
+            "text": "Women of childbearing potential must have a negative serum pregnancy test 72 hours prior to initiating treatment",
+            "type": "inclusion",
+            "verdict": "NOT_MET",
+            "effect": "FAIL",
+            "evidence": "Male",
+            "reasoning": "Patient is male; criterion applies only to women of childbearing potential."
+          },
+          {
+            "text": "Simultaneously enrolled in any therapeutic clinical trial",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No treatment history or recent therapy timing mentioned."
+            "reasoning": "No information about concurrent trial enrollment."
           },
           {
-            "text": "Ongoing toxic manifestations of previous treatments that are Grade >1 per CTCAE v5.0.",
+            "text": "Current or anticipating use of other anti-neoplastic or investigational agents while participating in this study",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No prior treatment or toxicity information given."
+            "reasoning": "No information about current or anticipated use of other anti-neoplastic agents."
           },
           {
-            "text": "Any central nervous system metastases (unless potential participants have had local therapy and are asymptomatic, radiologically stable and have been off steroids for ≥4 weeks prior to enrolment).",
+            "text": "Is pregnant or breastfeeding",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "effect": "PASS",
+            "evidence": "Male",
+            "reasoning": "Patient is male; cannot be pregnant or breastfeeding."
+          },
+          {
+            "text": "Has a severe known allergic reaction to any excipient contained in the study drug formulation",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No CNS imaging or metastasis information provided."
+            "reasoning": "No documented allergies to study drug excipients."
           },
           {
-            "text": "Major thoracic or abdominal surgery from which the potential participant has not yet recovered.",
+            "text": "Active Grade 3 or 4 viral, bacterial, or fungal infection within 2 weeks prior to the first dose of study treatment",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No surgical history mentioned in vignette."
+            "reasoning": "No information about active viral, bacterial, or fungal infections within 2 weeks."
           },
           {
-            "text": "At high medical risk because of non-malignant systemic disease, including active uncontrolled infection.",
+            "text": "Uncontrolled intercurrent illness, including but not limited to, ongoing or active infection, symptomatic congestive heart failure, uncontrolled hypertension, unstable angina pectoris, cardiac arrhythmia, interstitial lung disease, serious chronic gastrointestinal conditions associated with diarrhea",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No comorbidity or infection status information given."
+            "reasoning": "No information about uncontrolled intercurrent illnesses listed."
           },
           {
-            "text": "Known history of current or latent tuberculosis, HIV or Hepatitis B or C infection.",
+            "text": "Histology of pure adenocarcinoma, pure squamous cell carcinoma, or pure small cell carcinoma in the TURBT sample",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No TB, HIV, or hepatitis history mentioned."
+            "reasoning": "TURBT histology not provided; only imaging finding of mass documented."
+          },
+          {
+            "text": "Current consumption of tobacco products",
+            "type": "exclusion",
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Long smoking history",
+            "reasoning": "History of heavy smoking documented, but current tobacco use status unclear."
+          },
+          {
+            "text": "History of G6PD deficiency",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No documented history of G6PD deficiency."
+          },
+          {
+            "text": "History of oxalate renal calculi",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about history of oxalate renal calculi."
           }
         ],
-        "eligibility": "UNCERTAIN",
+        "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Bladder mass may qualify as advanced solid tumor, but consent capacity, histologic confirmation of refractory disease, and RECIST-measurable lesion status are unconfirmed."
+        "rationale": "Excluded: trial requires negative pregnancy test; patient is male, making this criterion inapplicable."
       }
     ],
     "questions": [
       {
-        "field": "Comorbidities, active infections, and treatment toxicity",
-        "question": "Does the patient have significant comorbidities (renal, cardiac, hepatic), active infections, or residual toxicity/CNS involvement from any prior treatment?",
-        "why": "Affects the most trials (9); determines cisplatin and comorbidity-based eligibility."
+        "field": "Cancer treatment status and histology details",
+        "question": "Has the bladder mass been biopsied/confirmed as muscle-invasive bladder cancer, and what is the histologic subtype (urothelial vs. other)?",
+        "why": "Confirms diagnosis and treatment eligibility for 4 trial criteria"
       },
       {
-        "field": "Cancer diagnosis, staging, and prior/planned treatment",
-        "question": "Has the bladder mass been biopsied to confirm histology and stage, and is any treatment already planned or given?",
-        "why": "Diagnosis is not yet confirmed; staging and histology gate most cancer trial eligibility."
+        "field": "Complete blood count and renal function labs",
+        "question": "What are the most recent CBC and comprehensive metabolic panel results, including hemoglobin, platelet count, and creatinine/eGFR?",
+        "why": "Assesses safety eligibility and organ function for treatment in 4 criteria"
       },
       {
-        "field": "Planned surgical/procedural details, allergy history, and consent capacity",
-        "question": "What procedure (e.g., TURBT) is planned, does he have drug/antibiotic allergies, and can he provide informed consent?",
-        "why": "Confirms planned intervention plus safety and consent requirements for enrollment."
+        "field": "Insurance, vulnerabilities, and ability to consent/follow-up",
+        "question": "Does the patient have insurance coverage, live in a stable residence, and have reliable transportation for follow-up visits?",
+        "why": "Addresses vulnerable population exclusions affecting 6 trial criteria"
       }
     ],
     "reeval": {
-      "extended_record": "Comorbidities include stage 2 hypertension and type 2 diabetes; renal function is mildly reduced with creatinine 1.3 mg/dL and eGFR 58 mL/min/1.73m2. Cardiac history includes well-controlled coronary artery disease post-stent in 2019, with no active symptoms; hepatic panel is normal (AST 22, ALT 25, bilirubin 0.8 mg/dL). Urinalysis shows no signs of active urinary tract infection, and he denies fever or dysuria. He has no history of prior cancer treatment, so there is no residual toxicity or CNS involvement. Cystoscopy with biopsy was performed on 2026-06-30, confirming high-grade urothelial carcinoma invading the lamina propria (T1 stage) without evidence of muscle invasion on imaging. No chemotherapy or radiation has been given yet. Transurethral resection of bladder tumor (TURBT) is scheduled for 2026-07-20 for definitive resection and staging. He reports a penicillin allergy causing rash, but no other drug allergies. He is alert, oriented, and has demonstrated full capacity to provide informed consent.",
+      "extended_record": "Patient underwent cystoscopy with transurethral resection of bladder tumor (TURBT) on 2024-01-15. Pathology confirmed high-grade urothelial carcinoma with invasion into muscularis propria, consistent with muscle-invasive bladder cancer (MIBC), stage T2. No lymphovascular invasion noted. Most recent CBC from 2024-01-22 shows hemoglobin 11.8 g/dL, platelet count 215 K/uL, WBC 7.2 K/uL. Comprehensive metabolic panel from same date: serum creatinine 1.4 mg/dL, eGFR 58 mL/min/1.73m² (Stage 3a CKD), potassium 4.1 mEq/L, albumin 3.6 g/dL. Patient has Medicare coverage with supplemental insurance. Lives with spouse in stable single-family residence; reliable transportation via personal vehicle. Employed part-time, good social support. Fit for multimodal therapy discussion.",
       "answers": [
         {
-          "question": "Does the patient have significant comorbidities (renal, cardiac, hepatic), active infections, or residual toxicity/CNS involvement from any prior treatment?",
-          "answer": "He has mild chronic kidney impairment and stable coronary artery disease, with normal hepatic function; there is no active infection, and no residual toxicity or CNS involvement since he has had no prior cancer treatment.",
-          "evidence_quote": "renal function is mildly reduced with creatinine 1.3 mg/dL and eGFR 58 mL/min/1.73m2"
+          "question": "Has the bladder mass been biopsied/confirmed as muscle-invasive bladder cancer, and what is the histologic subtype (urothelial vs. other)?",
+          "answer": "Yes, confirmed muscle-invasive bladder cancer. Histologic subtype is high-grade urothelial carcinoma with invasion into muscularis propria (T2 stage).",
+          "evidence_quote": "Pathology confirmed high-grade urothelial carcinoma with invasion into muscularis propria, consistent with muscle-invasive bladder cancer (MIBC), stage T2."
         },
         {
-          "question": "Has the bladder mass been biopsied to confirm histology and stage, and is any treatment already planned or given?",
-          "answer": "Yes, cystoscopy with biopsy on 2026-06-30 confirmed high-grade urothelial carcinoma at T1 stage; no chemotherapy or radiation has been given yet, though a procedure is planned.",
-          "evidence_quote": "Cystoscopy with biopsy was performed on 2026-06-30, confirming high-grade urothelial carcinoma invading the lamina propria (T1 stage) without evidence of muscle invasion on imaging"
+          "question": "What are the most recent CBC and comprehensive metabolic panel results, including hemoglobin, platelet count, and creatinine/eGFR?",
+          "answer": "CBC (2024-01-22): hemoglobin 11.8 g/dL, platelets 215 K/uL. CMP: creatinine 1.4 mg/dL, eGFR 58 mL/min/1.73m².",
+          "evidence_quote": "Most recent CBC from 2024-01-22 shows hemoglobin 11.8 g/dL, platelet count 215 K/uL, WBC 7.2 K/uL. Comprehensive metabolic panel from same date: serum creatinine 1.4 mg/dL, eGFR 58 mL/min/1.73m²"
         },
         {
-          "question": "What procedure (e.g., TURBT) is planned, does he have drug/antibiotic allergies, and can he provide informed consent?",
-          "answer": "TURBT is scheduled for 2026-07-20; he has a penicillin allergy (rash) but no other drug allergies, and he is alert and competent to provide informed consent.",
-          "evidence_quote": "Transurethral resection of bladder tumor (TURBT) is scheduled for 2026-07-20 for definitive resection and staging"
+          "question": "Does the patient have insurance coverage, live in a stable residence, and have reliable transportation for follow-up visits?",
+          "answer": "Yes to all three. Patient has Medicare with supplemental coverage, lives in stable single-family residence with spouse, and has reliable personal vehicle transportation.",
+          "evidence_quote": "Patient has Medicare coverage with supplemental insurance. Lives with spouse in stable single-family residence; reliable transportation via personal vehicle."
         }
       ],
       "verdict_changes": [
         {
-          "nct_id": "NCT06709196",
-          "criterion": "Ability to understand and sign an informed consent",
+          "nct_id": "NCT06493370",
+          "criterion": "Platelets > 100K/UL",
           "before": "UNKNOWN",
           "after": "MET"
         },
         {
-          "nct_id": "NCT06709196",
-          "criterion": "Malignant or benign indication for undergoing cystectomy",
-          "before": "UNCERTAIN",
-          "after": "UNKNOWN"
-        },
-        {
-          "nct_id": "NCT06709196",
-          "criterion": "Previous severe allergic reaction to antimicrobial treatment",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
           "nct_id": "NCT06493370",
-          "criterion": "Diagnosis/disease status Cisplatin-ineligible or declined muscle invasive bladder cancer. Cisplatin ineligibility will be defined based on Galsky criteria: CTCAE ver. 5.0 Grade 2 or greater peripheral neuropathy; CTCAE ver. 5.0 Grade 2 or greater hearing loss; Creatinine clearance estimated or calculated < 60 ml/min; NYHA class II or greater congestive heart failure",
+          "criterion": "Hemoglobin ≥ 9 g/dL",
           "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06493370",
-          "criterion": "Active Grade 3 or 4 (per the National Cancer Institute (NCI) Common Terminology Criteria for Adverse Events (CTCAE), Version 5.0109) viral, bacterial, or fungal infection within 2 weeks prior to the first dose of study treatment",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06493370",
-          "criterion": "Uncontrolled intercurrent illness, including but not limited to, ongoing or active infection, symptomatic congestive heart failure, uncontrolled hypertension, unstable angina pectoris, cardiac arrhythmia, interstitial lung disease, serious chronic gastrointestinal conditions associated with diarrhea, as determined per treating physician",
-          "before": "UNKNOWN",
-          "after": "UNCERTAIN"
-        },
-        {
-          "nct_id": "NCT06493370",
-          "criterion": "Histology of pure adenocarcinoma, pure squamous cell carcinoma, or pure small cell carcinoma in the TURBT sample",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT04916990",
-          "criterion": "Diagnosed with lung cancer (SCLC or NSCLC), head and neck cancer (HNSCC), thyroid cancer, breast cancer, cervical cancer, colorectal cancer, or bladder cancer per specified ICD-O/ICD-10 diagnostic codes, and will receive surgery, radiation therapy, chemotherapy, or a combination (including neoadjuvant and adjuvant therapy)",
-          "before": "UNCERTAIN",
           "after": "MET"
-        },
-        {
-          "nct_id": "NCT04916990",
-          "criterion": "Diagnosed with a primary cancer other than breast, bladder, cervix, colon, rectum, lung, and/or head-and-neck cancer, or other type of cancer not listed in the inclusion criteria",
-          "before": "UNCERTAIN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT04916990",
-          "criterion": "Has already initiated curative treatment for the current episode of cancer",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05944237",
-          "criterion": "Written (signed and dated) informed consent and capable of co-operating with investigational medicinal product administration and follow-up.",
-          "before": "UNKNOWN",
-          "after": "UNCERTAIN"
-        },
-        {
-          "nct_id": "NCT05944237",
-          "criterion": "Histologically or cytologically proven advanced solid tumour, refractory to conventional treatment, or for which no further conventional therapy is considered appropriate by the Investigator or is declined by the potential participant.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05944237",
-          "criterion": "Radiotherapy (except for palliative reasons), chemotherapy, non chemotherapy systemic anti-cancer therapy (apart from life-long hormone suppression such as luteinising hormone-releasing agents in participants with mCRPC) or investigational medicinal products during the 4 weeks prior to enrolment; or first dose of an immunotherapy during the previous 12 weeks before first dose of HTL0039732.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05944237",
-          "criterion": "Ongoing toxic manifestations of previous treatments that are Grade >1 per CTCAE v5.0.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05944237",
-          "criterion": "Any central nervous system metastases (unless potential participants have had local therapy and are asymptomatic, radiologically stable and have been off steroids for ≥4 weeks prior to enrolment).",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05944237",
-          "criterion": "At high medical risk because of non-malignant systemic disease, including active uncontrolled infection.",
-          "before": "UNKNOWN",
-          "after": "UNCERTAIN"
         }
       ],
       "final_ranking": [
@@ -2013,25 +2225,25 @@ window.TRACES = [
           "nct_id": "NCT06709196",
           "rank": 1,
           "eligibility": "UNCERTAIN",
-          "rationale": "Eligibility undetermined: whether cystectomy is planned, the diversion type, and any ongoing prophylactic antibiotic use are not yet documented."
-        },
-        {
-          "nct_id": "NCT04916990",
-          "rank": 2,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Eligibility undetermined: patient's language, treating hospital site, and rural residence status are not documented in the vignette."
-        },
-        {
-          "nct_id": "NCT06493370",
-          "rank": 3,
-          "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: trial enrolls only cisplatin-ineligible muscle-invasive bladder cancer per Galsky criteria; patient does not meet cisplatin-ineligibility criteria."
+          "rationale": "Bladder mass likely requires cystectomy; unresolved: consent capacity, malignant indication confirmation, and ileal conduit as planned diversion."
         },
         {
           "nct_id": "NCT05944237",
+          "rank": 2,
+          "eligibility": "UNCERTAIN",
+          "rationale": "Bladder mass is advanced solid tumor; unresolved: histologic confirmation, RECIST-measurable progression, and 12-week life expectancy."
+        },
+        {
+          "nct_id": "NCT04916990",
+          "rank": 3,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: trial requires lung cancer or head/neck squamous cell carcinoma; patient has bladder cancer."
+        },
+        {
+          "nct_id": "NCT06493370",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: trial requires histologically confirmed advanced solid tumor refractory to therapy; patient has a new, untreated, unconfirmed bladder mass."
+          "rationale": "Excluded: trial requires negative pregnancy test; patient is male, making this criterion inapplicable."
         }
       ]
     },
@@ -2042,44 +2254,49 @@ window.TRACES = [
     "patient_text": "A 34-year-old woman presents with recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
     "extraction": [
       {
-        "name": "age",
-        "value": "34 years",
-        "evidence_quote": "34-year-old"
+        "name": "Age",
+        "value": "34 years old",
+        "evidence_quote": "A 34-year-old woman"
       },
       {
-        "name": "sex",
-        "value": "female",
-        "evidence_quote": "woman"
+        "name": "Sex",
+        "value": "Female",
+        "evidence_quote": "A 34-year-old woman"
       },
       {
-        "name": "symptom_headache",
-        "value": "severe unilateral throbbing headache",
+        "name": "Chief Complaint",
+        "value": "Recurrent episodes of severe unilateral throbbing headache",
+        "evidence_quote": "recurrent episodes of severe unilateral throbbing headache"
+      },
+      {
+        "name": "Headache Character",
+        "value": "Throbbing",
         "evidence_quote": "severe unilateral throbbing headache"
       },
       {
-        "name": "symptom_aura",
-        "value": "visual scotomata",
-        "evidence_quote": "visual scotomata"
+        "name": "Headache Location",
+        "value": "Unilateral",
+        "evidence_quote": "severe unilateral throbbing headache"
       },
       {
-        "name": "symptom_photophobia",
-        "value": "photophobia",
-        "evidence_quote": "photophobia"
+        "name": "Aura",
+        "value": "Visual scotomata",
+        "evidence_quote": "preceded by visual scotomata"
       },
       {
-        "name": "symptom_nausea",
-        "value": "nausea",
-        "evidence_quote": "nausea"
+        "name": "Associated Symptom - Photophobia",
+        "value": "Present",
+        "evidence_quote": "accompanied by photophobia"
       },
       {
-        "name": "symptom_phonophobia",
-        "value": "phonophobia",
-        "evidence_quote": "phonophobia"
+        "name": "Associated Symptom - Phonophobia",
+        "value": "Present",
+        "evidence_quote": "accompanied by photophobia, nausea, and phonophobia"
       },
       {
-        "name": "history_pattern",
-        "value": "recurrent episodes",
-        "evidence_quote": "recurrent episodes"
+        "name": "Associated Symptom - Nausea",
+        "value": "Present",
+        "evidence_quote": "accompanied by photophobia, nausea, and phonophobia"
       }
     ],
     "trials": [
@@ -2089,12 +2306,12 @@ window.TRACES = [
         "phase": "NA",
         "criteria": [
           {
-            "text": "Patients willing and able to provide simple consent for registry participation.",
+            "text": "Patients willing and able to provide simple consent for registry participation",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about willingness or ability to provide consent."
+            "reasoning": "No information provided about patient's willingness or ability to consent."
           },
           {
             "text": "Has access to email, text messages via smartphone or computer with internet access",
@@ -2102,15 +2319,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about email, smartphone, or internet access."
+            "reasoning": "Vignette contains no information about patient's access to technology."
           },
           {
-            "text": "Be between the ages of 18 to 44 years at enrollment.",
+            "text": "Be between the ages of 18 to 44 years at enrollment",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "34-year-old woman",
-            "reasoning": "Age 34 falls within the 18 to 44 year range."
+            "evidence": "A 34-year-old woman",
+            "reasoning": "Patient is 34 years old, within the 18-44 age range."
           },
           {
             "text": "Pregnant with one fetus/baby at time of enrollment (singleton pregnancy)",
@@ -2118,31 +2335,31 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no mention of pregnancy status."
+            "reasoning": "No information about pregnancy status or fetal number provided."
           },
           {
-            "text": "Have headaches or migraines prior to pregnancy and continued to have headaches or migraines into pregnancy OR headaches or migraines began while pregnant in the first trimester.",
+            "text": "Have headaches or migraines prior to pregnancy and continued to have headaches or migraines into pregnancy OR headaches or migraines began while pregnant in the first trimester",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Recurrent migraines noted but no info linking them to pregnancy timing."
+            "reasoning": "No information about pregnancy status or timing of headache onset relative to pregnancy."
           },
           {
-            "text": "Able to provide proof of active intrauterine pregnancy and estimated due date, via online document upload, using any of: ultrasound report of current pregnancy, beta hcg lab report, a signed provider's medical documentation confirming intrauterine pregnancy with fetal heart sounds and estimated due date, or a signed provider's note on a prescription sheet or physician letterhead confirming intrauterine pregnancy and estimated due date.",
+            "text": "Able to provide proof of active intrauterine pregnancy and estimated due date via online document upload",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about pregnancy documentation or due date."
+            "reasoning": "No information about pregnancy status or ability to provide documentation."
           },
           {
             "text": "Patients under the age of 18 or over the age of 44 at enrollment",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "34-year-old woman",
-            "reasoning": "Age 34 is neither under 18 nor over 44."
+            "evidence": "A 34-year-old woman",
+            "reasoning": "Patient is 34 years old, not under 18 or over 44."
           },
           {
             "text": "Not pregnant at time of enrollment",
@@ -2150,7 +2367,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about pregnancy status at all."
+            "reasoning": "No information about current pregnancy status provided."
           },
           {
             "text": "Pregnant with more than one fetus/baby at time of enrollment (multigestational pregnancy)",
@@ -2158,7 +2375,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about pregnancy or number of fetuses."
+            "reasoning": "No information about pregnancy status or fetal number provided."
           },
           {
             "text": "Patients with any other condition which might preclude participation in the opinion of the patient's physician(s) or the study's principal investigator",
@@ -2166,20 +2383,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Rests on physician/investigator discretion, not decidable from the record."
-          },
-          {
-            "text": "No access to email, smartphone, or computer with internet access",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information about email, smartphone, or internet access."
+            "reasoning": "Criterion depends on physician discretion; not objectively determinable from vignette."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 1,
-        "rationale": "Migraine phenotype fits, but pregnancy status, consent capacity, and smartphone/email access for this registry are all unconfirmed from the vignette."
+        "rationale": "Migraine diagnosis confirmed; pregnancy status unknown—cannot assess eligibility without confirmation of singleton pregnancy and consent capability."
       },
       {
         "nct_id": "NCT07402954",
@@ -2191,24 +2400,24 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "34-year-old",
-            "reasoning": "Patient is 34 years old, satisfies age >= 18."
+            "evidence": "A 34-year-old woman",
+            "reasoning": "Patient is 34 years old, which is ≥18 years old."
           },
           {
-            "text": "Chronic migraine or status migrainosus, or craniofacial pain refractory to maximal medical therapy who are undergoing MMA IA lidocaine infusion.",
+            "text": "Chronic migraine or status migrainosus, or craniofacial pain refractory to maximal medical therapy who are undergoing MMA IA lidocaine infusion",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette describes migraine with aura but not chronicity, refractoriness, or MMA lidocaine infusion status."
+            "reasoning": "Vignette describes migraine presentation but does not specify chronicity, refractoriness to treatment, or current intervention status."
           },
           {
-            "text": "Subject has provided informed consent.",
+            "text": "Subject has provided informed consent",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of informed consent in the vignette or fields."
+            "reasoning": "No information provided about informed consent status; investigator discretion."
           },
           {
             "text": "Known allergies to lidocaine",
@@ -2216,7 +2425,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about lidocaine allergy provided."
+            "reasoning": "No allergy history mentioned in vignette."
           },
           {
             "text": "Seizure disorder, history of seizures, or increased seizure susceptibility",
@@ -2224,7 +2433,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about seizure history or susceptibility given."
+            "reasoning": "No seizure history or seizure disorder documented in vignette."
           },
           {
             "text": "Intracranial vascular malformations or dural AVF",
@@ -2232,7 +2441,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about intracranial vascular malformations or dural AVF given."
+            "reasoning": "No imaging findings or vascular malformation history documented."
           },
           {
             "text": "Hemodynamic instability, any condition where brief hemodynamic shifts may pose risk",
@@ -2240,7 +2449,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about hemodynamic stability provided."
+            "reasoning": "No hemodynamic status or cardiovascular baseline documented in vignette."
           },
           {
             "text": "Previous MMA intervention or craniotomy that could result in MMA occlusion",
@@ -2248,7 +2457,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about prior MMA intervention or craniotomy given."
+            "reasoning": "No prior MMA intervention or craniotomy history documented."
           },
           {
             "text": "Any implanted electronic device (pacemaker, ICD, DBS, VNS, cochlear implant, spinal cord stimulator)",
@@ -2256,7 +2465,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about implanted electronic devices provided."
+            "reasoning": "No implanted electronic devices mentioned in vignette."
           },
           {
             "text": "Significant cardiovascular disease (unstable angina, severe arrhythmias, recent MI)",
@@ -2264,7 +2473,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about cardiovascular disease provided."
+            "reasoning": "No cardiovascular disease history documented."
+          },
+          {
+            "text": "Severe autonomic dysfunction",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No autonomic dysfunction documented in vignette."
           },
           {
             "text": "Active systemic infection",
@@ -2272,20 +2489,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about active systemic infection provided."
-          },
-          {
-            "text": "Vulnerable populations (i.e. pregnant individuals, children, prisoners, individuals lacking decision-making capacity, persons with cognitive impairment, those unable to provide informed consent)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Adult woman, but pregnancy status and decision-making capacity not addressed in vignette."
+            "reasoning": "No active infection documented in vignette."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 2,
-        "rationale": "Migraine present, but refractory-to-therapy status, treatment history, consent, and lidocaine allergy needed for MMA infusion are unconfirmed."
+        "rationale": "Migraine confirmed; eligibility hinges on refractory status, MMA IA lidocaine infusion status, and lidocaine allergy history—all unknown."
       },
       {
         "nct_id": "NCT06785129",
@@ -2293,28 +2502,28 @@ window.TRACES = [
         "phase": "NA",
         "criteria": [
           {
-            "text": "Patients with diagnosed endometriosis, migraine, or both endometriosis and migraine",
+            "text": "Diagnosed endometriosis, migraine, or both endometriosis and migraine",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia",
-            "reasoning": "Symptom pattern is classic migraine with aura presentation, satisfying the migraine criterion."
+            "evidence": "Recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia",
+            "reasoning": "Clinical presentation is classic for migraine with aura, meeting inclusion criterion."
           },
           {
             "text": "Healthy control subjects with no history of chronic pain",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
-            "evidence": "recurrent episodes of severe unilateral throbbing headache",
-            "reasoning": "Patient has a recurrent pain condition (migraine), so not a healthy pain-free control."
+            "evidence": "Recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata",
+            "reasoning": "Patient has migraine (chronic pain condition), not a healthy control subject."
           },
           {
             "text": "Age 12-45",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "34 years",
-            "reasoning": "Age 34 falls within the 12-45 range."
+            "evidence": "34-year-old woman",
+            "reasoning": "Age 34 falls within the 12-45 year range."
           },
           {
             "text": "Assigned female sex at birth",
@@ -2322,7 +2531,7 @@ window.TRACES = [
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "34-year-old woman",
-            "reasoning": "Patient is female."
+            "reasoning": "Patient is female, assigned female sex at birth."
           },
           {
             "text": "Pregnancy or breastfeeding",
@@ -2330,7 +2539,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about pregnancy or breastfeeding status."
+            "reasoning": "Vignette does not mention pregnancy or breastfeeding status."
           },
           {
             "text": "Presence of prolactinoma",
@@ -2338,7 +2547,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of prolactinoma or related endocrine workup in the vignette."
+            "reasoning": "No information provided about prolactinoma presence or absence."
           },
           {
             "text": "Presence of psychiatric, neurological, endocrinological and/or developmental conditions and taking medications for these conditions",
@@ -2346,7 +2555,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on comorbid conditions or medication use is given."
+            "reasoning": "No information provided about psychiatric, neurological, endocrinological, or developmental conditions or medications."
           },
           {
             "text": "Current use of dopamine agonist or SSRI medications",
@@ -2354,20 +2563,20 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette does not mention any current medications."
+            "reasoning": "No information provided about current dopamine agonist or SSRI medication use."
           },
           {
-            "text": "For patients aged 12-17 not having a parent/legal guardian willing to sign the consent and answer surveys about their child's health",
+            "text": "For patients aged 12-17, not having a parent/legal guardian willing to sign the consent and answer surveys about their child's health",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "34 years",
-            "reasoning": "Patient is 34, not in the 12-17 age range this criterion addresses."
+            "evidence": "34-year-old woman",
+            "reasoning": "Patient is 34 years old, outside the 12-17 age range requiring parental consent."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 3,
-        "rationale": "Excluded: study enrolls healthy controls with no chronic pain history; patient has an active chronic migraine disorder, failing that inclusion criterion."
+        "rationale": "Excluded: requires healthy controls with no chronic pain history; patient has recurrent severe migraines."
       },
       {
         "nct_id": "NCT06995729",
@@ -2375,20 +2584,20 @@ window.TRACES = [
         "phase": "PHASE1",
         "criteria": [
           {
-            "text": "Participants aged 6 years to less than 12 years.",
+            "text": "Participants aged 6 years to less than 12 years",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
-            "evidence": "34-year-old woman",
-            "reasoning": "Patient is 34 years old, outside the 6-to-under-12-year age range."
+            "evidence": "Age: 34 years old",
+            "reasoning": "Patient is 34 years old; criterion requires age 6 to <12 years."
           },
           {
-            "text": "Documented medical history of migraine with or without aura for at least 6 months before the Screening Visit.",
+            "text": "Documented medical history of migraine with or without aura for at least 6 months before the Screening Visit",
             "type": "inclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "recurrent episodes",
-            "reasoning": "Recurrent migraine with aura pattern shown, but 6-month documented duration not stated."
+            "evidence": "Chief Complaint: Recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+            "reasoning": "Clinical presentation consistent with migraine with aura, but duration of 6+ months history not explicitly documented."
           },
           {
             "text": "Weight >15 kg at the Screening Visit",
@@ -2396,31 +2605,31 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No weight data given in vignette or extracted fields."
+            "reasoning": "Patient weight not provided in vignette or extracted fields."
           },
           {
-            "text": "Evidence or history of clinically significant disease.",
+            "text": "Evidence or history of clinically significant disease",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of other clinically significant disease history."
+            "reasoning": "No information provided about clinically significant disease history beyond migraine."
           },
           {
-            "text": "Continuous migraine (defined as an unrelenting headache) within 1 month prior to Screening Visit.",
+            "text": "Continuous migraine (defined as an unrelenting headache) within 1 month prior to Screening Visit",
             "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "recurrent episodes of severe unilateral throbbing headache",
-            "reasoning": "Episodic recurrent pattern described, not a continuous unrelenting headache."
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Temporal pattern of episodes not specified; cannot determine if continuous migraine occurred within 1 month."
           },
           {
-            "text": "Atypical migraine types, complications of a migraine, or a confounding and clinically significant pain syndrome.",
+            "text": "Atypical migraine types, complications of a migraine, or a confounding and clinically significant pain syndrome",
             "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia",
-            "reasoning": "Presentation matches typical migraine with aura, not atypical or complicated."
+            "verdict": "MET",
+            "effect": "FAIL",
+            "evidence": "Recurrent episodes of severe unilateral throbbing headache preceded by visual scotomata, accompanied by photophobia, nausea, and phonophobia.",
+            "reasoning": "Clinical presentation consistent with typical migraine with aura; no evidence of atypical types or complications."
           },
           {
             "text": "Conditions that may affect the administration or absorption of the nasal product",
@@ -2428,7 +2637,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on conditions affecting nasal product administration or absorption."
+            "reasoning": "No information about gastrointestinal or absorption conditions affecting nasal product administration."
           },
           {
             "text": "Clinically significant depression (Promis Parent Proxy SF 2.0 Depressive Scale T score ≥70)",
@@ -2436,15 +2645,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No depression scale or mental health assessment data provided."
+            "reasoning": "No depression screening score (Promis Parent Proxy SF 2.0) provided."
           },
           {
-            "text": "Suicidal ideation and behaviour (C-SSRS: any \"yes\" to items 2 to 5 or any \"yes\" to suicide behaviours)",
+            "text": "Suicidal ideation and behaviour (C-SSRS: any 'yes' to items 2 to 5 or any 'yes' to suicide behaviours)",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No suicidal ideation or C-SSRS data provided."
+            "reasoning": "No C-SSRS assessment or suicidal ideation/behavior information documented."
           },
           {
             "text": "Serum Total bilirubin >1.5 × ULN (Upper Limit of Normal)",
@@ -2452,7 +2661,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No serum bilirubin lab value provided."
+            "reasoning": "Serum total bilirubin level not provided."
           },
           {
             "text": "AST (Aspartate Transferase) or ALT (Alanine Transaminase) >2 × ULN",
@@ -2460,7 +2669,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No AST or ALT lab value provided."
+            "reasoning": "AST and ALT levels not provided."
           },
           {
             "text": "Abnormal ECG (Electrocardiogram) at screening visit",
@@ -2468,60 +2677,54 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No ECG data provided."
+            "reasoning": "ECG results not documented."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: trial enrolls children aged 6 to under 12 years; patient is 34 years old, well outside the eligible age range."
+        "rationale": "Excluded: trial enrolls children aged 6–<12 years; patient is 34 years old. Also fails atypical migraine exclusion criterion."
       }
     ],
     "questions": [
       {
-        "field": "Pregnancy status",
-        "question": "Are you currently pregnant, breastfeeding, or planning a pregnancy, and what contraception method are you using?",
-        "why": "Determines eligibility for pregnancy-specific or pregnancy-excluding trials; affects most criteria."
+        "field": "Medical history and comorbidities",
+        "question": "Do you have any history of heart disease, high blood pressure, stroke, seizures, or thyroid problems?",
+        "why": "Affects 7 trial criteria; most trials require absence of cardiovascular and neurological conditions."
       },
       {
-        "field": "General medical comorbidities / other conditions",
-        "question": "Do you have any other significant medical conditions (e.g., diabetes, liver/kidney disease, autoimmune disorders) besides your headaches?",
-        "why": "Screens for illness that could exclude or complicate trial participation."
+        "field": "Pregnancy and reproductive status",
+        "question": "Are you currently pregnant, breastfeeding, or planning pregnancy in the next year? What contraception are you using?",
+        "why": "Affects 5 trial criteria; critical for safety and eligibility given potential teratogenic risk."
       },
       {
-        "field": "Psychiatric history and current psychotropic medications",
-        "question": "Do you have a history of depression, anxiety, or suicidality, and are you taking any psychiatric medications now?",
-        "why": "Needed to assess psychiatric comorbidities and medication-related eligibility."
+        "field": "Current medications",
+        "question": "What medications are you currently taking for migraine or other conditions, including over-the-counter and supplements?",
+        "why": "Affects 2 criteria; identifies contraindications and drug interactions with trial interventions."
       }
     ],
     "reeval": {
-      "extended_record": "Patient reports she is not currently pregnant, is not breastfeeding, and is not planning a pregnancy in the near term; urine hCG performed today is negative. She uses a copper intrauterine device (Paragard) for contraception, placed 2 years ago, and specifically avoids combined estrogen-containing contraceptives given her migraine with aura history due to increased stroke risk. She denies diabetes, liver disease, or kidney disease; recent labs show fasting glucose 88 mg/dL, ALT 22 U/L, AST 19 U/L, and creatinine 0.7 mg/dL with eGFR greater than 90 mL/min/1.73m2. She has no autoimmune disorder; ANA was negative on prior workup. She reports a history of mild generalized anxiety diagnosed 3 years ago, currently well-controlled, but denies any depression or history of suicidal ideation or suicide attempts. She takes sertraline 50 mg daily for anxiety, prescribed by her primary care physician, and denies any other psychiatric medications.",
+      "extended_record": "Patient reports no personal history of cardiac disease, hypertension, prior stroke, or seizure disorder. Denies current thyroid dysfunction; TSH last checked 18 months ago was 2.1 mIU/L (normal range). Not currently pregnant or breastfeeding; reports regular menses on 28-day cycle. Denies plans for pregnancy in next 12 months. Currently using copper IUD for contraception, placed 3 years ago without complications. For migraine management, patient takes sumatriptan 50 mg as needed during attacks (approximately 2–3 times monthly) with good efficacy, reducing headache duration to 4–6 hours. Also uses ibuprofen 400 mg PRN for mild headaches. Takes no daily prophylactic medications. Reports inconsistent magnesium supplementation (400 mg, 2–3 times weekly). Denies use of estrogen-containing oral contraceptives given migraine with aura. No other regular medications.",
       "answers": [
         {
-          "question": "Are you currently pregnant, breastfeeding, or planning a pregnancy, and what contraception method are you using?",
-          "answer": "Not pregnant, not breastfeeding, not planning pregnancy, with a negative urine hCG today; uses a copper IUD (Paragard) and avoids estrogen-containing contraceptives due to her migraine with aura.",
-          "evidence_quote": "she is not currently pregnant, is not breastfeeding, and is not planning a pregnancy in the near term; urine hCG performed today is negative. She uses a copper intrauterine device (Paragard) for contraception"
+          "question": "Do you have any history of heart disease, high blood pressure, stroke, seizures, or thyroid problems?",
+          "answer": "No history of cardiac disease, hypertension, stroke, or seizures. No current thyroid dysfunction; TSH was normal at 2.1 mIU/L on recent screening.",
+          "evidence_quote": "Patient reports no personal history of cardiac disease, hypertension, prior stroke, or seizure disorder. Denies current thyroid dysfunction; TSH last checked 18 months ago was 2.1 mIU/L (normal range)."
         },
         {
-          "question": "Do you have any other significant medical conditions (e.g., diabetes, liver/kidney disease, autoimmune disorders) besides your headaches?",
-          "answer": "No diabetes, liver disease, kidney disease, or autoimmune disorder; recent labs are normal (glucose 88, ALT 22, AST 19, creatinine 0.7, eGFR >90) and ANA is negative.",
-          "evidence_quote": "She denies diabetes, liver disease, or kidney disease; recent labs show fasting glucose 88 mg/dL, ALT 22 U/L, AST 19 U/L, and creatinine 0.7 mg/dL with eGFR greater than 90 mL/min/1.73m2. She has no autoimmune disorder; ANA was negative on prior workup."
+          "question": "Are you currently pregnant, breastfeeding, or planning pregnancy in the next year? What contraception are you using?",
+          "answer": "Not currently pregnant or breastfeeding, with no plans for pregnancy within 12 months. Using copper IUD for contraception, placed 3 years ago.",
+          "evidence_quote": "Not currently pregnant or breastfeeding; reports regular menses on 28-day cycle. Denies plans for pregnancy in next 12 months. Currently using copper IUD for contraception, placed 3 years ago without complications."
         },
         {
-          "question": "Do you have a history of depression, anxiety, or suicidality, and are you taking any psychiatric medications now?",
-          "answer": "History of mild, well-controlled generalized anxiety; denies depression or suicidality; currently takes sertraline 50 mg daily.",
-          "evidence_quote": "She reports a history of mild generalized anxiety diagnosed 3 years ago, currently well-controlled, but denies any depression or history of suicidal ideation or suicide attempts. She takes sertraline 50 mg daily for anxiety"
+          "question": "What medications are you currently taking for migraine or other conditions, including over-the-counter and supplements?",
+          "answer": "Takes sumatriptan 50 mg as needed during attacks (2–3 times monthly), ibuprofen 400 mg PRN, and inconsistent magnesium supplementation 400 mg. No daily prophylactic medications or estrogen-containing contraceptives.",
+          "evidence_quote": "For migraine management, patient takes sumatriptan 50 mg as needed during attacks (approximately 2–3 times monthly) with good efficacy, reducing headache duration to 4–6 hours. Also uses ibuprofen 400 mg PRN for mild headaches. Takes no daily prophylactic medications. Reports inconsistent magnesium supplementation (400 mg, 2–3 times weekly). Denies use of estrogen-containing oral contraceptives given migraine with aura."
         }
       ],
       "verdict_changes": [
         {
           "nct_id": "NCT06788977",
           "criterion": "Pregnant with one fetus/baby at time of enrollment (singleton pregnancy)",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06788977",
-          "criterion": "Able to provide proof of active intrauterine pregnancy and estimated due date, via online document upload, using any of: ultrasound report of current pregnancy, beta hcg lab report, a signed provider's medical documentation confirming intrauterine pregnancy with fetal heart sounds and estimated due date, or a signed provider's note on a prescription sheet or physician letterhead confirming intrauterine pregnancy and estimated due date.",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
@@ -2538,6 +2741,18 @@ window.TRACES = [
           "after": "NOT_MET"
         },
         {
+          "nct_id": "NCT07402954",
+          "criterion": "Seizure disorder, history of seizures, or increased seizure susceptibility",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07402954",
+          "criterion": "Significant cardiovascular disease (unstable angina, severe arrhythmias, recent MI)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
           "nct_id": "NCT06785129",
           "criterion": "Pregnancy or breastfeeding",
           "before": "UNKNOWN",
@@ -2545,33 +2760,15 @@ window.TRACES = [
         },
         {
           "nct_id": "NCT06785129",
-          "criterion": "Presence of psychiatric, neurological, endocrinological and/or developmental conditions and taking medications for these conditions",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT06785129",
           "criterion": "Current use of dopamine agonist or SSRI medications",
           "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT06995729",
-          "criterion": "Evidence or history of clinically significant disease.",
-          "before": "UNKNOWN",
           "after": "NOT_MET"
         },
         {
           "nct_id": "NCT06995729",
-          "criterion": "Clinically significant depression (Promis Parent Proxy SF 2.0 Depressive Scale T score ≥70)",
+          "criterion": "Evidence or history of clinically significant disease",
           "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06995729",
-          "criterion": "Suicidal ideation and behaviour (C-SSRS: any \"yes\" to items 2 to 5 or any \"yes\" to suicide behaviours)",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
+          "after": "UNCERTAIN"
         }
       ],
       "final_ranking": [
@@ -2579,25 +2776,25 @@ window.TRACES = [
           "nct_id": "NCT07402954",
           "rank": 1,
           "eligibility": "UNCERTAIN",
-          "rationale": "Migraine-with-aura presentation matches the refractory migraine target population, but treatment-refractory status, consent, and lidocaine allergy history remain unconfirmed."
+          "rationale": "Migraine with aura matches chronic migraine phenotype; medical optimization status and lidocaine allergy unknown; consent status unresolved."
         },
         {
           "nct_id": "NCT06785129",
           "rank": 2,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: study enrolls healthy pain-free controls only; patient's chronic migraine plus qualifying comorbidity or SSRI/dopamine-agonist use triggers exclusion criteria."
+          "rationale": "Excluded: trial requires healthy controls without chronic pain history; patient has recurrent migraines."
         },
         {
           "nct_id": "NCT06788977",
           "rank": 3,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: registry limited to pregnant migraine patients with documented proof of pregnancy; patient is not pregnant, meeting the not-pregnant exclusion."
+          "rationale": "Excluded: trial requires pregnancy at enrollment; patient is not pregnant."
         },
         {
           "nct_id": "NCT06995729",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: trial enrolls children aged 6 to under 12 for pediatric zavegepant dosing; patient is 34, far outside the age range."
+          "rationale": "Excluded: patient is 34 years old; trial enrolls children aged 6–11 years only."
         }
       ]
     },
@@ -2608,38 +2805,38 @@ window.TRACES = [
     "patient_text": "A 45-year-old man with poorly controlled type 2 diabetes presents with fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling.",
     "extraction": [
       {
-        "name": "age",
-        "value": "45 years",
-        "evidence_quote": "45-year-old"
+        "name": "Age",
+        "value": "45 years old",
+        "evidence_quote": "A 45-year-old man"
       },
       {
-        "name": "sex",
-        "value": "male",
-        "evidence_quote": "man"
+        "name": "Sex",
+        "value": "Male",
+        "evidence_quote": "A 45-year-old man"
       },
       {
-        "name": "history_risk_factor",
-        "value": "poorly controlled type 2 diabetes",
+        "name": "Medical History - Diabetes",
+        "value": "Poorly controlled type 2 diabetes",
         "evidence_quote": "poorly controlled type 2 diabetes"
       },
       {
-        "name": "symptom_fever",
-        "value": "fever",
+        "name": "Symptom - Fever",
+        "value": "Present",
         "evidence_quote": "fever"
       },
       {
-        "name": "symptom_facial_pain",
-        "value": "facial pain",
+        "name": "Symptom - Facial Pain",
+        "value": "Present",
         "evidence_quote": "facial pain"
       },
       {
-        "name": "exam_finding_nasal_eschar",
-        "value": "black necrotic eschar on the nasal mucosa",
+        "name": "Exam Finding - Nasal Eschar",
+        "value": "Black necrotic eschar on the nasal mucosa",
         "evidence_quote": "black necrotic eschar on the nasal mucosa"
       },
       {
-        "name": "exam_finding_periorbital_swelling",
-        "value": "periorbital swelling",
+        "name": "Exam Finding - Periorbital Swelling",
+        "value": "Present",
         "evidence_quote": "periorbital swelling"
       }
     ],
@@ -2655,7 +2852,7 @@ window.TRACES = [
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "45-year-old man",
-            "reasoning": "Patient is 45, at or above the 18-year threshold."
+            "reasoning": "Patient is 45 years old, which meets the ≥18 years requirement."
           },
           {
             "text": "Treated at Strasbourg University Hospital between January 1, 2009, and June 3, 2025",
@@ -2663,15 +2860,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no treatment site or date information."
+            "reasoning": "Vignette contains no information about where or when the patient was treated."
           },
           {
-            "text": "Diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria",
+            "text": "With a diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria",
             "type": "inclusion",
-            "verdict": "UNKNOWN",
+            "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Presentation is rhino-orbital; no pulmonary diagnosis or EORTC/MSGERC classification stated."
+            "evidence": "Black necrotic eschar on the nasal mucosa, fever, periorbital swelling, poorly controlled type 2 diabetes",
+            "reasoning": "Clinical presentation highly suggestive of rhino-orbital mucormycosis, but no formal EORTC/MSGERC diagnostic confirmation or pulmonary involvement documented."
           },
           {
             "text": "Having undergone at least one CT scan including the thoracic region",
@@ -2679,7 +2876,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No CT scan information of any kind is given in the vignette."
+            "reasoning": "No mention of whether CT scans were performed or their anatomic coverage."
           },
           {
             "text": "No CT scan including the thoracic region",
@@ -2687,20 +2884,20 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No CT scan information given, so absence of thoracic CT cannot be confirmed."
+            "reasoning": "No information about imaging studies performed or thoracic imaging availability."
           },
           {
-            "text": "No diagnosis of probable or proven invasive pulmonary infection with Mucorales (EORTC/MSGERC 2020 criteria)",
+            "text": "No diagnosis of probable or proven invasive pulmonary infection with Mucorales according to EORTC/MSGERC 2020 criteria",
             "type": "exclusion",
-            "verdict": "UNKNOWN",
+            "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information on a formal pulmonary Mucorales diagnosis is provided."
+            "evidence": "Black necrotic eschar on the nasal mucosa, fever, periorbital swelling, poorly controlled type 2 diabetes",
+            "reasoning": "Clinical features suggest mucormycosis but lack formal diagnostic confirmation and unclear if pulmonary infection present."
           }
         ],
         "eligibility": "UNCERTAIN",
         "rank": 1,
-        "rationale": "Facial/sinus presentation suggests mucormycosis, but pulmonary-specific criteria (Strasbourg site, EORTC diagnosis, thoracic CT) remain unconfirmed."
+        "rationale": "Clinical presentation suggests rhinocerebral mucormycosis with possible pulmonary involvement, but treatment site and CT imaging confirmation status unknown."
       },
       {
         "nct_id": "NCT05406037",
@@ -2708,81 +2905,65 @@ window.TRACES = [
         "phase": "NA",
         "criteria": [
           {
-            "text": "Men and women",
+            "text": "Age 3 to 64 years old (18 to 64 years old for controls)",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "sex: male",
-            "reasoning": "Patient is male, which falls within the 'men and women' eligible population."
+            "evidence": "45-year-old man",
+            "reasoning": "Patient is 45 years old, within the 18-64 age range for inclusion."
           },
           {
-            "text": "Age: Children and adults from 3 to 64 years old (18 to 64 years old for controls)",
-            "type": "inclusion",
-            "verdict": "MET",
-            "effect": "PASS",
-            "evidence": "age: 45 years",
-            "reasoning": "45 years old falls within the 3 to 64 year age range specified."
-          },
-          {
-            "text": "Patient's consent collected after information; for children, information given to holders of parental authority and then to the child to obtain their consent",
+            "text": "Informed consent obtained from participant or parent/guardian for children",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about consent being obtained."
+            "reasoning": "Vignette contains no information about informed consent status."
           },
           {
-            "text": "Patient must be socially insured",
+            "text": "Patient socially insured",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information given about the patient's social insurance status."
+            "reasoning": "Vignette contains no information about insurance or social coverage status."
           },
           {
-            "text": "Case group: patient hospitalized in a department of Lille University Hospital, with diagnosis of mucormycosis based on conventional mycology data and/or positivity of q-PCR and/or anatomopathologic diagnosis, associated with a compatible clinical situation",
+            "text": "For case group: diagnosis of mucormycosis confirmed by conventional mycology data and/or positivity of q-PCR and/or anatomopathologic diagnosis with compatible clinical situation",
             "type": "inclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "black necrotic eschar on the nasal mucosa",
-            "reasoning": "Clinical picture is compatible with mucormycosis, but no mycology/PCR/pathology confirmation or hospital site stated."
+            "evidence": "Black necrotic eschar on the nasal mucosa, fever, facial pain, periorbital swelling, poorly controlled type 2 diabetes",
+            "reasoning": "Clinical presentation highly suggestive of mucormycosis but confirmatory mycology, q-PCR, or histopathology results not provided."
           },
           {
-            "text": "Control group 1: patient assessed for hematopoietic stem cell transplantation, considered at risk for invasive fungal infection (IFI), for whom the pre-transplantation review excluded an ongoing infection",
+            "text": "For control group 1: patient assessed for hematopoietic stem cell transplantation, considered at risk for IFI but with pre-transplantation review excluding ongoing infection",
             "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information about assessment for hematopoietic stem cell transplantation."
+            "verdict": "NOT_MET",
+            "effect": "FAIL",
+            "evidence": "45-year-old man with poorly controlled type 2 diabetes",
+            "reasoning": "Patient is not described as undergoing hematopoietic stem cell transplantation assessment; different risk profile."
           },
           {
-            "text": "Control group 2: patient hospitalized in a department of Lille University Hospital, with diagnosis of disseminated candidiasis or invasive pulmonary aspergillosis according to specific classifications (EORTC/MSG criteria, AspICU criteria)",
+            "text": "For control group 2: diagnosis of disseminated candidiasis or invasive pulmonary aspergillosis made according to EORTC/MSG criteria or AspICU criteria",
             "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information about diagnosis of disseminated candidiasis or invasive pulmonary aspergillosis."
+            "verdict": "NOT_MET",
+            "effect": "FAIL",
+            "evidence": "Black necrotic eschar on the nasal mucosa",
+            "reasoning": "Clinical presentation is consistent with mucormycosis, not candidiasis or aspergillosis."
           },
           {
-            "text": "Patients for whom the inclusion criteria are not met",
+            "text": "Co-infection of mucormycosis with other invasive fungal infection",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Derived, aggregate criterion not independently decidable from the vignette's clinical facts."
-          },
-          {
-            "text": "Co-infection of mucormycosis with another invasive fungal infection (IFI)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information addressing co-infection with another invasive fungal infection."
+            "reasoning": "No information provided about co-infections with other invasive fungal pathogens."
           }
         ],
-        "eligibility": "UNCERTAIN",
+        "eligibility": "INELIGIBLE",
         "rank": 2,
-        "rationale": "Diabetic with necrotic eschar fits mucormycosis case profile, but Lille site match, insurance status, and consent are unconfirmed."
+        "rationale": "Does not meet control group criteria (no transplant or disseminated candidiasis/aspergillosis); mucormycosis diagnosis status unconfirmed by required mycology/PCR/pathology criteria."
       },
       {
         "nct_id": "NCT06440915",
@@ -2792,18 +2973,18 @@ window.TRACES = [
           {
             "text": "Patients who intend to take isavuconazole for the treatment of invasive mycosis",
             "type": "inclusion",
-            "verdict": "UNKNOWN",
+            "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of isavuconazole or treatment intent for invasive mycosis in vignette."
+            "evidence": "Black necrotic eschar on the nasal mucosa, fever, periorbital swelling in poorly controlled diabetic patient",
+            "reasoning": "Clinical presentation suggests rhinocerebral mucormycosis (invasive mycosis), but diagnosis not confirmed in vignette."
           },
           {
-            "text": "Aged 0-18 years, gender unlimited",
+            "text": "Aged 0-18 years",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
             "evidence": "45-year-old man",
-            "reasoning": "Patient is 45 years old, outside the 0-18 age range."
+            "reasoning": "Patient is 45 years old, not in the 0-18 year age range specified."
           },
           {
             "text": "The subject and his/her guardian are willing to comply with the procedures and operations specified in the study protocol",
@@ -2811,7 +2992,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about willingness to comply with study procedures."
+            "reasoning": "No information provided about patient's willingness or ability to comply with study procedures."
           },
           {
             "text": "The guardian of the subject and the subject of independent informed age are willing and able to provide written informed consent to participate in the study",
@@ -2819,15 +3000,23 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about informed consent provision in the vignette."
+            "reasoning": "No information about informed consent capacity or willingness provided in vignette."
           },
           {
-            "text": "The subject is known to be allergic to any azole antifungal therapy or other ingredients contained in the study drug",
+            "text": "The subject is known to be allergic to any azole antifungal therapy",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of azole antifungal allergy history in vignette."
+            "reasoning": "No history of azole antifungal allergy mentioned in patient's medical history."
+          },
+          {
+            "text": "The subject is known to be allergic to other ingredients contained in the study drug",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about allergies to other study drug ingredients."
           },
           {
             "text": "The researcher believes that the condition of the child may interfere with study participation or other inappropriate conditions",
@@ -2835,12 +3024,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Rests on investigator discretion/opinion; not decidable from the record."
+            "reasoning": "Researcher's clinical judgment regarding interference with study participation not documented."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 3,
-        "rationale": "Excluded: patient is 45 years old; trial restricted to pediatric patients aged 0-18 for isavuconazole monitoring."
+        "rationale": "Excluded: patient is 45 years old; trial restricted to ages 0-18 years."
       },
       {
         "nct_id": "NCT07654647",
@@ -2848,168 +3037,221 @@ window.TRACES = [
         "phase": "NA",
         "criteria": [
           {
-            "text": "Age 18 years or older.",
+            "text": "Age 18 years or older",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "45-year-old man",
-            "reasoning": "Patient is 45 years old, meeting the 18+ threshold."
+            "reasoning": "Patient is 45 years old, which meets the age threshold of 18 or older."
           },
           {
-            "text": "Presence of facial bone defects resulting from cystic or tumoral osteolytic lesions.",
+            "text": "Presence of facial bone defects resulting from cystic or tumoral osteolytic lesions",
             "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette does not mention facial bone defects from cystic or tumoral lesions."
-          },
-          {
-            "text": "Acquired or congenital facial deformities associated with bony defects or facial asymmetry.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of facial deformities, bony defects, or asymmetry."
-          },
-          {
-            "text": "Patients requiring patient-specific 3D-printed titanium implants for maxillofacial reconstruction.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of need for 3D-printed titanium implants."
-          },
-          {
-            "text": "Aesthetic indications requiring custom facial implant design, including microgenia (chin retrusion).",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of aesthetic indication or microgenia."
-          },
-          {
-            "text": "Ability to provide written informed consent.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette does not address consent capacity."
-          },
-          {
-            "text": "Active pathological lesions at the time of enrollment.",
-            "type": "exclusion",
-            "verdict": "MET",
-            "effect": "FAIL",
-            "evidence": "black necrotic eschar on the nasal mucosa",
-            "reasoning": "Necrotic eschar with fever and swelling indicates an active pathological lesion."
-          },
-          {
-            "text": "Age below 18 years.",
-            "type": "exclusion",
             "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "45-year-old man",
-            "reasoning": "Patient is 45, not below 18."
+            "effect": "FAIL",
+            "evidence": "Black necrotic eschar on the nasal mucosa",
+            "reasoning": "Patient has necrotic tissue from rhinocerebral mucormycosis, not cystic or tumoral osteolytic lesions."
           },
           {
-            "text": "History of radiotherapy within 12 months prior to enrollment.",
-            "type": "exclusion",
+            "text": "Acquired or congenital facial deformities associated with bony defects or facial asymmetry",
+            "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of prior radiotherapy."
+            "reasoning": "No information provided about baseline facial asymmetry or bony defects prior to acute illness."
           },
           {
-            "text": "Chronic untreated vitamin D deficiency.",
-            "type": "exclusion",
+            "text": "Patients requiring patient-specific 3D-printed titanium implants for maxillofacial reconstruction",
+            "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of vitamin D status."
+            "reasoning": "No documentation of whether patient requires or is being planned for titanium implants."
           },
           {
-            "text": "Uncontrolled diabetes mellitus.",
+            "text": "Aesthetic indications requiring custom facial implant design, including microgenia (chin retrusion)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No baseline documentation of microgenia or other aesthetic indications requiring implants."
+          },
+          {
+            "text": "Ability to provide written informed consent",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Patient's cognitive and legal capacity to consent not documented in vignette."
+          },
+          {
+            "text": "Active pathological lesions at the time of enrollment",
             "type": "exclusion",
             "verdict": "MET",
             "effect": "FAIL",
-            "evidence": "poorly controlled type 2 diabetes",
-            "reasoning": "Poorly controlled diabetes is equivalent to uncontrolled diabetes mellitus."
+            "evidence": "Fever, facial pain, black necrotic eschar on the nasal mucosa, and periorbital swelling",
+            "reasoning": "Patient presents with acute pathological lesions (mucormycosis) at presentation, meeting exclusion criterion."
           },
           {
-            "text": "Inability or unwillingness to comply with follow-up requirements.",
+            "text": "History of radiotherapy within 12 months prior to enrollment",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on follow-up compliance."
+            "reasoning": "No history of radiotherapy documented in vignette."
+          },
+          {
+            "text": "Chronic untreated vitamin D deficiency",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Vitamin D status not mentioned or assessed in available clinical information."
+          },
+          {
+            "text": "Uncontrolled diabetes mellitus",
+            "type": "exclusion",
+            "verdict": "MET",
+            "effect": "FAIL",
+            "evidence": "Poorly controlled type 2 diabetes",
+            "reasoning": "Patient has uncontrolled diabetes mellitus as explicitly stated in presentation."
+          },
+          {
+            "text": "Inability or unwillingness to comply with follow-up requirements",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Patient's willingness and ability to comply with follow-up not documented."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: active necrotic facial lesion and uncontrolled diabetes both meet this implant trial's exclusion criteria."
+        "rationale": "Excluded: active pathological lesions (necrotic eschar) and uncontrolled diabetes mellitus at enrollment; trial requires controlled diabetes and healed lesions."
       }
     ],
     "questions": [
       {
-        "field": "Mucormycosis diagnostic confirmation",
-        "question": "Has mucormycosis been confirmed by mycology culture, PCR, or histopathology per EORTC-MSGERC criteria, and has pulmonary involvement or co-infection been excluded?",
-        "why": "Determines proven/probable status affecting 7 trial eligibility criteria."
+        "field": "Mucormycosis diagnosis confirmation status",
+        "question": "Has mucormycosis been confirmed by histopathology, culture, or PCR from tissue or fluid samples?",
+        "why": "Confirms invasive mucormycosis diagnosis required for trial enrollment; affects 3 trials."
       },
       {
-        "field": "Informed consent and decision-making capacity",
-        "question": "Does the patient currently have intact decision-making capacity to provide informed consent, or is a legal guardian required?",
-        "why": "Required for enrollment; affects 5 eligibility criteria across trials."
+        "field": "Informed consent capacity and willingness",
+        "question": "Is the patient cognitively able to understand trial requirements and willing to participate, or is a legal guardian needed?",
+        "why": "Essential for valid enrollment; affects 5 trial criteria and protocol compliance."
       },
       {
-        "field": "Other medical history and administrative eligibility factors",
-        "question": "What is the patient's insurance status, treatment site/date, and any prior head/neck radiotherapy history?",
-        "why": "Administrative and history factors gating 5 trial eligibility criteria."
+        "field": "Drug allergies and tolerability",
+        "question": "Does the patient have any allergies to azole antifungals (fluconazole, itraconazole, posaconazole) or known intolerances?",
+        "why": "Rules out contraindications to standard mucormycosis therapy used in trials."
       }
     ],
     "reeval": {
-      "extended_record": "Nasal endoscopy on hospital day 1 obtained biopsy of the necrotic turbinate; histopathology showed broad, ribbon-like, non-septate hyphae with right-angle branching, and tissue culture grew Rhizopus arrhizus at 72 hours, with Mucorales PCR positive on the same specimen, meeting EORTC-MSGERC criteria for proven invasive mucormycosis given his diabetic host factor and sino-orbital clinical criteria. Contrast CT chest showed no nodules, cavitation, or consolidation, excluding pulmonary involvement, and two sets of blood cultures plus sputum culture remained negative at 48 hours, excluding bacterial co-infection; HIV testing was negative and absolute neutrophil count was normal. The patient was alert and fully oriented, scored 29/30 on Mini-Mental State Examination, and demonstrated intact decision-making capacity, personally signing informed consent without need for a legal guardian. He carries employer-sponsored private health insurance with prior authorization approved for antifungal therapy, was admitted to Lakeshore Regional Medical Center on 2026-06-20, underwent emergent endoscopic sinus debridement on hospital day 2, and started intravenous liposomal amphotericin B; he denied any prior head or neck radiotherapy.",
+      "extended_record": "Patient presents with acute rhinocerebral mucormycosis. Nasal endoscopy and biopsy of the black necrotic eschar on the left nasal septum was performed. Histopathology confirmed wide, non-septate hyphae consistent with Mucorales species. Fungal culture grew Rhizopus oryzae. Patient remains alert and oriented to person, place, and time with intact cognition; capable of understanding informed consent requirements and has verbally agreed to participate in clinical trials. Past medical history reviewed: no documented allergies to fluconazole, itraconazole, or posaconazole. Patient denies prior azole antifungal exposure. However, patient reports severe itching and urticaria after receipt of amphotericin B liposomal on hospital day 2; reaction resolved with antihistamine. Currently on day 8 of liposomal amphotericin B therapy with adequate tolerance. Blood glucose remains elevated at 385 mg/dL despite insulin therapy. Endocrinology consulted for diabetes optimization.",
       "answers": [
         {
-          "question": "Has mucormycosis been confirmed by mycology culture, PCR, or histopathology per EORTC-MSGERC criteria, and has pulmonary involvement or co-infection been excluded?",
-          "answer": "Yes. Histopathology showed non-septate right-angle branching hyphae, culture grew Rhizopus arrhizus, and Mucorales PCR was positive, meeting EORTC-MSGERC criteria for proven invasive mucormycosis. Pulmonary involvement was excluded by clear chest CT, and bacterial co-infection was excluded by negative blood and sputum cultures.",
-          "evidence_quote": "histopathology showed broad, ribbon-like, non-septate hyphae with right-angle branching, and tissue culture grew Rhizopus arrhizus at 72 hours, with Mucorales PCR positive on the same specimen, meeting EORTC-MSGERC criteria for proven invasive mucormycosis given his diabetic host factor and sino-orbital clinical criteria. Contrast CT chest showed no nodules, cavitation, or consolidation, excluding pulmonary involvement, and two sets of blood cultures plus sputum culture remained negative at 48 hours, excluding bacterial co-infection"
+          "question": "Has mucormycosis been confirmed by histopathology, culture, or PCR from tissue or fluid samples?",
+          "answer": "Yes, confirmed by both histopathology and culture. Biopsy of nasal eschar showed wide, non-septate hyphae consistent with Mucorales, and fungal culture grew Rhizopus oryzae.",
+          "evidence_quote": "Nasal endoscopy and biopsy of the black necrotic eschar on the left nasal septum was performed. Histopathology confirmed wide, non-septate hyphae consistent with Mucorales species. Fungal culture grew Rhizopus oryzae."
         },
         {
-          "question": "Does the patient currently have intact decision-making capacity to provide informed consent, or is a legal guardian required?",
-          "answer": "Yes, he has intact decision-making capacity (alert, oriented, MMSE 29/30) and personally signed informed consent; no legal guardian is required.",
-          "evidence_quote": "The patient was alert and fully oriented, scored 29/30 on Mini-Mental State Examination, and demonstrated intact decision-making capacity, personally signing informed consent without need for a legal guardian."
+          "question": "Is the patient cognitively able to understand trial requirements and willing to participate, or is a legal guardian needed?",
+          "answer": "Patient is cognitively intact, alert and oriented to person, place, and time, capable of understanding informed consent, and has verbally agreed to participate in clinical trials. No legal guardian is needed.",
+          "evidence_quote": "Patient remains alert and oriented to person, place, and time with intact cognition; capable of understanding informed consent requirements and has verbally agreed to participate in clinical trials."
         },
         {
-          "question": "What is the patient's insurance status, treatment site/date, and any prior head/neck radiotherapy history?",
-          "answer": "He has employer-sponsored private health insurance with prior authorization approved; he was admitted to Lakeshore Regional Medical Center on 2026-06-20 and underwent sinus debridement on hospital day 2; he has no prior head or neck radiotherapy history.",
-          "evidence_quote": "He carries employer-sponsored private health insurance with prior authorization approved for antifungal therapy, was admitted to Lakeshore Regional Medical Center on 2026-06-20, underwent emergent endoscopic sinus debridement on hospital day 2, and started intravenous liposomal amphotericin B; he denied any prior head or neck radiotherapy."
+          "question": "Does the patient have any allergies to azole antifungals (fluconazole, itraconazole, posaconazole) or known intolerances?",
+          "answer": "No documented allergies to fluconazole, itraconazole, or posaconazole. Patient denies prior azole antifungal exposure. However, patient had a reaction to amphotericin B (urticaria and itching).",
+          "evidence_quote": "no documented allergies to fluconazole, itraconazole, or posaconazole. Patient denies prior azole antifungal exposure. However, patient reports severe itching and urticaria after receipt of amphotericin B liposomal on hospital day 2"
         }
       ],
-      "verdict_changes": [],
-      "final_ranking": [
+      "verdict_changes": [
         {
           "nct_id": "NCT07339800",
-          "rank": 1,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Facial/sinus presentation suggests mucormycosis, but pulmonary-specific criteria (Strasbourg site, EORTC diagnosis, thoracic CT) remain unconfirmed."
+          "criterion": "With a diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria",
+          "before": "UNCERTAIN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07339800",
+          "criterion": "No diagnosis of probable or proven invasive pulmonary infection with Mucorales according to EORTC/MSGERC 2020 criteria",
+          "before": "UNCERTAIN",
+          "after": "MET"
         },
         {
           "nct_id": "NCT05406037",
+          "criterion": "Informed consent obtained from participant or parent/guardian for children",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT05406037",
+          "criterion": "For case group: diagnosis of mucormycosis confirmed by conventional mycology data and/or positivity of q-PCR and/or anatomopathologic diagnosis with compatible clinical situation",
+          "before": "UNCERTAIN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT06440915",
+          "criterion": "The subject and his/her guardian are willing to comply with the procedures and operations specified in the study protocol",
+          "before": "UNKNOWN",
+          "after": "UNCERTAIN"
+        },
+        {
+          "nct_id": "NCT06440915",
+          "criterion": "The guardian of the subject and the subject of independent informed age are willing and able to provide written informed consent to participate in the study",
+          "before": "UNKNOWN",
+          "after": "UNCERTAIN"
+        },
+        {
+          "nct_id": "NCT06440915",
+          "criterion": "The subject is known to be allergic to any azole antifungal therapy",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06440915",
+          "criterion": "The subject is known to be allergic to other ingredients contained in the study drug",
+          "before": "UNKNOWN",
+          "after": "UNCERTAIN"
+        },
+        {
+          "nct_id": "NCT07654647",
+          "criterion": "Ability to provide written informed consent",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT07654647",
+          "criterion": "Inability or unwillingness to comply with follow-up requirements",
+          "before": "UNKNOWN",
+          "after": "UNCERTAIN"
+        }
+      ],
+      "final_ranking": [
+        {
+          "nct_id": "NCT05406037",
+          "rank": 1,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Rhinocerebral mucormycosis suspected, but trial requires either pre-transplant assessment or disseminated candidiasis/invasive aspergillosis; neither criterion met."
+        },
+        {
+          "nct_id": "NCT07339800",
           "rank": 2,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Diabetic with necrotic eschar fits mucormycosis case profile, but Lille site match, insurance status, and consent are unconfirmed."
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: trial requires proven/probable invasive pulmonary mucormycosis by EORTC/MSGERC 2020 criteria; patient has rhinocerebral disease, not pulmonary."
         },
         {
           "nct_id": "NCT06440915",
           "rank": 3,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: patient is 45 years old; trial restricted to pediatric patients aged 0-18 for isavuconazole monitoring."
+          "rationale": "Excluded: trial restricts enrollment to ages 0–18 years; patient is 45 years old."
         },
         {
           "nct_id": "NCT07654647",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: active necrotic facial lesion and uncontrolled diabetes both meet this implant trial's exclusion criteria."
+          "rationale": "Excluded: active mucormycotic infection and uncontrolled diabetes mellitus both contraindicate enrollment; facial reconstruction not currently indicated."
         }
       ]
     },
@@ -3020,97 +3262,47 @@ window.TRACES = [
     "patient_text": "A 3-month-old infant with projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass in the epigastrium. Labs show hypochloremic, hypokalemic metabolic alkalosis.",
     "extraction": [
       {
-        "name": "age",
-        "value": "3 months",
-        "evidence_quote": "3-month-old"
+        "name": "Age",
+        "value": "3 months old",
+        "evidence_quote": "A 3-month-old infant"
       },
       {
-        "name": "vomiting",
-        "value": "projectile non-bilious vomiting",
+        "name": "Vomiting character",
+        "value": "projectile non-bilious",
         "evidence_quote": "projectile non-bilious vomiting"
       },
       {
-        "name": "vomiting_timing",
-        "value": "occurs after feeding",
-        "evidence_quote": "after feeding"
+        "name": "Vomiting timing",
+        "value": "after feeding",
+        "evidence_quote": "vomiting after feeding"
       },
       {
-        "name": "exam_finding_peristalsis",
+        "name": "Physical exam - peristalsis",
         "value": "visible peristalsis",
         "evidence_quote": "visible peristalsis"
       },
       {
-        "name": "exam_finding_mass",
+        "name": "Physical exam - abdominal mass",
         "value": "palpable olive-shaped mass in the epigastrium",
         "evidence_quote": "palpable olive-shaped mass in the epigastrium"
       },
       {
-        "name": "lab_chloride",
+        "name": "Electrolyte abnormality 1",
         "value": "hypochloremic",
         "evidence_quote": "hypochloremic"
       },
       {
-        "name": "lab_potassium",
+        "name": "Electrolyte abnormality 2",
         "value": "hypokalemic",
         "evidence_quote": "hypokalemic"
       },
       {
-        "name": "lab_acid_base",
+        "name": "Acid-base status",
         "value": "metabolic alkalosis",
         "evidence_quote": "metabolic alkalosis"
       }
     ],
     "trials": [
-      {
-        "nct_id": "NCT06031025",
-        "title": "Prevalence and Natural History of Functional Gastrointestinal Disorders Among At-risk Infants.",
-        "phase": "NA",
-        "criteria": [
-          {
-            "text": "infants with gestational age at birth < 31 weeks",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette gives no birth/gestational age information."
-          },
-          {
-            "text": "infants with gestational age at birth < 37 weeks and major respiratory or neurologic morbidity",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No gestational age or respiratory/neurologic morbidity data provided."
-          },
-          {
-            "text": "infants with history of perinatal asphyxia",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No birth history or perinatal asphyxia information given."
-          },
-          {
-            "text": "lack of informed consent",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about consent status."
-          },
-          {
-            "text": "diagnosis of congenital or other major gastrointestinal disease (i.e. inflammatory bowel disease, cancer)",
-            "type": "exclusion",
-            "verdict": "UNCERTAIN",
-            "effect": "REVIEW",
-            "evidence": "projectile non-bilious vomiting after feeding, visible peristalsis, and a palpable olive-shaped mass ... hypochloremic, hypokalemic metabolic alkalosis",
-            "reasoning": "Classic picture for pyloric stenosis, a congenital GI disease, but no explicit diagnosis stated."
-          }
-        ],
-        "eligibility": "UNCERTAIN",
-        "rank": 1,
-        "rationale": "Uncertain: eligibility depends on gestational age (<31 or <37 weeks with morbidity) and perinatal asphyxia history, none reported for this classic pyloric stenosis presentation."
-      },
       {
         "nct_id": "NCT05535361",
         "title": "A Feasibility Study to Evaluate Safety and Probable Benefit of the Eclipse XL1 System for Distraction Enterogenesis in Adult and Pediatric Patients With Short Bowel Syndrome",
@@ -3122,7 +3314,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette describes pyloric stenosis findings; no mention of bowel length or prior intestinal resection."
+            "reasoning": "No prior bowel resection or intestinal length measurements documented in vignette."
           },
           {
             "text": "Minimum residual bowel length of 3 cm.",
@@ -3130,15 +3322,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on residual bowel length provided."
+            "reasoning": "No bowel length measurements provided; clinical presentation suggests pyloric stenosis, not short bowel."
           },
           {
-            "text": "Male or female patients aged 3 mo to 65 years inclusive",
+            "text": "Male or female patients aged 3 months to 65 years inclusive.",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "3 months",
-            "reasoning": "Age 3 months falls within the 3 mo to 65 year inclusive range."
+            "evidence": "Age: 3 months old",
+            "reasoning": "Patient is 3 months old, within the 3 months to 65 years inclusive range."
           },
           {
             "text": "The subject, parent or legal guardian of the subject is able to read, understand, and is willing to provide informed consent.",
@@ -3146,15 +3338,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about guardian's consent capacity or willingness."
+            "reasoning": "No information about parent/guardian's ability to read, understand, or consent."
           },
           {
-            "text": "The subject or parent or legal guardian of the patient is able to understand the requirements of the study and is willing to bring the subject to all clinic visits and complete all study related procedures (as determined by the investigator).",
+            "text": "The subject or parent or legal guardian of the patient is able to understand the requirements of the study and is willing to bring the subject to all clinic visits and complete all study related procedures.",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Rests on investigator determination and no data given; not decidable from record."
+            "reasoning": "No information about parent/guardian's ability or willingness to comply with study requirements."
           },
           {
             "text": "Ultra-short bowel syndrome defined as less than 3 cm of bowel length.",
@@ -3162,15 +3354,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on bowel length provided."
+            "reasoning": "No bowel length measurements provided to assess ultra-short bowel syndrome status."
           },
           {
-            "text": "Diagnosed Inflammatory bowel disease-unclassified (not Crohn's or ulcerative colitis)",
+            "text": "Diagnosed Inflammatory bowel disease-unclassified (not Crohn's or ulcerative colitis).",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of IBD-unclassified diagnosis in vignette."
+            "reasoning": "No mention of inflammatory bowel disease-unclassified diagnosis."
           },
           {
             "text": "Evidence of active or prior Crohn's disease.",
@@ -3178,7 +3370,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of Crohn's disease, active or prior."
+            "reasoning": "No mention of Crohn's disease; clinical picture consistent with pyloric stenosis."
           },
           {
             "text": "Primary intestinal failure (i.e., without loss or resection of intestinal tissue).",
@@ -3186,7 +3378,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of intestinal failure or absence of resection history."
+            "reasoning": "No documentation of intestinal resection or primary intestinal failure history."
           },
           {
             "text": "Coagulopathy, as defined by INR > 1.4 or platelets < 100.",
@@ -3194,15 +3386,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Only chloride, potassium, and acid-base labs given; no INR or platelet count."
+            "reasoning": "No INR or platelet count data provided in vignette."
           },
           {
-            "text": "Known immunocompromised status including, but not limited to, individuals who have undergone organ transplantation, chemotherapy or radiotherapy within the past 12 months, who have clinically significant leukopenia, who are positive for the human immunodeficiency virus (HIV) or whose immune status makes the subject a poor candidate for clinical trial participation in the opinion of the Investigator.",
+            "text": "Known immunocompromised status including individuals who have undergone organ transplantation, chemotherapy or radiotherapy within the past 12 months, who have clinically significant leukopenia, who are positive for human immunodeficiency virus (HIV), or whose immune status makes the subject a poor candidate for clinical trial participation in the opinion of the Investigator.",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on transplant, chemo/radiotherapy, leukopenia, or HIV status; partly investigator opinion."
+            "reasoning": "No information about immunocompromised status, transplantation, chemotherapy, radiotherapy, leukopenia, or HIV."
           },
           {
             "text": "Subject is determined by the investigator to be unsuitable for participation in this trial for any reason.",
@@ -3210,12 +3402,78 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Rests entirely on investigator discretion; not decidable from record."
+            "reasoning": "Investigator's discretionary judgment cannot be determined from clinical record."
           }
         ],
         "eligibility": "UNCERTAIN",
+        "rank": 1,
+        "rationale": "Clinical presentation suggests pyloric stenosis, not short bowel syndrome. Eligibility for short bowel syndrome and bowel length criteria cannot be assessed."
+      },
+      {
+        "nct_id": "NCT06031025",
+        "title": "Prevalence and Natural History of Functional Gastrointestinal Disorders Among At-risk Infants.",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Gestational age at birth < 31 weeks",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Gestational age at birth not provided in vignette."
+          },
+          {
+            "text": "Gestational age at birth < 37 weeks with major respiratory or neurologic morbidity",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Gestational age and perinatal morbidity history not documented."
+          },
+          {
+            "text": "History of perinatal asphyxia",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about perinatal asphyxia in vignette."
+          },
+          {
+            "text": "Lack of informed consent",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Informed consent status not mentioned in clinical record."
+          },
+          {
+            "text": "Diagnosis of congenital gastrointestinal disease",
+            "type": "exclusion",
+            "verdict": "MET",
+            "effect": "FAIL",
+            "evidence": "projectile non-bilious vomiting, visible peristalsis, palpable olive-shaped mass in the epigastrium, hypochloremic hypokalemic metabolic alkalosis",
+            "reasoning": "Clinical presentation and findings are pathognomonic for pyloric stenosis, a congenital GI disease."
+          },
+          {
+            "text": "Diagnosis of inflammatory bowel disease",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "effect": "PASS",
+            "evidence": "3-month-old infant with projectile vomiting and olive-shaped epigastric mass",
+            "reasoning": "Clinical picture indicates pyloric stenosis, not inflammatory bowel disease."
+          },
+          {
+            "text": "Diagnosis of gastrointestinal cancer",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "effect": "PASS",
+            "evidence": "3-month-old infant with pyloric stenosis findings",
+            "reasoning": "No evidence of GI malignancy; presentation consistent with benign congenital pyloric stenosis."
+          }
+        ],
+        "eligibility": "INELIGIBLE",
         "rank": 2,
-        "rationale": "Uncertain: short bowel syndrome status, residual bowel length, and consent are unassessed; presentation is pyloric stenosis, not short bowel syndrome, but prior resection unconfirmed."
+        "rationale": "Excluded: congenital gastrointestinal disease (pyloric stenosis) is an explicit exclusion criterion."
       },
       {
         "nct_id": "NCT04515251",
@@ -3225,26 +3483,26 @@ window.TRACES = [
           {
             "text": "Male and female children",
             "type": "inclusion",
-            "verdict": "MET",
-            "effect": "PASS",
-            "evidence": "3-month-old infant",
-            "reasoning": "Patient is an infant/child; criterion covers both sexes so it holds regardless of sex."
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Sex/gender not specified in vignette; cannot determine if male or female."
           },
           {
             "text": "Age ranging from 10 to 15 years, included",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
-            "evidence": "age: 3 months",
-            "reasoning": "Patient is 3 months old, not within the 10-15 year range."
+            "evidence": "Age: 3 months old",
+            "reasoning": "Patient is 3 months old; criterion requires 10-15 years old."
           },
           {
             "text": "Abdominal ultrasound examination to be performed for indications other than gastrointestinal evaluation",
             "type": "inclusion",
-            "verdict": "NOT_MET",
-            "effect": "FAIL",
-            "evidence": "projectile non-bilious vomiting after feeding, palpable olive-shaped mass in the epigastrium",
-            "reasoning": "Presentation is classic GI pathology, so any ultrasound would target GI evaluation, not another indication."
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about whether ultrasound was performed or its indications."
           },
           {
             "text": "Signed Informed Consent",
@@ -3252,7 +3510,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about informed consent."
+            "reasoning": "No information about consent status in vignette."
           },
           {
             "text": "Presence of a disease that could distort the anatomy around the SMA (e.g., abdominal mass, lymphadenopathy, severe scoliosis, free abdominal fluid)",
@@ -3260,7 +3518,7 @@ window.TRACES = [
             "verdict": "MET",
             "effect": "FAIL",
             "evidence": "palpable olive-shaped mass in the epigastrium",
-            "reasoning": "Patient has a palpable abdominal mass, matching the criterion's own listed example."
+            "reasoning": "Patient has abdominal mass (olive-shaped mass consistent with pyloric stenosis), meeting exclusion criterion."
           },
           {
             "text": "Oncologic patients at risk of neoplastic cachexia",
@@ -3268,12 +3526,12 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about oncologic disease or cachexia risk."
+            "reasoning": "No information about oncologic diagnosis or neoplastic cachexia risk."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 3,
-        "rationale": "Excluded: infant is 3 months old, far outside the 10-15-year age band, and the palpable epigastric mass would distort SMA anatomy per exclusion criteria."
+        "rationale": "Excluded: patient is 3 months old, trial requires ages 10-15 years. Pyloric mass meets SMA-distorting anatomy exclusion."
       },
       {
         "nct_id": "NCT06687564",
@@ -3285,40 +3543,32 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
-            "evidence": "age: 3 months",
-            "reasoning": "Patient is 3 months old, far below the 4-year age threshold."
+            "evidence": "Age: 3 months old",
+            "reasoning": "Patient is 3 months old, criterion requires ≥4 years of age."
           },
           {
             "text": "Patient with PIPO before age 18",
             "type": "inclusion",
-            "verdict": "NOT_MET",
-            "effect": "FAIL",
-            "evidence": "palpable olive-shaped mass in the epigastrium",
-            "reasoning": "Palpable mass and peristalsis indicate mechanical pyloric stenosis, not pseudo-obstruction (PIPO)."
-          },
-          {
-            "text": "Male or female",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
+            "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Patient's sex is not stated anywhere in the vignette or extracted fields."
+            "evidence": "3-month-old infant with projectile non-bilious vomiting, visible peristalsis, palpable olive-shaped mass",
+            "reasoning": "Clinical presentation strongly suggests pyloric stenosis, but PIPO diagnosis not explicitly stated in vignette."
           },
           {
             "text": "Patient with PIPO meeting at least 2 of the ESPGHAN criteria (Thapar et al 2018)",
             "type": "inclusion",
-            "verdict": "NOT_MET",
-            "effect": "FAIL",
-            "evidence": "visible peristalsis",
-            "reasoning": "Findings show a mechanical obstructive process, inconsistent with a PIPO diagnosis needed for ESPGHAN criteria."
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "ESPGHAN criteria for PIPO not detailed in vignette; cannot assess met criteria count."
           },
           {
-            "text": "Patient carrying the R178, R257, R40 or A136 mutation of the ACTG2 gene",
+            "text": "Carrying the R178, R257, R40 or A136 mutation of the ACTG2 gene",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No genetic testing or ACTG2 mutation status is mentioned in the vignette."
+            "reasoning": "No genetic testing or ACTG2 mutation status documented in vignette."
           },
           {
             "text": "Patient whose assent has been obtained and whose legal guardians have given their written informed consent",
@@ -3326,7 +3576,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about assent or guardian consent."
+            "reasoning": "Consent status not mentioned in clinical vignette."
           },
           {
             "text": "Patient affiliated to the French Social Security system or benefiting from an equivalent plan",
@@ -3334,15 +3584,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on French Social Security or equivalent insurance affiliation."
-          },
-          {
-            "text": "iPS cell lines MS573 or WT8288 or 202CT or SD378M, from the Nantes University Hospital biological collection and generated from samples from control patients without POIC who have consented to donate their samples",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Criterion concerns control iPS cell lines, not addressed by the patient's clinical data."
+            "reasoning": "Social security or insurance affiliation not documented in vignette."
           },
           {
             "text": "Patients with a history of radiotherapy treatment",
@@ -3350,7 +3592,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No history of radiotherapy treatment is mentioned in the vignette."
+            "reasoning": "No history of radiotherapy mentioned in vignette."
           },
           {
             "text": "Patient with lymphocyte lineage damage",
@@ -3358,120 +3600,72 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No lab data on lymphocyte lineage or immune damage is provided."
+            "reasoning": "No lymphocyte lineage damage or hematologic conditions documented."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: patient is 3 months old (trial requires age ≥4 years) and presents with pyloric stenosis, not intestinal pseudo-obstruction meeting ESPGHAN criteria."
+        "rationale": "Excluded: patient is 3 months old, trial requires age ≥4 years. Presentation consistent with pyloric stenosis, not primary intestinal pseudo-obstruction."
       }
     ],
     "questions": [
       {
-        "field": "GI/bowel disease and anatomic history",
-        "question": "Does the infant have any prior GI disease, bowel surgery, or resection, and if so what is the residual bowel length?",
-        "why": "Highest-impact gap, affecting 7 trial criteria"
+        "field": "Informed consent and enrollment status",
+        "question": "Are the parents willing and able to provide informed consent and participate in a clinical trial?",
+        "why": "Prerequisite for all trial enrollment; affects 4 criteria"
       },
       {
-        "field": "Hematologic, immune, and oncologic history",
-        "question": "Is there any known coagulopathy, immunodeficiency, prior radiotherapy, or oncologic/cachexia risk in this infant?",
-        "why": "Resolves exclusion criteria across 5 trials"
+        "field": "Prior intestinal surgery and bowel length",
+        "question": "Has this infant had any abdominal surgery, bowel resection, or measurement of remaining bowel length?",
+        "why": "Determines short bowel syndrome eligibility; excludes from multiple trials"
       },
       {
-        "field": "Informed consent / assent status",
-        "question": "Has informed consent/assent been documented from the parent or legal guardian for trial enrollment?",
-        "why": "Enrollment prerequisite affecting 5 trials"
+        "field": "Birth history and perinatal complications",
+        "question": "What was the gestational age at birth, and were there any perinatal complications or birth trauma?",
+        "why": "Critical for NCT06031025 eligibility and determines inclusion in age-specific criteria"
       }
     ],
     "reeval": {
-      "extended_record": "The infant was born full-term via uncomplicated vaginal delivery with no NICU admission, and has no prior gastrointestinal disease, bowel surgery, or intestinal resection; bowel length is normal and fully intact. Preoperative screening on 2026-07-10 showed no coagulopathy, with PT 13.2 seconds, PTT 31 seconds, and INR 1.0, all within normal limits, and a normal platelet count of 320,000/uL. Immune workup showed no immunodeficiency, with normal immunoglobulin levels and a normal absolute lymphocyte count of 4,200/uL. There is no history of radiotherapy, malignancy, or cachexia; growth parameters are appropriate for age at the 45th percentile without wasting. Written informed consent for trial enrollment was obtained from the infant's mother, the legal guardian, on 2026-07-10, witnessed by the attending pediatric surgeon, and documented in the medical record prior to any study procedures.",
+      "extended_record": "3-month-old male presenting with classic infantile hypertrophic pyloric stenosis (IHPS). Projectile non-bilious vomiting observed after each feeding for 2 weeks. Physical examination confirms visible peristaltic waves and firm olive-shaped mass palpable in the epigastrium. Laboratory studies reveal hypochloremic, hypokalemic metabolic alkalosis: serum chloride 94 mEq/L (normal 98-107), potassium 3.1 mEq/L (normal 3.5-5.0), pH 7.52 with HCO3 32 mEq/L. Abdominal ultrasound shows pyloric muscle thickness of 4.2 mm with pyloric channel length of 16 mm, confirming diagnosis. No prior abdominal surgery or bowel resection. Infant born at 38 weeks gestation via uncomplicated spontaneous vaginal delivery with Apgar scores 8 and 9 at 1 and 5 minutes, respectively. No birth trauma or perinatal complications documented. Parents are English-speaking, college-educated, and have explicitly consented to participate in the clinical trial evaluating minimally invasive pyloromyotomy techniques.",
       "answers": [
         {
-          "question": "Does the infant have any prior GI disease, bowel surgery, or resection, and if so what is the residual bowel length?",
-          "answer": "No prior GI disease, bowel surgery, or resection; bowel length is normal and fully intact, so residual bowel length is not applicable.",
-          "evidence_quote": "has no prior gastrointestinal disease, bowel surgery, or intestinal resection; bowel length is normal and fully intact"
+          "question": "Are the parents willing and able to provide informed consent and participate in a clinical trial?",
+          "answer": "Yes, the parents are willing and able to provide informed consent and participate in the clinical trial.",
+          "evidence_quote": "Parents are English-speaking, college-educated, and have explicitly consented to participate in the clinical trial evaluating minimally invasive pyloromyotomy techniques."
         },
         {
-          "question": "Is there any known coagulopathy, immunodeficiency, prior radiotherapy, or oncologic/cachexia risk in this infant?",
-          "answer": "No known coagulopathy, immunodeficiency, prior radiotherapy, or oncologic/cachexia risk; coagulation and immune workups were normal and there is no history of malignancy or wasting.",
-          "evidence_quote": "showed no coagulopathy, with PT 13.2 seconds, PTT 31 seconds, and INR 1.0, all within normal limits, and a normal platelet count of 320,000/uL. Immune workup showed no immunodeficiency, with normal immunoglobulin levels and a normal absolute lymphocyte count of 4,200/uL. There is no history of radiotherapy, malignancy, or cachexia"
+          "question": "Has this infant had any abdominal surgery, bowel resection, or measurement of remaining bowel length?",
+          "answer": "No, the infant has not had any prior abdominal surgery or bowel resection, and no bowel length measurement has been performed.",
+          "evidence_quote": "No prior abdominal surgery or bowel resection."
         },
         {
-          "question": "Has informed consent/assent been documented from the parent or legal guardian for trial enrollment?",
-          "answer": "Yes, written informed consent was obtained from the infant's mother, the legal guardian, and documented in the medical record.",
-          "evidence_quote": "Written informed consent for trial enrollment was obtained from the infant's mother, the legal guardian, on 2026-07-10, witnessed by the attending pediatric surgeon, and documented in the medical record prior to any study procedures"
+          "question": "What was the gestational age at birth, and were there any perinatal complications or birth trauma?",
+          "answer": "The infant was born at 38 weeks gestation with an uncomplicated delivery (Apgar scores 8 and 9 at 1 and 5 minutes) and no perinatal complications or birth trauma.",
+          "evidence_quote": "Infant born at 38 weeks gestation via uncomplicated spontaneous vaginal delivery with Apgar scores 8 and 9 at 1 and 5 minutes, respectively. No birth trauma or perinatal complications documented."
         }
       ],
       "verdict_changes": [
         {
           "nct_id": "NCT06031025",
-          "criterion": "lack of informed consent",
+          "criterion": "Gestational age at birth < 31 weeks",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
         {
           "nct_id": "NCT06031025",
-          "criterion": "diagnosis of congenital or other major gastrointestinal disease (i.e. inflammatory bowel disease, cancer)",
-          "before": "UNCERTAIN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "Subject has short bowel syndrome, defined as 50% or less of expected bowel length based on subject age and/or height, and measured at the time of the subject's prior intestinal resection.",
+          "criterion": "Gestational age at birth < 37 weeks with major respiratory or neurologic morbidity",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
         {
-          "nct_id": "NCT05535361",
-          "criterion": "Minimum residual bowel length of 3 cm.",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "The subject, parent or legal guardian of the subject is able to read, understand, and is willing to provide informed consent.",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "The subject or parent or legal guardian of the patient is able to understand the requirements of the study and is willing to bring the subject to all clinic visits and complete all study related procedures (as determined by the investigator).",
-          "before": "UNKNOWN",
-          "after": "UNCERTAIN"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "Ultra-short bowel syndrome defined as less than 3 cm of bowel length.",
+          "nct_id": "NCT06031025",
+          "criterion": "History of perinatal asphyxia",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
         {
-          "nct_id": "NCT05535361",
-          "criterion": "Diagnosed Inflammatory bowel disease-unclassified (not Crohn's or ulcerative colitis)",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "Evidence of active or prior Crohn's disease.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "Primary intestinal failure (i.e., without loss or resection of intestinal tissue).",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "Coagulopathy, as defined by INR > 1.4 or platelets < 100.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05535361",
-          "criterion": "Known immunocompromised status including, but not limited to, individuals who have undergone organ transplantation, chemotherapy or radiotherapy within the past 12 months, who have clinically significant leukopenia, who are positive for the human immunodeficiency virus (HIV) or whose immune status makes the subject a poor candidate for clinical trial participation in the opinion of the Investigator.",
+          "nct_id": "NCT06031025",
+          "criterion": "Lack of informed consent",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
@@ -3482,54 +3676,36 @@ window.TRACES = [
           "after": "MET"
         },
         {
-          "nct_id": "NCT04515251",
-          "criterion": "Oncologic patients at risk of neoplastic cachexia",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
           "nct_id": "NCT06687564",
           "criterion": "Patient whose assent has been obtained and whose legal guardians have given their written informed consent",
           "before": "UNKNOWN",
           "after": "UNCERTAIN"
-        },
-        {
-          "nct_id": "NCT06687564",
-          "criterion": "Patients with a history of radiotherapy treatment",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06687564",
-          "criterion": "Patient with lymphocyte lineage damage",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
         }
       ],
       "final_ranking": [
         {
-          "nct_id": "NCT06031025",
+          "nct_id": "NCT05535361",
           "rank": 1,
           "eligibility": "UNCERTAIN",
-          "rationale": "Eligibility uncertain: vignette does not report gestational age, respiratory/neurologic morbidity, or perinatal asphyxia history needed to confirm at-risk-infant inclusion criteria."
+          "rationale": "Clinical presentation suggests pyloric stenosis, not short bowel syndrome. Short bowel syndrome status and residual bowel length unknown; eligibility cannot be determined."
+        },
+        {
+          "nct_id": "NCT06031025",
+          "rank": 2,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: trial requires gestational age <31 weeks or <37 weeks with major morbidity/perinatal asphyxia; patient lacks these risk factors."
         },
         {
           "nct_id": "NCT04515251",
-          "rank": 2,
-          "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: patient is 3 months old, not 10-15 years, and has a palpable abdominal (pyloric) mass, an anatomy-distorting condition the exclusion criteria bar."
-        },
-        {
-          "nct_id": "NCT05535361",
           "rank": 3,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: no short bowel syndrome or prior intestinal resection; presentation is projectile vomiting from suspected pyloric stenosis, unrelated to SBS."
+          "rationale": "Excluded: patient age 3 months does not meet inclusion criterion of 10-15 years; palpable epigastric mass may distort SMA anatomy."
         },
         {
           "nct_id": "NCT06687564",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: patient is 3 months old, below the trial's minimum age of 4 years, with no diagnosis of intestinal pseudo-obstruction (PIPO)."
+          "rationale": "Excluded: patient age 3 months does not meet inclusion criterion of ≥4 years; clinical picture consistent with pyloric stenosis, not PIPO."
         }
       ]
     },
@@ -3540,47 +3716,153 @@ window.TRACES = [
     "patient_text": "A 60-year-old woman presents with progressive dyspnea, dry cough, and clubbing of the fingers. Chest CT reveals bilateral basal reticular opacities with honeycombing.",
     "extraction": [
       {
-        "name": "age",
-        "value": "60 years",
-        "evidence_quote": "60-year-old"
+        "name": "Age",
+        "value": "60",
+        "evidence_quote": "A 60-year-old woman"
       },
       {
-        "name": "sex",
-        "value": "female",
-        "evidence_quote": "woman"
+        "name": "Sex",
+        "value": "Female",
+        "evidence_quote": "A 60-year-old woman"
       },
       {
-        "name": "symptom",
-        "value": "progressive dyspnea",
+        "name": "Chief complaint/Symptom 1",
+        "value": "Progressive dyspnea",
         "evidence_quote": "progressive dyspnea"
       },
       {
-        "name": "symptom",
-        "value": "dry cough",
+        "name": "Chief complaint/Symptom 2",
+        "value": "Dry cough",
         "evidence_quote": "dry cough"
       },
       {
-        "name": "exam_finding",
-        "value": "clubbing of the fingers",
+        "name": "Physical exam finding",
+        "value": "Clubbing of the fingers",
         "evidence_quote": "clubbing of the fingers"
       },
       {
-        "name": "imaging_modality",
+        "name": "Imaging modality",
         "value": "Chest CT",
         "evidence_quote": "Chest CT"
       },
       {
-        "name": "imaging_finding",
-        "value": "bilateral basal reticular opacities",
+        "name": "Imaging finding 1",
+        "value": "Bilateral basal reticular opacities",
         "evidence_quote": "bilateral basal reticular opacities"
       },
       {
-        "name": "imaging_finding",
-        "value": "honeycombing",
+        "name": "Imaging finding 2",
+        "value": "Honeycombing",
         "evidence_quote": "honeycombing"
       }
     ],
     "trials": [
+      {
+        "nct_id": "NCT07299695",
+        "title": "Intravenous Immunoglobulin for the Treatment of Acute Exacerbations of Idiopathic Pulmonary Fibrosis",
+        "phase": "PHASE3",
+        "criteria": [
+          {
+            "text": "Patients ≥ 18 years of age",
+            "type": "inclusion",
+            "verdict": "MET",
+            "effect": "PASS",
+            "evidence": "A 60-year-old woman",
+            "reasoning": "Patient is 60 years old, which meets the ≥18 years requirement."
+          },
+          {
+            "text": "Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Bilateral basal reticular opacities with honeycombing",
+            "reasoning": "CT findings suggest IPF, but clinical diagnosis per ATS/ERS criteria requires additional criteria beyond imaging (PFT data, exclusion of other diagnoses) not provided."
+          },
+          {
+            "text": "Patients hospitalised with a definite or suspected AE-IPF diagnosis, as defined by the international working group criteria",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about hospitalization status or acute exacerbation diagnosis."
+          },
+          {
+            "text": "Patient able to understand and sign a written informed consent form, or consent signed by legally authorized representative",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about patient's capacity to consent or legal representation status."
+          },
+          {
+            "text": "Patients with acute worsening due to uncontrolled heart failure or pulmonary embolism",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No clinical information about heart failure, pulmonary embolism, or acute worsening cause."
+          },
+          {
+            "text": "Patients with known hypersensitivity to corticosteroids, IVIG or any component of the study treatment",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No documented history of hypersensitivity to corticosteroids, IVIG, or study components."
+          },
+          {
+            "text": "Patients with known IgA deficiency (IgA level <7 mg/dL)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No IgA level laboratory values documented in vignette."
+          },
+          {
+            "text": "Patients with active malignancy or currently receiving cancer treatment, except for basal cell or squamous cell skin cancer or low-risk prostate cancer (T1 or T2a stage with PSA <10 ng/dL)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about active malignancy or current cancer treatment status."
+          },
+          {
+            "text": "Patients that have received treatment for >14 days within the preceding month with >20mg daily prednisone (or equivalent) or any treatment during the last month with immunosuppressants or >1 mg/kg/d from more than 7 days in the last 15 days",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No documentation of recent corticosteroid or immunosuppressant treatment history."
+          },
+          {
+            "text": "Patients participating in another interventional clinical trial",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about participation in other clinical trials."
+          },
+          {
+            "text": "Patients with documented pregnancy or lactation",
+            "type": "exclusion",
+            "verdict": "NOT_MET",
+            "effect": "PASS",
+            "evidence": "A 60-year-old woman",
+            "reasoning": "At age 60, pregnancy and lactation are highly unlikely; criterion statement is false."
+          },
+          {
+            "text": "Patients under tutorship, curatorship, deprived of liberty, or under court protection",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about legal status or guardianship."
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 1,
+        "rationale": "Clinical presentation consistent with IPF (honeycombing, clubbing, dyspnea); requires confirmation of acute exacerbation criteria and hospitalization status."
+      },
       {
         "nct_id": "NCT05674994",
         "title": "Glucocorticoids Versus Placebo for the Treatment of Acute Exacerbation of Idiopathic Pulmonary Fibrosis",
@@ -3591,16 +3873,16 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "age: 60 years",
-            "reasoning": "60 years is greater than or equal to 18."
+            "evidence": "A 60-year-old woman",
+            "reasoning": "Patient is 60 years old, which is ≥18 years of age."
           },
           {
             "text": "IPF or IPF (likely) diagnosis defined on 2018 international recommendations",
             "type": "inclusion",
-            "verdict": "MET",
-            "effect": "PASS",
-            "evidence": "bilateral basal reticular opacities with honeycombing",
-            "reasoning": "Basal reticulation with honeycombing is a typical UIP pattern, diagnostic for IPF."
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Bilateral basal reticular opacities with honeycombing",
+            "reasoning": "Imaging findings consistent with IPF, but clinical diagnosis per 2018 criteria requires additional assessment not fully documented."
           },
           {
             "text": "Definite or suspected Acute Exacerbation defined by the international working group criteria after exclusion of alternative diagnoses of acute worsening",
@@ -3608,23 +3890,23 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no timeframe of worsening, no new ground-glass changes, no exclusion of alternative causes."
+            "reasoning": "No information about acute exacerbation or baseline IPF diagnosis provided in vignette."
           },
           {
-            "text": "For women of childbearing age: efficient contraception for the duration of the study (defined as any contraceptive method used consistently and appropriately with a failure rate of less than 1% per year)",
-            "type": "inclusion",
-            "verdict": "MET",
-            "effect": "PASS",
-            "evidence": "age: 60 years",
-            "reasoning": "At 60 she is not of childbearing age, so the contraception condition does not apply."
-          },
-          {
-            "text": "Patient able to understand and sign a written informed consent form, or in case of incapacity of the patient, a relative who understands and signs a written informed consent form",
+            "text": "For women of childbearing age: efficient contraception for the duration of the study (defined as any contraceptive method that is used consistently and appropriately and has a low failure rate of less than 1% per year)",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on cognitive status or ability to consent is given."
+            "reasoning": "Patient is 60 years old; childbearing age status and contraception use not documented."
+          },
+          {
+            "text": "Affiliation to the social security",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about social security affiliation provided."
           },
           {
             "text": "Identified etiology for acute worsening (i.e.: infectious disease)",
@@ -3632,7 +3914,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No infectious or other identified etiology for worsening is mentioned."
+            "reasoning": "No information about alternative diagnoses for acute worsening documented."
           },
           {
             "text": "Known hypersensitivity to glucocorticoids or to any component of the study treatment",
@@ -3640,7 +3922,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information about drug hypersensitivity is provided."
+            "reasoning": "No documented history of glucocorticoid hypersensitivity."
           },
           {
             "text": "Patient requiring mechanical ventilation or already on mechanical ventilation",
@@ -3648,15 +3930,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of ventilatory status or mechanical ventilation."
+            "reasoning": "No information about mechanical ventilation status documented."
           },
           {
-            "text": "Active bacterial, viral, fungal or parasitic infection (only positive swab for SARS-CoV-2, Influenzae A, Influenzae B and Respiratory Syncytial Virus (RSV) is considered an active viral infection)",
+            "text": "Active bacterial, viral, fungal or parasitic infection (SARS-CoV-2, Influenzae A, Influenzae B and Respiratory Syncytial Virus are considered active viral infections)",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of any active infection."
+            "reasoning": "No information about active infections documented."
           },
           {
             "text": "Active cancer",
@@ -3664,28 +3946,36 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of cancer history or activity."
+            "reasoning": "No information about active cancer documented."
           },
           {
-            "text": "Treatment with glucocorticoids > 1 mg/kg/d for more than 7 days in the last 15 days",
+            "text": "Patient on a lung transplantation waiting list",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of prior or current glucocorticoid treatment."
+            "reasoning": "No information about lung transplantation waiting list status."
+          },
+          {
+            "text": "Treatment with glucocorticoids > 1 mg/kg/d from more than 7 days in the last 15 days",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about current glucocorticoid dosing or duration."
           },
           {
             "text": "Documented pregnancy or lactation",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "age: 60 years",
-            "reasoning": "60-year-old woman; pregnancy or lactation is not plausible/documented."
+            "evidence": "60-year-old woman",
+            "reasoning": "Patient is postmenopausal age; pregnancy and lactation are not applicable."
           }
         ],
         "eligibility": "UNCERTAIN",
-        "rank": 1,
-        "rationale": "Chronic pattern fits IPF, but acute-exacerbation status per working-group criteria, alternative-cause exclusion, and consent capacity remain unconfirmed pending further workup."
+        "rank": 2,
+        "rationale": "Imaging findings suggest IPF; acute exacerbation status and alternative diagnoses must be excluded; contraception requirements apply if childbearing age."
       },
       {
         "nct_id": "NCT07447102",
@@ -3693,28 +3983,36 @@ window.TRACES = [
         "phase": "PHASE2",
         "criteria": [
           {
-            "text": "Aged ≥40 years at the time of signing the ICF, with no gender restriction.",
+            "text": "Must provide written informed consent form (ICF) indicating understanding of the study and voluntary participation.",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about informed consent status."
+          },
+          {
+            "text": "Aged ≥40 years at the time of signing the ICF.",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Patient is 60 years old, satisfies age ≥40 with no gender restriction."
+            "evidence": "Age: 60",
+            "reasoning": "Patient is 60 years old, which meets the ≥40 years requirement."
           },
           {
-            "text": "Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 American Thoracic Society/European Respiratory Society/Japanese Respiratory Society/Latin American Thoracic Society (ATS/ERS/JRS/ALAT) clinical practice guideline.",
+            "text": "Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 ATS/ERS/JRS/ALAT clinical practice guideline.",
             "type": "inclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "progressive dyspnea, dry cough, clubbing... honeycombing",
-            "reasoning": "Presentation and imaging suggest IPF but no explicit guideline-based diagnosis stated."
+            "evidence": "Progressive dyspnea, dry cough, clubbing, bilateral basal reticular opacities with honeycombing",
+            "reasoning": "Clinical presentation and imaging suggest IPF but diagnosis not explicitly confirmed per 2022 guidelines."
           },
           {
-            "text": "HRCT pattern consistent with usual interstitial pneumonia (UIP) or probable UIP for IPF confirmed by independent central imaging review (acceptable-quality HRCT obtained within 12 months prior to screening or during the screening period). If HRCT shows indeterminate UIP, the diagnosis of IPF must be confirmed by histopathology from a prior lung biopsy (surgical/video-assisted thoracoscopic lung biopsy or bronchoscopic cryobiopsy) recognized by the investigator, if available.",
+            "text": "HRCT pattern consistent with usual interstitial pneumonia (UIP) or probable UIP for IPF confirmed by independent central imaging review, or if HRCT shows indeterminate UIP, diagnosis of IPF must be confirmed by histopathology from prior lung biopsy.",
             "type": "inclusion",
-            "verdict": "MET",
-            "effect": "PASS",
-            "evidence": "bilateral basal reticular opacities with honeycombing",
-            "reasoning": "CT pattern of basal reticulation with honeycombing is classic/definite UIP pattern."
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "Chest CT reveals bilateral basal reticular opacities with honeycombing",
+            "reasoning": "Pattern consistent with UIP but independent central imaging review and histopathology confirmation status unknown."
           },
           {
             "text": "Forced vital capacity percent predicted (FVC% predicted) ≥45% during the screening period.",
@@ -3722,39 +4020,87 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No FVC% predicted value reported in the vignette."
+            "reasoning": "No FVC% predicted value provided in vignette."
           },
           {
-            "text": "Diffusing capacity of the lung for carbon monoxide percent predicted (DLCO% predicted), corrected for hemoglobin (Hb), ≥30% and ≤90% during the screening period.",
+            "text": "Diffusing capacity of the lung for carbon monoxide percent predicted (DLCO% predicted), corrected for hemoglobin, ≥30% and ≤90% during the screening period.",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No DLCO% predicted value reported in the vignette."
+            "reasoning": "No DLCO% predicted value provided in vignette."
           },
           {
-            "text": "Meets either of the following: the patient has been on a stable dose of nintedanib or pirfenidone for at least 8 weeks prior to screening and during screening (nintedanib ≥100 mg BID, pirfenidone ≥400 mg TID, no dose changes), tolerates the treatment, and plans to continue this background therapy during the study; OR the patient has not received nintedanib or pirfenidone for at least 4 weeks prior to screening and during screening (previous treatment discontinued or treatment-naïve), and does not plan to initiate or re-initiate nintedanib or pirfenidone during the study.",
+            "text": "Either on stable dose of nintedanib (≥100 mg BID) or pirfenidone (≥400 mg TID) for ≥8 weeks prior to screening with no dose changes, or treatment-naïve or discontinued for ≥4 weeks prior to screening with no plans to initiate during study.",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on nintedanib or pirfenidone use provided."
+            "reasoning": "No information about prior or current antifibrotic therapy provided."
           },
           {
-            "text": "Interstitial lung disease of known etiology (e.g., domestic and occupational environmental exposures, connective tissue disease, drug toxicity, etc.).",
+            "text": "Interstitial lung disease of known etiology (e.g., domestic and occupational environmental exposures, connective tissue disease, drug toxicity).",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No exposure, connective tissue disease, or drug toxicity history mentioned."
+            "reasoning": "No information about etiology or potential known exposures/connective tissue disease."
           },
           {
-            "text": "Emphysema ≥ 50%, or emphysema greater than fibrosis, as determined by independent central imaging review of HRCT.",
+            "text": "Other pulmonary diseases considered clinically significant by the investigator (e.g., asthma, chronic obstructive pulmonary disease, cavitary or pleural disease).",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of emphysema on imaging in the vignette."
+            "reasoning": "No information about asthma, COPD, cavitary disease, or pleural involvement."
+          },
+          {
+            "text": "Emphysema ≥50%, or emphysema greater than fibrosis, as determined by independent central imaging review of HRCT.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Emphysema percentage not quantified in imaging report."
+          },
+          {
+            "text": "Acute exacerbation of IPF within 3 months prior to screening or during the screening period.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about acute exacerbation history or timing."
+          },
+          {
+            "text": "Sustained improvement in IPF severity within 12 months prior to screening or during the screening period, as judged by investigator based on changes in FVC, DLCO, and/or chest HRCT scan.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No longitudinal data on FVC, DLCO, or prior imaging changes provided."
+          },
+          {
+            "text": "Pre-bronchodilator forced expiratory volume in 1 second (FEV1)/FVC <0.70 during the screening period.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No FEV1/FVC ratio provided in vignette."
+          },
+          {
+            "text": "Known increase in FEV1 and/or FVC ≥12% and ≥200 mL post-bronchodilator.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No post-bronchodilator spirometry data provided."
+          },
+          {
+            "text": "History of smoking within 3 months prior to screening or during the screening period, or inability to refrain from smoking for the duration of the study.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No smoking history information provided in vignette."
           },
           {
             "text": "Acute exacerbation of IPF within 3 months prior to screening or during the screening period, as judged by the investigator.",
@@ -3762,36 +4108,68 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on recent acute exacerbation; also rests on investigator judgment."
+            "reasoning": "No information about acute exacerbation within 3 months."
           },
           {
-            "text": "Pre-bronchodilator forced expiratory volume in 1 second (FEV1)/FVC < 0.70 during the screening period.",
+            "text": "History of severe cardiovascular or cerebrovascular disease, including ventricular arrhythmia requiring clinical intervention, uncontrolled atrial arrhythmia, congestive heart failure NYHA Class ≥III, LVEF <35%, uncontrolled hypertension (systolic ≥160 mmHg or diastolic ≥100 mmHg), or acute coronary syndrome/stroke/TIA within 6 months prior to screening.",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No spirometry FEV1/FVC ratio reported."
+            "reasoning": "No cardiovascular or cerebrovascular history provided."
           },
           {
-            "text": "Current or suspected malignancy, or history of malignancy within 5 years prior to screening (excluding basal cell carcinoma of the skin, squamous cell carcinoma of the skin, superficial bladder cancer, carcinoma in situ of the cervix, or other carcinoma in situ that has received curative treatment with no recurrence).",
+            "text": "Current or suspected malignancy, or history of malignancy within 5 years prior to screening (excluding basal cell carcinoma, squamous cell carcinoma of skin, superficial bladder cancer, or carcinoma in situ with curative treatment).",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No malignancy history mentioned in the vignette."
+            "reasoning": "No malignancy history information provided."
           },
           {
-            "text": "Pregnant (female patients of childbearing potential confirmed by serum pregnancy test within 7 days prior to first dose of study drug) or lactating female.",
+            "text": "Active hepatitis B (positive HBsAg and HBV DNA >ULN) or active hepatitis C (positive HCV-Ab and HCV RNA >ULN).",
             "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Age 60 indicates postmenopausal status, not of childbearing potential or lactating."
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No hepatitis serology data provided."
+          },
+          {
+            "text": "Positive interferon-γ release assay for tuberculosis during screening (unless completed tuberculosis treatment within 6 months prior to screening with no evidence of recurrence).",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No tuberculosis screening results provided."
+          },
+          {
+            "text": "Prior treatment with a highly selective small-molecule CSF-1R inhibitor (excluding nintedanib) or anti-CSF-1/CSF-1R antibody.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No prior treatment history with CSF-1R inhibitors provided."
+          },
+          {
+            "text": "Received systemic corticosteroid therapy with prednisone >15 mg/day or equivalent within 4 weeks prior to screening or during the screening period.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about systemic corticosteroid dosing provided."
+          },
+          {
+            "text": "Pregnant or lactating female, or female of childbearing potential with positive serum pregnancy test within 7 days prior to first dose of study drug.",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Female patient but pregnancy status not documented."
           }
         ],
         "eligibility": "UNCERTAIN",
-        "rank": 2,
-        "rationale": "Progressive dyspnea, clubbing, and basal honeycombing suggest IPF, but formal ATS/ERS/JRS/ALAT diagnosis, FVC%, and DLCO% values are not yet documented."
+        "rank": 3,
+        "rationale": "CT pattern consistent with IPF; diagnosis confirmed by imaging findings; central imaging review or prior histology needed for enrollment."
       },
       {
         "nct_id": "NCT03297775",
@@ -3803,8 +4181,8 @@ window.TRACES = [
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Patient is 60 years old, which is at least 45."
+            "evidence": "Age: 60",
+            "reasoning": "Patient is 60 years old, which meets the ≥45 years criterion."
           },
           {
             "text": "Diagnosis of RA using the 2010 American College of Rheumatology (ACR) criteria",
@@ -3812,7 +4190,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about RA diagnosis or ACR criteria."
+            "reasoning": "No information provided about RA diagnosis or ACR criteria assessment in vignette."
+          },
+          {
+            "text": "Ability to give informed consent",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about patient's capacity or ability to provide informed consent."
           },
           {
             "text": "Inability to give informed consent",
@@ -3820,15 +4206,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information provided about capacity to give informed consent."
+            "reasoning": "No information about patient's capacity or inability to provide informed consent."
           },
           {
             "text": "Pregnant women",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Patient is 60 years old, well past reproductive/pregnancy age."
+            "evidence": "A 60-year-old woman",
+            "reasoning": "Patient is postmenopausal; no indication of pregnancy."
           },
           {
             "text": "History of interstitial lung disease",
@@ -3836,181 +4222,79 @@ window.TRACES = [
             "verdict": "MET",
             "effect": "FAIL",
             "evidence": "bilateral basal reticular opacities with honeycombing",
-            "reasoning": "Honeycombing and reticular opacities are hallmark findings of interstitial lung disease."
+            "reasoning": "Imaging findings are consistent with interstitial lung disease, satisfying this exclusion."
           },
           {
-            "text": "Evidence of other causes of diffuse parenchymal lung disease such as infection, drug toxicity, other autoimmune processes, etc.",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of infection, drug toxicity, or other autoimmune disease as a cause."
-          },
-          {
-            "text": "Subjects over the age of 90 years old",
-            "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Patient is 60 years old, not over 90."
-          },
-          {
-            "text": "Subjects less than 45 years old",
-            "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Patient is 60 years old, not less than 45."
-          }
-        ],
-        "eligibility": "INELIGIBLE",
-        "rank": 3,
-        "rationale": "Excluded: CT honeycombing indicates pre-existing interstitial lung disease, triggering this at-risk-for-ILD trial's exclusion criterion against established ILD."
-      },
-      {
-        "nct_id": "NCT07299695",
-        "title": "Intravenous Immunoglobulin for the Treatment of Acute Exacerbations of Idiopathic Pulmonary Fibrosis",
-        "phase": "PHASE3",
-        "criteria": [
-          {
-            "text": "Patients ≥ 18 years of age",
-            "type": "inclusion",
-            "verdict": "MET",
-            "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Patient is 60 years old, satisfying the ≥18 threshold."
-          },
-          {
-            "text": "Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria",
-            "type": "inclusion",
-            "verdict": "UNCERTAIN",
-            "effect": "REVIEW",
-            "evidence": "bilateral basal reticular opacities with honeycombing",
-            "reasoning": "Imaging shows classic UIP pattern but no stated formal IPF diagnosis or ATS/ERS confirmation."
-          },
-          {
-            "text": "Patients hospitalised with a definite or suspected AE-IPF diagnosis, as defined by the international working group criteria and as ascertained by the responsible Primary Investigator: previous or concurrent diagnosis of IPF, acute worsening or development of dyspnoea typically < 1 month duration, computed tomography with new bilateral ground-glass opacity and/or consolidation superimposed on a background pattern consistent with usual interstitial pneumonia pattern, and deterioration not fully explained by cardiac failure or fluid overload",
-            "type": "inclusion",
-            "verdict": "NOT_MET",
-            "effect": "FAIL",
-            "evidence": "progressive dyspnea",
-            "reasoning": "Presentation is chronic/progressive, no hospitalization or new GGO/consolidation described, unlike acute AE-IPF."
-          },
-          {
-            "text": "Patient able to understand and sign a written informed consent form; in case of incapacity of the patient, the written informed consent form will be signed by the patient's legally authorized representative",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette gives no information about consent capacity."
-          },
-          {
-            "text": "Patients with acute worsening due to uncontrolled heart failure or pulmonary embolism",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of heart failure or pulmonary embolism."
-          },
-          {
-            "text": "Patients with known hypersensitivity to corticosteroids, IVIG or any component of the study treatment",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of hypersensitivity to corticosteroids, IVIG, or treatment components."
-          },
-          {
-            "text": "Patients with known IgA deficiency (IgA level <7 mg/dL)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No IgA level or deficiency data provided."
-          },
-          {
-            "text": "Patients without a definite diagnosis of IPF or AE-IPF based on clinical, radiological, laboratory evaluation, and multidisciplinary discussion",
+            "text": "Evidence of other causes of diffuse parenchymal lung disease such as infection, drug toxicity, other autoimmune processes",
             "type": "exclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "bilateral basal reticular opacities with honeycombing",
-            "reasoning": "Imaging suggests IPF but no explicit statement confirming or excluding a definite MDD-based diagnosis."
+            "evidence": "Progressive dyspnea, dry cough, clubbing, bilateral basal reticular opacities with honeycombing",
+            "reasoning": "Clinical presentation suggests ILD but underlying etiology not definitively established; could be autoimmune, infectious, or other."
           },
           {
-            "text": "Patients with active malignancy or currently receiving cancer treatment, except for basal cell or squamous cell skin cancer or low-risk prostate cancer (T1 or T2a stage with PSA <10 ng/dL)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information about malignancy or cancer treatment."
-          },
-          {
-            "text": "Patients that have received treatment for >14 days within the preceding month with >20mg daily prednisone (or equivalent) or any treatment during the last month with immunosuppressants (e.g., cyclophosphamide, mycophenolate etc.), or >1 mg/kg/d for more than 7 days in the last 15 days",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No medication history (steroids/immunosuppressants) provided."
-          },
-          {
-            "text": "Patients with documented pregnancy or lactation",
+            "text": "Age over 90 years old",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "60-year-old woman",
-            "reasoning": "Age 60 makes pregnancy or lactation clinically implausible; none documented."
-          },
-          {
-            "text": "Patients who refuse to participate or decline to provide written informed consent",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information about consent refusal or willingness to participate."
+            "evidence": "Age: 60",
+            "reasoning": "Patient is 60 years old, which does not exceed 90 years."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: presentation is chronic/progressive, not an acute (<1 month) worsening with new ground-glass opacities, so AE-IPF inclusion criteria are not met."
+        "rationale": "Excluded: established interstitial lung disease; trial enrolls RA patients at risk for ILD, not those with existing ILD."
       }
     ],
     "questions": [
       {
-        "field": "Underlying diagnosis / ILD etiology",
-        "question": "Has a specific ILD subtype been confirmed (e.g., IPF vs RA-ILD) via HRCT pattern, serology, or MDD, ruling out other causes?",
-        "why": "Determines eligibility for 6 trial criteria tied to diagnosis"
+        "field": "Recent acute exacerbation or clinical changes",
+        "question": "Has the patient experienced any sudden worsening of shortness of breath, fever, or new respiratory symptoms in the past 4 weeks?",
+        "why": "Affects 5 trials; acute exacerbation is common IPF exclusion criterion."
       },
       {
-        "field": "Acute exacerbation status and cause",
-        "question": "Is the patient in an acute exacerbation now, what is the onset/timing and O2 or ventilation need, and has infection, heart failure, or PE been excluded?",
-        "why": "Affects 6 criteria; AE status changes eligibility significantly"
+        "field": "IPF diagnostic confirmation",
+        "question": "Has a pulmonologist confirmed IPF diagnosis with high-resolution CT interpretation and/or bronchoscopy with BAL findings per ATS/ERS criteria?",
+        "why": "Affects 4 trials; imaging alone insufficient for most trial enrollment."
       },
       {
-        "field": "Recent and current medication history",
-        "question": "What medications is the patient currently on or has taken in the past 4-8 weeks, including antifibrotics, steroids, immunosuppressants, and any drug hypersensitivities?",
-        "why": "Needed to screen 5 eligibility/exclusion criteria"
+        "field": "Pulmonary function tests (FVC, DLCO)",
+        "question": "What are the patient's most recent FVC% predicted and DLCO% predicted values, and when were they measured?",
+        "why": "Affects 4 trials; specific PFT thresholds determine eligibility for most IPF trials."
       }
     ],
     "reeval": {
-      "extended_record": "HRCT demonstrates definite UIP pattern with subpleural, basal-predominant reticulation, honeycombing, and traction bronchiectasis without atypical features. Serologic workup is negative: RF <10 IU/mL, anti-CCP <5 U/mL, ANA negative, anti-Scl-70 negative, anti-Jo-1 negative, confirming absence of connective tissue disease. Multidisciplinary discussion (pulmonology, radiology, pathology) on 2026-05-14 confirmed a diagnosis of idiopathic pulmonary fibrosis, excluding RA-ILD, hypersensitivity pneumonitis, and other secondary causes. The patient is not in acute exacerbation; her dyspnea has been slowly progressive over 8 months without recent acute worsening. Room air SpO2 is 93%, with exertional desaturation to 87% on 6-minute walk test; she does not require supplemental oxygen or ventilatory support at rest. Recent chest CT and clinical assessment show no new ground-glass opacities, procalcitonin is <0.05 ng/mL, BNP is 42 pg/mL, and CT pulmonary angiogram is negative, excluding infection, heart failure, and pulmonary embolism. She was started on nintedanib 150 mg twice daily six weeks ago, tolerating it with mild diarrhea; no corticosteroids, immunosuppressants, or known drug hypersensitivities.",
+      "extended_record": "Patient reports stable dyspnea on exertion with no acute exacerbations over the past 4 weeks. Denies fever, chills, or new respiratory symptoms. She remains on home oxygen at 2L/min during activity. Pulmonology evaluation completed by Dr. James Martinez on 2024-01-15 confirmed idiopathic pulmonary fibrosis diagnosis based on high-resolution CT findings of bilateral basal reticular opacities with honeycombing and usual interstitial pneumonia pattern, consistent with ATS/ERS diagnostic criteria. Bronchoscopy with bronchoalveolar lavage performed 2024-01-10 showed lymphocytic predominance (18% lymphocytes) without evidence of infection or alternative diagnosis. Pulmonary function testing from 2024-01-20 demonstrated FVC 62% predicted (1.85 L) and DLCO 48% predicted (12.1 mmol/min/kPa), consistent with moderate-stage IPF. Patient counseled on disease progression and antifibrotic therapy options.",
       "answers": [
         {
-          "question": "Has a specific ILD subtype been confirmed (e.g., IPF vs RA-ILD) via HRCT pattern, serology, or MDD, ruling out other causes?",
-          "answer": "Yes. HRCT shows a definite UIP pattern, serologies are negative for connective tissue disease markers, and a multidisciplinary discussion on 2026-05-14 confirmed IPF, excluding RA-ILD and hypersensitivity pneumonitis.",
-          "evidence_quote": "Multidisciplinary discussion (pulmonology, radiology, pathology) on 2026-05-14 confirmed a diagnosis of idiopathic pulmonary fibrosis, excluding RA-ILD, hypersensitivity pneumonitis, and other secondary causes."
+          "question": "Has the patient experienced any sudden worsening of shortness of breath, fever, or new respiratory symptoms in the past 4 weeks?",
+          "answer": "No acute exacerbations; patient reports stable dyspnea on exertion with no fever, chills, or new respiratory symptoms over the past 4 weeks.",
+          "evidence_quote": "Patient reports stable dyspnea on exertion with no acute exacerbations over the past 4 weeks. Denies fever, chills, or new respiratory symptoms."
         },
         {
-          "question": "Is the patient in an acute exacerbation now, what is the onset/timing and O2 or ventilation need, and has infection, heart failure, or PE been excluded?",
-          "answer": "No acute exacerbation; dyspnea has progressed gradually over 8 months. She does not require supplemental oxygen or ventilation at rest, though she desaturates to 87% on exertion. Infection, heart failure, and PE have been excluded via procalcitonin, BNP, and a negative CT pulmonary angiogram.",
-          "evidence_quote": "The patient is not in acute exacerbation; her dyspnea has been slowly progressive over 8 months without recent acute worsening."
+          "question": "Has a pulmonologist confirmed IPF diagnosis with high-resolution CT interpretation and/or bronchoscopy with BAL findings per ATS/ERS criteria?",
+          "answer": "Yes, pulmonologist Dr. James Martinez confirmed IPF diagnosis via high-resolution CT showing bilateral basal reticular opacities with honeycombing and usual interstitial pneumonia pattern, plus bronchoscopy with BAL demonstrating lymphocytic predominance (18%), meeting ATS/ERS criteria.",
+          "evidence_quote": "Pulmonology evaluation completed by Dr. James Martinez on 2024-01-15 confirmed idiopathic pulmonary fibrosis diagnosis based on high-resolution CT findings of bilateral basal reticular opacities with honeycombing and usual interstitial pneumonia pattern, consistent with ATS/ERS diagnostic criteria. Bronchoscopy with bronchoalveolar lavage performed 2024-01-10 showed lymphocytic predominance (18% lymphocytes)"
         },
         {
-          "question": "What medications is the patient currently on or has taken in the past 4-8 weeks, including antifibrotics, steroids, immunosuppressants, and any drug hypersensitivities?",
-          "answer": "Started on nintedanib 150 mg twice daily six weeks ago, tolerating it with mild diarrhea. No corticosteroids or immunosuppressants, and no known drug hypersensitivities.",
-          "evidence_quote": "She was started on nintedanib 150 mg twice daily six weeks ago, tolerating it with mild diarrhea; no corticosteroids, immunosuppressants, or known drug hypersensitivities."
+          "question": "What are the patient's most recent FVC% predicted and DLCO% predicted values, and when were they measured?",
+          "answer": "FVC 62% predicted (1.85 L) and DLCO 48% predicted (12.1 mmol/min/kPa), measured on 2024-01-20.",
+          "evidence_quote": "Pulmonary function testing from 2024-01-20 demonstrated FVC 62% predicted (1.85 L) and DLCO 48% predicted (12.1 mmol/min/kPa)"
         }
       ],
       "verdict_changes": [
+        {
+          "nct_id": "NCT07299695",
+          "criterion": "Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria",
+          "before": "UNCERTAIN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT05674994",
+          "criterion": "IPF or IPF (likely) diagnosis defined on 2018 international recommendations",
+          "before": "UNCERTAIN",
+          "after": "MET"
+        },
         {
           "nct_id": "NCT05674994",
           "criterion": "Definite or suspected Acute Exacerbation defined by the international working group criteria after exclusion of alternative diagnoses of acute worsening",
@@ -4021,123 +4305,33 @@ window.TRACES = [
           "nct_id": "NCT05674994",
           "criterion": "Identified etiology for acute worsening (i.e.: infectious disease)",
           "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05674994",
-          "criterion": "Known hypersensitivity to glucocorticoids or to any component of the study treatment",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05674994",
-          "criterion": "Patient requiring mechanical ventilation or already on mechanical ventilation",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05674994",
-          "criterion": "Active bacterial, viral, fungal or parasitic infection (only positive swab for SARS-CoV-2, Influenzae A, Influenzae B and Respiratory Syncytial Virus (RSV) is considered an active viral infection)",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05674994",
-          "criterion": "Treatment with glucocorticoids > 1 mg/kg/d for more than 7 days in the last 15 days",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT07447102",
-          "criterion": "Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 American Thoracic Society/European Respiratory Society/Japanese Respiratory Society/Latin American Thoracic Society (ATS/ERS/JRS/ALAT) clinical practice guideline.",
-          "before": "UNCERTAIN",
           "after": "MET"
-        },
-        {
-          "nct_id": "NCT07447102",
-          "criterion": "Meets either of the following: the patient has been on a stable dose of nintedanib or pirfenidone for at least 8 weeks prior to screening and during screening (nintedanib ≥100 mg BID, pirfenidone ≥400 mg TID, no dose changes), tolerates the treatment, and plans to continue this background therapy during the study; OR the patient has not received nintedanib or pirfenidone for at least 4 weeks prior to screening and during screening (previous treatment discontinued or treatment-naïve), and does not plan to initiate or re-initiate nintedanib or pirfenidone during the study.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT07447102",
-          "criterion": "Interstitial lung disease of known etiology (e.g., domestic and occupational environmental exposures, connective tissue disease, drug toxicity, etc.).",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT07447102",
-          "criterion": "Acute exacerbation of IPF within 3 months prior to screening or during the screening period, as judged by the investigator.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT03297775",
-          "criterion": "Diagnosis of RA using the 2010 American College of Rheumatology (ACR) criteria",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT03297775",
-          "criterion": "Evidence of other causes of diffuse parenchymal lung disease such as infection, drug toxicity, other autoimmune processes, etc.",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT07299695",
-          "criterion": "Patients with IPF diagnosis that fulfils ATS/ERS Consensus Criteria",
-          "before": "UNCERTAIN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT07299695",
-          "criterion": "Patients with acute worsening due to uncontrolled heart failure or pulmonary embolism",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT07299695",
-          "criterion": "Patients with known hypersensitivity to corticosteroids, IVIG or any component of the study treatment",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT07299695",
-          "criterion": "Patients without a definite diagnosis of IPF or AE-IPF based on clinical, radiological, laboratory evaluation, and multidisciplinary discussion",
-          "before": "UNCERTAIN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT07299695",
-          "criterion": "Patients that have received treatment for >14 days within the preceding month with >20mg daily prednisone (or equivalent) or any treatment during the last month with immunosuppressants (e.g., cyclophosphamide, mycophenolate etc.), or >1 mg/kg/d for more than 7 days in the last 15 days",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
         }
       ],
       "final_ranking": [
         {
-          "nct_id": "NCT03297775",
-          "rank": 1,
-          "eligibility": "INELIGIBLE",
-          "rationale": "Ineligible: no RA diagnosis by 2010 ACR criteria, and pre-existing interstitial lung disease (honeycombing, reticular opacities) meets the trial's own ILD exclusion."
-        },
-        {
-          "nct_id": "NCT05674994",
-          "rank": 2,
-          "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: presentation is chronic progressive fibrosis, not an acute exacerbation of IPF per international working group criteria, which this trial requires."
-        },
-        {
           "nct_id": "NCT07299695",
-          "rank": 3,
-          "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: no acute exacerbation of IPF (no new ground-glass opacities, no <1-month acute worsening); presentation is chronic progressive fibrosis, not AE-IPF."
+          "rank": 1,
+          "eligibility": "UNCERTAIN",
+          "rationale": "Clinical presentation consistent with IPF; uncertain if acute exacerbation meets IWG criteria or hospitalization status known; consent ability unconfirmed."
         },
         {
           "nct_id": "NCT07447102",
+          "rank": 2,
+          "eligibility": "UNCERTAIN",
+          "rationale": "Honeycombing on CT suggests UIP pattern consistent with IPF diagnosis; imaging pattern and consent status require confirmation."
+        },
+        {
+          "nct_id": "NCT03297775",
+          "rank": 3,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: established interstitial lung disease history. Trial requires RA diagnosis without prior ILD."
+        },
+        {
+          "nct_id": "NCT05674994",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: required background antifibrotic status (stable nintedanib/pirfenidone use or adequate washout) cannot be confirmed from the vignette, failing this inclusion criterion."
+          "rationale": "Excluded: no acute exacerbation criteria met and potential infectious etiology not ruled out; chronic IPF presentation only."
         }
       ]
     },
@@ -4148,75 +4342,231 @@ window.TRACES = [
     "patient_text": "A 19-year-old male presents with fever, sore throat, fatigue, and posterior cervical lymphadenopathy. Physical exam reveals splenomegaly, and a monospot test is positive.",
     "extraction": [
       {
-        "name": "age",
-        "value": "19",
-        "evidence_quote": "19-year-old"
+        "name": "Age",
+        "value": "19 years old",
+        "evidence_quote": "A 19-year-old male"
       },
       {
-        "name": "sex",
-        "value": "male",
-        "evidence_quote": "male"
+        "name": "Sex",
+        "value": "Male",
+        "evidence_quote": "A 19-year-old male"
       },
       {
-        "name": "symptom_fever",
-        "value": "fever",
-        "evidence_quote": "fever"
+        "name": "Fever",
+        "value": "Present",
+        "evidence_quote": "presents with fever"
       },
       {
-        "name": "symptom_sore_throat",
-        "value": "sore throat",
+        "name": "Sore throat",
+        "value": "Present",
         "evidence_quote": "sore throat"
       },
       {
-        "name": "symptom_fatigue",
-        "value": "fatigue",
+        "name": "Fatigue",
+        "value": "Present",
         "evidence_quote": "fatigue"
       },
       {
-        "name": "exam_lymphadenopathy",
-        "value": "posterior cervical lymphadenopathy",
+        "name": "Posterior cervical lymphadenopathy",
+        "value": "Present",
         "evidence_quote": "posterior cervical lymphadenopathy"
       },
       {
-        "name": "exam_splenomegaly",
-        "value": "splenomegaly",
-        "evidence_quote": "splenomegaly"
+        "name": "Splenomegaly",
+        "value": "Present",
+        "evidence_quote": "Physical exam reveals splenomegaly"
       },
       {
-        "name": "lab_monospot",
-        "value": "positive",
-        "evidence_quote": "monospot test is positive"
+        "name": "Monospot test",
+        "value": "Positive",
+        "evidence_quote": "a monospot test is positive"
       }
     ],
     "trials": [
+      {
+        "nct_id": "NCT06005246",
+        "title": "Munich ME/CFS Cohort Study",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Written consent of the patient (or legal guardian for patients aged < 18 years)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Vignette does not mention written consent status."
+          },
+          {
+            "text": "Age 0 - 25 years (including)",
+            "type": "inclusion",
+            "verdict": "MET",
+            "effect": "PASS",
+            "evidence": "A 19-year-old male",
+            "reasoning": "Patient is 19 years old, within the 0-25 year range."
+          },
+          {
+            "text": "Documented or probable acute infectious disease at the onset of ME/CFS symptoms",
+            "type": "inclusion",
+            "verdict": "MET",
+            "effect": "PASS",
+            "evidence": "fever, sore throat, fatigue, posterior cervical lymphadenopathy, splenomegaly, monospot test is positive",
+            "reasoning": "Acute infectious disease (infectious mononucleosis) documented at symptom onset."
+          },
+          {
+            "text": "Diagnosis of ME/CFS according to the IOM criteria, the CCC, the diagnostic worksheet published by P.C. Rowe et al. (2017), or the pediatric case definition published by L.A. Jason et al. (2006)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Vignette does not document ME/CFS diagnosis by specified criteria."
+          },
+          {
+            "text": "History of drug/medication abuse",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about drug/medication abuse history."
+          },
+          {
+            "text": "Major surgery within the last six months",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No mention of any surgery in the past six months."
+          },
+          {
+            "text": "Presence of organ failure",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about organ failure or functional impairment."
+          },
+          {
+            "text": "Post-stroke or craniocerebral trauma with cognitive deficits",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No history of stroke, trauma, or cognitive deficits mentioned."
+          },
+          {
+            "text": "Post-intensive care syndrome",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No mention of intensive care unit admission or PICS."
+          },
+          {
+            "text": "Diagnosis of syphilis, Lyme disease, AIDS, hepatitis B/C, multiple sclerosis, systemic lupus erythematosus, Sjörgren's syndrome, or malignancy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Vignette does not document or exclude these specific diagnoses."
+          },
+          {
+            "text": "Major depression or other severe psychiatric illness",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No psychiatric history or current mental health status documented."
+          },
+          {
+            "text": "Primary sleep disorder",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about sleep disorders or sleep patterns."
+          },
+          {
+            "text": "Severe endocrine disease (e.g., hypopituitarism, adrenal insufficiency)",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No endocrine disease or hypopituitarism documented."
+          }
+        ],
+        "eligibility": "UNCERTAIN",
+        "rank": 1,
+        "rationale": "Acute EBV infection (monospot positive) does not meet ME/CFS diagnostic criteria; ME/CFS requires prolonged post-viral course. Consent status unknown."
+      },
+      {
+        "nct_id": "NCT05778006",
+        "title": "Multi-Center Registry for ME/CFS",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "ME/CFS diagnosis (ICD-10 G93.3) based on internationally established criteria",
+            "type": "inclusion",
+            "verdict": "NOT_MET",
+            "effect": "FAIL",
+            "evidence": "Monospot test positive with fever, sore throat, lymphadenopathy, and splenomegaly consistent with infectious mononucleosis, not ME/CFS.",
+            "reasoning": "Clinical presentation indicates acute infectious mononucleosis, not ME/CFS diagnosis."
+          },
+          {
+            "text": "Informed consent by patients and/or guardian(s)",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Vignette contains no information about informed consent status or guardian availability."
+          },
+          {
+            "text": "No ME/CFS (ICD-10 G93.3)",
+            "type": "exclusion",
+            "verdict": "MET",
+            "effect": "FAIL",
+            "evidence": "Monospot test positive with acute infectious illness presentation; no ME/CFS diagnosis documented.",
+            "reasoning": "Patient does not have ME/CFS diagnosis; presents with acute infectious mononucleosis instead."
+          },
+          {
+            "text": "No informed consent",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Vignette provides no information regarding informed consent documentation or discussion."
+          }
+        ],
+        "eligibility": "INELIGIBLE",
+        "rank": 2,
+        "rationale": "Excluded: patient has acute infectious mononucleosis, not ME/CFS (ICD-10 G93.3). Trial requires established ME/CFS diagnosis."
+      },
       {
         "nct_id": "NCT00032513",
         "title": "Genetic Studies of Chronic Active Epstein-Barr Disease",
         "phase": "NA",
         "criteria": [
           {
-            "text": "Patients with known or suspected CAEBV must be 1 year of age or older",
+            "text": "Age 1 year old and above",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "19-year-old",
-            "reasoning": "Patient's age (19) satisfies the stated threshold of 1 year or older."
+            "evidence": "Age: 19 years old",
+            "reasoning": "Patient is 19 years old, which is 1 year and above."
           },
           {
-            "text": "A severe progressive illness that began as a primary EBV infection, or associated with positive EBV-specific antibody titers (IgG-VCA, EA or EBNA) not otherwise explained",
+            "text": "Severe progressive illness that began as a primary EBV infection, or associated with positive EBV-specific antibody titers (IgG-VCA, EA or EBNA) not otherwise explained",
             "type": "inclusion",
-            "verdict": "UNKNOWN",
+            "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette shows acute EBV symptoms but no mention of severe/progressive course or IgG-VCA/EA/EBNA titers."
+            "evidence": "Monospot test: Positive",
+            "reasoning": "Positive monospot suggests EBV infection, but specific antibody titers (IgG-VCA, EA, EBNA) not documented."
           },
           {
-            "text": "Evidence of major organ involvement such as lymphadenitis, hemophagocytosis, meningoencephalitis, persistent hepatitis, splenomegaly, interstitial pneumonitis, bone marrow hypoplasia, uveitis",
+            "text": "Evidence of major organ involvement such as lymphadenitis, hemophagocytosis, meningoencephalitis, persistent hepatitis, splenomegaly, interstitial pneumonitis, bone marrow hypoplasia, or uveitis",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "splenomegaly",
-            "reasoning": "Splenomegaly and cervical lymphadenopathy are listed examples of major organ involvement, both present."
+            "evidence": "Splenomegaly: Present; Posterior cervical lymphadenopathy: Present",
+            "reasoning": "Patient has splenomegaly and lymphadenitis, both listed major organ involvement criteria."
           },
           {
             "text": "Detection of elevated levels of EBV DNA, RNA or proteins in affected tissues OR elevated levels of EBV DNA in the peripheral blood",
@@ -4224,23 +4574,15 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No EBV DNA/RNA/protein levels reported in tissue or peripheral blood; monospot is a different test."
+            "reasoning": "EBV DNA, RNA, or protein levels not reported in clinical presentation."
           },
           {
-            "text": "Relatives of CAEBV patients must be 3 years of age or older",
+            "text": "Children under the age of 3 years old enrolled as samples-only participants and not be evaluated at the Clinical Center",
             "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette gives no information on whether patient is a relative of a CAEBV patient."
-          },
-          {
-            "text": "Unrelated volunteers must be 18 years of age or older",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette gives no information on whether patient is an unrelated volunteer."
+            "verdict": "NOT_MET",
+            "effect": "FAIL",
+            "evidence": "Age: 19 years old",
+            "reasoning": "Patient is 19 years old, not under 3 years old."
           },
           {
             "text": "Any other condition that, in the opinion of the investigator, would make the patient unsuitable for enrollment or could interfere with the patient participating in the study",
@@ -4248,12 +4590,28 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Rests entirely on investigator discretion/opinion; not decidable from the record."
+            "reasoning": "Requires investigator discretion and judgment about overall suitability."
+          },
+          {
+            "text": "For relatives of CAEBV patients: age 3 years and above",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "Patient relationship to CAEBV patients (relative vs unrelated) not specified."
+          },
+          {
+            "text": "For unrelated volunteers: age 18 years and above",
+            "type": "inclusion",
+            "verdict": "MET",
+            "effect": "PASS",
+            "evidence": "Age: 19 years old",
+            "reasoning": "If unrelated volunteer, patient is 18 years and above."
           }
         ],
-        "eligibility": "UNCERTAIN",
-        "rank": 1,
-        "rationale": "Acute primary EBV/mono confirmed, but no data on illness severity/progression or EBV DNA, RNA, or antibody titer levels needed to establish CAEBV."
+        "eligibility": "INELIGIBLE",
+        "rank": 3,
+        "rationale": "Excluded: trial requires either age <3 years or severe progressive EBV illness; patient has acute self-limited monospot-positive infection."
       },
       {
         "nct_id": "NCT05127980",
@@ -4266,316 +4624,113 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no mention of informed consent documentation."
+            "reasoning": "No information provided about informed consent documentation in vignette."
           },
           {
-            "text": "Confirmed primary EBV infection as confirmed by the treating clinician, defined by compatible clinical (infectious mononucleosis symptoms including but not limited to malaise, headache, fever, tonsillitis, pharyngitis, cervical lymph nodes enlargement) and laboratory picture (lymphocyte count elevation, LUC cells, reactive lymphocytes in manual differential, elevated liver enzymes; not all typically described features have to be fulfilled)",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Clinician confirmation not documented; specific lab picture (lymphocytosis, LUC cells, liver enzymes) not reported, only monospot."
-          },
-          {
-            "text": "Serology compatible with primary EBV infection (anti-EBNA IgG negative, anti-VCA IgG negative, anti-VCA IgM positive OR anti-EBNA IgG negative, anti-VCA IgG positive, anti-VCA IgM positive)",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No anti-EBNA/anti-VCA serology reported; only monospot test result given."
-          },
-          {
-            "text": "For control group: clinical picture of upper respiratory tract infection (including but not limited to tonsillitis/pharyngitis, malaise, headache, cough, rhinitis, cervical node enlargement) OR confirmed primary Cytomegalovirus (CMV) infection",
-            "type": "inclusion",
-            "verdict": "UNCERTAIN",
-            "effect": "REVIEW",
-            "evidence": "fever, sore throat, fatigue, and posterior cervical lymphadenopathy",
-            "reasoning": "Sore throat, fatigue, cervical lymphadenopathy overlap URI picture, but splenomegaly and positive monospot suggest mono, not isolated URI; CMV unknown."
-          },
-          {
-            "text": "Suspicion/diagnosis of IM as per judgement of the treating clinician (control group only)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Criterion depends on treating clinician's judgement/suspicion of IM, not decidable from vignette data alone."
-          },
-          {
-            "text": "Immunosuppression (broadly defined as primary/secondary immunodeficiency or treatment with an immunosuppressive medication including ≥ 10mg prednisone equivalent)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information provided about immunosuppression, immunodeficiency, or immunosuppressive medication use."
-          },
-          {
-            "text": "History of autoimmune disease (e.g. SLE, vasculitis etc.)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No information provided about history of autoimmune disease."
-          }
-        ],
-        "eligibility": "UNCERTAIN",
-        "rank": 2,
-        "rationale": "Classic primary EBV infection (fever, pharyngitis, cervical adenopathy, positive monospot) fits clinically, but confirmatory VCA/EBNA IgG/IgM serology not reported."
-      },
-      {
-        "nct_id": "NCT06005246",
-        "title": "Munich ME/CFS Cohort Study",
-        "phase": "NA",
-        "criteria": [
-          {
-            "text": "Written consent of the patient (or legal guardian for patients aged < 18 years).",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about consent status."
-          },
-          {
-            "text": "Age 0 - 25 (including)",
+            "text": "Confirmed primary EBV infection as confirmed by the treating clinician with compatible clinical symptoms including but not limited to malaise, headache, fever, tonsillitis, pharyngitis, cervical lymph nodes enlargement",
             "type": "inclusion",
             "verdict": "MET",
             "effect": "PASS",
-            "evidence": "19-year-old male",
-            "reasoning": "Patient is 19, which falls within the 0-25 age range."
+            "evidence": "Positive monospot test with fever, sore throat, fatigue, posterior cervical lymphadenopathy, splenomegaly",
+            "reasoning": "Monospot positive confirms EBV; clinical symptoms of fever, sore throat, cervical lymphadenopathy present."
           },
           {
-            "text": "Documented or probable acute infectious disease at the onset of ME/CFS symptoms",
-            "type": "inclusion",
-            "verdict": "UNCERTAIN",
-            "effect": "REVIEW",
-            "evidence": "monospot test is positive",
-            "reasoning": "Documented acute infection (mono) present, but no ME/CFS symptom onset timeline described."
-          },
-          {
-            "text": "Diagnosis of ME/CFS according to the IOM criteria, the CCC, the diagnostic worksheet published by P.C. Rowe et al. (2017), or the pediatric case definition published by L.A. Jason et al. (2006).",
+            "text": "Compatible laboratory picture including lymphocyte count elevation, LUC cells, reactive lymphocytes in manual differential, elevated liver enzymes",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No ME/CFS diagnosis or diagnostic criteria assessment mentioned in vignette."
+            "reasoning": "No laboratory data provided on lymphocyte count, LUC cells, differential, or liver enzymes."
           },
           {
-            "text": "Drug/medication abuse",
-            "type": "exclusion",
+            "text": "Serology compatible with primary EBV infection: anti-EBNA IgG negative, anti-VCA IgG negative, anti-VCA IgM positive OR anti-EBNA IgG negative, anti-VCA IgG positive, anti-VCA IgM positive",
+            "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about drug or medication abuse."
+            "reasoning": "Monospot positive but specific EBV serology panel (anti-EBNA, anti-VCA IgG, anti-VCA IgM) not provided."
           },
           {
-            "text": "Presence of organ failure",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about organ failure."
+            "text": "Clinical picture of upper respiratory tract infection including but not limited to tonsillitis/pharyngitis, malaise, headache, cough, rhinitis, cervical node enlargement (for control group)",
+            "type": "inclusion",
+            "verdict": "MET",
+            "effect": "PASS",
+            "evidence": "Sore throat, fever, posterior cervical lymphadenopathy, fatigue (malaise equivalent)",
+            "reasoning": "Patient has pharyngitis, malaise, fever, and cervical node enlargement meeting URTI criteria."
           },
           {
-            "text": "AIDS",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about AIDS or HIV status."
-          },
-          {
-            "text": "Multiple sclerosis",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about multiple sclerosis."
-          },
-          {
-            "text": "Systemic lupus erythematosus",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about systemic lupus erythematosus."
-          },
-          {
-            "text": "Major depression or other severe psychiatric illness",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about depression or psychiatric illness."
-          },
-          {
-            "text": "Severe endocrine disease (e.g., hypopituitarism, adrenal insufficiency)",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about endocrine disease."
-          },
-          {
-            "text": "Other conditions that might explain ME/CFS symptoms",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Requires investigator judgment on alternative explanations; not decidable from the record."
-          }
-        ],
-        "eligibility": "UNCERTAIN",
-        "rank": 3,
-        "rationale": "Acute EBV infection could be a probable infectious trigger for ME/CFS onset, but no ME/CFS diagnosis, consent status, or symptom duration established yet."
-      },
-      {
-        "nct_id": "NCT05778006",
-        "title": "Multi-Center Registry for ME/CFS",
-        "phase": "NA",
-        "criteria": [
-          {
-            "text": "ME/CFS diagnosis (ICD-10 G93.3) based on internationally established criteria",
+            "text": "Confirmed primary Cytomegalovirus (CMV) infection (for control group)",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
-            "evidence": "fever, sore throat, fatigue... splenomegaly, and a monospot test is positive",
-            "reasoning": "Acute infectious mononucleosis fully explains presentation; no chronic ME/CFS diagnosis indicated."
+            "evidence": "Monospot test positive; no mention of CMV infection",
+            "reasoning": "Clinical picture and positive monospot indicate EBV, not primary CMV infection."
           },
           {
-            "text": "Informed consent by patients and/or guardian(s)",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about consent status."
-          },
-          {
-            "text": "No ME/CFS (ICD-10 G93.3)",
+            "text": "Suspicion or diagnosis of infectious mononucleosis as per judgment of the treating clinician (control group only)",
             "type": "exclusion",
             "verdict": "MET",
             "effect": "FAIL",
-            "evidence": "fever, sore throat, fatigue... splenomegaly, and a monospot test is positive",
-            "reasoning": "Presentation is acute mononucleosis, not ME/CFS, so absence of ME/CFS is true."
+            "evidence": "Positive monospot test with compatible clinical presentation",
+            "reasoning": "Positive monospot and classic mononucleosis symptoms indicate infectious mononucleosis diagnosis."
           },
           {
-            "text": "No informed consent",
+            "text": "Immunosuppression broadly defined as primary or secondary immunodeficiency or treatment with an immunosuppressive medication including ≥ 10mg prednisone equivalent",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about consent status."
+            "reasoning": "No information provided about immunosuppression status or immunosuppressive medications."
+          },
+          {
+            "text": "History of autoimmune disease including but not limited to SLE, vasculitis",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No history of autoimmune disease mentioned in vignette."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: presentation is acute infectious mononucleosis, not an ME/CFS (ICD-10 G93.3) diagnosis, which the trial requires for inclusion and bars via exclusion."
+        "rationale": "Excluded: patient meets infectious mononucleosis diagnosis, which is an exclusion criterion. Trial is for CMV controls, not EBV cases."
       }
     ],
     "questions": [
       {
-        "field": "Comorbid/exclusionary medical conditions",
-        "question": "Does the patient have any history of autoimmune disease, immunodeficiency, organ failure, or psychiatric illness?",
-        "why": "Hard exclusion criterion across three trials; affects the most criteria overall."
+        "field": "History of chronic medical/psychiatric conditions",
+        "question": "Have you ever been diagnosed with chronic fatigue syndrome, depression, autoimmune disease, thyroid problems, or sleep disorders?",
+        "why": "Affects 5 trial criteria; common exclusionary conditions in EBV studies"
       },
       {
-        "field": "Informed consent status",
-        "question": "Has the patient (or legal guardian) signed informed consent for trial participation?",
-        "why": "Mandatory enrollment gate required by every candidate trial."
+        "field": "EBV serology and viral markers",
+        "question": "Has your doctor ordered EBV antibody tests (VCA-IgM, VCA-IgG, EBNA) or viral load testing to confirm this is a new infection?",
+        "why": "Affects 3 criteria; distinguishes primary from chronic/reactivated EBV infection"
       },
       {
-        "field": "EBV serology / viral load results",
-        "question": "What are the patient's EBV-specific antibody titers (VCA-IgM/IgG, EBNA) or quantitative EBV DNA viral load?",
-        "why": "Confirms acute EBV infection; monospot alone is insufficient for four criteria."
+        "field": "Complete blood count and liver function tests",
+        "question": "Have recent blood tests been done showing your white blood cell count, lymphocytes, and liver enzyme levels?",
+        "why": "Confirms acute EBV infection pattern; needed for baseline trial eligibility assessment"
       }
     ],
     "reeval": {
-      "extended_record": "The patient denies any history of autoimmune disease, immunodeficiency, organ failure, or psychiatric illness, and takes no chronic medications. He signed informed consent for trial participation on 2026-07-10, witnessed by the study coordinator. Serologic testing shows VCA-IgM positive at 1:320, VCA-IgG positive at 1:640, and EBNA-IgG negative, a pattern consistent with acute primary EBV infection. Quantitative EBV DNA viral load by PCR is 45,000 copies/mL in whole blood. CBC reveals lymphocytosis with 55% atypical lymphocytes and mild thrombocytopenia (platelets 130,000/uL). Liver function tests show mild transaminitis (ALT 85 U/L, AST 78 U/L). Renal function is normal (creatinine 0.9 mg/dL). Abdominal ultrasound confirms splenomegaly measuring 14 cm without evidence of rupture. Vital signs are stable with temperature 38.2°C. The patient is alert and cooperative, with no psychiatric symptoms noted on mental status exam.",
+      "extended_record": "Patient is a 19-year-old male with acute infectious mononucleosis confirmed by positive monospot test. No prior history of chronic fatigue syndrome, depression, autoimmune disease, thyroid dysfunction, or sleep disorders. EBV serology performed on 2024-01-15 demonstrates VCA-IgM 2.8 (positive), VCA-IgG 0.2 (negative), and EBNA negative, confirming acute primary EBV infection. Recent CBC from 2024-01-15 shows WBC 12,400/μL (normal), lymphocytes 68% with atypical forms noted, and platelets 185,000/μL. Comprehensive metabolic panel reveals ALT 128 U/L, AST 156 U/L, and total bilirubin 1.4 mg/dL, consistent with acute viral hepatitis. Patient reports symptom onset 5 days ago with fever peaking at 102.8°F, severe pharyngeal exudate, marked posterior cervical and axillary lymphadenopathy, and significant splenomegaly on exam. No EBV viral load testing performed as clinical presentation and serology are diagnostic. Patient counseled on supportive care, activity restriction given splenomegaly, and expected 2-4 week recovery course.",
       "answers": [
         {
-          "question": "Does the patient have any history of autoimmune disease, immunodeficiency, organ failure, or psychiatric illness?",
-          "answer": "No history of autoimmune disease, immunodeficiency, organ failure, or psychiatric illness; patient takes no chronic medications.",
-          "evidence_quote": "denies any history of autoimmune disease, immunodeficiency, organ failure, or psychiatric illness"
+          "question": "Have you ever been diagnosed with chronic fatigue syndrome, depression, autoimmune disease, thyroid problems, or sleep disorders?",
+          "answer": "No prior history of these conditions reported",
+          "evidence_quote": "No prior history of chronic fatigue syndrome, depression, autoimmune disease, thyroid dysfunction, or sleep disorders."
         },
         {
-          "question": "Has the patient (or legal guardian) signed informed consent for trial participation?",
-          "answer": "Yes — the patient signed informed consent for trial participation on 2026-07-10.",
-          "evidence_quote": "signed informed consent for trial participation on 2026-07-10"
-        },
-        {
-          "question": "What are the patient's EBV-specific antibody titers (VCA-IgM/IgG, EBNA) or quantitative EBV DNA viral load?",
-          "answer": "VCA-IgM positive (1:320), VCA-IgG positive (1:640), EBNA-IgG negative (consistent with acute primary infection); quantitative EBV DNA viral load 45,000 copies/mL by PCR.",
-          "evidence_quote": "VCA-IgM positive at 1:320, VCA-IgG positive at 1:640, and EBNA-IgG negative, a pattern consistent with acute primary EBV infection. Quantitative EBV DNA viral load by PCR is 45,000 copies/mL in whole blood."
+          "question": "Have recent blood tests been done showing your white blood cell count, lymphocytes, and liver enzyme levels?",
+          "answer": "Yes, CBC and CMP performed on 2024-01-15 show WBC 12,400/μL, lymphocytes 68% with atypical forms, ALT 128 U/L, AST 156 U/L, and total bilirubin 1.4 mg/dL",
+          "evidence_quote": "Recent CBC from 2024-01-15 shows WBC 12,400/μL (normal), lymphocytes 68% with atypical forms noted, and platelets 185,000/μL. Comprehensive metabolic panel reveals ALT 128 U/L, AST 156 U/L, and total bilirubin 1.4 mg/dL, consistent with acute viral hepatitis."
         }
       ],
       "verdict_changes": [
         {
-          "nct_id": "NCT00032513",
-          "criterion": "A severe progressive illness that began as a primary EBV infection, or associated with positive EBV-specific antibody titers (IgG-VCA, EA or EBNA) not otherwise explained",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT00032513",
-          "criterion": "Detection of elevated levels of EBV DNA, RNA or proteins in affected tissues OR elevated levels of EBV DNA in the peripheral blood",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT05127980",
-          "criterion": "Informed consent as documented by signature",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT05127980",
-          "criterion": "Confirmed primary EBV infection as confirmed by the treating clinician, defined by compatible clinical (infectious mononucleosis symptoms including but not limited to malaise, headache, fever, tonsillitis, pharyngitis, cervical lymph nodes enlargement) and laboratory picture (lymphocyte count elevation, LUC cells, reactive lymphocytes in manual differential, elevated liver enzymes; not all typically described features have to be fulfilled)",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT05127980",
-          "criterion": "Serology compatible with primary EBV infection (anti-EBNA IgG negative, anti-VCA IgG negative, anti-VCA IgM positive OR anti-EBNA IgG negative, anti-VCA IgG positive, anti-VCA IgM positive)",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT05127980",
-          "criterion": "Immunosuppression (broadly defined as primary/secondary immunodeficiency or treatment with an immunosuppressive medication including ≥ 10mg prednisone equivalent)",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT05127980",
-          "criterion": "History of autoimmune disease (e.g. SLE, vasculitis etc.)",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
           "nct_id": "NCT06005246",
-          "criterion": "Written consent of the patient (or legal guardian for patients aged < 18 years).",
-          "before": "UNKNOWN",
-          "after": "MET"
-        },
-        {
-          "nct_id": "NCT06005246",
-          "criterion": "Presence of organ failure",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06005246",
-          "criterion": "AIDS",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06005246",
-          "criterion": "Multiple sclerosis",
-          "before": "UNKNOWN",
-          "after": "NOT_MET"
-        },
-        {
-          "nct_id": "NCT06005246",
-          "criterion": "Systemic lupus erythematosus",
+          "criterion": "Diagnosis of ME/CFS according to the IOM criteria, the CCC, the diagnostic worksheet published by P.C. Rowe et al. (2017), or the pediatric case definition published by L.A. Jason et al. (2006)",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         },
@@ -4587,47 +4742,53 @@ window.TRACES = [
         },
         {
           "nct_id": "NCT06005246",
-          "criterion": "Other conditions that might explain ME/CFS symptoms",
+          "criterion": "Primary sleep disorder",
           "before": "UNKNOWN",
-          "after": "UNCERTAIN"
+          "after": "NOT_MET"
         },
         {
-          "nct_id": "NCT05778006",
-          "criterion": "Informed consent by patients and/or guardian(s)",
+          "nct_id": "NCT06005246",
+          "criterion": "Severe endocrine disease (e.g., hypopituitarism, adrenal insufficiency)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT05127980",
+          "criterion": "Compatible laboratory picture including lymphocyte count elevation, LUC cells, reactive lymphocytes in manual differential, elevated liver enzymes",
           "before": "UNKNOWN",
           "after": "MET"
         },
         {
-          "nct_id": "NCT05778006",
-          "criterion": "No informed consent",
+          "nct_id": "NCT05127980",
+          "criterion": "History of autoimmune disease including but not limited to SLE, vasculitis",
           "before": "UNKNOWN",
           "after": "NOT_MET"
         }
       ],
       "final_ranking": [
         {
-          "nct_id": "NCT05127980",
+          "nct_id": "NCT05778006",
           "rank": 1,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Monospot-positive picture fits acute EBV, but control-group URI/CMV criterion and clinician IM-exclusion judgment remain unresolved, so eligibility uncertain."
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: patient has acute infectious mononucleosis, not ME/CFS diagnosis required by trial."
+        },
+        {
+          "nct_id": "NCT05127980",
+          "rank": 2,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: confirmed infectious mononucleosis triggers exclusion criterion for control group enrollment."
         },
         {
           "nct_id": "NCT00032513",
-          "rank": 2,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Age 19 meets unrelated-volunteer threshold, but relation to a CAEBV patient and investigator-judged suitability are undetermined from the vignette."
+          "rank": 3,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Ineligible: does not meet inclusion criteria for chronic active EBV disease; presents with acute primary infection instead."
         },
         {
           "nct_id": "NCT06005246",
-          "rank": 3,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Acute EBV infection could precede ME/CFS onset, but formal ME/CFS diagnosis and drug-use history are unconfirmed, leaving status uncertain."
-        },
-        {
-          "nct_id": "NCT05778006",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: acute EBV/mono presentation has no ME/CFS (ICD-10 G93.3) diagnosis, failing this registry's core ME/CFS inclusion requirement."
+          "rationale": "Excluded: acute infectious mononucleosis does not meet ME/CFS diagnostic criteria required for enrollment."
         }
       ]
     },
@@ -4638,165 +4799,81 @@ window.TRACES = [
     "patient_text": "A 73-year-old man with sudden onset of a painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters.",
     "extraction": [
       {
-        "name": "age",
-        "value": "73 years",
-        "evidence_quote": "73-year-old"
+        "name": "Age",
+        "value": "73 years old",
+        "evidence_quote": "A 73-year-old man"
       },
       {
-        "name": "sex",
-        "value": "male",
-        "evidence_quote": "man"
+        "name": "Sex",
+        "value": "Male",
+        "evidence_quote": "A 73-year-old man"
       },
       {
-        "name": "symptom_onset",
-        "value": "sudden",
-        "evidence_quote": "sudden onset"
+        "name": "Symptom: Vision Loss",
+        "value": "Painless, curtain-like loss of vision in the right eye",
+        "evidence_quote": "sudden onset of a painless, curtain-like loss of vision in the right eye"
       },
       {
-        "name": "eye_pain",
-        "value": "painless",
-        "evidence_quote": "painless"
+        "name": "Symptom: Flashes of Light",
+        "value": "Flashes of light",
+        "evidence_quote": "preceded by flashes of light"
       },
       {
-        "name": "vision_loss_description",
-        "value": "curtain-like loss of vision",
-        "evidence_quote": "curtain-like loss of vision"
-      },
-      {
-        "name": "affected_eye",
-        "value": "right eye",
-        "evidence_quote": "right eye"
-      },
-      {
-        "name": "photopsia",
-        "value": "flashes of light",
-        "evidence_quote": "flashes of light"
-      },
-      {
-        "name": "floaters",
-        "value": "floaters",
+        "name": "Symptom: Floaters",
+        "value": "Floaters",
         "evidence_quote": "floaters"
+      },
+      {
+        "name": "Onset",
+        "value": "Sudden",
+        "evidence_quote": "sudden onset"
       }
     ],
     "trials": [
-      {
-        "nct_id": "NCT07228091",
-        "title": "Surgical Procedure Efficiency Evaluation stuDy",
-        "phase": "NA",
-        "criteria": [
-          {
-            "text": "Able to understand and sign an informed consent form (ICF) that has been approved by an ethics committee.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette contains no information about capacity to understand or sign an informed consent form."
-          },
-          {
-            "text": "Planned combined phacovitrectomy procedure at one of the selected surgical sites.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of any planned procedure, combined phacovitrectomy, or surgical site in the vignette."
-          },
-          {
-            "text": "Planned combined phacovitrectomy procedure with 25-gauge (G) vitrectomy tools.",
-            "type": "inclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of a planned procedure or vitrectomy gauge/tool size anywhere in the record."
-          },
-          {
-            "text": "Unplanned/emergency phacovitrectomy.",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Vignette describes symptoms only; nothing states whether any phacovitrectomy is planned or unplanned/emergency."
-          },
-          {
-            "text": "Pregnant.",
-            "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "A 73-year-old man",
-            "reasoning": "Patient is male, so pregnancy is not applicable/true of this patient."
-          },
-          {
-            "text": "Past history of phacovitrectomy in the planned operative eye.",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No surgical history of any kind, including prior phacovitrectomy, is mentioned in the vignette."
-          },
-          {
-            "text": "Past history of cataract in the planned operative eye.",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of past cataract history in either eye anywhere in the vignette."
-          },
-          {
-            "text": "Past history of vitrectomy in the planned operative eye.",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "No mention of prior vitrectomy history in either eye anywhere in the vignette."
-          }
-        ],
-        "eligibility": "UNCERTAIN",
-        "rank": 1,
-        "rationale": "Presentation suggests possible retinal detachment needing phacovitrectomy, but consent capacity, surgical site assignment, and planned 25G vitrectomy tools remain undocumented."
-      },
       {
         "nct_id": "NCT07346560",
         "title": "1ry Versus 2ry ILM Peeling in RD",
         "phase": "NA",
         "criteria": [
           {
-            "text": "Patients with uncomplicated rhegmatogenous retinal detcahment.",
+            "text": "Patients with uncomplicated rhegmatogenous retinal detachment",
             "type": "inclusion",
             "verdict": "UNCERTAIN",
             "effect": "REVIEW",
-            "evidence": "sudden onset of a painless, curtain-like loss of vision ... preceded by flashes of light and floaters",
-            "reasoning": "Symptoms classic for RRD but no fundus exam/diagnosis confirming detachment or its 'uncomplicated' status."
+            "evidence": "Painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters",
+            "reasoning": "Clinical presentation highly suggestive of rhegmatogenous retinal detachment, but formal diagnosis and absence of complications unconfirmed."
           },
           {
-            "text": "PVR",
+            "text": "Proliferative vitreoretinopathy (PVR)",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette gives no information about proliferative vitreoretinopathy."
+            "reasoning": "No information provided about presence or absence of proliferative vitreoretinopathy."
           },
           {
-            "text": "Recurrent RD",
+            "text": "Recurrent retinal detachment",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No history of prior retinal detachment is mentioned."
+            "reasoning": "No history of prior retinal detachment episodes mentioned in vignette."
           },
           {
-            "text": "Tractional RD",
-            "type": "exclusion",
-            "verdict": "NOT_MET",
-            "effect": "PASS",
-            "evidence": "preceded by flashes of light and floaters",
-            "reasoning": "Sudden painless curtain vision loss with photopsia/floaters indicates rhegmatogenous, not tractional, mechanism."
-          },
-          {
-            "text": "Macular hole RD",
+            "text": "Tractional retinal detachment",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of a macular hole in the vignette."
+            "reasoning": "Clinical presentation suggests rhegmatogenous type, but tractional etiology not explicitly ruled out."
+          },
+          {
+            "text": "Macular hole retinal detachment",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about macular involvement or macular hole present in clinical presentation."
           },
           {
             "text": "Scleral buckling is indicated",
@@ -4804,7 +4881,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No treatment plan or surgical indication is documented."
+            "reasoning": "Whether scleral buckling is indicated requires clinical examination and investigator judgment not provided."
           },
           {
             "text": "Macular scarring",
@@ -4812,20 +4889,20 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No fundus exam findings regarding the macula are given."
+            "reasoning": "No information about macular scarring status in vignette."
           },
           {
-            "text": "Previous PPV",
+            "text": "Previous pars plana vitrectomy (PPV)",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No prior ocular surgical history is mentioned."
+            "reasoning": "No surgical history mentioned; prior PPV status unknown."
           }
         ],
         "eligibility": "UNCERTAIN",
-        "rank": 2,
-        "rationale": "Curtain-like vision loss with flashes/floaters suggests rhegmatogenous retinal detachment, but detachment complexity, PVR status, and recurrence history are unconfirmed."
+        "rank": 1,
+        "rationale": "Clinical presentation consistent with rhegmatogenous retinal detachment (sudden painless vision loss, photopsia, floaters). PVR status and recurrence history unknown; eligibility unresolved pending confirmation."
       },
       {
         "nct_id": "NCT06587945",
@@ -4838,15 +4915,23 @@ window.TRACES = [
             "verdict": "MET",
             "effect": "PASS",
             "evidence": "73-year-old man",
-            "reasoning": "Patient is 73, satisfies age 18 or older."
+            "reasoning": "Patient is 73 years old, which meets age ≥18 requirement."
           },
           {
-            "text": "Present within 10 days of macula-off retinal detachment (based on patient-reported history of loss of central vision)",
+            "text": "Able to give informed consent and comply with all study visits and procedures",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of presentation timing or macula-off status in vignette."
+            "reasoning": "No information provided about consent capacity or ability to comply with study procedures."
+          },
+          {
+            "text": "Present within 10 days of macula-off retinal detachment based on patient-reported history of loss of central vision",
+            "type": "inclusion",
+            "verdict": "UNCERTAIN",
+            "effect": "REVIEW",
+            "evidence": "painless, curtain-like loss of vision in the right eye, preceded by flashes of light and floaters",
+            "reasoning": "Clinical presentation suggests retinal detachment with sudden onset. Unknown if macula-off, central vision involved, or within 10-day window."
           },
           {
             "text": "Present to the hospital with a visual acuity of hand motion or better in the study eye",
@@ -4854,7 +4939,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No visual acuity measurement given for the study eye."
+            "reasoning": "No current visual acuity measurement provided in the vignette."
           },
           {
             "text": "Have had previous cataract surgery in the study eye",
@@ -4862,7 +4947,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No surgical history provided for the right eye."
+            "reasoning": "No surgical history mentioned regarding cataract surgery in the right eye."
           },
           {
             "text": "Have clinical indication for standard retinal reattachment surgery by means of a pars plana vitrectomy and gas tamponade",
@@ -4870,47 +4955,47 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No exam findings or surgical indication documented."
+            "reasoning": "Diagnosis suggests retinal detachment but no statement of clinical indication for vitrectomy and gas tamponade documented."
           },
           {
-            "text": "Any known significant ocular disease in the study eye (e.g., cornea opacity) which, in the opinion of the investigator, would preclude a visual acuity of at least 6/7.5 (20/25) following successful vitrectomy or limit adequate visibility of the retina",
+            "text": "Any known significant ocular disease in the study eye (e.g., cornea opacity) which would preclude a visual acuity of at least 6/7.5 (20/25) following successful vitrectomy or limit adequate visibility of the retina",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of ocular disease such as corneal opacity."
+            "reasoning": "No information about corneal opacity, lens disease, or other significant ocular disease in study eye."
           },
           {
-            "text": "Any other ocular pathology in the study eye requiring treatment with topical ophthalmic drops or intravitreal injection",
+            "text": "History of previous ocular surgery in the study eye other than uncomplicated cataract surgery with posterior chamber intraocular lens and intact posterior capsule or refractive surgery occurring at least 3 months prior to baseline visit",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of other ocular pathology requiring drops or injections."
+            "reasoning": "Surgical history not provided; unable to confirm prior surgeries beyond what vignette states."
           },
           {
-            "text": "History of previous ocular surgery in the study eye other than uncomplicated cataract surgery with posterior chamber intraocular lens and intact posterior capsule or a refractive surgery (surgery must have occurred at least 3 months prior to the baseline visit)",
+            "text": "Participation in other clinical trials or use of any other investigational drugs or devices within 3 months prior to study participation",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No prior ocular surgery history mentioned."
+            "reasoning": "No information provided about other clinical trial participation or investigational drug/device use."
           },
           {
             "text": "Females who are pregnant or lactating and women of childbearing potential",
             "type": "exclusion",
             "verdict": "NOT_MET",
             "effect": "PASS",
-            "evidence": "73-year-old man",
-            "reasoning": "Patient is male, not a female of childbearing potential."
+            "evidence": "Male",
+            "reasoning": "Patient is male; exclusion criterion applies to females only."
           },
           {
-            "text": "Known retinopathy, known hepatic disease (or history of significant chronic liver disease), or known renal disease (patients with diabetes and no known retinopathy may be enrolled)",
+            "text": "Known hepatic disease or history of significant chronic liver disease, or known renal disease",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of retinopathy, hepatic, or renal disease."
+            "reasoning": "No history of hepatic or renal disease documented in vignette."
           },
           {
             "text": "History of uncontrolled hypertension",
@@ -4918,7 +5003,7 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No blood pressure or hypertension history given."
+            "reasoning": "No information about hypertension history or current blood pressure control."
           },
           {
             "text": "History of stroke, transient ischemic attack, or major cardiac surgery within 3 months prior to study, or current treatment for systemic infection",
@@ -4926,12 +5011,86 @@ window.TRACES = [
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No cardiac, stroke, or infection history documented."
+            "reasoning": "No history of stroke, TIA, cardiac surgery, or systemic infection mentioned."
           }
         ],
         "eligibility": "UNCERTAIN",
+        "rank": 2,
+        "rationale": "Presentation suggests macula-off retinal detachment within probable 10-day window. Visual acuity and consent capacity require clinical assessment to confirm eligibility."
+      },
+      {
+        "nct_id": "NCT07228091",
+        "title": "Surgical Procedure Efficiency Evaluation stuDy",
+        "phase": "NA",
+        "criteria": [
+          {
+            "text": "Able to understand and sign an informed consent form (ICF) that has been approved by an ethics committee",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information provided about patient's cognitive status or ability to consent."
+          },
+          {
+            "text": "Planned combined phacovitrectomy procedure at one of the selected surgical sites",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about planned surgical procedures or enrollment at trial sites."
+          },
+          {
+            "text": "Planned combined phacovitrectomy procedure with 25-gauge (G) vitrectomy tools",
+            "type": "inclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about planned surgical procedures or specific gauge vitrectomy tools."
+          },
+          {
+            "text": "Unplanned/emergency phacovitrectomy",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about whether any phacovitrectomy is planned or its emergency status."
+          },
+          {
+            "text": "Pregnant",
+            "type": "exclusion",
+            "verdict": "MET",
+            "effect": "FAIL",
+            "evidence": "A 73-year-old man",
+            "reasoning": "Patient is male; pregnancy criterion cannot apply to men."
+          },
+          {
+            "text": "Past history of phacovitrectomy in the planned operative eye",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No past surgical history provided for the right eye."
+          },
+          {
+            "text": "Past history of cataract in the planned operative eye",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about past cataract history in the right eye."
+          },
+          {
+            "text": "Past history of vitrectomy in the planned operative eye",
+            "type": "exclusion",
+            "verdict": "UNKNOWN",
+            "effect": "REVIEW",
+            "evidence": null,
+            "reasoning": "No information about past vitrectomy history in the right eye."
+          }
+        ],
+        "eligibility": "INELIGIBLE",
         "rank": 3,
-        "rationale": "Symptoms are consistent with possible macula-off retinal detachment, but onset timing, visual acuity, and prior cataract surgery status are undocumented."
+        "rationale": "Excluded: patient is male (trial requires pregnancy exclusion criterion met for females only). Additionally, planned combined phacovitrectomy with 25G tools not confirmed."
       },
       {
         "nct_id": "NCT07081945",
@@ -4939,144 +5098,251 @@ window.TRACES = [
         "phase": "NA",
         "criteria": [
           {
-            "text": "Subjects having given free and informed consent to take part in the study.",
+            "text": "Subjects having given free and informed consent to take part in the study",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "Vignette contains no information about informed consent."
+            "reasoning": "No information provided about consent status in vignette."
           },
           {
-            "text": "Subjects between 18 and 70 years old.",
+            "text": "Subjects between 18 and 70 years old",
             "type": "inclusion",
             "verdict": "NOT_MET",
             "effect": "FAIL",
             "evidence": "73-year-old man",
-            "reasoning": "Patient is 73, which is outside the stated 18-70 year range."
+            "reasoning": "Patient age 73 exceeds upper limit of 70 years."
           },
           {
-            "text": "Subjects suffering RRD (both primary and recurrent RRDs) with inferior retinal breaks between 4- and 8-o'clock within the detached area, regardless of PVR grade.",
+            "text": "Subjects suffering RRD with inferior retinal breaks between 4- and 8-o'clock within the detached area regardless of PVR grade",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No fundoscopic findings, RRD confirmation, or retinal break location given."
+            "reasoning": "Clinical presentation suggests retinal detachment, but specific location of breaks and PVR grade not documented."
           },
           {
-            "text": "Subjects suffering RRD (both primary and recurrent RRDs) requiring retinotomy inferiorly between 4- and 8-o'clock (due to severe inferior PVR or inferior retinal shortening).",
+            "text": "Subjects suffering RRD requiring retinotomy inferiorly between 4- and 8-o'clock due to severe inferior PVR or inferior retinal shortening",
             "type": "inclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of retinotomy need, PVR grade, or retinal shortening."
+            "reasoning": "Retinal detachment likely, but no details on break location, PVR severity, or retinal shortening."
           },
           {
-            "text": "Subjects with RRD with only anterior retina breaks or dialysis and meet the indications for scleral buckling surgery.",
+            "text": "Subjects with RRD with only anterior retina breaks or dialysis meeting indications for scleral buckling surgery",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No information on retinal break location or scleral buckling indication."
+            "reasoning": "Retinal detachment presumed, but anterior vs. posterior break location and surgical indication unclear."
           },
           {
-            "text": "Subjects with RRD whose retinal breaks located between the 4- and 8-o'clock positions and are not involved in the detached area.",
+            "text": "Subjects with RRD whose retinal breaks are located between the 4- and 8-o'clock positions and are not involved in the detached area",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No data on retinal break position relative to detached area."
+            "reasoning": "No specific information about retinal break location relative to clock positions and detached area involvement."
           },
           {
-            "text": "Subjects with pre-existing serious eye diseases (corneal ulcers, glaucoma, uveitis, etc).",
+            "text": "Subjects with pre-existing serious eye diseases including corneal ulcers, glaucoma, or uveitis",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of corneal ulcers, glaucoma, uveitis, or other pre-existing eye disease."
+            "reasoning": "No mention of corneal ulcers, glaucoma, or uveitis in vignette."
           },
           {
-            "text": "History of epilepsy or serious psychiatric diseases.",
+            "text": "History of epilepsy or serious psychiatric diseases",
             "type": "exclusion",
             "verdict": "UNKNOWN",
             "effect": "REVIEW",
             "evidence": null,
-            "reasoning": "No mention of epilepsy or psychiatric history in vignette."
-          },
-          {
-            "text": "Other conditions that the researcher found improper to be included into this study.",
-            "type": "exclusion",
-            "verdict": "UNKNOWN",
-            "effect": "REVIEW",
-            "evidence": null,
-            "reasoning": "Investigator discretion criterion; not decidable from the record."
+            "reasoning": "No history of epilepsy or psychiatric disease mentioned in vignette."
           }
         ],
         "eligibility": "INELIGIBLE",
         "rank": 4,
-        "rationale": "Excluded: patient is 73 years old, exceeding this trial's 18-70 age eligibility limit for inferior RRD treatment."
+        "rationale": "Excluded: patient is 73 years old; trial restricts enrollment to ages 18–70. Inferior RRD location and PVR grade also unconfirmed."
       }
     ],
     "questions": [
       {
-        "field": "retinal_detachment_characteristics",
-        "question": "Is the macula attached or detached, how long have symptoms been present, and what is the retinal break's clock-hour location and PVR grade?",
-        "why": "Determines RD subtype/location eligibility, affecting the most trials (10 criteria)."
+        "field": "Retinal detachment characteristics",
+        "question": "Has the patient had an eye exam with imaging (OCT or ultrasound) to confirm macula involvement and identify the retinal break location?",
+        "why": "Macula-on vs -off status is critical for most trial eligibility criteria."
       },
       {
-        "field": "prior_ocular_surgery",
-        "question": "Has the patient had any prior surgery in the right eye, such as cataract surgery, vitrectomy, or phacovitrectomy?",
-        "why": "Prior ocular surgery is an eligibility/exclusion factor in most candidate trials (6 criteria)."
+        "field": "Past ocular surgery history",
+        "question": "Has the patient had any prior eye surgery, including vitrectomy, cataract surgery, or LASIK/refractive procedures?",
+        "why": "Prior vitrectomy or retinal surgery dramatically affects trial eligibility and surgical planning."
       },
       {
-        "field": "planned_surgical_approach",
-        "question": "What surgical approach is planned for the right eye — standard PPV, combined phacovitrectomy, or scleral buckle — and is it elective or emergency?",
-        "why": "Trials require specific planned procedures/techniques to confirm eligibility (5 criteria)."
+        "field": "Comorbid systemic diseases",
+        "question": "Does the patient have a history of kidney disease, liver disease, heart disease, or neurological conditions?",
+        "why": "Systemic comorbidities exclude patients from many clinical trials due to safety concerns."
       }
     ],
     "reeval": {
-      "extended_record": "Right eye findings confirm a macula-off rhegmatogenous retinal detachment; the patient first noticed the curtain-like field cut 4 days ago, with preceding photopsia and floaters beginning 6 days ago, and dilated exam localizes a single horseshoe retinal break at the 10 o'clock meridian with associated epiretinal membrane changes graded as proliferative vitreoretinopathy (PVR) grade B. Ocular surgical history for the right eye is notable for uncomplicated phacoemulsification cataract surgery with posterior chamber intraocular lens implantation performed 18 months ago; the patient is pseudophakic and has never undergone vitrectomy or scleral buckle in that eye. Given the macula-off status, pseudophakic lens, and PVR grade B findings, the surgical team has scheduled a standard 25-gauge pars plana vitrectomy (PPV) with intraoperative laser retinopexy and 20% SF6 gas tamponade for the right eye, proceeding on an urgent basis within 24 hours rather than as an elective outpatient case.",
+      "extended_record": "On dilated fundoscopic examination and B-scan ultrasound performed 2 days after symptom onset, a superior nasal retinal break measuring approximately 2 mm was identified at 11 o'clock position with shallow superior detachment extending toward the macula. OCT imaging confirmed foveal involvement with central macular thickness of 450 micrometers and subfoveal fluid accumulation. The patient reported cataract extraction with posterior chamber IOL placement in the right eye 8 years ago and LASIK refractive surgery 15 years prior. He denied prior vitrectomy. Medical history includes well-controlled hypertension treated with lisinopril 10 mg daily and atorvastatin 20 mg daily for hyperlipidemia. Serum creatinine is 1.1 mg/dL with normal renal function. Liver function tests (AST, ALT, bilirubin) are within normal limits. Echocardiography from 2 years ago showed preserved ejection fraction at 55% with no valvular disease. Patient denies neurological symptoms or prior stroke. No dementia or Parkinson disease reported.",
       "answers": [
         {
-          "question": "Is the macula attached or detached, how long have symptoms been present, and what is the retinal break's clock-hour location and PVR grade?",
-          "answer": "Macula-off detachment; photopsia/floaters began 6 days ago with the curtain-like field cut noticed 4 days ago; single horseshoe break at the 10 o'clock meridian; PVR grade B.",
-          "evidence_quote": "macula-off rhegmatogenous retinal detachment; the patient first noticed the curtain-like field cut 4 days ago, with preceding photopsia and floaters beginning 6 days ago, and dilated exam localizes a single horseshoe retinal break at the 10 o'clock meridian with associated epiretinal membrane changes graded as proliferative vitreoretinopathy (PVR) grade B."
+          "question": "Has the patient had an eye exam with imaging (OCT or ultrasound) to confirm macula involvement and identify the retinal break location?",
+          "answer": "Yes. B-scan ultrasound identified a superior nasal retinal break at 11 o'clock position measuring 2 mm with shallow superior detachment. OCT confirmed foveal involvement with subfoveal fluid accumulation and central macular thickness of 450 micrometers.",
+          "evidence_quote": "B-scan ultrasound performed 2 days after symptom onset, a superior nasal retinal break measuring approximately 2 mm was identified at 11 o'clock position with shallow superior detachment extending toward the macula. OCT imaging confirmed foveal involvement with central macular thickness of 450 micrometers and subfoveal fluid accumulation."
         },
         {
-          "question": "Has the patient had any prior surgery in the right eye, such as cataract surgery, vitrectomy, or phacovitrectomy?",
-          "answer": "Yes — uncomplicated phacoemulsification cataract surgery with posterior chamber IOL implantation 18 months ago (pseudophakic); no prior vitrectomy or scleral buckle.",
-          "evidence_quote": "uncomplicated phacoemulsification cataract surgery with posterior chamber intraocular lens implantation performed 18 months ago; the patient is pseudophakic and has never undergone vitrectomy or scleral buckle in that eye."
+          "question": "Has the patient had any prior eye surgery, including vitrectomy, cataract surgery, or LASIK/refractive procedures?",
+          "answer": "Yes. The patient had cataract extraction with posterior chamber IOL placement in the right eye 8 years ago and LASIK refractive surgery 15 years prior. He denied prior vitrectomy.",
+          "evidence_quote": "The patient reported cataract extraction with posterior chamber IOL placement in the right eye 8 years ago and LASIK refractive surgery 15 years prior. He denied prior vitrectomy."
         },
         {
-          "question": "What surgical approach is planned for the right eye — standard PPV, combined phacovitrectomy, or scleral buckle — and is it elective or emergency?",
-          "answer": "Standard 25-gauge PPV with laser retinopexy and SF6 gas tamponade (not combined phacovitrectomy, since the eye is already pseudophakic), planned urgently within 24 hours rather than electively.",
-          "evidence_quote": "the surgical team has scheduled a standard 25-gauge pars plana vitrectomy (PPV) with intraoperative laser retinopexy and 20% SF6 gas tamponade for the right eye, proceeding on an urgent basis within 24 hours rather than as an elective outpatient case."
+          "question": "Does the patient have a history of kidney disease, liver disease, heart disease, or neurological conditions?",
+          "answer": "No significant systemic disease. Serum creatinine 1.1 mg/dL with normal renal function, liver function tests within normal limits, prior echocardiography showing preserved ejection fraction of 55%, and no neurological symptoms or prior stroke.",
+          "evidence_quote": "Serum creatinine is 1.1 mg/dL with normal renal function. Liver function tests (AST, ALT, bilirubin) are within normal limits. Echocardiography from 2 years ago showed preserved ejection fraction at 55% with no valvular disease. Patient denies neurological symptoms or prior stroke."
         }
       ],
-      "verdict_changes": [],
-      "final_ranking": [
+      "verdict_changes": [
         {
-          "nct_id": "NCT07228091",
-          "rank": 1,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Presentation suggests possible retinal detachment needing phacovitrectomy, but consent capacity, surgical site assignment, and planned 25G vitrectomy tools remain undocumented."
+          "nct_id": "NCT07346560",
+          "criterion": "Proliferative vitreoretinopathy (PVR)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
         },
         {
           "nct_id": "NCT07346560",
-          "rank": 2,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Curtain-like vision loss with flashes/floaters suggests rhegmatogenous retinal detachment, but detachment complexity, PVR status, and recurrence history are unconfirmed."
+          "criterion": "Recurrent retinal detachment",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07346560",
+          "criterion": "Tractional retinal detachment",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07346560",
+          "criterion": "Macular hole retinal detachment",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07346560",
+          "criterion": "Previous pars plana vitrectomy (PPV)",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
         },
         {
           "nct_id": "NCT06587945",
-          "rank": 3,
-          "eligibility": "UNCERTAIN",
-          "rationale": "Symptoms are consistent with possible macula-off retinal detachment, but onset timing, visual acuity, and prior cataract surgery status are undocumented."
+          "criterion": "Present within 10 days of macula-off retinal detachment based on patient-reported history of loss of central vision",
+          "before": "UNCERTAIN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT06587945",
+          "criterion": "Have had previous cataract surgery in the study eye",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT06587945",
+          "criterion": "History of previous ocular surgery in the study eye other than uncomplicated cataract surgery with posterior chamber intraocular lens and intact posterior capsule or refractive surgery occurring at least 3 months prior to baseline visit",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06587945",
+          "criterion": "Known hepatic disease or history of significant chronic liver disease, or known renal disease",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06587945",
+          "criterion": "History of uncontrolled hypertension",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT06587945",
+          "criterion": "History of stroke, transient ischemic attack, or major cardiac surgery within 3 months prior to study, or current treatment for systemic infection",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07228091",
+          "criterion": "Past history of phacovitrectomy in the planned operative eye",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07228091",
+          "criterion": "Past history of cataract in the planned operative eye",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT07228091",
+          "criterion": "Past history of vitrectomy in the planned operative eye",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
         },
         {
           "nct_id": "NCT07081945",
+          "criterion": "Subjects suffering RRD with inferior retinal breaks between 4- and 8-o'clock within the detached area regardless of PVR grade",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07081945",
+          "criterion": "Subjects suffering RRD requiring retinotomy inferiorly between 4- and 8-o'clock due to severe inferior PVR or inferior retinal shortening",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07081945",
+          "criterion": "Subjects with RRD with only anterior retina breaks or dialysis meeting indications for scleral buckling surgery",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        },
+        {
+          "nct_id": "NCT07081945",
+          "criterion": "Subjects with RRD whose retinal breaks are located between the 4- and 8-o'clock positions and are not involved in the detached area",
+          "before": "UNKNOWN",
+          "after": "MET"
+        },
+        {
+          "nct_id": "NCT07081945",
+          "criterion": "History of epilepsy or serious psychiatric diseases",
+          "before": "UNKNOWN",
+          "after": "NOT_MET"
+        }
+      ],
+      "final_ranking": [
+        {
+          "nct_id": "NCT07346560",
+          "rank": 1,
+          "eligibility": "UNCERTAIN",
+          "rationale": "Presentation consistent with rhegmatogenous retinal detachment; suitability for primary ILM peeling and absence of macular scarring unconfirmed."
+        },
+        {
+          "nct_id": "NCT06587945",
+          "rank": 2,
+          "eligibility": "UNCERTAIN",
+          "rationale": "Clinical picture suggests macula-off RRD amenable to vitrectomy and gas tamponade; visual acuity and surgical candidacy require confirmation."
+        },
+        {
+          "nct_id": "NCT07081945",
+          "rank": 3,
+          "eligibility": "INELIGIBLE",
+          "rationale": "Excluded: patient age 73 exceeds trial upper limit of 70 years; break location and PVR criteria not documented."
+        },
+        {
+          "nct_id": "NCT07228091",
           "rank": 4,
           "eligibility": "INELIGIBLE",
-          "rationale": "Excluded: patient is 73 years old, exceeding this trial's 18-70 age eligibility limit for inferior RRD treatment."
+          "rationale": "Excluded: prior cataract history in operative eye disqualifies from combined phacovitrectomy trial."
         }
       ]
     },

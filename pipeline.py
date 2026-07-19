@@ -13,10 +13,14 @@ Roles (each = one independent Groq LLM call, own system prompt):
   (f) recommender         trial matches            -> ranked trials + overall eligibility
 
 LLM backend is switchable via LLM_BACKEND env var:
-    claude (default) — headless `claude -p` on the local subscription (claude_client.py)
+    anthropic (default) — paid Anthropic API, Haiku via ANTHROPIC_NEW_KEY (anthropic_client.py);
+                       the accepted $0-rule exception for this project
+    ollama           — local qwen3.6:35b via Ollama (ollama_client.py); $0, no key, no quota
     groq             — Groq free tier (groq_client.py); daily quota crawls under load
+    claude           — headless `claude -p` on the local subscription (claude_client.py)
 Every call is cached to disk in cache/ (keyed per backend model), so re-running this
-script after the first successful build makes ZERO new LLM calls.
+script after the first successful build makes ZERO new LLM calls. Switching backends does
+NOT reuse another backend's answers: the model name is part of the cache key.
 
 Run:
     python3 pipeline.py
@@ -29,8 +33,10 @@ import os
 import sys
 import time
 
-_BACKEND = os.environ.get("LLM_BACKEND", "groq")
-if _BACKEND == "groq":
+_BACKEND = os.environ.get("LLM_BACKEND", "anthropic")
+if _BACKEND == "ollama":
+    from ollama_client import call_llm as call_groq, stats, DEFAULT_MODEL
+elif _BACKEND == "groq":
     from groq_client import call_groq, stats, DEFAULT_MODEL
 elif _BACKEND == "anthropic":
     from anthropic_client import call_llm as call_groq, stats, DEFAULT_MODEL
