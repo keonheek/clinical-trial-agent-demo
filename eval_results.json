@@ -1,32 +1,33 @@
 {
-  "accuracy": 0.8,
-  "n": 20,
+  "accuracy": 0.825,
+  "n": 40,
   "n_total_labels": 40,
-  "n_unmatched": 20,
+  "n_unmatched": 0,
   "confusion": {
     "MET": {
-      "MET": 1
+      "MET": 2
     },
     "NOT_MET": {
-      "NOT_MET": 2,
-      "UNKNOWN": 1
+      "NOT_MET": 4,
+      "UNKNOWN": 2
     },
     "UNCERTAIN": {
-      "UNKNOWN": 1
+      "MET": 1,
+      "UNCERTAIN": 1,
+      "UNKNOWN": 3
     },
     "UNKNOWN": {
       "MET": 1,
-      "UNCERTAIN": 1,
-      "UNKNOWN": 13
+      "UNKNOWN": 26
     }
   },
   "safety": {
-    "disqualifying_criterion_recall": 0.75,
-    "n_disqualifying_criteria": 4,
+    "disqualifying_criterion_recall": 0.6,
+    "n_disqualifying_criteria": 5,
     "wrongly_passed_rate": 0.0,
     "n_wrongly_passed": 0,
     "wrongly_passed": [],
-    "n_deferred_to_review": 1,
+    "n_deferred_to_review": 2,
     "missed_disqualifying_criteria": [
       {
         "patient_id": "S002",
@@ -36,10 +37,19 @@
         "expected": "NOT_MET",
         "predicted": "UNKNOWN",
         "predicted_effect": "REVIEW"
+      },
+      {
+        "patient_id": "S001",
+        "nct_id": "NCT06113419",
+        "criterion_text": "Recovery of pancreatitis by tolerance of oral intake (defined as 24 hours of food consumption of any consistency without emetic episodes and pain defined as 4/10 on the visual analogue score of pain)",
+        "type": "inclusion",
+        "expected": "NOT_MET",
+        "predicted": "UNKNOWN",
+        "predicted_effect": "REVIEW"
       }
     ],
-    "false_certainty_rate": 0.0667,
-    "n_record_silent_criteria": 15,
+    "false_certainty_rate": 0.037,
+    "n_record_silent_criteria": 27,
     "false_certainty_cases": [
       {
         "patient_id": "S009",
@@ -50,14 +60,6 @@
     ]
   },
   "errors": [
-    {
-      "patient_id": "S008",
-      "nct_id": "NCT07447102",
-      "criterion_text": "Meets either of the following: the patient has been on a stable dose of nintedanib or pirfenidone for at least 8 weeks prior to screening and during screening (nintedanib ≥100 mg BID, pirfenidone ≥400 mg TID, no dose changes), tolerates the treatment, and plans to continue this background therapy during the study; OR the patient has not received nintedanib or pirfenidone for at least 4 weeks prior to screening and during screening (previous treatment discontinued or treatment-naïve), and does not plan to initiate or re-initiate nintedanib or pirfenidone during the study.",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
     {
       "patient_id": "S002",
       "nct_id": "NCT05678374",
@@ -70,8 +72,7 @@
       "nct_id": "NCT05127980",
       "criterion_text": "Serology compatible with primary EBV infection (anti-EBNA IgG negative, anti-VCA IgG negative, anti-VCA IgM positive OR anti-EBNA IgG negative, anti-VCA IgG positive, anti-VCA IgM positive)",
       "expected": "UNCERTAIN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
+      "predicted": "UNKNOWN"
     },
     {
       "patient_id": "S009",
@@ -81,100 +82,18 @@
       "predicted": "MET"
     },
     {
-      "patient_id": "S004",
-      "nct_id": "NCT04916990",
-      "criterion_text": "Resides in a rural county served by the specified hospital sites with Rural-Urban Continuum Code (RUCC) 4-9",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
       "patient_id": "S002",
       "nct_id": "NCT05678374",
       "criterion_text": "If patient: Graves' disease with positive TSH-receptor antibodies and thyroid hormones above the upper reference limit at diagnosis",
       "expected": "UNCERTAIN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S010",
-      "nct_id": "NCT07346560",
-      "criterion_text": "Patients with uncomplicated rhegmatogenous retinal detcahment.",
-      "expected": "UNCERTAIN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
+      "predicted": "UNKNOWN"
     },
     {
       "patient_id": "S009",
       "nct_id": "NCT00032513",
       "criterion_text": "Patients with known or suspected CAEBV must be 1 year of age or older",
       "expected": "UNCERTAIN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S003",
-      "nct_id": "NCT06162546",
-      "criterion_text": "Secondary",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S008",
-      "nct_id": "NCT03297775",
-      "criterion_text": "Subjects over the age of 90 years old",
-      "expected": "NOT_MET",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S008",
-      "nct_id": "NCT07447102",
-      "criterion_text": "Diffusing capacity of the lung for carbon monoxide percent predicted (DLCO% predicted), corrected for hemoglobin (Hb), ≥30% and ≤90% during the screening period.",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S010",
-      "nct_id": "NCT07228091",
-      "criterion_text": "Able to understand and sign an informed consent form (ICF) that has been approved by an ethics committee.",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S004",
-      "nct_id": "NCT06493370",
-      "criterion_text": "Uncontrolled intercurrent illness, including but not limited to, ongoing or active infection, symptomatic congestive heart failure, uncontrolled hypertension, unstable angina pectoris, cardiac arrhythmia, interstitial lung disease, serious chronic gastrointestinal conditions associated with diarrhea, as determined per treating physician",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S006",
-      "nct_id": "NCT05406037",
-      "criterion_text": "Age: Children and adults from 3 to 64 years old (18 to 64 years old for controls)",
-      "expected": "MET",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S010",
-      "nct_id": "NCT07228091",
-      "criterion_text": "Past history of phacovitrectomy in the planned operative eye.",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S006",
-      "nct_id": "NCT06440915",
-      "criterion_text": "The subject is known to be allergic to any azole antifungal therapy or other ingredients contained in the study drug",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
+      "predicted": "MET"
     },
     {
       "patient_id": "S001",
@@ -184,60 +103,12 @@
       "predicted": "UNKNOWN"
     },
     {
-      "patient_id": "S005",
-      "nct_id": "NCT06788977",
-      "criterion_text": "Patients willing and able to provide simple consent for registry participation.",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
       "patient_id": "S001",
       "nct_id": "NCT06113419",
       "criterion_text": "Recovery of pancreatitis by tolerance of oral intake (defined as 24 hours of food consumption of any consistency without emetic episodes and pain defined as 4/10 on the visual analogue score of pain)",
       "expected": "NOT_MET",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S005",
-      "nct_id": "NCT06788977",
-      "criterion_text": "Able to provide proof of active intrauterine pregnancy and estimated due date, via online document upload, using any of: ultrasound report of current pregnancy, beta hcg lab report, a signed provider's medical documentation confirming intrauterine pregnancy with fetal heart sounds and estimated due date, or a signed provider's note on a prescription sheet or physician letterhead confirming intrauterine pregnancy and estimated due date.",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S010",
-      "nct_id": "NCT07228091",
-      "criterion_text": "Pregnant.",
-      "expected": "NOT_MET",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S007",
-      "nct_id": "NCT05535361",
-      "criterion_text": "Known immunocompromised status including, but not limited to, individuals who have undergone organ transplantation, chemotherapy or radiotherapy within the past 12 months, who have clinically significant leukopenia, who are positive for the human immunodeficiency virus (HIV) or whose immune status makes the subject a poor candidate for clinical trial participation in the opinion of the Investigator.",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
-    },
-    {
-      "patient_id": "S002",
-      "nct_id": "NCT05461820",
-      "criterion_text": "Patients with heart failure",
-      "expected": "UNKNOWN",
-      "predicted": "UNCERTAIN"
-    },
-    {
-      "patient_id": "S003",
-      "nct_id": "NCT06607991",
-      "criterion_text": "Meets the 2021 KDIGO definition of steroid-resistant nephrotic syndrome (SRNS), and either: has received an adequate dose of calcineurin inhibitors (CNIs) for more than 6 months without achieving at least partial remission; or has contraindications to CNI use (e.g., eGFR < 60 mL/min/1.73 m², prominent tubular injury on biopsy, elevated urinary markers > 3x ULN, abnormal glucose tolerance, severe uncontrolled hypertension, significant drug interactions, or known CNI allergy); or has shown inadequate response or relapse after treatment with at least two immunosuppressive agents (including a CNI and at least one other conventional or biologic agent), defined as failure to achieve complete remission after 12 months of therapy or relapse following initial response",
-      "expected": "UNKNOWN",
-      "predicted": null,
-      "note": "no matching row found in traces.json (criterion text drift?)"
+      "predicted": "UNKNOWN"
     }
   ],
-  "analysis": "Overall accuracy is 80% (16/20 labeled criteria matched exactly, n=40 total labels, 20 unmatched due to criterion-text drift). The weakest verdict class is UNCERTAIN at 0% recall, meaning the matcher most often mislabels this ground-truth category as something else. 1 case(s) where the true label is UNKNOWN (vignette genuinely silent) were instead called MET or NOT_MET -- the matcher's most consequential failure mode, since it manufactures certainty the source data doesn't support. The remaining 3 error(s) are boundary calls between UNCERTAIN and a definite verdict, which is a lower-stakes miss than the UNKNOWN-to-definite case. Labels were hand-written from criterion text + vignette alone, blind to the matcher's own output, so this number reflects genuine matcher accuracy rather than label leakage."
+  "analysis": "Overall accuracy is 82% (33/40 labeled criteria matched exactly, n=40 total labels, 0 unmatched due to criterion-text drift). The weakest verdict class is UNCERTAIN at 20% recall, meaning the matcher most often mislabels this ground-truth category as something else. 1 case(s) where the true label is UNKNOWN (vignette genuinely silent) were instead called MET or NOT_MET -- the matcher's most consequential failure mode, since it manufactures certainty the source data doesn't support. The remaining 6 error(s) are boundary calls between UNCERTAIN and a definite verdict, which is a lower-stakes miss than the UNKNOWN-to-definite case. Labels were hand-written from criterion text + vignette alone, blind to the matcher's own output, so this number reflects genuine matcher accuracy rather than label leakage."
 }
