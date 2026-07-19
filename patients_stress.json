@@ -1,0 +1,202 @@
+[
+  {
+    "patient_id": "T001",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). ECOG performance status is 0, assessed 2 days ago. Recent screening labs (7 days ago) show adequate renal and hepatic function (creatinine 0.9 mg/dL, ALT 22 U/L, AST 20 U/L), and HbA1c is 5.6%. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. Pathology report from the TURBT specimen confirms pure urothelial carcinoma with no small cell or neuroendocrine component.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T001-a",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). Recent screening labs (7 days ago) show adequate renal and hepatic function (creatinine 0.9 mg/dL, ALT 22 U/L, AST 20 U/L), and HbA1c is 5.6%. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. Pathology report from the TURBT specimen confirms pure urothelial carcinoma with no small cell or neuroendocrine component.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T001-b",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). ECOG performance status is 0, assessed 2 days ago. Screening labs from 8 months ago showed adequate renal and hepatic function (creatinine 0.9 mg/dL, ALT 22 U/L, AST 20 U/L), and HbA1c was 5.6% at that time. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. Pathology report from the TURBT specimen confirms pure urothelial carcinoma with no small cell or neuroendocrine component.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T001-c",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). ECOG performance status is 0, assessed 2 days ago. Recent screening labs (7 days ago) show adequate renal and hepatic function (creatinine 0.9 mg/dL, ALT 22 U/L, AST 20 U/L), and HbA1c is 7.9%, symptom status not documented. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. Pathology report from the TURBT specimen confirms pure urothelial carcinoma with no small cell or neuroendocrine component.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T001-d",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). ECOG performance status is 0, assessed 2 days ago. Organ function is reported as adequate by the treating team, with no specific lab values on file. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. Pathology report from the TURBT specimen confirms pure urothelial carcinoma with no small cell or neuroendocrine component.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T001-e",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). ECOG performance status is 0, assessed 2 days ago. Recent screening labs (7 days ago) show adequate renal and hepatic function (creatinine 0.9 mg/dL, ALT 22 U/L, AST 20 U/L), and HbA1c is 5.6%. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. The original TURBT pathology report describes pure urothelial carcinoma with no small cell component, but a subsequent pathology re-review flags focal small cell differentiation as a possibility.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T001-f",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). ECOG performance status is 0, assessed 2 days ago. Recent screening labs (7 days ago) show adequate renal and hepatic function (creatinine 0.9 mg/dL, ALT 22 U/L, AST 20 U/L), and HbA1c is 5.6%. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. Pathology report from the TURBT specimen confirms pure urothelial carcinoma with no small cell or neuroendocrine component. He received a killed influenza vaccine 10 days ago and started prednisone 15 mg/day 6 days ago for a presumed inflammatory reaction at the biopsy site.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T001-g",
+    "text": "A 68-year-old man was diagnosed with muscle-invasive bladder cancer (predominantly urothelial histology) via TURBT performed 3 weeks ago. Chest CT and CTU showed no evidence of metastasis (N0M0). The patient reports being fully active for most tasks but avoids physically strenuous activity; no formal ECOG score was recorded. Recent screening labs (7 days ago) show adequate renal and hepatic function (creatinine 0.9 mg/dL, ALT 22 U/L, AST 20 U/L), and HbA1c is 5.6%. No prior malignancy. HIV, HBV, and HCV negative. No history of autoimmune disease. No stroke or myocardial infarction in the past 6 months. Normal bladder function, no catheterization required. No prior pelvic radiation. No prior anti-PD-1/PD-L1 or ADC therapy. No recent live vaccine. Pathology report from the TURBT specimen confirms pure urothelial carcinoma with no small cell or neuroendocrine component.",
+    "condition": "Muscle-invasive bladder cancer (urothelial carcinoma)"
+  },
+  {
+    "patient_id": "T002",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, clinically unchanged over the past 3 months with no new symptoms or hospitalizations (chronically stable HFrEF). Renal function testing 5 days ago showed eGFR 68 mL/min/1.73m^2. NYHA class III. A cardiopulmonary exercise risk assessment 1 week ago classified her as low risk. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm with no ectopy. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T002-a",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, clinically unchanged over the past 3 months with no new symptoms or hospitalizations (chronically stable HFrEF). Renal function testing 5 days ago showed eGFR 68 mL/min/1.73m^2. NYHA class III. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm with no ectopy. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T002-b",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, clinically unchanged over the past 3 months with no new symptoms or hospitalizations (chronically stable HFrEF). Renal function testing 8 months ago showed eGFR 68 mL/min/1.73m^2; no repeat testing since. NYHA class III. A cardiopulmonary exercise risk assessment 1 week ago classified her as low risk. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm with no ectopy. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T002-c",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, clinically unchanged over the past 3 months with no new symptoms or hospitalizations (chronically stable HFrEF). Renal function testing 5 days ago showed eGFR 89.4 mL/min/1.73m^2. NYHA class III. A cardiopulmonary exercise risk assessment 1 week ago classified her as low risk. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm with no ectopy. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T002-d",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, reportedly has not gotten noticeably worse recently, per the patient's own account. Renal function testing 5 days ago showed eGFR 68 mL/min/1.73m^2. NYHA class III. A cardiopulmonary exercise risk assessment 1 week ago classified her as low risk. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm with no ectopy. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T002-e",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, clinically unchanged over the past 3 months with no new symptoms or hospitalizations (chronically stable HFrEF). Renal function testing 5 days ago showed eGFR 68 mL/min/1.73m^2. NYHA class III. A cardiopulmonary exercise risk assessment 1 week ago classified her as low risk. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm, but a 24-hour Holter monitor from the same week flagged frequent premature ventricular contractions of uncertain significance. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T002-f",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, clinically unchanged over the past 3 months with no new symptoms or hospitalizations (chronically stable HFrEF). Renal function testing 5 days ago showed eGFR 68 mL/min/1.73m^2. NYHA class III. A cardiopulmonary exercise risk assessment 1 week ago classified her as low risk. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm with no ectopy. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation. A contrast-enhanced cardiac MRI is scheduled next week to further characterize her cardiomyopathy.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T002-g",
+    "text": "A 55-year-old woman has had heart failure with reduced ejection fraction for 8 months, clinically unchanged over the past 3 months with no new symptoms or hospitalizations (chronically stable HFrEF). Renal function testing 5 days ago showed eGFR 68 mL/min/1.73m^2. She reports dyspnea climbing two flights of stairs but manages one flight without difficulty; no formal NYHA class was assigned. A cardiopulmonary exercise risk assessment 1 week ago classified her as low risk. She is 55 years old. Blood pressure is 132/84 on current therapy. A resting ECG 3 days ago showed normal sinus rhythm with no ectopy. Only mild mitral regurgitation on echocardiogram, no significant valvular disease. No history of DVT or PE. No history of syncope. Hemoglobin is 12.1 g/dL. Thyroid function tests are within normal limits. No severe pulmonary disease, no psychiatric illness, and no musculoskeletal disease limiting rehabilitation.",
+    "condition": "Heart failure with reduced ejection fraction (HFrEF)"
+  },
+  {
+    "patient_id": "T003",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 2 years ago based on positive CSF amyloid biomarkers. She currently has mild cognitive impairment, with a Clinical Dementia Rating (CDR) of 0.5 documented at her last visit 1 month ago. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 128/82 after 10 minutes of rest at screening. eGFR is 72 mL/min/1.73m^2. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T003-a",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 2 years ago based on positive CSF amyloid biomarkers. She currently has mild cognitive impairment, with a Clinical Dementia Rating (CDR) of 0.5 documented at her last visit 1 month ago. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 128/82 after 10 minutes of rest at screening. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T003-b",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 6 years and 11 months ago based on positive CSF amyloid biomarkers at that time. She currently has mild cognitive impairment, with a Clinical Dementia Rating (CDR) of 0.5 documented at her last visit 1 month ago. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 128/82 after 10 minutes of rest at screening. eGFR is 72 mL/min/1.73m^2. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T003-c",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 2 years ago based on positive CSF amyloid biomarkers. She currently has mild cognitive impairment, with a Clinical Dementia Rating (CDR) of 0.5 documented at her last visit 1 month ago. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 159/99 after 10 minutes of rest at screening. eGFR is 72 mL/min/1.73m^2. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T003-d",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 2 years ago based on positive CSF amyloid biomarkers. She and her family feel her memory has been mildly worse lately, though no formal cognitive assessment has been recorded. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 128/82 after 10 minutes of rest at screening. eGFR is 72 mL/min/1.73m^2. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T003-e",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 2 years ago based on positive CSF amyloid biomarkers; a follow-up amyloid PET scan performed last month, however, read as negative. She currently has mild cognitive impairment, with a Clinical Dementia Rating (CDR) of 0.5 documented at her last visit 1 month ago. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 128/82 after 10 minutes of rest at screening. eGFR is 72 mL/min/1.73m^2. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T003-f",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 2 years ago based on positive CSF amyloid biomarkers. She currently has mild cognitive impairment, with a Clinical Dementia Rating (CDR) of 0.5 documented at her last visit 1 month ago. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 128/82 after 10 minutes of rest at screening. eGFR is 72 mL/min/1.73m^2. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months. She started warfarin 10 days ago for newly diagnosed atrial fibrillation, and the study protocol requires a lumbar puncture at baseline.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T003-g",
+    "text": "A 72-year-old woman was diagnosed with Alzheimer's disease 2 years ago based on positive CSF amyloid biomarkers. She currently has mild cognitive impairment, though her most recent visit note describes frequent word-finding difficulty with otherwise largely independent daily functioning, without a formal CDR score. ALT and AST are within normal range. Total bilirubin is 0.8 mg/dL. HIV, HBV, HCV negative. Blood pressure was 128/82 after 10 minutes of rest at screening. eGFR is 72 mL/min/1.73m^2. A recent ECG showed no clinically significant abnormalities. No psychiatric history, no significant risk of suicide. No history of bleeding diathesis or coagulopathy. No brain or spinal disease affecting IT injection or LP procedures. No seizures in the past 6 months.",
+    "condition": "Alzheimer's disease (mild cognitive impairment)"
+  },
+  {
+    "patient_id": "T004",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. Her most recent DAS28, calculated 2 weeks ago, is 4.3. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. She is currently on prednisolone 5 mg/day, unchanged for the past 6 weeks. She is enrolled in the national social insurance system. She has no rheumatic autoimmune disease other than RA. She was treated for latent tuberculosis 5 years ago and completed the full course. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T004-a",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. She is currently on prednisolone 5 mg/day, unchanged for the past 6 weeks. She is enrolled in the national social insurance system. She has no rheumatic autoimmune disease other than RA. She was treated for latent tuberculosis 5 years ago and completed the full course. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T004-b",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. Her DAS28 was 4.3 when last calculated about a year ago; it has not been re-measured since. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. She is currently on prednisolone 5 mg/day, unchanged for the past 6 weeks. She is enrolled in the national social insurance system. She has no rheumatic autoimmune disease other than RA. She was treated for latent tuberculosis 5 years ago and completed the full course. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T004-c",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. Her most recent DAS28, calculated 2 weeks ago, is 5.05. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. She is currently on prednisolone 5 mg/day, unchanged for the past 6 weeks. She is enrolled in the national social insurance system. She has no rheumatic autoimmune disease other than RA. She was treated for latent tuberculosis 5 years ago and completed the full course. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T004-d",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. Her most recent DAS28, calculated 2 weeks ago, is 4.3. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. She is currently on prednisolone 5 mg/day, unchanged for the past 6 weeks. She is enrolled in the national social insurance system. She reports no recent infection symptoms that she is aware of. She was treated for latent tuberculosis 5 years ago and completed the full course. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T004-e",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. Her most recent DAS28, calculated 2 weeks ago, is 4.3. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. She is currently on prednisolone 5 mg/day, unchanged for the past 6 weeks. She is enrolled in the national social insurance system. She has no rheumatic autoimmune disease other than RA. An interferon-gamma release assay (IGRA) drawn last month was negative, but a chest X-ray from the same visit shows calcified nodules suggestive of prior tuberculosis exposure. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T004-f",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. Her most recent DAS28, calculated 2 weeks ago, is 4.3. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. Her prednisolone dose was increased to 10 mg/day two weeks ago for a brief symptom flare, then reduced back to 5 mg/day one week later. She is enrolled in the national social insurance system. She has no rheumatic autoimmune disease other than RA. She was treated for latent tuberculosis 5 years ago and completed the full course. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T004-g",
+    "text": "A 61-year-old woman was diagnosed with rheumatoid arthritis 8 years ago per EULAR/ACR 2010 classification criteria. Her most recent DAS28, calculated 2 weeks ago, is 4.3. She has been on Rituximab maintenance therapy for 3 years, having completed the initial cycle of 2 infusions. Her last Rituximab infusion was 11 months ago. She is currently on prednisolone 5 mg/day, unchanged for the past 6 weeks. She is enrolled in the national social insurance system. She has no rheumatic autoimmune disease other than RA. She was treated for latent tuberculosis 5 years ago and completed the full course. HBV and HCV are negative. Hemoglobin is 13.2 g/dL, neutrophils 2.1 G/L, IgM 0.6 g/L, IgG 7.2 g/L. Her rheumatologist's note describes her as feeling much better overall, though she still has occasional morning stiffness lasting about 10 minutes.",
+    "condition": "Rheumatoid arthritis"
+  },
+  {
+    "patient_id": "T005",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, with a classic presentation of night blindness and progressive peripheral visual field loss confirmed on formal visual field testing. Genetic panel testing performed 3 months ago confirmed biallelic pathogenic variants in the CNGA1 gene, with no other variants of note. Ellipsoid zone length in the study eye, measured on OCT 1 week ago, is 3200 um. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  },
+  {
+    "patient_id": "T005-a",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, with a classic presentation of night blindness and progressive peripheral visual field loss confirmed on formal visual field testing. Genetic panel testing performed 3 months ago confirmed biallelic pathogenic variants in the CNGA1 gene, with no other variants of note. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  },
+  {
+    "patient_id": "T005-b",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, with a classic presentation of night blindness and progressive peripheral visual field loss confirmed on formal visual field testing. Genetic panel testing performed 4 years ago, at the time of initial diagnosis, confirmed biallelic pathogenic variants in the CNGA1 gene; no repeat testing has been done since. Ellipsoid zone length in the study eye, measured on OCT 1 week ago, is 3200 um. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  },
+  {
+    "patient_id": "T005-c",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, with a classic presentation of night blindness and progressive peripheral visual field loss confirmed on formal visual field testing. Genetic panel testing performed 3 months ago confirmed biallelic pathogenic variants in the CNGA1 gene, with no other variants of note. Ellipsoid zone length in the study eye, measured on OCT 1 week ago, is 2980 um. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  },
+  {
+    "patient_id": "T005-d",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, with a classic presentation of night blindness and progressive peripheral visual field loss confirmed on formal visual field testing. Genetic testing performed 3 months ago identified an abnormal finding, though the specific gene and zygosity are not documented in the available records. Ellipsoid zone length in the study eye, measured on OCT 1 week ago, is 3200 um. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  },
+  {
+    "patient_id": "T005-e",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, with a classic presentation of night blindness and progressive peripheral visual field loss confirmed on formal visual field testing. Genetic panel testing performed 3 months ago confirmed biallelic pathogenic variants in the CNGA1 gene, ; a repeat panel at a different laboratory also flagged a possible variant in the RPGR gene, of uncertain clinical significance. Ellipsoid zone length in the study eye, measured on OCT 1 week ago, is 3200 um. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  },
+  {
+    "patient_id": "T005-f",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, with a classic presentation of night blindness and progressive peripheral visual field loss confirmed on formal visual field testing. Genetic panel testing performed 3 months ago confirmed biallelic pathogenic variants in the CNGA1 gene, with no other variants of note. Ellipsoid zone length in the study eye, measured on OCT 1 week ago, is 3200 um. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders. He started an over-the-counter lubricating eye drop for mild diabetic retinopathy management 3 weeks ago.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  },
+  {
+    "patient_id": "T005-g",
+    "text": "A 34-year-old man was clinically diagnosed with retinitis pigmentosa 5 years ago, though the presenting features were somewhat atypical and the diagnosing ophthalmologist's note describes the picture as \"possible but not classic for RP\". Genetic panel testing performed 3 months ago confirmed biallelic pathogenic variants in the CNGA1 gene, with no other variants of note. Ellipsoid zone length in the study eye, measured on OCT 1 week ago, is 3200 um. No ocular surgery or subretinal implant in the past 6 months. HbA1c is 6.1%. No history of herpes simplex keratitis. No prior AAV gene therapy. No bleeding or coagulation disorders.",
+    "condition": "Retinitis pigmentosa (CNGA1-related)"
+  }
+]
