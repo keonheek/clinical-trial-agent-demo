@@ -71,6 +71,20 @@ ACTION_TABLE = {
 
 VALID_UNCERTAINTY_TYPES = set(UNCERTAINTY_TYPES)
 
+# Actions that mean "do NOT turn this into a clarifying question":
+#   IGNORE -- the criterion does not apply to this patient (NOT_APPLICABLE)
+#   STOP   -- the patient is already definitively excluded (DEFINITE_EXCLUSION); asking is moot
+# This is the enforcement point for §4's thesis ("모든 불확실성을 질문으로 해결하려 하지 않고...
+# 행동을 선택"): the action field must GATE gap-detection, not merely annotate it.
+NON_QUESTION_ACTIONS = {"IGNORE", "STOP"}
+
+
+def is_question_worthy(action):
+    """An undecided criterion should become a clarifying question only if its policy
+    action is something a question could advance. IGNORE/STOP are resolved without asking.
+    A missing action (older traces) is treated as question-worthy, so nothing is lost."""
+    return action not in NON_QUESTION_ACTIONS
+
 
 def normalize_uncertainty_type(utype):
     """Coerce a model-returned string to a valid taxonomy token, or None."""
@@ -252,6 +266,16 @@ def _selftest():
     # DEFINITE_EXCLUSION halts, NOT_APPLICABLE ignores -- these must not become questions
     check(action_for("DEFINITE_EXCLUSION") == "STOP", "definite exclusion must STOP")
     check(action_for("NOT_APPLICABLE") == "IGNORE", "not-applicable must IGNORE")
+
+    # the gate: IGNORE/STOP actions are not question-worthy; everything else is,
+    # and a missing action (older traces) stays question-worthy so nothing is lost
+    check(is_question_worthy("ASK") and is_question_worthy("ESCALATE"),
+          "ASK/ESCALATE must be question-worthy")
+    check(not is_question_worthy("IGNORE") and not is_question_worthy("STOP"),
+          "IGNORE/STOP must NOT be question-worthy")
+    check(is_question_worthy(None), "missing action must stay question-worthy (back-compat)")
+    check(not is_question_worthy(action_for("NOT_APPLICABLE")),
+          "a NOT_APPLICABLE criterion's action must gate it out of questions")
 
     # ---- question-priority arithmetic ----
     trials = [

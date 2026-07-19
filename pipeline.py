@@ -37,6 +37,7 @@ from action_policy import (
     normalize_uncertainty_type,
     action_for,
     enrich_questions,
+    is_question_worthy,
     UNCERTAINTY_TYPES,
 )
 
@@ -290,7 +291,10 @@ Return at most 6 gaps, ordered by how many criteria/trials they affect (most imp
 def detect_gaps(patient, all_criteria_with_trial):
     unknown_lines = []
     for item in all_criteria_with_trial:
-        if item["verdict"] in ("UNKNOWN", "UNCERTAIN"):
+        # Only undecided criteria whose policy action a question could actually advance.
+        # IGNORE (not applicable) / STOP (already excluded) are resolved without asking, so
+        # the action field gates the question pipeline here -- the differentiator in action.
+        if item["verdict"] in ("UNKNOWN", "UNCERTAIN") and is_question_worthy(item.get("action")):
             unknown_lines.append(f"- [{item['nct_id']}] ({item['verdict']}) {item['text']}")
     if not unknown_lines:
         return []
@@ -685,7 +689,8 @@ def run_patient(patient, trials_raw_for_patient):
         matched = match_trial(patient, fields, criteria)
 
         for c in matched:
-            all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"]})
+            all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
+                                       "verdict": c["verdict"], "action": c.get("action")})
 
         trials_out.append({
             "nct_id": t["nct_id"],

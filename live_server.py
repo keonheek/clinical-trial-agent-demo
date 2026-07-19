@@ -140,7 +140,8 @@ def build_session_live(session):
             session["stage"] = "match"
             matched = match_trial(patient, fields, criteria)
             for c in matched:
-                all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"]})
+                all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
+                                           "verdict": c["verdict"], "action": c.get("action")})
             trials_out.append({
                 "nct_id": t["nct_id"], "title": t["title"], "phase": t.get("phase", "NA"),
                 "criteria": matched,
@@ -180,7 +181,7 @@ def build_session_live(session):
 def ensure_gaps(session):
     if session.get("gaps") is None:
         all_criteria_flat = [
-            {"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"]}
+            {"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"], "action": c.get("action")}
             for t in session["trials_out"] for c in t["criteria"]
         ]
         session["gaps"] = detect_gaps(session["patient"], all_criteria_flat)
