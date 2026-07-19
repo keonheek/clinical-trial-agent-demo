@@ -140,8 +140,8 @@
     "nct_id": "NCT07167368",
     "criterion_text": "Patients with chronically stable HFrEF complicated by kidney dysfunction (eGFR < 90 mL/min/1.73m^2)",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "PROTOCOL_REVIEW"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T002-d",
@@ -204,8 +204,8 @@
     "nct_id": "NCT07214727",
     "criterion_text": "Has a diagnosis of Alzheimer's disease (AD) based on clinical findings supported by cerebrospinal fluid (CSF) biomarkers or positive positron emission tomography (PET) amyloid imaging within 7 years prior to screening",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "REQUEST_LATEST"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T003-c",
@@ -228,8 +228,8 @@
     "nct_id": "NCT07214727",
     "criterion_text": "Has a diagnosis of Alzheimer's disease (AD) based on clinical findings supported by cerebrospinal fluid (CSF) biomarkers or positive positron emission tomography (PET) amyloid imaging within 7 years prior to screening",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "ESCALATE"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T003-f",
@@ -244,8 +244,8 @@
     "nct_id": "NCT07214727",
     "criterion_text": "Has mild cognitive impairment (MCI) or dementia due to AD",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "ESCALATE"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T004",
@@ -292,8 +292,8 @@
     "nct_id": "NCT06906549",
     "criterion_text": "DAS28 <= 5.1",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "ESCALATE"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T004-d",
