@@ -31,10 +31,27 @@ import urllib.request
 API_URL = "https://api.anthropic.com/v1/messages"
 API_VERSION = "2023-06-01"
 
-DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-sonnet-5")
+DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-haiku-4-5-20251001")
 
 # Roles where clinical reasoning quality decides the score. Everything else is extraction.
 THINKING_ROLES = {"matcher", "reeval-matcher"}
+
+
+def _supports_effort(model):
+    """output_config.effort and the thinking toggle are frontier-model features. Haiku 4.5
+    returns HTTP 400 ("does not support the effort parameter") if either is sent."""
+    return not model.startswith("claude-haiku")
+
+
+def _price_for(model):
+    """Model ids carry a date suffix (claude-haiku-4-5-20251001) but PRICING is keyed on the
+    family. Prefix-match, so a dated id never silently costs $0.00 in the running total."""
+    for family, price in PRICING.items():
+        if model.startswith(family):
+            return price
+    raise RuntimeError(
+        f"No price known for model {model!r}. Add it to PRICING before spending money on it."
+    )
 
 # USD per million tokens. Sonnet 5 is on introductory pricing through 2026-08-31, which covers
 # the whole competition; it reverts to 3/15 on 2026-09-01.
@@ -128,11 +145,15 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
         "max_tokens": 8000,
         "system": system_prompt,
         "messages": [{"role": "user", "content": user_prompt}],
-        "output_config": {"effort": "medium" if role in THINKING_ROLES else "low"},
     }
-    if role not in THINKING_ROLES:
-        # Structured extraction does not benefit from deliberation; skip it and pay less.
-        body["thinking"] = {"type": "disabled"}
+    # output_config.effort and the thinking toggle are only accepted by the frontier models
+    # (Sonnet 5, Opus 4.6+). Haiku 4.5 rejects both with HTTP 400, so gate on capability
+    # rather than sending them unconditionally.
+    if _supports_effort(model):
+        body["output_config"] = {"effort": "medium" if role in THINKING_ROLES else "low"}
+        if role not in THINKING_ROLES:
+            # Structured extraction does not benefit from deliberation; skip it and pay less.
+            body["thinking"] = {"type": "disabled"}
 
     data = json.dumps(body).encode("utf-8")
     headers = {
@@ -172,7 +193,7 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
     usage = payload.get("usage", {})
     in_tok = usage.get("input_tokens", 0)
     out_tok = usage.get("output_tokens", 0)
-    price_in, price_out = PRICING.get(model, (0.0, 0.0))
+    price_in, price_out = _price_for(model)
     _stats["api_calls"] += 1
     _stats["in_tokens"] += in_tok
     _stats["out_tokens"] += out_tok

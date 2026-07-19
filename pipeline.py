@@ -13,10 +13,14 @@ Roles (each = one independent Groq LLM call, own system prompt):
   (f) recommender         trial matches            -> ranked trials + overall eligibility
 
 LLM backend is switchable via LLM_BACKEND env var:
-    claude (default) — headless `claude -p` on the local subscription (claude_client.py)
+    anthropic (default) — paid Anthropic API, Haiku via ANTHROPIC_NEW_KEY (anthropic_client.py);
+                       the accepted $0-rule exception for this project
+    ollama           — local qwen3.6:35b via Ollama (ollama_client.py); $0, no key, no quota
     groq             — Groq free tier (groq_client.py); daily quota crawls under load
+    claude           — headless `claude -p` on the local subscription (claude_client.py)
 Every call is cached to disk in cache/ (keyed per backend model), so re-running this
-script after the first successful build makes ZERO new LLM calls.
+script after the first successful build makes ZERO new LLM calls. Switching backends does
+NOT reuse another backend's answers: the model name is part of the cache key.
 
 Run:
     python3 pipeline.py
@@ -29,8 +33,18 @@ import os
 import sys
 import time
 
-_BACKEND = os.environ.get("LLM_BACKEND", "groq")
-if _BACKEND == "groq":
+from action_policy import (
+    normalize_uncertainty_type,
+    action_for,
+    enrich_questions,
+    is_question_worthy,
+    UNCERTAINTY_TYPES,
+)
+
+_BACKEND = os.environ.get("LLM_BACKEND", "anthropic")
+if _BACKEND == "ollama":
+    from ollama_client import call_llm as call_groq, stats, DEFAULT_MODEL
+elif _BACKEND == "groq":
     from groq_client import call_groq, stats, DEFAULT_MODEL
 elif _BACKEND == "anthropic":
     from anthropic_client import call_llm as call_groq, stats, DEFAULT_MODEL
@@ -78,6 +92,19 @@ def truncate_words(text, n):
     if len(words) <= n:
         return text
     return " ".join(words[:n])
+
+
+def classify_action(verdict, raw_uncertainty_type):
+    """For an undecided criterion, resolve (uncertainty_type, next action) in code.
+    Decided criteria (MET/NOT_MET) carry no uncertainty and no action. UNKNOWN with
+    no type defaults to MISSING (its definition: the record is silent); an UNCERTAIN
+    with no usable type fails safe to a human via action_for(None) -> ESCALATE."""
+    if verdict not in ("UNKNOWN", "UNCERTAIN"):
+        return None, None
+    utype = normalize_uncertainty_type(raw_uncertainty_type)
+    if utype is None and verdict == "UNKNOWN":
+        utype = "MISSING"
+    return utype, action_for(utype)
 
 
 # ---------------------------------------------------------------------------
@@ -176,10 +203,21 @@ not by you. Judge the sentence exactly as written.
 Absence of evidence is NOT evidence of absence: if the vignette simply never mentions the
 condition, that is UNKNOWN, not NOT_MET. A criterion resting on the investigator's discretion
 or opinion is never decidable from the record; return UNKNOWN for it.
+
+When (and ONLY when) your verdict is UNKNOWN or UNCERTAIN, also diagnose WHY it could not be
+decided, choosing exactly one `uncertainty_type` from this fixed list (why-it-is-uncertain, not
+what-is-missing):
+""" + "\n".join(f"  - {k}: {v}" for k, v in UNCERTAINTY_TYPES.items()) + """
+Pick the single most specific cause. If the record is simply silent, that is MISSING. If a value
+exists but is old, STALE. If a number sits right at the threshold, BOUNDARY. If two findings
+disagree, CONFLICTING. If the criterion needs expert interpretation that cannot be automated
+(e.g. ECOG 1 vs 2, "clinically stable"), CLINICAL_JUDGMENT. For a MET or NOT_MET verdict, set
+uncertainty_type to null.
+
 `evidence` must be a short quote copied from the patient's fields/vignette that supports your
 verdict, or null if verdict is UNKNOWN. `reasoning` must be <= 25 words, plain clinical language.
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "evidence": "<quote>"|null, "reasoning": "<short reasoning>"}]}
+{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "uncertainty_type": "<one of the list above>"|null, "evidence": "<quote>"|null, "reasoning": "<short reasoning>"}]}
 Return exactly one match object per criterion given, in any order, using the given index numbers."""
 
 
@@ -214,17 +252,22 @@ Evaluate each numbered criterion per your instructions."""
         evidence = m.get("evidence")
         evidence = str(evidence).strip() if evidence else None
         reasoning = truncate_words(str(m.get("reasoning", "")).strip(), MAX_REASONING_WORDS)
-        by_index[idx] = {"verdict": verdict, "evidence": evidence, "reasoning": reasoning}
+        by_index[idx] = {"verdict": verdict, "evidence": evidence, "reasoning": reasoning,
+                         "uncertainty_type": m.get("uncertainty_type")}
 
     merged = []
     for i, c in enumerate(criteria):
         m = by_index.get(i + 1, {"verdict": "UNCERTAIN", "evidence": None,
-                                  "reasoning": "matcher did not return a verdict for this criterion"})
+                                  "reasoning": "matcher did not return a verdict for this criterion",
+                                  "uncertainty_type": None})
+        utype, action = classify_action(m["verdict"], m.get("uncertainty_type"))
         merged.append({
             "text": c["text"],
             "type": c["type"],
             "verdict": m["verdict"],
             "effect": effect_of(c["type"], m["verdict"]),
+            "uncertainty_type": utype,
+            "action": action,
             "evidence": m["evidence"],
             "reasoning": m["reasoning"],
         })
@@ -248,7 +291,10 @@ Return at most 6 gaps, ordered by how many criteria/trials they affect (most imp
 def detect_gaps(patient, all_criteria_with_trial):
     unknown_lines = []
     for item in all_criteria_with_trial:
-        if item["verdict"] in ("UNKNOWN", "UNCERTAIN"):
+        # Only undecided criteria whose policy action a question could actually advance.
+        # IGNORE (not applicable) / STOP (already excluded) are resolved without asking, so
+        # the action field gates the question pipeline here -- the differentiator in action.
+        if item["verdict"] in ("UNKNOWN", "UNCERTAIN") and is_question_worthy(item.get("action")):
             unknown_lines.append(f"- [{item['nct_id']}] ({item['verdict']}) {item['text']}")
     if not unknown_lines:
         return []
@@ -483,10 +529,13 @@ criteria. Judge the sentence exactly as written; the pass/fail consequence is de
   "NOT_MET": the statement is FALSE of this patient (the record contradicts it).
   "UNCERTAIN": partial/ambiguous info that could still go either way.
   "UNKNOWN": still no information addressing this criterion, even after the extended record.
+When (and only when) your verdict is UNKNOWN or UNCERTAIN, also give `uncertainty_type`, the single
+best reason it still cannot be decided, from: """ + ", ".join(UNCERTAINTY_TYPES) + """. Otherwise
+set uncertainty_type to null.
 `evidence` must be a short quote from the vignette or extended record, or null if UNKNOWN.
 `reasoning` must be <= 25 words.
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "evidence": "<quote>"|null, "reasoning": "<short reasoning>"}]}
+{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "uncertainty_type": "<one of the list>"|null, "evidence": "<quote>"|null, "reasoning": "<short reasoning>"}]}
 Return exactly one match object per criterion given, using the given index numbers."""
 
 
@@ -525,14 +574,16 @@ Re-evaluate each numbered criterion per your instructions."""
         evidence = m.get("evidence")
         evidence = str(evidence).strip() if evidence else None
         reasoning = truncate_words(str(m.get("reasoning", "")).strip(), MAX_REASONING_WORDS)
-        by_index[idx] = {"verdict": verdict, "evidence": evidence, "reasoning": reasoning}
+        by_index[idx] = {"verdict": verdict, "evidence": evidence, "reasoning": reasoning,
+                         "uncertainty_type": m.get("uncertainty_type")}
 
     out = []
     for i, a in enumerate(affected):
         r = by_index.get(i + 1, {"verdict": a["before_verdict"], "evidence": None,
-                                  "reasoning": "reeval-matcher did not return a verdict; kept prior verdict"})
+                                  "reasoning": "reeval-matcher did not return a verdict; kept prior verdict",
+                                  "uncertainty_type": None})
         out.append({**a, "after_verdict": r["verdict"], "after_evidence": r["evidence"],
-                     "after_reasoning": r["reasoning"]})
+                     "after_reasoning": r["reasoning"], "after_uncertainty_type": r.get("uncertainty_type")})
     return out
 
 
@@ -584,6 +635,8 @@ def run_reeval(patient, gaps, questions, trials_out):
         crit = updated_trials[r["trial_idx"]]["criteria"][r["crit_idx"]]
         crit["verdict"] = r["after_verdict"]
         crit["effect"] = effect_of(crit["type"], r["after_verdict"])
+        crit["uncertainty_type"], crit["action"] = classify_action(
+            r["after_verdict"], r.get("after_uncertainty_type"))
         if r["after_evidence"]:
             crit["evidence"] = r["after_evidence"]
         crit["reasoning"] = r["after_reasoning"]
@@ -636,7 +689,8 @@ def run_patient(patient, trials_raw_for_patient):
         matched = match_trial(patient, fields, criteria)
 
         for c in matched:
-            all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"]})
+            all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
+                                       "verdict": c["verdict"], "action": c.get("action")})
 
         trials_out.append({
             "nct_id": t["nct_id"],
@@ -664,6 +718,10 @@ def run_patient(patient, trials_raw_for_patient):
 
     trials_out.sort(key=lambda t: t["rank"])
 
+    # attach the question-priority numbers 정원's cards show (pure, no LLM), now that
+    # eligibility/rank are decided; also sorts questions most-impactful first.
+    enrich_questions(questions, gaps, trials_out)
+
     reeval = run_reeval(patient, gaps, questions, trials_out)
 
     return {
@@ -671,6 +729,7 @@ def run_patient(patient, trials_raw_for_patient):
         "patient_text": patient["text"],
         "extraction": fields,
         "trials": trials_out,
+        "gaps": gaps,
         "questions": questions,
         "reeval": reeval,
         "generated_at": "2026-07-08",

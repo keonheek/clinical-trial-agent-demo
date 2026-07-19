@@ -10,7 +10,7 @@ This is a capability demo, not a validated clinical tool. See disclaimer at the 
 
 1. Pulls REAL, currently-recruiting trials from ClinicalTrials.gov for all 10 official sample patients
    (S001-S010 from the challenge's synthetic-patients.json).
-2. Runs a 6-role LLM pipeline plus a re-evaluation loop (LLM backend switchable: Groq free tier by default, or local Claude Code subscription via LLM_BACKEND=claude) that parses trial eligibility criteria,
+2. Runs a 6-role LLM pipeline plus a re-evaluation loop (LLM backend switchable via `LLM_BACKEND`: Anthropic Haiku by default — the challenge's funded API credit, this project's sanctioned exception to the otherwise-$0 posture — or Groq free tier, local Ollama, or the local Claude Code subscription) that parses trial eligibility criteria,
    extracts patient facts with verbatim evidence, matches each criterion, detects gaps in
    the patient's data, generates clarifying questions, and ranks the trials.
 3. Writes `traces.js` (`window.TRACES = [...]`) for the frontend (`demo.html`, owned by a
@@ -84,7 +84,7 @@ This is a capability demo, not a validated clinical tool. See disclaimer at the 
                     demo.html (UI, separate agent)
 ```
 
-Each box (a)-(f) is an independent Groq LLM call with its own system prompt — no single
+Each box (a)-(f) is an independent LLM call with its own system prompt — no single
 mega-prompt does everything. Total calls per patient with 4 trials: 1 (extractor) + 4
 (criteria-parser) + 4 (matcher) + 1 (gap-detector) + 1 (question-generator) + 1
 (recommender) = 12. For 3 patients: 36 calls total on first run; $0 on every re-run because
@@ -123,8 +123,42 @@ Groq free-tier quota again).
   `query_used`.
 - **Patient vignettes** (`patients.json`): the competition's own published sample patients
   (S001, S002, S008), copied verbatim from the task brief — not real patient data.
-- **Groq** (LLM inference, free tier): https://groq.com — used for all 6 agent roles.
-  Model: `llama-3.3-70b-versatile`. No paid Anthropic API is used anywhere in this pipeline.
+- **LLM inference** is backend-switchable via `LLM_BACKEND`. Default is **Anthropic Haiku**
+  (funded by the challenge's API credit — the sanctioned exception to this project's $0 default);
+  alternatives are Groq free tier (`llama-3.3-70b-versatile`), local Ollama (`qwen3.6`, $0), and
+  the local Claude Code subscription. Every call is cached per backend+model, so switching backends
+  never reuses another's answers.
+
+## Uncertainty & action layer (the differentiator)
+
+Overall accuracy hides the point: the system's edge is not "how many criteria it labels
+right," it's what it DOES when a criterion cannot be decided from the record. Three code
+layers, each a pure table/function (computed in code, never inferred by a model — the same
+design rule as the eligibility `effect` table), turn "UNKNOWN" into a diagnosed cause and a
+next action:
+
+- **Uncertainty taxonomy** (`action_policy.py`): every undecided criterion is classified into
+  one of 10 causes — MISSING, STALE, INSUFFICIENT_EVIDENCE, AMBIGUOUS, CONFLICTING, BOUNDARY,
+  CLINICAL_JUDGMENT, NOT_APPLICABLE, CALCULABLE, DEFINITE_EXCLUSION. The matcher LLM proposes
+  the type; the type is a fixed vocabulary, not free text.
+- **Action-selection table** (`action_policy.py`): each cause maps to exactly one next action —
+  ASK / RETRIEVE / REQUEST_LATEST / CALCULATE / VERIFY / PROTOCOL_REVIEW / ESCALATE / IGNORE /
+  STOP. Derived in code, so the polarity can't be gotten backwards. An unrecognized cause fails
+  safe to ESCALATE — never a silent pass. This is the "질문을 많이 하는 게 아니라 상황에 맞는
+  행동을 고른다" claim, made concrete.
+- **Evidence sufficiency** (`evidence.py`): traceability (does the quote exist?) is not
+  sufficiency (does the quote support the conclusion?). `assess_evidence()` rejects e.g. a
+  *suspected* imaging finding standing in for a *confirmed* diagnosis, and routes it to VERIFY.
+  Built and self-tested as a pure module against the §6 bladder-mass example; the matcher wiring
+  (emitting source_type / confirmation_level / directness per criterion, then letting sufficiency
+  gate a MET verdict) is the next increment and is deliberately deferred until the stress-test set
+  and its human labels exist, since it can move verdicts and must be validated, not just switched on.
+
+**Question-priority API (for the frontend cards).** Each clarifying question is served with
+`affects_trials`, `affects_criteria`, and `may_change_rank`, computed deterministically from the
+trace (`action_policy.enrich_questions`). `live_server.py` attaches these at serve time, so the
+frontend consumes real numbers — no hardcoding needed. Questions arrive sorted most-impactful
+first. Run `python3 action_policy.py` and `python3 evidence.py` for the self-tests.
 
 ## Medical disclaimer
 
@@ -143,6 +177,9 @@ any enrollment decision.)
 | `trials_raw.json` | this agent | raw fetched trial data (16 trials, 3 conditions) |
 | `groq_client.py` | this agent | Groq API wrapper: caching + exponential backoff |
 | `pipeline.py` | this agent | 6-role multi-agent pipeline orchestration |
+| `action_policy.py` | this agent | uncertainty taxonomy + action-selection table + question-priority scorer (pure, self-tested) |
+| `evidence.py` | this agent | evidence-sufficiency layer: confirmation/directness rules (pure, self-tested) |
+| `live_server.py` | this agent | interactive re-eval HTTP server; serves priority-enriched questions |
 | `assert_traces.py` | this agent | verification script: evidence_quote verbatim-substring checks |
 | `traces.json` / `traces.js` | this agent | pipeline output consumed by the UI |
 | `cache/` | this agent | on-disk LLM response cache (re-runs are free) |
