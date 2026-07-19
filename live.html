@@ -22,6 +22,21 @@
     --uncertain-bg:#fdf3dd;
     --unknown:#5f6b7a;
     --unknown-bg:#eef0f2;
+    /* verdict (사실 판정: MET/NOT_MET/UNCERTAIN) is deliberately NOT colored green/red like
+       effect -- it has no good/bad valence of its own, so it gets a neutral "read-only fact"
+       outline instead of a filled status color. */
+    --verdict-ink:#2f5f8a;
+    --verdict-border:#aecbe0;
+    --verdict-bg:#f2f7fb;
+    --verdict-unknown-ink:#6b7280;
+    --verdict-unknown-border:#d7dbe0;
+    --verdict-unknown-bg:#f5f6f7;
+    /* human override gets its own hue (teal-blue), distinct from --accent (used for the AI
+       pipeline flow), so "사람이 최종 확정했다" reads as a different kind of event from "AI
+       finished a stage". */
+    --human:#0b6e99;
+    --human-bg:#e5f1f7;
+    --human-border:#94c5dd;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -84,8 +99,14 @@
     position:relative;
   }
   .agent-step .n{display:block;font-size:0.66rem;color:#9aa2ad;margin-bottom:2px;}
-  .agent-step.done{color:var(--accent-dark);border-bottom-color:var(--accent);font-weight:700;}
-  .agent-step.running{color:var(--accent-dark);border-bottom-color:var(--accent);font-weight:700;animation:pulse 1.1s ease-in-out infinite;}
+  .agent-step .stage-icon{margin-right:2px;font-weight:700;}
+  /* Three distinct visual states, not just "highlighted vs not": finished steps get a checkmark
+     and settle into a quieter accent (it's over, no need to keep shouting); the current step is
+     the loudest (bold + pulsing, it's the one actually running right now); steps not reached yet
+     fade further than the old default so "not started" reads as clearly different from "done". */
+  .agent-step.pending{color:#b7bec7;}
+  .agent-step.done{color:var(--accent-dark);border-bottom-color:var(--accent);font-weight:600;}
+  .agent-step.running{color:var(--accent-dark);border-bottom-color:var(--accent);font-weight:800;animation:pulse 1.1s ease-in-out infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.45;}}
 
   .shell{
@@ -112,12 +133,16 @@
 
   .patient-btn{
     display:block;width:100%;text-align:left;background:var(--bg);
-    border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:7px;
+    border:1px solid var(--line);border-left:4px solid transparent;border-radius:8px;
+    padding:9px 11px;margin-bottom:7px;
     cursor:pointer;font-family:inherit;font-size:0.84rem;color:var(--ink);
   }
   .patient-btn strong{display:block;color:var(--accent-dark);font-size:0.88rem;margin-bottom:2px;}
   .patient-btn .snippet{color:var(--ink-soft);font-size:0.76rem;}
-  .patient-btn.selected{border-color:var(--accent);background:var(--accent-soft);}
+  /* EMR-style left accent bar (not just a background tint) so the selected patient stays
+     identifiable even mid-scroll or at a glance from the side. Border-left reserved at 4px on
+     every button (transparent by default) so selecting doesn't shift the row's width/padding. */
+  .patient-btn.selected{border-color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft);}
 
   .custom-box{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;}
   .custom-box h2{font-size:0.82rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin:0 0 8px;}
@@ -149,23 +174,50 @@
   .badge{
     display:inline-block;padding:2px 8px;border-radius:99px;font-size:0.72rem;font-weight:700;white-space:nowrap;
   }
-  .badge-MET{background:var(--met-bg);color:var(--met);}
-  .badge-NOT_MET{background:var(--not-met-bg);color:var(--not-met);}
-  .badge-UNCERTAIN{background:var(--uncertain-bg);color:var(--uncertain);}
-  .badge-UNKNOWN{background:var(--unknown-bg);color:var(--unknown);}
-  .badge-ELIGIBLE{background:var(--met-bg);color:var(--met);}
-  .badge-INELIGIBLE{background:var(--not-met-bg);color:var(--not-met);}
-
-  .badge.quiet{background:#fff;border:1px solid var(--line);color:var(--ink-soft);font-weight:600;}
+  /* effect (PASS/FAIL/REVIEW, and trial-level ELIGIBLE/INELIGIBLE) is the clinical *consequence*,
+     so it stays a filled, high-contrast color -- this is the badge a reviewer should register
+     first when scanning down a list of criteria. */
   .badge-PASS{background:var(--met-bg);color:var(--met);}
   .badge-FAIL{background:var(--not-met-bg);color:var(--not-met);}
   .badge-REVIEW{background:var(--uncertain-bg);color:var(--uncertain);}
+  .badge-ELIGIBLE{background:var(--met-bg);color:var(--met);}
+  .badge-INELIGIBLE{background:var(--not-met-bg);color:var(--not-met);}
+  /* Trial-level "적격성: 불확실" reuses the eligibility scale (filled/warning), and must NOT
+     share a class with the criterion-level verdict UNCERTAIN below -- they mean different things
+     (one is a result, one is a fact-reading) and used to collide on the same CSS class name. */
+  .badge-ELIG_UNCERTAIN{background:var(--uncertain-bg);color:var(--uncertain);}
+
+  /* verdict (MET/NOT_MET/UNCERTAIN/UNKNOWN) is a plain fact-read with no inherent good/bad
+     value, so it's an outline badge, never filled -- visually a different *kind* of badge from
+     effect, not just a different color of the same kind. */
+  .badge-MET, .badge-NOT_MET, .badge-UNCERTAIN{
+    background:var(--verdict-bg);border:1px solid var(--verdict-border);color:var(--verdict-ink);
+    padding:1px 7px;
+  }
+  .badge-UNKNOWN{
+    background:var(--verdict-unknown-bg);border:1px solid var(--verdict-unknown-border);
+    color:var(--verdict-unknown-ink);padding:1px 7px;
+  }
+  .badge.quiet{background:#fff;border:1px solid var(--line);color:var(--ink-soft);font-weight:600;padding:1px 7px;}
 
   .stage-note{color:var(--ink-soft);font-size:0.85rem;margin:0 0 14px;}
 
-  .tag{display:inline-block;font-size:0.7rem;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--ink-soft);}
-  .tag.inclusion{border-color:#bcd8ce;color:var(--accent-dark);}
-  .tag.exclusion{border-color:#e3c2bd;color:#8a3a33;}
+  /* Compact top legend -- deliberately just a key, not the full detail panel the external
+     reviewer's third mockup showed. It answers "what do these badge shapes mean" at a glance;
+     anyone who needs the full reasoning already has verdictLegend's paragraph below it. */
+  .legend-bar{
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    border:1px solid var(--line);border-radius:8px;background:var(--bg-alt);
+    padding:8px 12px;margin-bottom:10px;font-size:0.74rem;color:var(--ink-soft);
+  }
+  .legend-bar .lg-group{display:flex;align-items:center;gap:5px;}
+  .legend-bar .lg-cap{font-weight:600;color:var(--ink);}
+
+  /* 포함/제외 is real information but should never out-weigh the PASS/FAIL/REVIEW badge next to
+     it, so it's a plain caption -- no border/pill background -- rather than another badge. */
+  .tag{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.02em;}
+  .tag.inclusion{color:var(--accent-dark);}
+  .tag.exclusion{color:#8a3a33;}
 
   .trial-card{
     border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px;
@@ -174,35 +226,183 @@
   .trial-card-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:8px;cursor:pointer;}
   .trial-card-head .rank{font-size:1.15rem;font-weight:700;color:var(--accent);width:26px;text-align:center;flex:0 0 auto;}
   .trial-card-head .titlewrap{flex:1 1 auto;min-width:200px;}
-  .trial-card-head h3{font-size:0.94rem;margin:0 0 2px;}
-  .trial-card-head .meta{font-size:0.76rem;color:var(--ink-soft);}
+  .trial-card-head .title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .trial-card-head h3{font-size:1.02rem;font-weight:700;margin:0;}
+  .trial-card-head .badge-lg-wrap .badge{font-size:0.78rem;padding:3px 11px;}
+  /* NCT id / phase are lookup metadata, not part of the eligibility decision -- deliberately
+     smaller and lighter than the title/eligibility line above. */
+  .trial-card-head .meta{font-size:0.72rem;color:#9aa2ad;margin-top:2px;}
   .trial-card-head .meta span.meta-sep{margin-left:8px;padding-left:8px;border-left:1px solid var(--line);}
   .trial-card .rationale{font-size:0.85rem;color:var(--ink-soft);margin:0 0 10px;}
 
+  /* Table-style criteria list, mirroring the external reviewer's mockup: a header row naming
+     the three columns, then one row per criterion. Columns, left-to-right: (1) row number +
+     포함/제외 chip, fixed width so every row's badges start at the same x position; (2) the
+     criterion itself -- badges, text, evidence, reasoning, grouped since they're all "what does
+     the record say"; (3) human-in-the-loop judgment, visually separate since overriding is an
+     action, not more evidence. */
+  .crit-table{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:4px;}
+  .crit-table-head{
+    display:grid;grid-template-columns:60px 1fr 170px;gap:12px;
+    background:var(--bg-alt);border-bottom:1px solid var(--line);
+    padding:8px 14px;font-size:0.72rem;font-weight:700;color:var(--ink-soft);
+  }
   .crit-row{
-    display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start;
-    padding:8px 0;border-top:1px solid var(--line);
+    display:grid;grid-template-columns:60px 1fr 170px;gap:12px;align-items:start;
+    padding:12px 14px;border-top:1px solid var(--line);
   }
   .crit-row .badge{margin-right:4px;}
-  .crit-row:first-of-type{border-top:none;}
-  .crit-row .crit-text{font-size:0.85rem;}
-  .crit-row .crit-evidence{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:0.76rem;color:var(--ink-soft);margin-top:3px;}
-  .crit-row .crit-reason{font-size:0.78rem;color:var(--ink-soft);margin-top:2px;}
+  .crit-table .crit-row:first-of-type{border-top:none;}
+  .crit-badge-col{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .crit-num{
+    display:flex;align-items:center;justify-content:center;width:24px;height:24px;
+    border-radius:50%;background:var(--accent);color:#fff;font-size:0.76rem;font-weight:700;
+  }
+  /* 포함/제외 as a small colored chip (not just a caption) so column 1 carries real information
+     at a glance, matching the mockup's chip treatment. */
+  .tag-chip{font-size:0.64rem;font-weight:700;border-radius:5px;padding:2px 6px;white-space:nowrap;}
+  .tag-chip.inclusion{background:var(--met-bg);color:var(--met);}
+  .tag-chip.exclusion{background:var(--not-met-bg);color:var(--not-met);}
+
+  /* Sub-row of two labeled badge groups: "효과(결과)" i.e. the consequence, and "사실(사실 판정)"
+     i.e. the plain fact-read the consequence was derived from -- captions make explicit which
+     question each badge is answering, since the two scales look similar (both small pills). */
+  .crit-subrow{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:6px;}
+  .crit-subitem{display:flex;flex-direction:column;gap:2px;}
+  .crit-subcap{font-size:0.64rem;color:#9aa2ad;}
+  .crit-content-col .crit-text{font-size:0.88rem;font-weight:600;color:var(--ink);margin-bottom:5px;}
+  /* Evidence is the single most trusted piece of information on this row -- it's a verbatim
+     quote from the patient record, not AI prose -- so it gets the strongest visual treatment
+     here: a blockquote-style block with a left accent rule and a quote glyph, clearly heavier
+     than the reasoning line below it. */
+  .crit-row .crit-evidence{
+    position:relative;font-style:italic;font-size:0.8rem;
+    color:var(--ink);background:var(--bg-alt);border-left:3px solid var(--accent);
+    border-radius:0 4px 4px 0;padding:5px 10px 5px 26px;margin:4px 0;
+  }
+  .crit-row .crit-evidence::before{
+    content:"\201C";position:absolute;left:8px;top:2px;font-size:1.1rem;
+    font-style:normal;color:var(--accent);font-weight:700;
+  }
+  /* Reasoning is the AI's own explanation, not sourced evidence -- deliberately lighter/smaller
+     than the evidence block above so it reads as "AI's gloss on the quote", not equal to it. */
+  .crit-row .crit-reason{font-size:0.75rem;color:#9aa2ad;margin-top:3px;}
   .crit-row.flash{animation:flashbg 1.1s ease;}
   @keyframes flashbg{0%{background:#fff2a8;}100%{background:transparent;}}
   .crit-row.spinning .crit-text::after{content:" 재평가 중";color:var(--accent);font-weight:600;}
 
+  .crit-judgment-col{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;}
+  .judgment-block{display:flex;flex-direction:column;gap:2px;}
+  .judgment-label{font-size:0.66rem;color:#9aa2ad;}
+  .judgment-row{display:flex;align-items:center;gap:6px;}
+
+  .override-toggle{
+    display:inline-block;font-size:0.7rem;font-weight:700;cursor:pointer;
+    color:var(--ink-soft);background:none;border:1px solid var(--line);
+    border-radius:99px;padding:1px 7px;line-height:1.3;
+  }
+  .override-toggle:hover{color:var(--accent-dark);border-color:var(--accent);}
+  .override-panel{
+    display:none;padding:8px;border:1px dashed var(--line);border-radius:6px;
+    background:var(--bg-alt);width:100%;
+  }
+  .override-panel.open{display:block;}
+  .override-panel .op-label{display:block;font-size:0.7rem;color:var(--ink-soft);margin-bottom:5px;}
+  .override-panel .op-btn{
+    font-size:0.75rem;font-weight:700;padding:3px 9px;margin:0 4px 4px 0;border-radius:5px;
+    border:1px solid var(--line);background:var(--bg);cursor:pointer;
+  }
+  .override-panel .op-btn:hover{border-color:var(--accent);color:var(--accent-dark);}
+  /* Deliberately its own color (--human, teal-blue) rather than --accent -- a human override is
+     the system's final word on this criterion, and should look like a different kind of event
+     from "the AI pipeline reached a stage", not a shade of the same green. */
+  .human-confirmed-tag{
+    display:inline-block;font-size:0.7rem;font-weight:800;
+    color:var(--human);background:var(--human-bg);border:1px solid var(--human-border);
+    border-radius:99px;padding:2px 9px;
+  }
+  .crit-row.human-confirmed{background:var(--human-bg);}
+
+  /* Only the first few criteria show by default (matches the mockup's "8개 기준 더보기" pattern)
+     -- a 12-criterion trial otherwise pushes the questions dock far below the fold. */
+  .crit-more-toggle{
+    display:block;width:100%;text-align:center;background:var(--bg-alt);border:none;
+    border-top:1px solid var(--line);padding:8px;font-family:inherit;font-size:0.78rem;
+    font-weight:600;color:var(--accent-dark);cursor:pointer;
+  }
+  .crit-more-toggle:hover{background:var(--accent-soft);}
+
   .questions-dock{
     border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:22px;background:var(--bg-alt);
   }
-  .questions-dock h2{font-size:1rem;margin:0 0 10px;}
+  .dock-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .dock-header h2{font-size:1rem;margin:0;}
+  .dock-header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .dock-banner{
+    font-size:0.76rem;color:var(--accent-dark);background:var(--accent-soft);
+    border-radius:6px;padding:4px 9px;white-space:nowrap;
+  }
+  .guide-btn{
+    font-size:0.76rem;font-weight:700;padding:4px 10px;border-radius:6px;
+    border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;
+  }
+  .guide-btn:hover{border-color:var(--accent);color:var(--accent-dark);}
+  .guide-panel{
+    border:1px solid var(--line);border-radius:8px;background:var(--bg);
+    padding:10px 14px;margin:8px 0 0;font-size:0.8rem;color:var(--ink-soft);
+  }
+  .guide-panel ol{margin:4px 0 0;padding-left:18px;}
+  .guide-panel li{margin-bottom:3px;}
+
+  /* Two columns: question content on the left, "why this matters" stats on the right -- kept
+     visually separate since one is "what to ask", the other is "what answering it is worth". */
   .question-card{
+    display:grid;grid-template-columns:1fr 250px;gap:14px;
     border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;
     padding:10px 14px;margin-bottom:10px;background:var(--bg);
   }
+  @media (max-width:700px){ .question-card{grid-template-columns:1fr;} }
+  .q-main{min-width:0;}
+  .question-card .field-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
   .question-card .field{font-size:0.7rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;}
+  .priority-pill{
+    font-size:0.7rem;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap;
+  }
+  .priority-pill.high{background:var(--met-bg);color:var(--met);}
+  .priority-pill.med{background:var(--uncertain-bg);color:var(--uncertain);}
+  .priority-pill.normal{background:var(--unknown-bg);color:var(--unknown);}
   .question-card .q{font-weight:600;margin:2px 0 4px;font-size:0.9rem;}
   .question-card .why{font-size:0.78rem;color:var(--ink-soft);margin-bottom:8px;}
+
+  /* Right-hand impact panel: a small top accent bar in the same color as the priority pill so
+     the two line up visually, then the impact sentence, then the 3-stat mini grid the mockup
+     used ("영향 시험 / 관련 기준 / 우선순위"). affects_trials/affects_criteria are still
+     IMPACT_PLACEHOLDER (건희's API doesn't expose them yet) -- flagged via the same dashed
+     labeling used before, just laid out to match the reviewer's panel shape. */
+  .q-impact-panel{
+    border:1px solid var(--line);border-top:3px solid var(--unknown);border-radius:8px;
+    padding:9px 11px;background:var(--bg-alt);font-size:0.76rem;color:var(--ink-soft);
+  }
+  .q-impact-panel.high{border-top-color:var(--met);}
+  .q-impact-panel.med{border-top-color:var(--uncertain);}
+  .q-impact-panel .impact-note{margin-bottom:8px;}
+  .q-impact-panel .impact-flag{display:block;font-size:0.64rem;color:#9aa2ad;margin-top:3px;}
+  .q-impact-stats{display:flex;gap:6px;margin-bottom:8px;}
+  .q-stat{flex:1 1 0;text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 2px;}
+  .q-stat .q-stat-num{display:block;font-size:0.95rem;font-weight:700;color:var(--ink);}
+  .q-stat .q-stat-cap{display:block;font-size:0.62rem;color:#9aa2ad;margin-top:1px;}
+  .q-source-row{font-size:0.68rem;color:#9aa2ad;border-top:1px dashed var(--line);padding-top:6px;}
+  .q-source-row .q-detail-link{color:var(--ink-soft);text-decoration:underline dotted;cursor:help;}
+
+  .question-card .related-crit{font-size:0.76rem;color:var(--ink-soft);margin-bottom:8px;}
+  .question-card .related-crit .rc-label{color:var(--ink);font-weight:600;}
+  .question-card .related-crit ul{margin:4px 0 0;padding-left:18px;}
+  .question-card .related-crit li{margin-bottom:2px;}
+  .question-card .related-crit li strong{color:var(--ink);}
+  .question-card .rc-toggle{
+    background:none;border:none;padding:2px 0;margin-top:2px;color:var(--accent-dark);
+    font-size:0.76rem;font-weight:600;cursor:pointer;text-decoration:underline;
+  }
   .question-card .answer-row{display:flex;gap:8px;flex-wrap:wrap;}
   .question-card input[type=text]{
     flex:1 1 220px;border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-family:inherit;font-size:0.85rem;
@@ -230,12 +430,12 @@
 </header>
 
 <nav class="agent-map" id="agentMap">
-  <div class="agent-step" data-stage="extract"><span class="n">1</span>정보 추출</div>
-  <div class="agent-step" data-stage="parse"><span class="n">2</span>기준 파싱</div>
-  <div class="agent-step" data-stage="match"><span class="n">3</span>매칭</div>
-  <div class="agent-step" data-stage="gaps"><span class="n">4</span>갭 탐지</div>
-  <div class="agent-step" data-stage="questions"><span class="n">5</span>질문 생성</div>
-  <div class="agent-step" data-stage="recommend"><span class="n">6</span>추천</div>
+  <div class="agent-step" data-stage="extract"><span class="n">1</span><span class="stage-icon"></span>정보 추출</div>
+  <div class="agent-step" data-stage="parse"><span class="n">2</span><span class="stage-icon"></span>기준 파싱</div>
+  <div class="agent-step" data-stage="match"><span class="n">3</span><span class="stage-icon"></span>매칭</div>
+  <div class="agent-step" data-stage="gaps"><span class="n">4</span><span class="stage-icon"></span>갭 탐지</div>
+  <div class="agent-step" data-stage="questions"><span class="n">5</span><span class="stage-icon"></span>질문 생성</div>
+  <div class="agent-step" data-stage="recommend"><span class="n">6</span><span class="stage-icon"></span>추천</div>
 </nav>
 
 <div class="shell">
@@ -253,10 +453,34 @@
     <div class="empty-note" id="emptyNote">왼쪽에서 환자를 선택하거나 새 환자 정보를 입력하세요.</div>
 
     <div id="vignetteBox" class="vignette" style="display:none;"></div>
-    <p class="stage-note" id="verdictLegend" style="display:none;">각 기준에는 두 가지가 표시됩니다. 적격성 효과(PASS, FAIL, REVIEW)는 참여 가능 여부에 미치는 영향이고, 그 옆의 조건 판정(MET, NOT_MET, UNKNOWN)은 기준 문장이 환자에게 해당하는지만 나타냅니다. 제외 기준의 조건 판정이 MET이면 환자가 그 조건을 가지고 있다는 뜻이므로 적격성 효과는 FAIL이 됩니다.</p>
+    <div class="legend-bar" id="verdictLegend" style="display:none;">
+      <div class="lg-group"><span class="lg-cap">효과(결과):</span>
+        <span class="badge badge-PASS">PASS</span><span class="badge badge-FAIL">FAIL</span><span class="badge badge-REVIEW">REVIEW</span>
+      </div>
+      <div class="lg-group"><span class="lg-cap">사실(사실 판정):</span>
+        <span class="badge badge-MET">MET</span><span class="badge badge-NOT_MET">NOT_MET</span><span class="badge badge-UNCERTAIN">UNCERTAIN</span><span class="badge badge-UNKNOWN">UNKNOWN</span>
+      </div>
+      <div class="lg-group"><span class="human-confirmed-tag">✓ 사람 확정</span></div>
+    </div>
     <div id="trialsBody"></div>
     <div id="questionsDock" class="questions-dock" style="display:none;">
-      <h2>확인 질문</h2>
+      <div class="dock-header">
+        <h2>확인 질문</h2>
+        <div class="dock-header-right">
+          <span class="dock-banner" id="dockBanner"></span>
+          <button class="guide-btn" type="button" id="guideToggle">질문 안내 가이드</button>
+        </div>
+      </div>
+      <p class="stage-note">아래 질문은 관련 임상시험의 포함/제외 기준과 환자 원문을 기반으로 생성되었습니다. 의료진의 답변에 따라 최종 자격 판정이 달라질 수 있습니다.</p>
+      <div class="guide-panel" id="guidePanel" style="display:none;">
+        질문은 다음 4가지를 모두 만족할 때만 제시됩니다 (근거: 지우 설계 원칙, 0712_지우_삽질.docx).
+        <ol>
+          <li>답변이 판정/순위를 실제로 바꿀 가능성이 있다</li>
+          <li>사용자·의료진이 직접 답할 수 있는 정보다</li>
+          <li>답을 받으면 불확실성이 해소된다</li>
+          <li>질문의 부담·오류위험보다 정보 가치가 크다</li>
+        </ol>
+      </div>
       <div id="questionsBody"></div>
       <div class="changelog" id="changelog"></div>
     </div>
@@ -275,6 +499,20 @@ var currentSessionId = null;
 var pollTimer = null;
 var lastTopNct = null;
 var answeredQuestions = {};
+
+// nct_id + "::" + criterion text -> the verdict a human picked to override the AI's. Keyed by
+// text (not array index) so it survives re-renders even if criteria get reordered/rematched.
+var humanOverrides = {};
+
+// Same table as pipeline.py's EFFECT_TABLE (effect_of). Verdict polarity is never inverted for
+// exclusion criteria -- effect is looked up here, not re-derived by reasoning about the label.
+var EFFECT_TABLE = {
+  "inclusion|MET": "PASS", "inclusion|NOT_MET": "FAIL",
+  "exclusion|MET": "FAIL", "exclusion|NOT_MET": "PASS"
+};
+function effectOf(type, verdict){
+  return EFFECT_TABLE[type + "|" + verdict] || "REVIEW";
+}
 
 function escapeHtml(s){
   return String(s == null ? "" : s)
@@ -305,15 +543,88 @@ function getEffect(c){
   return null;
 }
 
-// The effect is the headline, because it is the clinical consequence. The verdict sits beside
-// it, quiet, as the plain reading it was derived from.
-function verdictPair(c){
-  var v = (c.verdict || "UNKNOWN").toUpperCase();
-  var e = getEffect(c);
-  var effectChip = e
-    ? '<span class="badge badge-' + e + '">' + escapeHtml(e) + '</span>'
+var OVERRIDE_VERDICTS = ["MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"];
+
+// A human can disagree with the AI's verdict reading (matcher misread the vignette, or the
+// clinician knows something outside the vignette entirely -- see live-html-why-question-feature
+// memory). Overriding only ever changes `verdict`; `effect` is always re-derived from it via
+// effectOf(), the same table pipeline.py uses -- so a human never has to work out PASS/FAIL/
+// REVIEW themselves, only "is this statement true", exactly like the AI was asked.
+function buildCritRow(nctId, c, rowNum){
+  var key = nctId + "::" + c.text;
+  var overridden = humanOverrides.hasOwnProperty(key);
+  var effectiveVerdict = overridden ? humanOverrides[key] : (c.verdict || "UNKNOWN").toUpperCase();
+  var effectiveEffect = overridden ? effectOf(c.type, effectiveVerdict) : getEffect(c);
+  var effectChip = effectiveEffect
+    ? '<span class="badge badge-' + effectiveEffect + '">' + escapeHtml(effectiveEffect) + '</span>'
     : '<span class="badge quiet">산출 전</span>';
-  return effectChip + '<span class="badge quiet">' + escapeHtml(v) + '</span>';
+  var verdictChip = '<span class="badge badge-' + effectiveVerdict + '">' + escapeHtml(effectiveVerdict) + '</span>';
+
+  var row = el("div", "crit-row");
+  row.dataset.nct = nctId;
+  row.dataset.critText = c.text;
+  if (overridden) row.classList.add("human-confirmed");
+
+  // Column 1: row number (scanning aid, matches the mockup's numbered rows) + a colored
+  // 포함/제외 chip -- real information, not just a caption, so a reviewer can tell inclusion
+  // from exclusion without reading the sentence first.
+  var badgeCol = el("div", "crit-badge-col",
+    '<span class="crit-num">' + rowNum + '</span>' +
+    '<span class="tag-chip ' + c.type + '">' + (c.type === "inclusion" ? "포함기준" : "제외기준") + '</span>');
+
+  // Column 2: two labeled badge groups (효과/사실 -- explicit captions since the two scales are
+  // both small pills and easy to conflate at a glance), then the criterion text, the verbatim
+  // evidence (most trusted, quote-styled), and the AI's own gloss on it (least trusted, smallest).
+  var contentCol = el("div", "crit-content-col",
+    '<div class="crit-subrow">' +
+      '<div class="crit-subitem"><span class="crit-subcap">효과(결과)</span>' + effectChip + '</div>' +
+      '<div class="crit-subitem"><span class="crit-subcap">사실(사실 판정)</span>' + verdictChip + '</div>' +
+    '</div>' +
+    '<div class="crit-text">' + escapeHtml(c.text) + '</div>' +
+    (c.evidence ? '<div class="crit-evidence">' + escapeHtml(c.evidence) + '</div>' : '') +
+    (c.reasoning ? '<div class="crit-reason">' + escapeHtml(c.reasoning) + '</div>' : ''));
+
+  // Column 3: human-in-the-loop controls, deliberately separate from column 2 -- overriding is
+  // an action a reviewer takes, not more evidence to read.
+  var judgmentCol = el("div", "crit-judgment-col");
+  var aiBlock = el("div", "judgment-block",
+    '<span class="judgment-label">AI 1차 판단</span>');
+  var aiRow = el("div", "judgment-row");
+  aiRow.appendChild(el("span", "badge quiet", escapeHtml((c.verdict || "UNKNOWN").toUpperCase())));
+  var aiToggle = el("button", "override-toggle", overridden ? "수정" : "판정 수정");
+  aiToggle.type = "button";
+  aiRow.appendChild(aiToggle);
+  aiBlock.appendChild(aiRow);
+  judgmentCol.appendChild(aiBlock);
+
+  if (overridden){
+    var humanBlock = el("div", "judgment-block",
+      '<span class="judgment-label">사람 확정</span>');
+    humanBlock.appendChild(el("span", "human-confirmed-tag", "✓ " + escapeHtml(effectiveVerdict)));
+    judgmentCol.appendChild(humanBlock);
+  }
+
+  var panel = el("div", "override-panel");
+  panel.appendChild(el("span", "op-label", "사람이 다시 판정:"));
+  OVERRIDE_VERDICTS.forEach(function(v){
+    var btn = el("button", "op-btn", v);
+    btn.type = "button";
+    btn.addEventListener("click", function(){
+      humanOverrides[key] = v;
+      if (lastRenderedTrials) renderTrials(lastRenderedTrials);
+    });
+    panel.appendChild(btn);
+  });
+  judgmentCol.appendChild(panel);
+
+  aiToggle.addEventListener("click", function(){
+    panel.classList.toggle("open");
+  });
+
+  row.appendChild(badgeCol);
+  row.appendChild(contentCol);
+  row.appendChild(judgmentCol);
+  return row;
 }
 
 // ---- patient list ----
@@ -366,6 +677,8 @@ function resetView(){
   document.querySelectorAll(".agent-step").forEach(function(s){ s.classList.remove("done","running"); });
   lastTopNct = null;
   answeredQuestions = {};
+  humanOverrides = {};
+  lastRenderedTrials = null;
 }
 
 function setModeBadge(mode){
@@ -402,9 +715,18 @@ function updateAgentMap(stage){
   var idx = STAGE_ORDER.indexOf(stage);
   document.querySelectorAll(".agent-step").forEach(function(s){
     var sIdx = STAGE_ORDER.indexOf(s.dataset.stage);
-    s.classList.remove("done","running");
-    if (stage === "done" || sIdx < idx) s.classList.add("done");
-    else if (sIdx === idx) s.classList.add("running");
+    var icon = s.querySelector(".stage-icon");
+    s.classList.remove("done","running","pending");
+    if (stage === "done" || sIdx < idx){
+      s.classList.add("done");
+      if (icon) icon.textContent = "✓";
+    } else if (sIdx === idx){
+      s.classList.add("running");
+      if (icon) icon.textContent = "";
+    } else {
+      s.classList.add("pending");
+      if (icon) icon.textContent = "";
+    }
   });
 }
 
@@ -415,6 +737,8 @@ function renderVignette(patient){
   box.innerHTML = '<span class="lbl">' + escapeHtml(patient.patient_id) + '</span>' + escapeHtml(patient.text);
 }
 
+var lastRenderedTrials = null;
+
 function renderTrials(trials){
   var box = document.getElementById("trialsBody");
   var legend = document.getElementById("verdictLegend");
@@ -423,36 +747,58 @@ function renderTrials(trials){
     if (legend) legend.style.display = "none";
     return;
   }
+  lastRenderedTrials = trials;
   if (legend) legend.style.display = "";
   var sorted = trials.slice().sort(function(a,b){ return (a.rank||99) - (b.rank||99); });
   box.innerHTML = "";
   sorted.forEach(function(t){
     var card = el("div", "trial-card");
     card.dataset.nct = t.nct_id;
-    var elig = t.eligibility ? badge(t.eligibility === "ELIGIBLE" ? "ELIGIBLE" : (t.eligibility === "INELIGIBLE" ? "INELIGIBLE" : "UNCERTAIN"), t.eligibility) : "";
+    var eligKind = t.eligibility === "ELIGIBLE" ? "ELIGIBLE"
+      : t.eligibility === "INELIGIBLE" ? "INELIGIBLE" : "ELIG_UNCERTAIN";
+    var elig = t.eligibility ? badge(eligKind, "전체 적격성: " + t.eligibility) : "";
     var head = el("div", "trial-card-head");
+    // Title + overall eligibility are what a reviewer checks first, so they share the top line;
+    // NCT id / phase are lookup details, not decision inputs, so they drop to a quieter line below.
     head.innerHTML =
       '<div class="rank">' + (t.rank || "?") + '</div>' +
-      '<div class="titlewrap"><h3>' + escapeHtml(t.title) + '</h3>' +
+      '<div class="titlewrap">' +
+      '<div class="title-row"><h3>' + escapeHtml(t.title) + '</h3>' +
+      '<span class="badge-lg-wrap">' + elig + '</span></div>' +
       '<div class="meta">' + escapeHtml(t.nct_id) +
-      '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
-      '<span class="meta-sep">' + elig + '</span></div></div>';
+      '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span></div></div>';
     card.appendChild(head);
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));
     }
     var body = el("div", "crit-body");
-    (t.criteria || []).forEach(function(c, ci){
-      var row = el("div", "crit-row");
-      row.dataset.nct = t.nct_id;
-      row.dataset.critText = c.text;
-      row.innerHTML =
-        '<div>' + verdictPair(c) + '<br><span class="tag ' + c.type + '">' + (c.type === "inclusion" ? "포함" : "제외") + '</span></div>' +
-        '<div><div class="crit-text">' + escapeHtml(c.text) + '</div>' +
-        (c.evidence ? '<div class="crit-evidence">&quot;' + escapeHtml(c.evidence) + '&quot;</div>' : '') +
-        (c.reasoning ? '<div class="crit-reason">' + escapeHtml(c.reasoning) + '</div>' : '') + '</div>';
-      body.appendChild(row);
+    var criteria = t.criteria || [];
+    var table = el("div", "crit-table");
+    var thead = el("div", "crit-table-head",
+      '<span>기준 (총 ' + criteria.length + '개)</span><span>판정 및 근거</span><span>AI / 사람 판정</span>');
+    table.appendChild(thead);
+
+    var VISIBLE_ROWS = 4;
+    criteria.forEach(function(c, ci){
+      var row = buildCritRow(t.nct_id, c, ci + 1);
+      if (ci >= VISIBLE_ROWS) row.style.display = "none";
+      table.appendChild(row);
     });
+    var hiddenCount = criteria.length - VISIBLE_ROWS;
+    if (hiddenCount > 0){
+      var moreBtn = el("button", "crit-more-toggle", hiddenCount + "개 기준 더보기");
+      moreBtn.type = "button";
+      moreBtn.addEventListener("click", function(){
+        var rows = table.querySelectorAll(".crit-row");
+        var opening = rows[VISIBLE_ROWS] && rows[VISIBLE_ROWS].style.display === "none";
+        for (var i = VISIBLE_ROWS; i < rows.length; i++){
+          rows[i].style.display = opening ? "grid" : "none";
+        }
+        moreBtn.textContent = opening ? "접기" : (hiddenCount + "개 기준 더보기");
+      });
+      table.appendChild(moreBtn);
+    }
+    body.appendChild(table);
     head.addEventListener("click", function(){
       body.style.display = body.style.display === "none" ? "block" : "none";
     });
@@ -461,27 +807,173 @@ function renderTrials(trials){
   });
 }
 
+// ---- "왜 이 질문인가" helpers ----
+// affects_trials/affects_criteria/may_change_rank are meant to come from the backend
+// (건희, gap-detector 확장) but don't exist in the API response yet. Per 할일.docx: hardcode
+// the sentence now so the layout is done, swap in the real fields later -- UI shape doesn't
+// change, only the data source does. Visually marked "예시 수치" so nobody mistakes this for
+// a real computed number.
+var IMPACT_PLACEHOLDER = {
+  affects_trials: 3, affects_criteria: 7, rank_note: "1·3위"
+};
+
+// Priority tiers are also placeholder (question-generator returns array order, already impact-
+// ranked, but doesn't label a tier) -- first question reads as highest-impact, matching the
+// existing "N순위" ordering rationale. Colors line up with the effect/eligibility palette
+// (green=high, amber=medium, gray=normal) so the pill and its matching impact-panel accent bar
+// read as the same signal.
+var PRIORITY_LEVELS = [
+  {label: "높은 우선순위", cls: "high"},
+  {label: "중간 우선순위", cls: "med"},
+  {label: "일반 우선순위", cls: "normal"}
+];
+function priorityFor(qi){
+  return PRIORITY_LEVELS[qi] || PRIORITY_LEVELS[PRIORITY_LEVELS.length - 1];
+}
+
+var STOPWORDS = {"the":1,"a":1,"an":1,"of":1,"and":1,"or":1,"in":1,"on":1,"at":1,"to":1,
+  "is":1,"are":1,"was":1,"were":1,"for":1,"this":1,"that":1,"with":1,"have":1,"has":1,
+  "any":1,"does":1,"he":1,"she":1,"his":1,"her":1,"what":1,"when":1,"who":1,"which":1,
+  "been":1,"from":1,"as":1,"by":1};
+
+function tokenSet(text){
+  var out = {};
+  (String(text || "").toLowerCase().match(/[a-z0-9%.]+/g) || []).forEach(function(w){
+    if (!STOPWORDS[w] && w.length > 2) out[w] = true;
+  });
+  return out;
+}
+
+function tokenOverlap(a, b){
+  var n = 0;
+  for (var k in a) if (b[k]) n++;
+  return n;
+}
+
+// Same idea as api/answer.py's find_affected(): no gap->related_criteria map is exposed to
+// this page, so approximate it with token overlap between the question and each still-open
+// (UNKNOWN/UNCERTAIN) criterion. This is a heuristic preview, not the authoritative mapping.
+function findRelatedCriteria(q, trials){
+  var qtok = tokenSet((q.field || "") + " " + (q.question || ""));
+  var matches = [];
+  (trials || []).forEach(function(t){
+    (t.criteria || []).forEach(function(c){
+      if (c.verdict !== "UNKNOWN" && c.verdict !== "UNCERTAIN") return;
+      if (tokenOverlap(qtok, tokenSet(c.text)) > 0){
+        matches.push({nct_id: t.nct_id, text: c.text});
+      }
+    });
+  });
+  return matches;
+}
+
+// Full criterion sentences run 150-300+ chars -- unreadable as a list of 2-3. Cut a window
+// around the first matched keyword instead of the start of the sentence, so the part that
+// actually explains "why this criterion" survives the truncation.
+function snippetAroundMatch(text, qtok, maxLen){
+  maxLen = maxLen || 110;
+  if (text.length <= maxLen) return text;
+  var re = /[A-Za-z0-9%.]+/g, m, firstIdx = -1;
+  while ((m = re.exec(text))){
+    if (qtok[m[0].toLowerCase()]){ firstIdx = m.index; break; }
+  }
+  if (firstIdx === -1) return text.slice(0, maxLen) + "…";
+  var start = Math.max(0, firstIdx - 30);
+  var end = Math.min(text.length, start + maxLen);
+  var snippet = text.slice(start, end);
+  if (start > 0) snippet = "…" + snippet;
+  if (end < text.length) snippet = snippet + "…";
+  return snippet;
+}
+
+// Bold only the words that actually overlap with the question, so the reader can tell at a
+// glance why THIS criterion matched instead of reading the whole sentence to find out.
+// Escapes first, then bolds -- the token regex ([A-Za-z0-9%.]+) never matches "&amp;"/"&lt;"
+// so this can't reopen an HTML-escaping hole.
+function highlightMatches(text, qtok){
+  return escapeHtml(text).replace(/[A-Za-z0-9%.]+/g, function(word){
+    return qtok[word.toLowerCase()] ? ("<strong>" + word + "</strong>") : word;
+  });
+}
+
+function relatedCriterionLine(r, qtok){
+  return '[' + escapeHtml(r.nct_id) + '] ' + highlightMatches(snippetAroundMatch(r.text, qtok), qtok);
+}
+
+// Builds the "관련 기준 미리보기" block as a DOM node (not an HTML string) because the
+// "...외 N건" tail needs a click handler to expand -- a hidden count with no way to see what
+// it hides isn't good enough for a clinician deciding whether to trust the match.
+function buildRelatedCriteriaBlock(q, trials){
+  var related = findRelatedCriteria(q, trials);
+  if (related.length === 0) return null;
+  var qtok = tokenSet((q.field || "") + " " + (q.question || ""));
+  var relatedTrialCount = 0, seenNct = {};
+  related.forEach(function(r){ if (!seenNct[r.nct_id]){ seenNct[r.nct_id] = true; relatedTrialCount++; } });
+
+  var wrap = el("div", "related-crit");
+  wrap.appendChild(el("span", "rc-label", "관련 기준 미리보기"));
+  wrap.appendChild(document.createTextNode(
+    " (추정 · 시험 " + relatedTrialCount + "건 / 기준 " + related.length + "개)"));
+
+  var shown = related.slice(0, 2), rest = related.slice(2);
+  var list = document.createElement("ul");
+  shown.forEach(function(r){ list.appendChild(el("li", null, relatedCriterionLine(r, qtok))); });
+  wrap.appendChild(list);
+
+  if (rest.length > 0){
+    var moreList = document.createElement("ul");
+    moreList.style.display = "none";
+    rest.forEach(function(r){ moreList.appendChild(el("li", null, relatedCriterionLine(r, qtok))); });
+    wrap.appendChild(moreList);
+
+    var toggle = el("button", "rc-toggle", "…외 " + rest.length + "건 더 보기");
+    toggle.type = "button";
+    toggle.addEventListener("click", function(){
+      var opening = moreList.style.display === "none";
+      moreList.style.display = opening ? "block" : "none";
+      toggle.textContent = opening ? "접기" : ("…외 " + rest.length + "건 더 보기");
+    });
+    wrap.appendChild(toggle);
+  }
+  return wrap;
+}
+
 function renderQuestions(questions, trials){
   var dock = document.getElementById("questionsDock");
   var body = document.getElementById("questionsBody");
   if (!questions || questions.length === 0){ dock.style.display = "none"; return; }
   dock.style.display = "block";
+
+  var banner = document.getElementById("dockBanner");
+  if (banner){
+    banner.textContent = "ⓘ 이 질문은 시험 " + IMPACT_PLACEHOLDER.affects_trials + "건의 기준 " +
+      IMPACT_PLACEHOLDER.affects_criteria + "개를 기반으로 합니다.";
+  }
+
   body.innerHTML = "";
   questions.forEach(function(q, qi){
+    var pr = priorityFor(qi);
     var card = el("div", "question-card");
     var isAnswered = answeredQuestions[q.question];
     if (isAnswered) card.classList.add("answered");
-    card.innerHTML =
-      '<div class="field">' + escapeHtml(q.field) + '</div>' +
+
+    var main = el("div", "q-main");
+    main.innerHTML =
+      '<div class="field-row"><span class="priority-pill ' + pr.cls + '">' + pr.label + '</span>' +
+      '<span class="field">' + escapeHtml(q.field) + '</span></div>' +
       '<div class="q">' + escapeHtml(q.question) + '</div>' +
       '<div class="why">' + escapeHtml(q.why) + '</div>';
+
+    var relatedBlock = buildRelatedCriteriaBlock(q, trials);
+    if (relatedBlock) main.appendChild(relatedBlock);
+
     if (isAnswered){
-      card.appendChild(el("div", "answered-note", "반영됨: " + escapeHtml(isAnswered)));
+      main.appendChild(el("div", "answered-note", "반영됨: " + escapeHtml(isAnswered)));
     } else {
       var row = el("div", "answer-row");
       var input = document.createElement("input");
       input.type = "text";
-      input.placeholder = "답변을 입력하세요";
+      input.placeholder = "답변을 입력하세요 (자유 입력)";
       var btn = el("button", "btn btn-sm", "답변 반영");
       btn.addEventListener("click", function(){
         var val = input.value.trim();
@@ -490,8 +982,29 @@ function renderQuestions(questions, trials){
       });
       row.appendChild(input);
       row.appendChild(btn);
-      card.appendChild(row);
+      main.appendChild(row);
     }
+    card.appendChild(main);
+
+    // Right-hand "why this question matters" panel -- mirrors the reviewer's mockup layout.
+    // affects_trials/affects_criteria stay IMPACT_PLACEHOLDER values (건희's backend doesn't
+    // expose real per-question numbers yet); 자세히 보기 is a hover-only placeholder for the
+    // same reason -- it has nowhere real to link to yet, so it doesn't pretend to be clickable.
+    var panel = el("div", "q-impact-panel " + pr.cls);
+    panel.innerHTML =
+      '<div class="impact-note">이 질문은 시험 ' + IMPACT_PLACEHOLDER.affects_trials + '건의 기준 ' +
+      IMPACT_PLACEHOLDER.affects_criteria + '개를 기반으로 합니다.<br>답변에 따라 현재 ' +
+      IMPACT_PLACEHOLDER.rank_note + ' 시험의 적격 상태가 바뀔 수 있습니다.' +
+      '<span class="impact-flag">예시 수치 (API 연동 전 임시값)</span></div>' +
+      '<div class="q-impact-stats">' +
+        '<div class="q-stat"><span class="q-stat-num">' + IMPACT_PLACEHOLDER.affects_trials + '건</span><span class="q-stat-cap">영향 시험</span></div>' +
+        '<div class="q-stat"><span class="q-stat-num">' + IMPACT_PLACEHOLDER.affects_criteria + '개</span><span class="q-stat-cap">관련 기준</span></div>' +
+        '<div class="q-stat"><span class="q-stat-num">' + pr.label.replace(" 우선순위","") + '</span><span class="q-stat-cap">우선순위</span></div>' +
+      '</div>' +
+      '<div class="q-source-row">출처: 환자 원문, 관련 시험의 포함/제외 기준 · ' +
+      '<span class="q-detail-link" title="추후 API 연동 시 지원 예정">자세히 보기 ↗</span></div>';
+    card.appendChild(panel);
+
     body.appendChild(card);
   });
 }
@@ -551,6 +1064,11 @@ function appendChangelog(round, changes, recommendation, note){
   var line = el("div", "", escapeHtml(text));
   log.insertBefore(line, log.firstChild);
 }
+
+document.getElementById("guideToggle").addEventListener("click", function(){
+  var panel = document.getElementById("guidePanel");
+  panel.style.display = panel.style.display === "none" ? "block" : "none";
+});
 
 loadPatients();
 </script>
