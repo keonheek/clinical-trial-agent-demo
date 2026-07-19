@@ -40,6 +40,7 @@ from action_policy import (
     is_question_worthy,
     UNCERTAINTY_TYPES,
 )
+from evidence import assess_evidence
 
 _BACKEND = os.environ.get("LLM_BACKEND", "anthropic")
 if _BACKEND == "ollama":
@@ -105,6 +106,82 @@ def classify_action(verdict, raw_uncertainty_type):
     if utype is None and verdict == "UNKNOWN":
         utype = "MISSING"
     return utype, action_for(utype)
+
+
+def apply_evidence_sufficiency(verdict, evidence_meta):
+    """Run the evidence-sufficiency check (evidence.py §6) on a decided verdict.
+
+    Only fires when the matcher actually returned evidence metadata (source_type/
+    confirmation_level/directness) for this criterion -- no metadata means nothing to
+    check, so a bare MET/NOT_MET passes through unchanged. This is the enforcement
+    point for "no blanket caution": a real, evidence-backed MET (e.g. a confirmed,
+    direct pathology finding for 'History of ILD') must stay MET, and only the specific
+    structured insufficiency rule in evidence.assess_evidence can demote a verdict.
+
+    Returns (verdict, uncertainty_type, action, sufficiency_result|None). uncertainty_type
+    and action are None unless the check demotes the verdict, in which case they are
+    INSUFFICIENT_EVIDENCE / VERIFY (the same mapping evidence.py itself uses).
+    """
+    if verdict not in ("MET", "NOT_MET"):
+        return verdict, None, None, None
+    if not evidence_meta or not evidence_meta.get("confirmation_level"):
+        return verdict, None, None, None
+    result = assess_evidence(evidence_meta)
+    if result["sufficient"]:
+        return verdict, None, None, result
+    return "UNCERTAIN", "INSUFFICIENT_EVIDENCE", action_for("INSUFFICIENT_EVIDENCE"), result
+
+
+# ---------------------------------------------------------------------------
+# trial-intent classification (건희 priority item 4)
+# ---------------------------------------------------------------------------
+# Deterministic, keyword/structure-based classification of what KIND of trial this is --
+# therapeutic (testing a treatment's effect on disease), supportive (symptom/QoL/psychosocial
+# care alongside a diagnosis), or care_delivery (observational/registry/process-of-care work,
+# not testing a treatment at all). Computed in code from the trial record itself (title,
+# conditions, phase, raw eligibility text); no LLM call needed for this heuristic, so there is
+# nothing to default off -- if an LLM-assisted classifier is ever added, it must default off.
+TRIAL_INTENT_KEYWORDS = {
+    "supportive": [
+        "quality of life", "supportive care", "palliative", "symptom management",
+        "psychosocial", "caregiver", "nutrition", "coping", "distress",
+        "rehabilitation", "exercise intervention", "mindfulness", "counseling",
+    ],
+    "care_delivery": [
+        "registry", "observational", "cohort study", "survey", "screening program",
+        "care coordination", "telehealth", "electronic health record", " ehr ",
+        "implementation", "quality improvement", "health services", "care pathway",
+        "natural history",
+    ],
+}
+INTERVENTIONAL_PHASES = {"1", "2", "3", "4", "1/2", "2/3", "early1", "earlyphase1"}
+
+
+def _norm_phase(phase):
+    return str(phase or "").strip().lower().replace("phase", "").replace(" ", "")
+
+
+def classify_trial_intent(trial):
+    """therapeutic | supportive | care_delivery for one trial record. Pure, deterministic."""
+    haystack = " ".join([
+        trial.get("title", "") or "",
+        " ".join(trial.get("conditions", []) or []),
+        trial.get("eligibility_criteria_raw", "") or "",
+    ]).lower()
+
+    for kw in TRIAL_INTENT_KEYWORDS["supportive"]:
+        if kw in haystack:
+            return "supportive"
+    for kw in TRIAL_INTENT_KEYWORDS["care_delivery"]:
+        if kw in haystack:
+            return "care_delivery"
+
+    phase = _norm_phase(trial.get("phase"))
+    if phase in INTERVENTIONAL_PHASES:
+        return "therapeutic"
+    if phase in ("na", "", "n/a"):
+        return "care_delivery"
+    return "therapeutic"
 
 
 # ---------------------------------------------------------------------------
@@ -216,8 +293,20 @@ uncertainty_type to null.
 
 `evidence` must be a short quote copied from the patient's fields/vignette that supports your
 verdict, or null if verdict is UNKNOWN. `reasoning` must be <= 25 words, plain clinical language.
+
+For a MET or NOT_MET verdict, ALSO give `evidence_meta` describing the KIND of evidence that
+quote is, so a downstream sufficiency check can catch a finding being over-read (e.g. a
+*suspected* imaging finding must never be treated as a *confirmed* diagnosis):
+  - source_type: one of symptom, patient_report, lab, imaging, pathology, clinical_judgment
+  - confirmation_level: one of suspected, provisional, confirmed (how settled the finding is --
+    "CT shows a mass" is suspected; "biopsy-confirmed" or a clinician's documented diagnosis is
+    confirmed)
+  - directness: direct (the evidence itself states the fact the criterion needs) or indirect
+    (you are inferring the fact from something else, e.g. inferring a lab abnormality from a
+    symptom cluster)
+Set evidence_meta to null when verdict is UNCERTAIN or UNKNOWN.
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "uncertainty_type": "<one of the list above>"|null, "evidence": "<quote>"|null, "reasoning": "<short reasoning>"}]}
+{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "uncertainty_type": "<one of the list above>"|null, "evidence": "<quote>"|null, "evidence_meta": {"source_type": "<...>", "confirmation_level": "<...>", "directness": "<...>"}|null, "reasoning": "<short reasoning>"}]}
 Return exactly one match object per criterion given, in any order, using the given index numbers."""
 
 
@@ -252,20 +341,27 @@ Evaluate each numbered criterion per your instructions."""
         evidence = m.get("evidence")
         evidence = str(evidence).strip() if evidence else None
         reasoning = truncate_words(str(m.get("reasoning", "")).strip(), MAX_REASONING_WORDS)
+        raw_meta = m.get("evidence_meta")
         by_index[idx] = {"verdict": verdict, "evidence": evidence, "reasoning": reasoning,
-                         "uncertainty_type": m.get("uncertainty_type")}
+                         "uncertainty_type": m.get("uncertainty_type"),
+                         "evidence_meta": raw_meta if isinstance(raw_meta, dict) else None}
 
     merged = []
     for i, c in enumerate(criteria):
         m = by_index.get(i + 1, {"verdict": "UNCERTAIN", "evidence": None,
                                   "reasoning": "matcher did not return a verdict for this criterion",
-                                  "uncertainty_type": None})
-        utype, action = classify_action(m["verdict"], m.get("uncertainty_type"))
+                                  "uncertainty_type": None, "evidence_meta": None})
+        verdict = m["verdict"]
+        utype, action = classify_action(verdict, m.get("uncertainty_type"))
+        verdict, demoted_utype, demoted_action, _suff = apply_evidence_sufficiency(
+            verdict, m.get("evidence_meta"))
+        if demoted_utype:
+            utype, action = demoted_utype, demoted_action
         merged.append({
             "text": c["text"],
             "type": c["type"],
-            "verdict": m["verdict"],
-            "effect": effect_of(c["type"], m["verdict"]),
+            "verdict": verdict,
+            "effect": effect_of(c["type"], verdict),
             "uncertainty_type": utype,
             "action": action,
             "evidence": m["evidence"],
@@ -534,8 +630,14 @@ best reason it still cannot be decided, from: """ + ", ".join(UNCERTAINTY_TYPES)
 set uncertainty_type to null.
 `evidence` must be a short quote from the vignette or extended record, or null if UNKNOWN.
 `reasoning` must be <= 25 words.
+
+For a MET or NOT_MET verdict, ALSO give `evidence_meta` (null for UNCERTAIN/UNKNOWN) describing
+the kind of evidence: source_type (symptom, patient_report, lab, imaging, pathology,
+clinical_judgment), confirmation_level (suspected, provisional, confirmed), and directness
+(direct or indirect) -- same rule as the first matching pass: a suspected/indirect finding must
+never be dressed up as a confirmed diagnosis.
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "uncertainty_type": "<one of the list>"|null, "evidence": "<quote>"|null, "reasoning": "<short reasoning>"}]}
+{"matches": [{"index": <criterion number as given>, "verdict": "MET"|"NOT_MET"|"UNCERTAIN"|"UNKNOWN", "uncertainty_type": "<one of the list>"|null, "evidence": "<quote>"|null, "evidence_meta": {"source_type": "<...>", "confirmation_level": "<...>", "directness": "<...>"}|null, "reasoning": "<short reasoning>"}]}
 Return exactly one match object per criterion given, using the given index numbers."""
 
 
@@ -574,16 +676,19 @@ Re-evaluate each numbered criterion per your instructions."""
         evidence = m.get("evidence")
         evidence = str(evidence).strip() if evidence else None
         reasoning = truncate_words(str(m.get("reasoning", "")).strip(), MAX_REASONING_WORDS)
+        raw_meta = m.get("evidence_meta")
         by_index[idx] = {"verdict": verdict, "evidence": evidence, "reasoning": reasoning,
-                         "uncertainty_type": m.get("uncertainty_type")}
+                         "uncertainty_type": m.get("uncertainty_type"),
+                         "evidence_meta": raw_meta if isinstance(raw_meta, dict) else None}
 
     out = []
     for i, a in enumerate(affected):
         r = by_index.get(i + 1, {"verdict": a["before_verdict"], "evidence": None,
                                   "reasoning": "reeval-matcher did not return a verdict; kept prior verdict",
-                                  "uncertainty_type": None})
+                                  "uncertainty_type": None, "evidence_meta": None})
         out.append({**a, "after_verdict": r["verdict"], "after_evidence": r["evidence"],
-                     "after_reasoning": r["reasoning"], "after_uncertainty_type": r.get("uncertainty_type")})
+                     "after_reasoning": r["reasoning"], "after_uncertainty_type": r.get("uncertainty_type"),
+                     "after_evidence_meta": r.get("evidence_meta")})
     return out
 
 
@@ -633,17 +738,22 @@ def run_reeval(patient, gaps, questions, trials_out):
     updated_trials = [dict(t, criteria=[dict(c) for c in t["criteria"]]) for t in trials_out]
     for r in rematched:
         crit = updated_trials[r["trial_idx"]]["criteria"][r["crit_idx"]]
-        crit["verdict"] = r["after_verdict"]
-        crit["effect"] = effect_of(crit["type"], r["after_verdict"])
-        crit["uncertainty_type"], crit["action"] = classify_action(
-            r["after_verdict"], r.get("after_uncertainty_type"))
+        after_verdict = r["after_verdict"]
+        utype, action = classify_action(after_verdict, r.get("after_uncertainty_type"))
+        after_verdict, demoted_utype, demoted_action, _suff = apply_evidence_sufficiency(
+            after_verdict, r.get("after_evidence_meta"))
+        if demoted_utype:
+            utype, action = demoted_utype, demoted_action
+        crit["verdict"] = after_verdict
+        crit["effect"] = effect_of(crit["type"], after_verdict)
+        crit["uncertainty_type"], crit["action"] = utype, action
         if r["after_evidence"]:
             crit["evidence"] = r["after_evidence"]
         crit["reasoning"] = r["after_reasoning"]
-        if r["after_verdict"] != r["before_verdict"]:
+        if after_verdict != r["before_verdict"]:
             verdict_changes.append({
                 "nct_id": r["nct_id"], "criterion": r["text"],
-                "before": r["before_verdict"], "after": r["after_verdict"],
+                "before": r["before_verdict"], "after": after_verdict,
             })
 
     print(f"    -> {len(verdict_changes)} verdict change(s)")
@@ -696,6 +806,7 @@ def run_patient(patient, trials_raw_for_patient):
             "nct_id": t["nct_id"],
             "title": t["title"],
             "phase": t["phase"],
+            "trial_intent": classify_trial_intent(t),
             "criteria": matched,
         })
 
@@ -766,5 +877,109 @@ def main():
     print("Wrote traces.json and traces.js")
 
 
+# ---------------------------------------------------------------------------
+# self-tests -- run: python3 pipeline.py --selftest (no LLM calls, no file I/O)
+# ---------------------------------------------------------------------------
+def _selftest():
+    failures = []
+
+    def check(cond, msg):
+        if not cond:
+            failures.append(msg)
+
+    # ---- evidence-sufficiency wiring (apply_evidence_sufficiency) ----
+
+    # no metadata at all -> pass through unchanged (no blanket caution)
+    v, ut, act, r = apply_evidence_sufficiency("MET", None)
+    check(v == "MET" and ut is None and act is None and r is None,
+          "MET with no evidence_meta must pass through unchanged")
+
+    # THE non-regression case: an evidence-backed "History of ILD" MET must stay MET.
+    ild_meta = {"source_type": "patient_report", "confirmation_level": "confirmed", "directness": "direct"}
+    v, ut, act, r = apply_evidence_sufficiency("MET", ild_meta)
+    check(v == "MET", "confirmed direct evidence must NOT demote a real MET (ILD non-regression)")
+    check(ut is None and act is None, "sufficient evidence must not attach an uncertainty_type/action")
+
+    # THE §6 demotion case: a suspected/indirect imaging finding must demote MET -> UNCERTAIN.
+    ct_meta = {"source_type": "imaging", "confirmation_level": "suspected", "directness": "indirect"}
+    v, ut, act, r = apply_evidence_sufficiency("MET", ct_meta)
+    check(v == "UNCERTAIN", "suspected/indirect imaging evidence must demote MET to UNCERTAIN")
+    check(ut == "INSUFFICIENT_EVIDENCE", "demotion must carry uncertainty_type INSUFFICIENT_EVIDENCE")
+    check(act == "VERIFY", "demotion must route to action VERIFY")
+    check(r is not None and r["sufficient"] is False, "sufficiency result must be attached and insufficient")
+
+    # UNCERTAIN/UNKNOWN verdicts are untouched regardless of metadata -- only MET/NOT_MET qualify
+    v, ut, act, r = apply_evidence_sufficiency("UNCERTAIN", ct_meta)
+    check(v == "UNCERTAIN" and ut is None and act is None,
+          "apply_evidence_sufficiency must not touch UNCERTAIN/UNKNOWN verdicts")
+
+    # NOT_MET can be demoted the same way as MET
+    v, ut, act, r = apply_evidence_sufficiency("NOT_MET", ct_meta)
+    check(v == "UNCERTAIN" and ut == "INSUFFICIENT_EVIDENCE",
+          "NOT_MET must be demotable the same as MET")
+
+    # effect_of composes correctly with a demoted verdict: REVIEW either way
+    check(effect_of("exclusion", "UNCERTAIN") == "REVIEW", "demoted exclusion verdict -> REVIEW effect")
+    check(effect_of("inclusion", "UNCERTAIN") == "REVIEW", "demoted inclusion verdict -> REVIEW effect")
+
+    # end-to-end through match_trial's merge shape: a MET verdict with confirmed/direct evidence_meta
+    # returned by the (mocked) matcher must still merge to MET/PASS, matching the real matcher's
+    # by_index contract without making any network call.
+    m_sufficient = {"verdict": "MET", "evidence": "biopsy shows...", "reasoning": "confirmed",
+                    "uncertainty_type": None, "evidence_meta": ild_meta}
+    utype, action = classify_action(m_sufficient["verdict"], m_sufficient.get("uncertainty_type"))
+    verdict, d_ut, d_act, _ = apply_evidence_sufficiency(m_sufficient["verdict"], m_sufficient.get("evidence_meta"))
+    if d_ut:
+        utype, action = d_ut, d_act
+    check(verdict == "MET" and effect_of("inclusion", verdict) == "PASS",
+          "merge-shape simulation: sufficient evidence keeps MET -> PASS")
+
+    m_insufficient = {"verdict": "MET", "evidence": "CT shows a bladder wall mass", "reasoning": "imaging",
+                       "uncertainty_type": None, "evidence_meta": ct_meta}
+    utype, action = classify_action(m_insufficient["verdict"], m_insufficient.get("uncertainty_type"))
+    verdict, d_ut, d_act, _ = apply_evidence_sufficiency(m_insufficient["verdict"], m_insufficient.get("evidence_meta"))
+    if d_ut:
+        utype, action = d_ut, d_act
+    check(verdict == "UNCERTAIN" and utype == "INSUFFICIENT_EVIDENCE" and action == "VERIFY"
+          and effect_of("exclusion", verdict) == "REVIEW",
+          "merge-shape simulation: §6 worked example demotes MET -> UNCERTAIN/VERIFY/REVIEW")
+
+    # ---- trial-intent classification ----
+    supportive_trial = {"title": "A Quality of Life and Symptom Management Study", "phase": "NA",
+                         "conditions": ["Cancer"], "eligibility_criteria_raw": ""}
+    check(classify_trial_intent(supportive_trial) == "supportive",
+          "QoL/symptom-management title must classify as supportive")
+
+    registry_trial = {"title": "A Prospective Observational Registry of Diabetes Outcomes",
+                       "phase": "NA", "conditions": ["Diabetes"], "eligibility_criteria_raw": ""}
+    check(classify_trial_intent(registry_trial) == "care_delivery",
+          "observational registry title must classify as care_delivery")
+
+    drug_trial = {"title": "A Phase 2 Study of Drug X for Advanced NSCLC", "phase": "2",
+                  "conditions": ["NSCLC"], "eligibility_criteria_raw": "Histologically confirmed NSCLC"}
+    check(classify_trial_intent(drug_trial) == "therapeutic",
+          "phase 2 drug study must classify as therapeutic")
+
+    na_no_signal_trial = {"title": "Long-Term Follow-Up of Graves Disease Patients", "phase": "NA",
+                           "conditions": ["Graves Disease"], "eligibility_criteria_raw": ""}
+    check(classify_trial_intent(na_no_signal_trial) == "care_delivery",
+          "NA phase with no keyword signal must default to care_delivery")
+
+    unphased_interventional = {"title": "Efficacy of a New Antibody Treatment", "phase": "1/2",
+                                "conditions": ["Lymphoma"], "eligibility_criteria_raw": ""}
+    check(classify_trial_intent(unphased_interventional) == "therapeutic",
+          "phase 1/2 study must classify as therapeutic")
+
+    if failures:
+        print("FAIL:")
+        for f in failures:
+            print("  -", f)
+        raise SystemExit(1)
+    print(f"pipeline self-tests passed ({len(failures)} failures).")
+
+
 if __name__ == "__main__":
-    main()
+    if "--selftest" in sys.argv:
+        _selftest()
+    else:
+        main()
