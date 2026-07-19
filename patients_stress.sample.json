@@ -1,0 +1,17 @@
+[
+  {
+    "patient_id": "T001",
+    "text": "SAMPLE/FORMAT ONLY -- NOT A REAL STRESS-TEST PATIENT. A 40-year-old patient with a placeholder condition, used only to document the schema 정원 should follow when converting 지우's answer key. Replace with the real base vignette for patient T001.",
+    "condition": "placeholder condition (sample only)"
+  },
+  {
+    "patient_id": "T001-a",
+    "text": "SAMPLE/FORMAT ONLY -- NOT REAL. Same base patient as T001, but this variant's text has been corrupted per one of the 7 broken-input types 지우 is testing (e.g. a missing lab value, a stale date, an ambiguous phrase). patient_id MUST be the base id plus a single lowercase suffix letter a-g.",
+    "condition": "placeholder condition (sample only)"
+  },
+  {
+    "patient_id": "T001-b",
+    "text": "SAMPLE/FORMAT ONLY -- NOT REAL. A second corrupted variant of T001, showing that each of the 7 letters a..g is a separate patient entry, not a separate field on one entry.",
+    "condition": "placeholder condition (sample only)"
+  }
+]

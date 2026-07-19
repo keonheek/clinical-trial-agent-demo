@@ -1,0 +1,29 @@
+[
+  {
+    "patient_id": "T001",
+    "nct_id": "NCT00000000",
+    "criterion_text": "SAMPLE/FORMAT ONLY -- e.g. 'Age under 18 years old'. Must be copied verbatim from the real trial criteria text 지우 is judging against -- this string is BOTH the input the matcher judges and the join key back to this label, so it must not be paraphrased or retyped differently across rows for the same criterion.",
+    "criterion_type": "inclusion",
+    "expected_verdict": "MET",
+    "expected_action": null,
+    "_NOTE": "PLACEHOLDER ROW -- not a real answer. expected_verdict/expected_action are hand-written by 지우 (blind to the system's output), never authored by this harness or any agent."
+  },
+  {
+    "patient_id": "T001-a",
+    "nct_id": "NCT00000000",
+    "criterion_text": "SAMPLE/FORMAT ONLY -- must be the identical criterion_text string used for T001 above if it's the same criterion being re-checked against the corrupted variant.",
+    "criterion_type": "inclusion",
+    "expected_verdict": "UNCERTAIN",
+    "expected_action": "ASK",
+    "_NOTE": "PLACEHOLDER ROW -- not a real answer."
+  },
+  {
+    "patient_id": "T001-b",
+    "nct_id": "NCT00000001",
+    "criterion_text": "SAMPLE/FORMAT ONLY -- e.g. 'History of active malignancy within 5 years'.",
+    "criterion_type": "exclusion",
+    "expected_verdict": "UNKNOWN",
+    "expected_action": "RETRIEVE",
+    "_NOTE": "PLACEHOLDER ROW -- not a real answer."
+  }
+]
