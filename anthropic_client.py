@@ -164,12 +164,12 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
 
     delay = 2.0
     last_err = None
+    result = None
     for attempt in range(max_retries):
         try:
             req = urllib.request.Request(API_URL, data=data, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=180) as resp:
                 payload = json.loads(resp.read().decode("utf-8"))
-            break
         except urllib.error.HTTPError as e:
             detail = e.read().decode("utf-8", "replace")[:200]
             last_err = f"HTTP {e.code}: {detail}"
@@ -187,32 +187,46 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
                 delay *= 2
                 continue
             raise RuntimeError(f"anthropic call failed for {role}: {last_err}") from e
+
+        # Account tokens per real API call (a retried attempt genuinely spent tokens too).
+        usage = payload.get("usage", {})
+        in_tok = usage.get("input_tokens", 0)
+        out_tok = usage.get("output_tokens", 0)
+        price_in, price_out = _price_for(model)
+        _stats["api_calls"] += 1
+        _stats["in_tokens"] += in_tok
+        _stats["out_tokens"] += out_tok
+        _stats["usd"] += (in_tok * price_in + out_tok * price_out) / 1_000_000
+
+        # A safety classifier can decline with HTTP 200; content is then empty. A refusal is
+        # deterministic -- retrying just burns tokens on the same decline -- so fail loudly now.
+        if payload.get("stop_reason") == "refusal":
+            raise RuntimeError(f"anthropic refused the {role} request: {payload.get('stop_details')}")
+
+        text = "".join(
+            block.get("text", "") for block in payload.get("content", [])
+            if block.get("type") == "text"
+        ).strip()
+
+        # Empty text and malformed JSON are STOCHASTIC (a truncated or fenced generation),
+        # unlike a refusal -- a re-roll usually succeeds, so treat both as retryable instead
+        # of aborting a whole batch on one bad generation.
+        try:
+            if not text:
+                raise ValueError(f"empty text (stop_reason={payload.get('stop_reason')})")
+            result = _extract_json(text) if json_mode else {"text": text}
+            break
+        except (ValueError, json.JSONDecodeError) as e:
+            last_err = f"unparseable output: {e}"
+            if attempt < max_retries - 1:
+                print(f"    [anthropic] {role}: {last_err}, retrying in {delay:.0f}s "
+                      f"(attempt {attempt + 1}/{max_retries})")
+                time.sleep(delay)
+                delay *= 2
+                continue
+            raise RuntimeError(f"anthropic call failed for {role}: {last_err}") from e
     else:
         raise RuntimeError(f"anthropic call failed for {role}: {last_err}")
-
-    usage = payload.get("usage", {})
-    in_tok = usage.get("input_tokens", 0)
-    out_tok = usage.get("output_tokens", 0)
-    price_in, price_out = _price_for(model)
-    _stats["api_calls"] += 1
-    _stats["in_tokens"] += in_tok
-    _stats["out_tokens"] += out_tok
-    _stats["usd"] += (in_tok * price_in + out_tok * price_out) / 1_000_000
-
-    # A safety classifier can decline with HTTP 200; content is then empty. Fail loudly rather
-    # than caching an empty object as if it were a real verdict.
-    if payload.get("stop_reason") == "refusal":
-        raise RuntimeError(f"anthropic refused the {role} request: {payload.get('stop_details')}")
-
-    text = "".join(
-        block.get("text", "") for block in payload.get("content", [])
-        if block.get("type") == "text"
-    ).strip()
-    if not text:
-        raise RuntimeError(f"anthropic returned no text for {role} "
-                           f"(stop_reason={payload.get('stop_reason')})")
-
-    result = _extract_json(text) if json_mode else {"text": text}
 
     with open(path, "w") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
