@@ -126,6 +126,34 @@ Groq free-tier quota again).
 - **Groq** (LLM inference, free tier): https://groq.com — used for all 6 agent roles.
   Model: `llama-3.3-70b-versatile`. No paid Anthropic API is used anywhere in this pipeline.
 
+## Uncertainty & action layer (the differentiator)
+
+Overall accuracy hides the point: the system's edge is not "how many criteria it labels
+right," it's what it DOES when a criterion cannot be decided from the record. Three code
+layers, each a pure table/function (computed in code, never inferred by a model — the same
+design rule as the eligibility `effect` table), turn "UNKNOWN" into a diagnosed cause and a
+next action:
+
+- **Uncertainty taxonomy** (`action_policy.py`): every undecided criterion is classified into
+  one of 10 causes — MISSING, STALE, INSUFFICIENT_EVIDENCE, AMBIGUOUS, CONFLICTING, BOUNDARY,
+  CLINICAL_JUDGMENT, NOT_APPLICABLE, CALCULABLE, DEFINITE_EXCLUSION. The matcher LLM proposes
+  the type; the type is a fixed vocabulary, not free text.
+- **Action-selection table** (`action_policy.py`): each cause maps to exactly one next action —
+  ASK / RETRIEVE / REQUEST_LATEST / CALCULATE / VERIFY / PROTOCOL_REVIEW / ESCALATE / IGNORE /
+  STOP. Derived in code, so the polarity can't be gotten backwards. An unrecognized cause fails
+  safe to ESCALATE — never a silent pass. This is the "질문을 많이 하는 게 아니라 상황에 맞는
+  행동을 고른다" claim, made concrete.
+- **Evidence sufficiency** (`evidence.py`): traceability (does the quote exist?) is not
+  sufficiency (does the quote support the conclusion?). Each evidence item carries source_type /
+  confirmation_level / directness; `assess_evidence()` rejects e.g. a *suspected* imaging finding
+  standing in for a *confirmed* diagnosis, and routes it to VERIFY.
+
+**Question-priority API (for the frontend cards).** Each clarifying question is served with
+`affects_trials`, `affects_criteria`, and `may_change_rank`, computed deterministically from the
+trace (`action_policy.enrich_questions`). `live_server.py` attaches these at serve time, so the
+frontend consumes real numbers — no hardcoding needed. Questions arrive sorted most-impactful
+first. Run `python3 action_policy.py` and `python3 evidence.py` for the self-tests.
+
 ## Medical disclaimer
 
 **출력 결과는 의학적 자문이 아닌 참고용입니다.**
@@ -143,6 +171,9 @@ any enrollment decision.)
 | `trials_raw.json` | this agent | raw fetched trial data (16 trials, 3 conditions) |
 | `groq_client.py` | this agent | Groq API wrapper: caching + exponential backoff |
 | `pipeline.py` | this agent | 6-role multi-agent pipeline orchestration |
+| `action_policy.py` | this agent | uncertainty taxonomy + action-selection table + question-priority scorer (pure, self-tested) |
+| `evidence.py` | this agent | evidence-sufficiency layer: confirmation/directness rules (pure, self-tested) |
+| `live_server.py` | this agent | interactive re-eval HTTP server; serves priority-enriched questions |
 | `assert_traces.py` | this agent | verification script: evidence_quote verbatim-substring checks |
 | `traces.json` / `traces.js` | this agent | pipeline output consumed by the UI |
 | `cache/` | this agent | on-disk LLM response cache (re-runs are free) |
