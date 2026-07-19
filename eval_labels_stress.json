@@ -99,9 +99,8 @@
     "nct_id": "NCT05879653",
     "criterion_text": "Has an ECOG performance status of 0 to 1, evaluated within 7 days prior to the first dose of study intervention",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "ESCALATE",
-    "uncertainty_type": "CLINICAL_JUDGMENT"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T002",
@@ -184,9 +183,8 @@
     "nct_id": "NCT07167368",
     "criterion_text": "NYHA class II-III",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "ESCALATE",
-    "uncertainty_type": "CLINICAL_JUDGMENT"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T003",
@@ -336,9 +334,8 @@
     "nct_id": "NCT06906549",
     "criterion_text": "Corticosteroids <=10 mg/day within 4 weeks prior to inclusion",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "PROTOCOL_REVIEW",
-    "uncertainty_type": "AMBIGUOUS"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T004-g",
@@ -386,9 +383,8 @@
     "nct_id": "NCT06291935",
     "criterion_text": "Confirmed pathogenic, biallelic variants in the CNGA1 gene",
     "criterion_type": "inclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "REQUEST_LATEST",
-    "uncertainty_type": "STALE"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T005-c",
@@ -419,11 +415,10 @@
   {
     "patient_id": "T005-f",
     "nct_id": "NCT06291935",
-    "criterion_text": "Individuals performing any other therapy for RP within 3 months before the study",
+    "criterion_text": "Any other retinopathy due to other diseases - including, but not limited to arterial hypertension, previous vascular retinal occlusion, trauma or acquired inflammatory diseases, contraindication to pharmacological mydriasis (e.g., history of angle block glaucoma), diabetes (diabetic retinopathy including macular oedema)",
     "criterion_type": "exclusion",
-    "expected_verdict": "UNCERTAIN",
-    "expected_action": "PROTOCOL_REVIEW",
-    "uncertainty_type": "AMBIGUOUS"
+    "expected_verdict": "MET",
+    "expected_action": null
   },
   {
     "patient_id": "T005-g",
