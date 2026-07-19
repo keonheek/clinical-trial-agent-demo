@@ -32,6 +32,7 @@ from pipeline import (
     effect_of,
     TRIALS_PER_PATIENT,
 )
+from action_policy import enrich_questions
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PORT = 8765
@@ -106,7 +107,10 @@ def build_session_precomputed(session, trace):
         session["stage"] = "gaps"
         time.sleep(0.35)
         session["stage"] = "questions"
-        session["questions"] = trace["questions"]
+        # enrich with affects_trials/affects_criteria/may_change_rank for the cards.
+        # Older frozen traces carry no gaps -> enrich_questions falls back to token overlap.
+        session["questions"] = enrich_questions(
+            [dict(q) for q in trace["questions"]], trace.get("gaps", []), trials_out)
         time.sleep(0.35)
         session["stage"] = "recommend"
         time.sleep(0.35)
@@ -159,6 +163,9 @@ def build_session_live(session):
             t["rank"] = r["rank"]
             t["rationale"] = r["rationale"]
         trials_out.sort(key=lambda t: t["rank"])
+
+        # priority numbers now that eligibility/rank are decided
+        enrich_questions(questions, gaps, trials_out)
 
         session["stage"] = "done"
     except Exception as e:
