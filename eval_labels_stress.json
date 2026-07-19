@@ -12,8 +12,8 @@
     "nct_id": "NCT05879653",
     "criterion_text": "Demonstrates adequate organ function",
     "criterion_type": "inclusion",
-    "expected_verdict": "MET",
-    "expected_action": null
+    "expected_verdict": "UNCERTAIN",
+    "expected_action": "PROTOCOL_REVIEW"
   },
   {
     "patient_id": "T001",
