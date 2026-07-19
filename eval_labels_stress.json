@@ -140,8 +140,8 @@
     "nct_id": "NCT07167368",
     "criterion_text": "Patients with chronically stable HFrEF complicated by kidney dysfunction (eGFR < 90 mL/min/1.73m^2)",
     "criterion_type": "inclusion",
-    "expected_verdict": "MET",
-    "expected_action": null
+    "expected_verdict": "UNCERTAIN",
+    "expected_action": "PROTOCOL_REVIEW"
   },
   {
     "patient_id": "T002-d",
@@ -292,8 +292,8 @@
     "nct_id": "NCT06906549",
     "criterion_text": "DAS28 <= 5.1",
     "criterion_type": "inclusion",
-    "expected_verdict": "MET",
-    "expected_action": null
+    "expected_verdict": "UNCERTAIN",
+    "expected_action": "ESCALATE"
   },
   {
     "patient_id": "T004-d",
