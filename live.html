@@ -376,9 +376,9 @@
 
   /* Right-hand impact panel: a small top accent bar in the same color as the priority pill so
      the two line up visually, then the impact sentence, then the 3-stat mini grid the mockup
-     used ("영향 시험 / 관련 기준 / 우선순위"). affects_trials/affects_criteria are still
-     IMPACT_PLACEHOLDER (건희's API doesn't expose them yet) -- flagged via the same dashed
-     labeling used before, just laid out to match the reviewer's panel shape. */
+     used ("영향 시험 / 관련 기준 / 우선순위"). affects_trials/affects_criteria/may_change_rank
+     are real values from 건희's action_policy.py enrich_questions() now -- IMPACT_FALLBACK in
+     the JS only covers an old session predating that field. */
   .q-impact-panel{
     border:1px solid var(--line);border-top:3px solid var(--unknown);border-radius:8px;
     padding:9px 11px;background:var(--bg-alt);font-size:0.76rem;color:var(--ink-soft);
@@ -808,27 +808,40 @@ function renderTrials(trials){
 }
 
 // ---- "왜 이 질문인가" helpers ----
-// affects_trials/affects_criteria/may_change_rank are meant to come from the backend
-// (건희, gap-detector 확장) but don't exist in the API response yet. Per 할일.docx: hardcode
-// the sentence now so the layout is done, swap in the real fields later -- UI shape doesn't
-// change, only the data source does. Visually marked "예시 수치" so nobody mistakes this for
-// a real computed number.
-var IMPACT_PLACEHOLDER = {
-  affects_trials: 3, affects_criteria: 7, rank_note: "1·3위"
+// affects_trials/affects_criteria/may_change_rank now come for real from the backend
+// (건희's action_policy.py enrich_questions(), wired into live_server.py's session_snapshot).
+// IMPACT_FALLBACK only covers older/frozen sessions from before that field existed -- a
+// precomputed trace missing the fields entirely, not the normal path. If it's ever shown,
+// it's flagged (see impact-flag below) so nobody mistakes it for a live number.
+var IMPACT_FALLBACK = {
+  affects_trials: 3, affects_criteria: 7
 };
 
-// Priority tiers are also placeholder (question-generator returns array order, already impact-
-// ranked, but doesn't label a tier) -- first question reads as highest-impact, matching the
-// existing "N순위" ordering rationale. Colors line up with the effect/eligibility palette
-// (green=high, amber=medium, gray=normal) so the pill and its matching impact-panel accent bar
-// read as the same signal.
-var PRIORITY_LEVELS = [
-  {label: "높은 우선순위", cls: "high"},
-  {label: "중간 우선순위", cls: "med"},
-  {label: "일반 우선순위", cls: "normal"}
-];
-function priorityFor(qi){
-  return PRIORITY_LEVELS[qi] || PRIORITY_LEVELS[PRIORITY_LEVELS.length - 1];
+function impactNumbers(q){
+  var hasReal = q && typeof q.affects_trials === "number" && typeof q.affects_criteria === "number";
+  return {
+    trials: hasReal ? q.affects_trials : IMPACT_FALLBACK.affects_trials,
+    criteria: hasReal ? q.affects_criteria : IMPACT_FALLBACK.affects_criteria,
+    mayChangeRank: hasReal ? !!q.may_change_rank : true,
+    isFallback: !hasReal
+  };
+}
+
+// Priority tier is now derived from the real signal enrich_questions computes, not array
+// position: may_change_rank is the strongest indicator (this answer could reorder the trial
+// list), affects_trials distinguishes a broad question from a narrow one. Colors line up with
+// the effect/eligibility palette (green=high, amber=medium, gray=normal) so the pill and its
+// matching impact-panel accent bar read as the same signal.
+var PRIORITY_LEVELS = {
+  high: {label: "높은 우선순위", cls: "high"},
+  med: {label: "중간 우선순위", cls: "med"},
+  normal: {label: "일반 우선순위", cls: "normal"}
+};
+function priorityForQuestion(q){
+  var n = impactNumbers(q);
+  if (n.mayChangeRank) return PRIORITY_LEVELS.high;
+  if (n.trials >= 2) return PRIORITY_LEVELS.med;
+  return PRIORITY_LEVELS.normal;
 }
 
 var STOPWORDS = {"the":1,"a":1,"an":1,"of":1,"and":1,"or":1,"in":1,"on":1,"at":1,"to":1,
@@ -944,15 +957,19 @@ function renderQuestions(questions, trials){
   if (!questions || questions.length === 0){ dock.style.display = "none"; return; }
   dock.style.display = "block";
 
+  // Banner summarizes the top-priority question -- questions arrive already sorted
+  // most-impactful first (enrich_questions' sort key), so [0] is the headline number.
   var banner = document.getElementById("dockBanner");
-  if (banner){
-    banner.textContent = "ⓘ 이 질문은 시험 " + IMPACT_PLACEHOLDER.affects_trials + "건의 기준 " +
-      IMPACT_PLACEHOLDER.affects_criteria + "개를 기반으로 합니다.";
+  if (banner && questions.length){
+    var topN = impactNumbers(questions[0]);
+    banner.textContent = "ⓘ 가장 우선순위 높은 질문은 시험 " + topN.trials + "건의 기준 " +
+      topN.criteria + "개를 판정합니다.";
   }
 
   body.innerHTML = "";
   questions.forEach(function(q, qi){
-    var pr = priorityFor(qi);
+    var n = impactNumbers(q);
+    var pr = priorityForQuestion(q);
     var card = el("div", "question-card");
     var isAnswered = answeredQuestions[q.question];
     if (isAnswered) card.classList.add("answered");
@@ -987,18 +1004,21 @@ function renderQuestions(questions, trials){
     card.appendChild(main);
 
     // Right-hand "why this question matters" panel -- mirrors the reviewer's mockup layout.
-    // affects_trials/affects_criteria stay IMPACT_PLACEHOLDER values (건희's backend doesn't
-    // expose real per-question numbers yet); 자세히 보기 is a hover-only placeholder for the
-    // same reason -- it has nowhere real to link to yet, so it doesn't pretend to be clickable.
+    // affects_trials/affects_criteria/may_change_rank are now real, backend-computed values
+    // (건희's action_policy.py). isFallback only fires for an old session predating that field,
+    // in which case the dashed flag below still warns it's not a live number.
+    var rankNote = n.mayChangeRank
+      ? "답변에 따라 현재 순위·적격 상태가 바뀔 수 있습니다."
+      : "이 답변만으로는 현재 순위가 바뀔 가능성은 낮습니다.";
     var panel = el("div", "q-impact-panel " + pr.cls);
     panel.innerHTML =
-      '<div class="impact-note">이 질문은 시험 ' + IMPACT_PLACEHOLDER.affects_trials + '건의 기준 ' +
-      IMPACT_PLACEHOLDER.affects_criteria + '개를 기반으로 합니다.<br>답변에 따라 현재 ' +
-      IMPACT_PLACEHOLDER.rank_note + ' 시험의 적격 상태가 바뀔 수 있습니다.' +
-      '<span class="impact-flag">예시 수치 (API 연동 전 임시값)</span></div>' +
+      '<div class="impact-note">이 질문은 시험 ' + n.trials + '건의 기준 ' +
+      n.criteria + '개를 판정합니다.<br>' + rankNote +
+      (n.isFallback ? '<span class="impact-flag">예시 수치 (구버전 세션, API 값 없음)</span>' : '') +
+      '</div>' +
       '<div class="q-impact-stats">' +
-        '<div class="q-stat"><span class="q-stat-num">' + IMPACT_PLACEHOLDER.affects_trials + '건</span><span class="q-stat-cap">영향 시험</span></div>' +
-        '<div class="q-stat"><span class="q-stat-num">' + IMPACT_PLACEHOLDER.affects_criteria + '개</span><span class="q-stat-cap">관련 기준</span></div>' +
+        '<div class="q-stat"><span class="q-stat-num">' + n.trials + '건</span><span class="q-stat-cap">영향 시험</span></div>' +
+        '<div class="q-stat"><span class="q-stat-num">' + n.criteria + '개</span><span class="q-stat-cap">관련 기준</span></div>' +
         '<div class="q-stat"><span class="q-stat-num">' + pr.label.replace(" 우선순위","") + '</span><span class="q-stat-cap">우선순위</span></div>' +
       '</div>' +
       '<div class="q-source-row">출처: 환자 원문, 관련 시험의 포함/제외 기준 · ' +
