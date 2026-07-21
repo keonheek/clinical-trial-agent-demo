@@ -383,10 +383,11 @@ function renderTrials(trials){
     var cov = "";
     if (t.coverage && t.coverage.raw_estimated){
       var pct = Math.min(100, Math.round(100 * t.coverage.parsed / t.coverage.raw_estimated));
+      var covLabel = pct >= 100 ? '원문 전체 평가' : '원문 커버리지 약 ' + pct + '%';
       cov = '<span class="meta-sep coverage-pill' + (pct < 50 ? ' coverage-low' : '') + '"' +
         ' title="시험 원문에서 추정되는 기준 약 ' + t.coverage.raw_estimated + '개 중 ' +
         t.coverage.parsed + '개가 평가에 반영되었습니다. 표시되지 않은 조항이 있을 수 있습니다.">' +
-        '원문 커버리지 약 ' + pct + '%</span>';
+        covLabel + '</span>';
     }
     head.innerHTML =
       '<div class="rank">' + (t.rank || "?") + '</div>' +
