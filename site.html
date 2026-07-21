@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Interactive Clinical Trial Recommendation</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f6e5a'/%3E%3Cpath d='M10 16.5l4 4 8-8.5' stroke='%23fff' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   :root{
     --accent:#0f6e5a;
@@ -203,6 +204,31 @@
   .question-card .answered-note{font-size:0.8rem;color:var(--accent-dark);font-weight:600;margin-top:6px;}
   .question-card .char-count{font-size:0.72rem;color:var(--ink-soft);margin-top:4px;}
 
+  .summary-strip{
+    display:flex;flex-wrap:wrap;gap:18px;align-items:center;
+    border:1px solid var(--line);border-radius:10px;background:var(--bg-alt);
+    padding:10px 16px;margin-bottom:16px;font-size:0.85rem;
+  }
+  .summary-strip .stat{display:flex;align-items:baseline;gap:6px;}
+  .summary-strip .stat b{font-size:1.05rem;}
+  .summary-strip .stat .lbl{color:var(--ink-soft);font-size:0.78rem;}
+  .summary-strip .stat b.ok{color:var(--met);}
+  .summary-strip .stat b.warn{color:var(--uncertain);}
+  .summary-strip .stat b.bad{color:var(--not-met);}
+
+  .rank-delta{
+    display:inline-block;margin-left:8px;padding:1px 7px;border-radius:99px;
+    font-size:0.7rem;font-weight:700;
+  }
+  .rank-delta.up{background:var(--met-bg);color:var(--met);}
+  .rank-delta.down{background:var(--not-met-bg);color:var(--not-met);}
+
+  .delta-chip{
+    display:inline-block;margin-left:6px;padding:1px 7px;border-radius:4px;
+    background:#fff7df;border:1px solid #e8d9a0;color:#6b5410;
+    font-size:0.7rem;font-weight:700;white-space:nowrap;
+  }
+
   .changelog{margin-top:14px;font-size:0.8rem;color:var(--ink-soft);}
   .changelog div{padding:4px 0;border-top:1px dashed var(--line);}
   .changelog div:first-child{border-top:none;}
@@ -240,6 +266,7 @@
     <div class="empty-note" id="emptyNote">왼쪽에서 환자를 선택하세요.</div>
 
     <div id="vignetteBox" class="vignette" style="display:none;"></div>
+    <div id="summaryStrip" class="summary-strip" style="display:none;"></div>
     <p class="stage-note" id="verdictLegend" style="display:none;">각 기준에는 두 가지가 표시됩니다. 적격성 효과(PASS, FAIL, REVIEW)는 참여 가능 여부에 미치는 영향이고, 그 옆의 조건 판정(MET, NOT_MET, UNKNOWN)은 기준 문장이 환자에게 해당하는지만 나타냅니다. 제외 기준의 조건 판정이 MET이면 환자가 그 조건을 가지고 있다는 뜻이므로 적격성 효과는 FAIL이 됩니다.</p>
     <div id="trialsBody"></div>
     <div id="questionsDock" class="questions-dock" style="display:none;">
@@ -264,6 +291,33 @@ var extendedRecord = "";
 var answeredQuestions = {};
 var lastTopNct = null;
 var MAX_ANSWER_LEN = 600;
+// Populated when an answer round returns, so the next render can show what MOVED --
+// rank changes per trial and before/after verdicts per criterion. Cleared on patient switch.
+var prevRanks = {};
+var lastVerdictChanges = {};
+
+function renderSummary(trials){
+  var strip = document.getElementById("summaryStrip");
+  if (!trials || !trials.length){ strip.style.display = "none"; return; }
+  var counts = {ELIGIBLE: 0, UNCERTAIN: 0, INELIGIBLE: 0};
+  var unresolved = 0;
+  trials.forEach(function(t){
+    if (counts.hasOwnProperty(t.eligibility)) counts[t.eligibility] += 1;
+    (t.criteria || []).forEach(function(c){
+      var v = (c.verdict || "").toUpperCase();
+      if (v === "UNKNOWN" || v === "UNCERTAIN") unresolved += 1;
+    });
+  });
+  var open = (currentQuestionsCache || []).filter(function(q){ return !answeredQuestions[q.question]; }).length;
+  strip.style.display = "flex";
+  strip.innerHTML =
+    '<span class="stat"><b>' + trials.length + '</b><span class="lbl">검토한 시험</span></span>' +
+    '<span class="stat"><b class="ok">' + counts.ELIGIBLE + '</b><span class="lbl">적격</span></span>' +
+    '<span class="stat"><b class="warn">' + counts.UNCERTAIN + '</b><span class="lbl">불확실</span></span>' +
+    '<span class="stat"><b class="bad">' + counts.INELIGIBLE + '</b><span class="lbl">부적격</span></span>' +
+    '<span class="stat"><b>' + unresolved + '</b><span class="lbl">미해결 기준</span></span>' +
+    '<span class="stat"><b>' + open + '</b><span class="lbl">남은 확인 질문</span></span>';
+}
 
 function escapeHtml(s){
   return String(s == null ? "" : s)
@@ -347,9 +401,12 @@ function loadTrace(patientId){
       currentPatientId = patientId;
       currentTrials = data.trials || [];
       currentQuestionsCache = data.questions || [];
+      prevRanks = {};
+      lastVerdictChanges = {};
       markAllStagesDone();
       renderVignette({patient_id: data.patient_id, text: data.patient_text});
       renderTrials(currentTrials);
+      renderSummary(currentTrials);
       renderQuestions(currentQuestionsCache, currentTrials);
     })
     .catch(function(e){ showError(String(e)); });
@@ -389,9 +446,17 @@ function renderTrials(trials){
         t.coverage.parsed + '개가 평가에 반영되었습니다. 표시되지 않은 조항이 있을 수 있습니다.">' +
         covLabel + '</span>';
     }
+    // Rank movement since the last answer: the cause-and-effect a reviewer is watching for.
+    var delta = "";
+    var prev = prevRanks[t.nct_id];
+    if (prev && t.rank && prev !== t.rank){
+      delta = t.rank < prev
+        ? '<span class="rank-delta up">' + prev + '위에서 상승</span>'
+        : '<span class="rank-delta down">' + prev + '위에서 하락</span>';
+    }
     head.innerHTML =
       '<div class="rank">' + (t.rank || "?") + '</div>' +
-      '<div class="titlewrap"><h3>' + escapeHtml(t.title) + '</h3>' +
+      '<div class="titlewrap"><h3>' + escapeHtml(t.title) + delta + '</h3>' +
       '<div class="meta">' + escapeHtml(t.nct_id) +
       '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
       '<span class="meta-sep">' + elig + '</span>' + cov + '</div></div>';
@@ -406,7 +471,10 @@ function renderTrials(trials){
       row.dataset.critText = c.text;
       row.innerHTML =
         '<div>' + verdictPair(c) + '<br><span class="tag ' + c.type + '">' + (c.type === "inclusion" ? "포함" : "제외") + '</span></div>' +
-        '<div><div class="crit-text">' + escapeHtml(c.text) + '</div>' +
+        '<div><div class="crit-text">' + escapeHtml(c.text) +
+        (lastVerdictChanges[t.nct_id + "::" + c.text]
+          ? '<span class="delta-chip">' + escapeHtml(lastVerdictChanges[t.nct_id + "::" + c.text]) + '</span>' : '') +
+        '</div>' +
         (c.evidence ? '<div class="crit-evidence">&quot;' + escapeHtml(c.evidence) + '&quot;</div>' : '') +
         (c.reasoning ? '<div class="crit-reason">' + escapeHtml(c.reasoning) + '</div>' : '') + '</div>';
       body.appendChild(row);
@@ -439,13 +507,16 @@ function renderQuestions(questions, trials){
       var row = el("div", "answer-row");
       var input = document.createElement("input");
       input.type = "text";
-      input.placeholder = "답변을 입력하세요 (최대 " + MAX_ANSWER_LEN + "자)";
+      input.placeholder = "자유 서술로 입력 (검사 수치, 병력, 복용 약 등) 후 Enter";
       input.maxLength = MAX_ANSWER_LEN;
       var btn = el("button", "btn btn-sm", "답변 반영");
       btn.addEventListener("click", function(){
         var val = input.value.trim();
         if (!val) return;
         submitAnswer(q.question, val, card, input, btn);
+      });
+      input.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" && !btn.disabled) btn.click();
       });
       row.appendChild(input);
       row.appendChild(btn);
@@ -511,9 +582,16 @@ function submitAnswer(question, answer, card, input, btn){
       return;
     }
     answeredQuestions[question] = answer;
+    prevRanks = {};
+    currentTrials.forEach(function(t){ if (t.nct_id && t.rank) prevRanks[t.nct_id] = t.rank; });
+    lastVerdictChanges = {};
+    (data.verdict_changes || []).forEach(function(c){
+      lastVerdictChanges[c.nct_id + "::" + c.criterion] = c.before + " → " + c.after;
+    });
     currentTrials = data.trials || currentTrials;
     extendedRecord = data.extended_record || extendedRecord;
     renderTrials(currentTrials);
+    renderSummary(currentTrials);
     flashChanged(data.verdict_changes || []);
     appendChangelog(data.verdict_changes || [], data.recommendation || [], data.note);
     renderQuestions(currentQuestionsCache, currentTrials);
