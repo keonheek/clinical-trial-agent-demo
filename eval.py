@@ -18,6 +18,7 @@ Writes:
 """
 import json
 import os
+import sys
 from collections import defaultdict
 
 from pipeline import effect_of
@@ -241,6 +242,14 @@ def main():
 
     print(f"\nAnalysis:\n{analysis}")
     print("\nWrote eval_results.json")
+
+    # A label that fails to join means the score above was computed on a subset -- the exact
+    # silent-shrinkage failure that once turned n=40 into n=20 while still printing a confident
+    # number. Results are written for inspection, but the run itself must not look green.
+    if n_missing:
+        print(f"\nFAIL: {n_missing}/{total_labeled} labels never matched a trace row "
+              f"(criterion-text drift?). Accuracy above covers only the survivors -- do not quote it.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

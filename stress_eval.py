@@ -167,17 +167,23 @@ def _cache_key(patient, criteria_by_nct):
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:24]
 
 
+# Bump when the per-criterion fields captured below change, so stale cache entries
+# (which would silently miss the new fields) are refetched instead of reused.
+_CACHE_SCHEMA = 2
+
+
 def run_patient_stress(patient, criteria_by_nct, use_cache=True, cache_dir=CACHE_DIR):
     """Run pipeline.extract_patient + pipeline.match_trial for one stress patient across
-    all its nct_id groups. Returns {(nct_id, criterion_text): {"verdict":.., "action":..}}.
-    Cached to cache_dir/<patient_id>.json keyed on a hash of (text, criteria, backend, model)."""
+    all its nct_id groups. Returns {(nct_id, criterion_text): {"verdict":.., "action":..,
+    "uncertainty_type":..}}. Cached to cache_dir/<patient_id>.json keyed on a hash of
+    (text, criteria, backend, model) plus a schema version."""
     pid = patient["patient_id"]
     key = _cache_key(patient, criteria_by_nct)
     cache_path = os.path.join(cache_dir, f"{pid}.json")
 
     if use_cache and os.path.exists(cache_path):
         cached = load_json(cache_path)
-        if cached.get("key") == key:
+        if cached.get("key") == key and cached.get("schema") == _CACHE_SCHEMA:
             return {tuple(k.split("\x1f", 1)): v for k, v in cached["results"].items()}
 
     fields, _dropped = pipeline.extract_patient(patient)
@@ -186,13 +192,18 @@ def run_patient_stress(patient, criteria_by_nct, use_cache=True, cache_dir=CACHE
     for nct_id, criteria in criteria_by_nct.items():
         matched = pipeline.match_trial(patient, fields, criteria)
         for c in matched:
-            results[(nct_id, c["text"])] = {"verdict": c["verdict"], "action": c.get("action")}
+            results[(nct_id, c["text"])] = {
+                "verdict": c["verdict"],
+                "action": c.get("action"),
+                "uncertainty_type": c.get("uncertainty_type"),
+            }
 
     if use_cache:
         os.makedirs(cache_dir, exist_ok=True)
         serializable = {f"{k[0]}\x1f{k[1]}": v for k, v in results.items()}
         with open(cache_path, "w", encoding="utf-8") as f:
-            json.dump({"key": key, "results": serializable}, f, ensure_ascii=False, indent=2)
+            json.dump({"key": key, "schema": _CACHE_SCHEMA, "results": serializable},
+                      f, ensure_ascii=False, indent=2)
 
     return results
 
@@ -217,6 +228,30 @@ def score(labels, patients_by_id, criteria_by_patient, use_cache=True, cache_dir
     action_errors = []
     confusion = {}
 
+    # uncertainty_type is only labeled where the corruption was designed to induce a specific
+    # cause (22/51 rows) -- scored only on those rows, never imputed on the rest.
+    n_utype_labeled = 0
+    n_utype_correct = 0
+    utype_errors = []
+
+    # Safety metrics, same definitions as eval.py: a criterion whose EXPECTED effect is FAIL
+    # should rule the patient out; predicting an effect of PASS on it is the harmful failure.
+    # Effects come from pipeline.effect_of -- the same truth table the product uses.
+    n_disqualifying = 0
+    wrongly_passed = []
+    n_deferred = 0
+    n_expected_undecided = 0
+    decided_anyway = []
+
+    # Verdict accuracy bucketed two ways: by variant letter (patient_id suffix -a..-g,
+    # BASE for the uncorrupted patients) and by labeled uncertainty_type.
+    by_variant = {}
+    by_utype = {}
+
+    def _bucket(d, key):
+        b = d.setdefault(key, {"n": 0, "correct": 0})
+        return b
+
     for row in labels:
         if not _row_shape_ok(row):
             unmatched.append({**row, "reason": "malformed row"})
@@ -238,7 +273,8 @@ def score(labels, patients_by_id, criteria_by_patient, use_cache=True, cache_dir
         confusion.setdefault(expected_verdict, {}).setdefault(pred["verdict"], 0)
         confusion[expected_verdict][pred["verdict"]] += 1
 
-        if pred["verdict"] == expected_verdict:
+        verdict_ok = pred["verdict"] == expected_verdict
+        if verdict_ok:
             n_verdict_correct += 1
         else:
             verdict_errors.append({"patient_id": pid, "nct_id": nct, "criterion_text": text,
@@ -250,15 +286,72 @@ def score(labels, patients_by_id, criteria_by_patient, use_cache=True, cache_dir
             action_errors.append({"patient_id": pid, "nct_id": nct, "criterion_text": text,
                                    "expected": expected_action, "predicted": pred["action"]})
 
+        variant = pid.rsplit("-", 1)[1] if "-" in pid else "BASE"
+        b = _bucket(by_variant, variant)
+        b["n"] += 1
+        b["correct"] += verdict_ok
+
+        expected_utype = row.get("uncertainty_type")
+        if expected_utype:
+            n_utype_labeled += 1
+            b = _bucket(by_utype, expected_utype)
+            b["n"] += 1
+            b["correct"] += verdict_ok
+            if pred.get("uncertainty_type") == expected_utype:
+                n_utype_correct += 1
+            else:
+                utype_errors.append({"patient_id": pid, "nct_id": nct, "criterion_text": text,
+                                      "expected": expected_utype,
+                                      "predicted": pred.get("uncertainty_type")})
+
+        ctype = str(row.get("criterion_type", "")).strip().lower()
+        expected_effect = pipeline.effect_of(ctype, expected_verdict)
+        predicted_effect = pipeline.effect_of(ctype, pred["verdict"])
+        if expected_effect == "FAIL":
+            n_disqualifying += 1
+            if predicted_effect == "PASS":
+                wrongly_passed.append({"patient_id": pid, "nct_id": nct, "criterion_text": text,
+                                        "expected_verdict": expected_verdict,
+                                        "predicted_verdict": pred["verdict"]})
+            elif predicted_effect == "REVIEW":
+                n_deferred += 1
+        if expected_verdict in ("UNKNOWN", "UNCERTAIN"):
+            n_expected_undecided += 1
+            if pred["verdict"] in ("MET", "NOT_MET"):
+                decided_anyway.append({"patient_id": pid, "nct_id": nct, "criterion_text": text,
+                                        "expected": expected_verdict,
+                                        "predicted": pred["verdict"]})
+
+    def _acc(buckets):
+        return {k: {"n": v["n"], "verdict_accuracy": round(v["correct"] / v["n"], 4)}
+                for k, v in sorted(buckets.items())}
+
     report = {
         "n_total_labels": len(labels),
         "n_matched": total,
         "n_unmatched": len(unmatched),
         "verdict_accuracy": round(n_verdict_correct / total, 4) if total else None,
         "action_accuracy": round(n_action_correct / total, 4) if total else None,
+        "uncertainty_type_accuracy": (round(n_utype_correct / n_utype_labeled, 4)
+                                      if n_utype_labeled else None),
+        "n_uncertainty_type_labeled": n_utype_labeled,
+        "by_variant": _acc(by_variant),
+        "by_uncertainty_type": _acc(by_utype),
+        "safety": {
+            "n_disqualifying_criteria": n_disqualifying,
+            "n_wrongly_passed": len(wrongly_passed),
+            "wrongly_passed": wrongly_passed,
+            "n_deferred_to_review": n_deferred,
+            "n_expected_undecided": n_expected_undecided,
+            "n_decided_anyway": len(decided_anyway),
+            "false_certainty_rate": (round(len(decided_anyway) / n_expected_undecided, 4)
+                                     if n_expected_undecided else None),
+            "decided_anyway": decided_anyway,
+        },
         "confusion": confusion,
         "verdict_errors": verdict_errors,
         "action_errors": action_errors,
+        "uncertainty_type_errors": utype_errors,
         "unmatched": unmatched,
     }
     return report, unmatched
@@ -303,7 +396,24 @@ def run(patients_path, labels_path, results_path, use_cache=True, cache_dir=CACH
 
     print(f"Verdict accuracy: {report['verdict_accuracy']:.1%}")
     print(f"Action accuracy:  {report['action_accuracy']:.1%}")
-    print(f"Wrote {results_path}")
+    if report["uncertainty_type_accuracy"] is not None:
+        print(f"Uncertainty-type accuracy: {report['uncertainty_type_accuracy']:.1%} "
+              f"(on the {report['n_uncertainty_type_labeled']} rows that label a cause)")
+    s = report["safety"]
+    print(f"\n--- Safety (what the aggregate hides) ---")
+    print(f"Disqualifying criteria: {s['n_disqualifying_criteria']}  "
+          f"| WRONGLY PASSED: {s['n_wrongly_passed']}  | deferred to review: {s['n_deferred_to_review']}")
+    if s["false_certainty_rate"] is not None:
+        print(f"False certainty: {s['false_certainty_rate']:.0%} "
+              f"({s['n_decided_anyway']}/{s['n_expected_undecided']} expected-undecided rows answered anyway)")
+    print("\nVerdict accuracy by variant letter (BASE = uncorrupted):")
+    for k, v in report["by_variant"].items():
+        print(f"  {k:>4}: {v['verdict_accuracy']:.0%}  (n={v['n']})")
+    if report["by_uncertainty_type"]:
+        print("By labeled uncertainty type:")
+        for k, v in report["by_uncertainty_type"].items():
+            print(f"  {k:<22}: {v['verdict_accuracy']:.0%}  (n={v['n']})")
+    print(f"\nWrote {results_path}")
     return 0
 
 
