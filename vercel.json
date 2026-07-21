@@ -8,7 +8,7 @@
       "maxDuration": 60
     },
     "api/trace.py": {
-      "includeFiles": "{traces.json,trials_raw.json,pipeline.py,anthropic_client.py,groq_client.py,claude_client.py}"
+      "includeFiles": "{traces.json,coverage_map.json}"
     },
     "api/patients.py": {
       "includeFiles": "patients.json"
