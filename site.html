@@ -167,6 +167,8 @@
   .trial-card-head h3{font-size:0.94rem;margin:0 0 2px;}
   .trial-card-head .meta{font-size:0.76rem;color:var(--ink-soft);}
   .trial-card-head .meta span.meta-sep{margin-left:8px;padding-left:8px;border-left:1px solid var(--line);}
+  .coverage-pill{cursor:help;}
+  .coverage-low{color:var(--uncertain);font-weight:700;}
   .trial-card .rationale{font-size:0.85rem;color:var(--ink-soft);margin:0 0 10px;}
 
   .crit-row{
@@ -292,7 +294,7 @@ function verdictPair(c){
   var effectChip = e
     ? '<span class="badge badge-' + e + '">' + escapeHtml(e) + '</span>'
     : '<span class="badge quiet">산출 전</span>';
-  return effectChip + '<span class="badge quiet">' + escapeHtml(v) + '</span>';
+  return effectChip + '<span class="badge quiet verdict-chip">' + escapeHtml(v) + '</span>';
 }
 
 // ---- patient list ----
@@ -376,12 +378,22 @@ function renderTrials(trials){
     card.dataset.nct = t.nct_id;
     var elig = t.eligibility ? badge(t.eligibility === "ELIGIBLE" ? "ELIGIBLE" : (t.eligibility === "INELIGIBLE" ? "INELIGIBLE" : "UNCERTAIN"), t.eligibility) : "";
     var head = el("div", "trial-card-head");
+    // Coverage: how much of the trial's raw protocol the parsed criteria represent. Shown so a
+    // trial that was merely read less can't present as a more certain match (coverage blindness).
+    var cov = "";
+    if (t.coverage && t.coverage.raw_estimated){
+      var pct = Math.min(100, Math.round(100 * t.coverage.parsed / t.coverage.raw_estimated));
+      cov = '<span class="meta-sep coverage-pill' + (pct < 50 ? ' coverage-low' : '') + '"' +
+        ' title="시험 원문에서 추정되는 기준 약 ' + t.coverage.raw_estimated + '개 중 ' +
+        t.coverage.parsed + '개가 평가에 반영되었습니다. 표시되지 않은 조항이 있을 수 있습니다.">' +
+        '원문 커버리지 약 ' + pct + '%</span>';
+    }
     head.innerHTML =
       '<div class="rank">' + (t.rank || "?") + '</div>' +
       '<div class="titlewrap"><h3>' + escapeHtml(t.title) + '</h3>' +
       '<div class="meta">' + escapeHtml(t.nct_id) +
       '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
-      '<span class="meta-sep">' + elig + '</span></div></div>';
+      '<span class="meta-sep">' + elig + '</span>' + cov + '</div></div>';
     card.appendChild(head);
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));
@@ -442,16 +454,44 @@ function renderQuestions(questions, trials){
   });
 }
 
+// One answer round at a time: concurrent POSTs would race, and whichever response landed
+// last would overwrite currentTrials/extendedRecord with state that ignores the other answer.
+var answerInFlight = false;
+
+function setAnswerControlsDisabled(disabled){
+  document.querySelectorAll(".question-card button, .question-card input").forEach(function(elm){
+    elm.disabled = disabled;
+  });
+}
+
 function submitAnswer(question, answer, card, input, btn){
+  if (answerInFlight) return;
+  answerInFlight = true;
+  setAnswerControlsDisabled(true);
   btn.disabled = true;
   input.disabled = true;
   btn.textContent = "재평가 중...";
+  // the verdict chip specifically: the first .badge in a row is the effect chip, whose text
+  // is never UNKNOWN/UNCERTAIN.
   document.querySelectorAll(".crit-row").forEach(function(row){
-    var badgeEl = row.querySelector(".badge");
+    var badgeEl = row.querySelector(".badge.verdict-chip");
     if (badgeEl && (badgeEl.textContent === "UNKNOWN" || badgeEl.textContent === "UNCERTAIN")){
       row.classList.add("spinning");
     }
   });
+
+  function recover(message){
+    answerInFlight = false;
+    setAnswerControlsDisabled(false);
+    document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
+    btn.textContent = message;
+    btn.disabled = false;
+    input.disabled = false;
+  }
+
+  // without a deadline, a hung serverless call leaves the whole panel on "재평가 중..." forever
+  var aborter = new AbortController();
+  var deadline = setTimeout(function(){ aborter.abort(); }, 60000);
 
   fetch("/api/answer", {
     method: "POST", headers: {"Content-Type":"application/json"},
@@ -461,13 +501,12 @@ function submitAnswer(question, answer, card, input, btn){
       answer: answer,
       trials: currentTrials,
       extended_record: extendedRecord,
-    })
+    }),
+    signal: aborter.signal
   }).then(function(r){ return r.json(); }).then(function(data){
-    document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
+    clearTimeout(deadline);
     if (data.error){
-      btn.textContent = "오류: " + data.error;
-      btn.disabled = false;
-      input.disabled = false;
+      recover("오류: " + data.error);
       return;
     }
     answeredQuestions[question] = answer;
@@ -477,10 +516,12 @@ function submitAnswer(question, answer, card, input, btn){
     flashChanged(data.verdict_changes || []);
     appendChangelog(data.verdict_changes || [], data.recommendation || [], data.note);
     renderQuestions(currentQuestionsCache, currentTrials);
-  }).catch(function(e){
-    btn.textContent = "오류: " + String(e);
-    btn.disabled = false;
-    input.disabled = false;
+    answerInFlight = false;
+    setAnswerControlsDisabled(false);
+    document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
+  }).catch(function(err){
+    clearTimeout(deadline);
+    recover(err && err.name === "AbortError" ? "시간 초과 (다시 시도)" : "오류: " + String(err));
   });
 }
 

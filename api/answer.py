@@ -32,12 +32,26 @@ import anthropic_client
 # shared file.
 anthropic_client.CACHE_DIR = "/tmp/cache"
 
-from pipeline import rematch_affected_criteria, recommend, effect_of
+from pipeline import rematch_affected_criteria, recommend, effect_of, VALID_VERDICTS
 
 with open(os.path.join(ROOT, "patients.json"), encoding="utf-8") as f:
     PATIENTS = json.load(f)
 PATIENTS_BY_ID = {p["patient_id"]: p for p in PATIENTS}
 KNOWN_IDS = set(PATIENTS_BY_ID)
+
+# The client resends its trials array on every call, but every legitimate criterion for these
+# fixed patients originated in traces.json -- so anything not in that whitelist is either a bug
+# or an attempt to inject text into a prompt running on the metered key. Whitelist per patient:
+# {(nct_id, criterion_text) -> criterion_type}.
+with open(os.path.join(ROOT, "traces.json"), encoding="utf-8") as f:
+    _TRACES = json.load(f)
+KNOWN_CRITERIA = {}
+for _p in _TRACES:
+    KNOWN_CRITERIA[_p["patient_id"]] = {
+        (t["nct_id"], c["text"]): c["type"]
+        for t in _p.get("trials", []) for c in t.get("criteria", [])
+    }
+del _TRACES
 
 # ---------------------------------------------------------------------------
 # cost guards -- this endpoint spends a real metered API key
@@ -45,6 +59,44 @@ KNOWN_IDS = set(PATIENTS_BY_ID)
 MAX_ANSWER_LEN = 600
 MAX_QUESTION_LEN = 300
 MAX_AFFECTED = 12
+MAX_BODY_BYTES = 128 * 1024      # real sessions serialize to a few KB
+MAX_TRIALS = 6                   # traces hold 4 per patient
+MAX_CRITERIA_PER_TRIAL = 16      # traces max is 13
+RATE_LIMIT_PER_MIN = 10          # per client IP, per warm instance (cheap brake, not a wall)
+
+_recent_calls = {}               # ip -> [monotonic-ish timestamps]
+
+
+def _rate_limited(ip):
+    import time
+    now = time.time()
+    window = [t for t in _recent_calls.get(ip, []) if now - t < 60]
+    if len(window) >= RATE_LIMIT_PER_MIN:
+        _recent_calls[ip] = window
+        return True
+    window.append(now)
+    _recent_calls[ip] = window
+    return False
+
+
+def _validate_trials(patient_id, trials):
+    """Reject anything the frozen traces never produced. Returns an error string or None."""
+    if len(trials) > MAX_TRIALS:
+        return "too many trials"
+    known = KNOWN_CRITERIA.get(patient_id, {})
+    for t in trials:
+        criteria = t.get("criteria", [])
+        if len(criteria) > MAX_CRITERIA_PER_TRIAL:
+            return "too many criteria"
+        for c in criteria:
+            key = (t.get("nct_id"), c.get("text"))
+            if key not in known:
+                return "unknown criterion for this patient"
+            if c.get("type") != known[key]:
+                return "criterion type mismatch"
+            if c.get("verdict") is not None and c.get("verdict") not in VALID_VERDICTS:
+                return "invalid verdict value"
+    return None
 
 STOPWORDS = set(
     "the a an of and or in on at to is are was were for this that with have has any does "
@@ -106,6 +158,9 @@ def handle(body):
         return {"error": "answer must be 1-600 characters"}
     if not isinstance(trials, list) or not trials:
         return {"error": "trials array required"}
+    trials_error = _validate_trials(patient_id, trials)
+    if trials_error:
+        return {"error": trials_error}
 
     # never trust the client for the vignette itself -- only the fixed 10 patients exist here.
     patient = {"patient_id": patient_id, "text": PATIENTS_BY_ID[patient_id]["text"]}
@@ -175,10 +230,16 @@ def handle(body):
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
+            ip = (self.headers.get("x-forwarded-for", "") or "?").split(",")[0].strip()
             length = int(self.headers.get("Content-Length", 0) or 0)
-            raw = self.rfile.read(length) if length > 0 else b"{}"
-            body = json.loads(raw.decode("utf-8"))
-            result = handle(body)
+            if length > MAX_BODY_BYTES:
+                result = {"error": "request too large"}
+            elif _rate_limited(ip):
+                result = {"error": "요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요."}
+            else:
+                raw = self.rfile.read(length) if length > 0 else b"{}"
+                body = json.loads(raw.decode("utf-8"))
+                result = handle(body)
         except Exception as e:
             result = {"error": str(e)}
         out = json.dumps(result, ensure_ascii=False).encode("utf-8")

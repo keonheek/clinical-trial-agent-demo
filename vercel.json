@@ -4,11 +4,11 @@
   ],
   "functions": {
     "api/answer.py": {
-      "includeFiles": "{pipeline.py,anthropic_client.py,groq_client.py,claude_client.py,patients.json}",
+      "includeFiles": "{pipeline.py,anthropic_client.py,groq_client.py,claude_client.py,patients.json,traces.json}",
       "maxDuration": 60
     },
     "api/trace.py": {
-      "includeFiles": "traces.json"
+      "includeFiles": "{traces.json,trials_raw.json,pipeline.py,anthropic_client.py,groq_client.py,claude_client.py}"
     },
     "api/patients.py": {
       "includeFiles": "patients.json"

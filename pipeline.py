@@ -30,6 +30,7 @@ Writes:
 """
 import json
 import os
+import re
 import sys
 import time
 
@@ -93,6 +94,26 @@ def truncate_words(text, n):
     if len(words) <= n:
         return text
     return " ".join(words[:n])
+
+
+_CRITERION_LINE = re.compile(r"^\s*(?:[*\-•]|\d+[.)])\s+\S")
+
+
+def estimate_raw_criteria_count(raw_text):
+    """Deterministic count of criterion-like lines (bullets / numbered items) in a trial's raw
+    eligibility text. Zero LLM calls. Used to expose parsing COVERAGE -- how much of the trial's
+    protocol the parsed criteria actually represent -- so a trial that merely got read less can't
+    silently present as a more certain match (see RECOMMENDATION-DEFINITION.md). Falls back to
+    counting non-header lines when the source uses no bullet markup."""
+    if not raw_text:
+        return None
+    lines = raw_text.splitlines()
+    bullets = sum(1 for ln in lines if _CRITERION_LINE.match(ln))
+    if bullets:
+        return bullets
+    prose = [ln for ln in lines
+             if ln.strip() and not ln.strip().lower().endswith("criteria:")]
+    return len(prose) or None
 
 
 def classify_action(verdict, raw_uncertainty_type):

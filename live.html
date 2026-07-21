@@ -247,6 +247,10 @@
     background:var(--bg-alt);border-bottom:1px solid var(--line);
     padding:8px 14px;font-size:0.72rem;font-weight:700;color:var(--ink-soft);
   }
+  .coverage-note{
+    display:inline-block;margin-left:6px;padding:1px 6px;border:1px solid var(--line);
+    border-radius:8px;font-weight:400;color:var(--ink-soft);cursor:help;
+  }
   .crit-row{
     display:grid;grid-template-columns:60px 1fr 170px;gap:12px;align-items:start;
     padding:12px 14px;border-top:1px solid var(--line);
@@ -476,9 +480,9 @@
         질문은 다음 4가지를 모두 만족할 때만 제시됩니다 (근거: 지우 설계 원칙, 0712_지우_삽질.docx).
         <ol>
           <li>답변이 판정/순위를 실제로 바꿀 가능성이 있다</li>
-          <li>사용자·의료진이 직접 답할 수 있는 정보다</li>
+          <li>사용자와 의료진이 직접 답할 수 있는 정보다</li>
           <li>답을 받으면 불확실성이 해소된다</li>
-          <li>질문의 부담·오류위험보다 정보 가치가 크다</li>
+          <li>질문의 부담과 오류위험보다 정보 가치가 크다</li>
         </ol>
       </div>
       <div id="questionsBody"></div>
@@ -558,7 +562,7 @@ function buildCritRow(nctId, c, rowNum){
   var effectChip = effectiveEffect
     ? '<span class="badge badge-' + effectiveEffect + '">' + escapeHtml(effectiveEffect) + '</span>'
     : '<span class="badge quiet">산출 전</span>';
-  var verdictChip = '<span class="badge badge-' + effectiveVerdict + '">' + escapeHtml(effectiveVerdict) + '</span>';
+  var verdictChip = '<span class="badge verdict-chip badge-' + effectiveVerdict + '">' + escapeHtml(effectiveVerdict) + '</span>';
 
   var row = el("div", "crit-row");
   row.dataset.nct = nctId;
@@ -636,16 +640,20 @@ function loadPatients(){
       var btn = el("button", "patient-btn");
       btn.innerHTML = '<strong>' + escapeHtml(p.id) + '</strong><span class="snippet">' + escapeHtml(p.title) + '</span>';
       btn.addEventListener("click", function(){
+        if (sessionStarting) return;
         document.querySelectorAll(".patient-btn").forEach(function(b){ b.classList.remove("selected"); });
         btn.classList.add("selected");
         startSession({patient_id: p.id});
       });
       box.appendChild(btn);
     });
+  }).catch(function(){
+    showError("환자 목록을 불러오지 못했습니다. 새로고침해 주세요.");
   });
 }
 
 document.getElementById("runCustomBtn").addEventListener("click", function(){
+  if (sessionStarting) return;
   var text = document.getElementById("customVignette").value.trim();
   if (!text) return;
   document.querySelectorAll(".patient-btn").forEach(function(b){ b.classList.remove("selected"); });
@@ -653,17 +661,27 @@ document.getElementById("runCustomBtn").addEventListener("click", function(){
 });
 
 // ---- session lifecycle ----
+// Guards a double-click on a patient button or 실행: two concurrent /api/session POSTs
+// would each start a pipeline run and the second would overwrite currentSessionId/pollTimer
+// mid-flight, leaving an orphaned run spending the metered key.
+var sessionStarting = false;
+
 function startSession(payload){
+  sessionStarting = true;
   resetView();
   fetch("/api/session", {
     method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
   }).then(function(r){ return r.json(); }).then(function(data){
+    sessionStarting = false;
     if (data.error){ showError(data.error); return; }
     currentSessionId = data.session_id;
     setModeBadge(data.mode);
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(poll, 500);
     poll();
+  }).catch(function(){
+    sessionStarting = false;
+    showError("세션을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
   });
 }
 
@@ -695,9 +713,12 @@ function showError(msg){
 
 var currentQuestionsCache = [];
 
+var pollFailures = 0;
+
 function poll(){
   if (!currentSessionId) return;
   fetch("/api/session/" + currentSessionId).then(function(r){ return r.json(); }).then(function(data){
+    pollFailures = 0;
     if (data.error && !data.result){ showError(data.error); clearInterval(pollTimer); return; }
     updateAgentMap(data.stage);
     renderVignette(data.result.patient);
@@ -707,6 +728,13 @@ function poll(){
     if (data.stage === "done" || data.stage === "error"){
       clearInterval(pollTimer);
       if (data.stage === "error") showError(data.error || "pipeline error");
+    }
+  }).catch(function(){
+    // One dropped 500ms poll is noise; ~10s of consecutive failures means the backend is gone.
+    pollFailures += 1;
+    if (pollFailures >= 20){
+      clearInterval(pollTimer);
+      showError("서버 응답이 없습니다. 새로고침 후 다시 시도해 주세요.");
     }
   });
 }
@@ -775,7 +803,9 @@ function renderTrials(trials){
     var criteria = t.criteria || [];
     var table = el("div", "crit-table");
     var thead = el("div", "crit-table-head",
-      '<span>기준 (총 ' + criteria.length + '개)</span><span>판정 및 근거</span><span>AI / 사람 판정</span>');
+      '<span>평가된 기준 ' + criteria.length + '개' +
+      '<span class="coverage-note" title="시험 원문의 전체 기준 중 파싱된 것만 평가 대상입니다. 원문에는 더 많은 조항이 있을 수 있습니다.">시험 원문 일부</span></span>' +
+      '<span>판정 및 근거</span><span>AI / 사람 판정</span>');
     table.appendChild(thead);
 
     var VISIBLE_ROWS = 4;
@@ -926,7 +956,7 @@ function buildRelatedCriteriaBlock(q, trials){
   var wrap = el("div", "related-crit");
   wrap.appendChild(el("span", "rc-label", "관련 기준 미리보기"));
   wrap.appendChild(document.createTextNode(
-    " (추정 · 시험 " + relatedTrialCount + "건 / 기준 " + related.length + "개)"));
+    " (추정, 시험 " + relatedTrialCount + "건 / 기준 " + related.length + "개)"));
 
   var shown = related.slice(0, 2), rest = related.slice(2);
   var list = document.createElement("ul");
@@ -1008,7 +1038,7 @@ function renderQuestions(questions, trials){
     // (건희's action_policy.py). isFallback only fires for an old session predating that field,
     // in which case the dashed flag below still warns it's not a live number.
     var rankNote = n.mayChangeRank
-      ? "답변에 따라 현재 순위·적격 상태가 바뀔 수 있습니다."
+      ? "답변에 따라 현재 순위와 적격 상태가 바뀔 수 있습니다."
       : "이 답변만으로는 현재 순위가 바뀔 가능성은 낮습니다.";
     var panel = el("div", "q-impact-panel " + pr.cls);
     panel.innerHTML =
@@ -1021,7 +1051,7 @@ function renderQuestions(questions, trials){
         '<div class="q-stat"><span class="q-stat-num">' + n.criteria + '개</span><span class="q-stat-cap">관련 기준</span></div>' +
         '<div class="q-stat"><span class="q-stat-num">' + pr.label.replace(" 우선순위","") + '</span><span class="q-stat-cap">우선순위</span></div>' +
       '</div>' +
-      '<div class="q-source-row">출처: 환자 원문, 관련 시험의 포함/제외 기준 · ' +
+      '<div class="q-source-row">출처: 환자 원문, 관련 시험의 포함/제외 기준 ' +
       '<span class="q-detail-link" title="추후 API 연동 시 지원 예정">자세히 보기 ↗</span></div>';
     card.appendChild(panel);
 
@@ -1029,13 +1059,44 @@ function renderQuestions(questions, trials){
   });
 }
 
+// Only one answer round may be in flight at a time: a second concurrent POST would race the
+// first, and whichever response landed last would overwrite trials/questions state -- possibly
+// reverting a rank update the judge just watched happen.
+var answerInFlight = false;
+
+function setAnswerControlsDisabled(disabled){
+  document.querySelectorAll(".question-card button, .question-card input").forEach(function(elm){
+    elm.disabled = disabled;
+  });
+}
+
 function submitAnswer(question, answer, card, input, btn){
+  if (answerInFlight) return;
+  answerInFlight = true;
+  setAnswerControlsDisabled(true);
   btn.disabled = true;
   input.disabled = true;
+  var prevLabel = btn.textContent;
   btn.textContent = "재평가 중...";
-  // mark rows for criteria that MIGHT be affected as spinning (best-effort visual cue)
+
+  function recover(message){
+    answerInFlight = false;
+    setAnswerControlsDisabled(false);
+    document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
+    btn.disabled = false;
+    input.disabled = false;
+    btn.textContent = message || prevLabel;
+  }
+
+  // A live LLM round trip can hang well past the ~10s happy path; without a deadline the
+  // button stays on "재평가 중..." forever and the demo looks dead.
+  var aborter = new AbortController();
+  var deadline = setTimeout(function(){ aborter.abort(); }, 60000);
+  // mark rows for criteria that MIGHT be affected as spinning (best-effort visual cue).
+  // The verdict chip specifically -- the first .badge in a row is the EFFECT chip, whose
+  // text is never UNKNOWN/UNCERTAIN, so querying ".badge" here silently matched nothing.
   document.querySelectorAll(".crit-row").forEach(function(row){
-    var badgeEl = row.querySelector(".badge");
+    var badgeEl = row.querySelector(".badge.verdict-chip");
     if (badgeEl && (badgeEl.textContent === "UNKNOWN" || badgeEl.textContent === "UNCERTAIN")){
       row.classList.add("spinning");
     }
@@ -1043,13 +1104,12 @@ function submitAnswer(question, answer, card, input, btn){
 
   fetch("/api/session/" + currentSessionId + "/answer", {
     method: "POST", headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({question: question, answer: answer})
+    body: JSON.stringify({question: question, answer: answer}),
+    signal: aborter.signal
   }).then(function(r){ return r.json(); }).then(function(data){
-    document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
+    clearTimeout(deadline);
     if (data.error){
-      btn.textContent = "오류: " + data.error;
-      btn.disabled = false;
-      input.disabled = false;
+      recover("오류: " + data.error + " (다시 시도)");
       return;
     }
     answeredQuestions[question] = answer;
@@ -1057,6 +1117,12 @@ function submitAnswer(question, answer, card, input, btn){
     flashAffected(data.affected || []);
     appendChangelog(data.round, data.verdict_changes || [], data.recommendation || [], data.note);
     renderQuestions(currentQuestionsCache, data.updated_trials);
+    answerInFlight = false;
+    setAnswerControlsDisabled(false);
+    document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
+  }).catch(function(err){
+    clearTimeout(deadline);
+    recover(err && err.name === "AbortError" ? "시간 초과 (다시 시도)" : "연결 오류 (다시 시도)");
   });
 }
 
