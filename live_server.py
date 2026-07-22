@@ -122,6 +122,54 @@ MODEL_CHOICES = {
 SESSIONS = {}
 SESSIONS_LOCK = threading.Lock()
 
+# Sessions live in memory, so restarting the server used to strand whoever was mid-demo
+# with "session not found" and no way back. Completed sessions are mirrored to disk and
+# reloaded at startup: a restart (or a crash) no longer costs a finished run.
+SESSION_STORE = os.path.join(HERE, "cache", "sessions")
+_SESSION_PERSIST_KEYS = ("id", "mode", "patient", "stage", "error", "extraction",
+                         "trials_out", "gaps", "questions", "extended_record",
+                         "answer_rounds", "created")
+
+
+def persist_session(session):
+    """Mirror a session to disk. Best-effort: a demo must never fail because of this."""
+    try:
+        os.makedirs(SESSION_STORE, exist_ok=True)
+        data = {k: session.get(k) for k in _SESSION_PERSIST_KEYS}
+        tmp = os.path.join(SESSION_STORE, f".{session['id']}.tmp")
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False)
+        os.replace(tmp, os.path.join(SESSION_STORE, f"{session['id']}.json"))
+    except Exception as e:  # noqa: BLE001 - never let persistence break a live session
+        print(f"[live_server] session persist failed ({e})")
+
+
+def load_persisted_sessions(max_age_hours=12):
+    """Restore sessions written by a previous process, so a restart is survivable."""
+    if not os.path.isdir(SESSION_STORE):
+        return 0
+    cutoff = time.time() - max_age_hours * 3600
+    restored = 0
+    for name in os.listdir(SESSION_STORE):
+        if not name.endswith(".json"):
+            continue
+        path = os.path.join(SESSION_STORE, name)
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            continue
+        if not data.get("id") or (data.get("created") or 0) < cutoff:
+            continue
+        # a restored session is inert: its builder thread is gone, so anything not
+        # finished is marked done at whatever stage it reached rather than hanging.
+        if data.get("stage") not in ("done", "error"):
+            data["stage"] = "done"
+        data["lock"] = threading.Lock()
+        SESSIONS[data["id"]] = data
+        restored += 1
+    return restored
+
 # chronological stage order actually executed by the live pipeline
 STAGE_ORDER = ["queued", "extract", "parse", "match", "gaps", "questions", "recommend", "done"]
 
@@ -178,9 +226,11 @@ def build_session_precomputed(session, trace):
         session["stage"] = "recommend"
         time.sleep(0.35)
         session["stage"] = "done"
+        persist_session(session)
     except Exception as e:
         session["stage"] = "error"
         session["error"] = str(e)
+        persist_session(session)
 
 
 def build_session_live(session):
@@ -232,9 +282,11 @@ def build_session_live(session):
         enrich_questions(questions, gaps, trials_out)
 
         session["stage"] = "done"
+        persist_session(session)
     except Exception as e:
         session["stage"] = "error"
         session["error"] = str(e)
+        persist_session(session)
 
 
 # ---------------------------------------------------------------------------
@@ -550,6 +602,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    restored = load_persisted_sessions()
+    if restored:
+        print(f"[live_server] restored {restored} session(s) from a previous run")
     server = ThreadingHTTPServer(("localhost", PORT), Handler)
     print(f"live_server listening on http://localhost:{PORT}")
     try:

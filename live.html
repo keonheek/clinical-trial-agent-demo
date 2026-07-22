@@ -1139,6 +1139,16 @@ function renderQuestions(questions, trials, force){
       // Multi-select first, free text underneath. Ticked options and the typed text are
       // joined into ONE answer string -- the backend contract is unchanged, so this is
       // purely an input affordance (a coordinator ticks a chart instead of typing prose).
+      // "해당 사항 없음" / "모두 정상" / "기록 없음" contradict every finding, so ticking one
+      // clears the others (and vice versa) -- otherwise a card can submit "임신 중" together
+      // with "임신 아님", which is not an answer any reviewer would write.
+      // Structural first: the generator contract puts the clean answer and "기록 없음" last,
+      // so the closing pair is exclusive by construction. The pattern is a safety net for
+      // sets that predate the contract or phrase the negative differently (않음 vs 없음).
+      function isExclusiveOption(text, idx, total){
+        if (total >= 3 && idx >= total - 2) return true;
+        return /해당\s*사항\s*없음|모두\s*정상|기록\s*없음|확인\s*불가|(없음|않음)\s*$/.test(text);
+      }
       var boxes = [];
       if (q.options && q.options.length){
         var optWrap = el("div", "opt-list");
@@ -1149,12 +1159,24 @@ function renderQuestions(questions, trials, force){
           cb.type = "checkbox";
           cb.id = id;
           cb.value = optText;
+          cb.dataset.exclusive = isExclusiveOption(optText, oi, q.options.length) ? "1" : "0";
           var span = document.createElement("span");
           span.textContent = optText;
           lab.appendChild(cb);
           lab.appendChild(span);
           optWrap.appendChild(lab);
           boxes.push(cb);
+        });
+        boxes.forEach(function(cb){
+          cb.addEventListener("change", function(){
+            if (!cb.checked) return;
+            var mine = cb.dataset.exclusive === "1";
+            boxes.forEach(function(other){
+              if (other === cb) return;
+              // an exclusive pick clears findings; a finding clears exclusive picks
+              if (mine || other.dataset.exclusive === "1") other.checked = false;
+            });
+          });
         });
         main.appendChild(optWrap);
       }
