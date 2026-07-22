@@ -4,11 +4,17 @@ Reads traces.json only. Zero LLM calls, instant.
 """
 import json
 import os
+import sys
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
+# action_policy is a pure module (no LLM client imports) -- safe to bundle serverless.
+from action_policy import action_for
 
 with open(os.path.join(ROOT, "traces.json"), encoding="utf-8") as f:
     TRACES = json.load(f)
@@ -29,6 +35,23 @@ try:
                 _t["coverage"] = {"parsed": len(_t.get("criteria", [])), "raw_estimated": raw_n}
 except FileNotFoundError:
     pass  # coverage is an enrichment, never a reason for the trace endpoint to fail
+
+# The frozen traces predate the uncertainty/action fields and must never be regenerated
+# (relabelling constraint). Derive both at serve time with the SAME policy code the live
+# pipeline uses for metadata-less verdicts: UNKNOWN means the record is silent (MISSING ->
+# its policy action), UNCERTAIN with no recorded cause fails safe to a human (action_for(None)
+# -> ESCALATE). This is the policy's real output for these inputs, not a display guess.
+for _trace in TRACES:
+    for _t in _trace.get("trials", []):
+        for _c in _t.get("criteria", []):
+            if _c.get("uncertainty_type") or _c.get("action"):
+                continue
+            if _c.get("verdict") == "UNKNOWN":
+                _c["uncertainty_type"] = "MISSING"
+                _c["action"] = action_for("MISSING")
+            elif _c.get("verdict") == "UNCERTAIN":
+                _c["uncertainty_type"] = None
+                _c["action"] = action_for(None)
 
 
 class handler(BaseHTTPRequestHandler):

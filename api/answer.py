@@ -32,7 +32,7 @@ import anthropic_client
 # shared file.
 anthropic_client.CACHE_DIR = "/tmp/cache"
 
-from pipeline import rematch_affected_criteria, recommend, effect_of, VALID_VERDICTS
+from pipeline import rematch_affected_criteria, recommend, effect_of, VALID_VERDICTS, classify_action
 
 with open(os.path.join(ROOT, "patients.json"), encoding="utf-8") as f:
     PATIENTS = json.load(f)
@@ -191,6 +191,9 @@ def handle(body):
         crit = trials_copy[r["trial_idx"]]["criteria"][r["crit_idx"]]
         crit["verdict"] = r["after_verdict"]
         crit["effect"] = effect_of(crit["type"], r["after_verdict"])
+        # code-derived, same rule as the pipeline; clears stale badges on decided verdicts
+        crit["uncertainty_type"], crit["action"] = classify_action(
+            r["after_verdict"], r.get("after_uncertainty_type"))
         if r.get("after_evidence"):
             crit["evidence"] = r["after_evidence"]
         crit["reasoning"] = r.get("after_reasoning", crit.get("reasoning", ""))

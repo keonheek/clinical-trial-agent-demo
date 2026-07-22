@@ -170,6 +170,13 @@
   .trial-card-head .meta span.meta-sep{margin-left:8px;padding-left:8px;border-left:1px solid var(--line);}
   .coverage-pill{cursor:help;}
   .coverage-low{color:var(--uncertain);font-weight:700;}
+  .nct-link{color:var(--accent-dark);text-decoration:none;font-weight:600;}
+  .nct-link:hover{text-decoration:underline;}
+  .action-chip{
+    display:inline-block;margin-top:4px;padding:1px 6px;border-radius:4px;
+    background:var(--unknown-bg);border:1px solid var(--line);color:var(--unknown);
+    font-size:0.68rem;font-weight:600;cursor:help;white-space:nowrap;
+  }
   .trial-card .rationale{font-size:0.85rem;color:var(--ink-soft);margin:0 0 10px;}
 
   .crit-row{
@@ -342,6 +349,29 @@ function getEffect(c){
   return null;
 }
 
+// Uncertainty cause + the policy's chosen next action, shown only on undecided criteria.
+// Values come from the backend (frozen traces: derived by the same policy code at serve
+// time; after an answer round: fresh from the matcher). Nothing is invented client-side.
+var UTYPE_KO = {
+  MISSING: "정보 없음", STALE: "정보 오래됨", INSUFFICIENT_EVIDENCE: "근거 불충분",
+  AMBIGUOUS: "표현 모호", CONFLICTING: "근거 충돌", BOUNDARY: "경계값",
+  CLINICAL_JUDGMENT: "전문가 판단", NOT_APPLICABLE: "해당 없음",
+  CALCULABLE: "계산 가능", DEFINITE_EXCLUSION: "부적격 확정"
+};
+var ACTION_KO = {
+  ASK: "질문", RETRIEVE: "기록 검색", REQUEST_LATEST: "최신 검사 요청",
+  CALCULATE: "계산", VERIFY: "근거 재확인", PROTOCOL_REVIEW: "원문 재확인",
+  ESCALATE: "전문가 이관", IGNORE: "영향 없음", STOP: "중단"
+};
+
+function actionChip(c){
+  if (!c.action) return "";
+  var cause = c.uncertainty_type ? (UTYPE_KO[c.uncertainty_type] || c.uncertainty_type) : "원인 미분류";
+  var act = ACTION_KO[c.action] || c.action;
+  return '<br><span class="action-chip" title="불확실성의 원인과, 정책 테이블이 고른 다음 행동 (코드가 결정)">' +
+    escapeHtml(cause) + " → " + escapeHtml(act) + '</span>';
+}
+
 function verdictPair(c){
   var v = (c.verdict || "UNKNOWN").toUpperCase();
   var e = getEffect(c);
@@ -454,10 +484,14 @@ function renderTrials(trials){
         ? '<span class="rank-delta up">' + prev + '위에서 상승</span>'
         : '<span class="rank-delta down">' + prev + '위에서 하락</span>';
     }
+    var nctLink = /^NCT\d+$/.test(t.nct_id || "")
+      ? '<a class="nct-link" href="https://clinicaltrials.gov/study/' + t.nct_id + '"' +
+        ' target="_blank" rel="noopener" title="ClinicalTrials.gov 원문 프로토콜">' + escapeHtml(t.nct_id) + ' 원문 ↗</a>'
+      : escapeHtml(t.nct_id);
     head.innerHTML =
       '<div class="rank">' + (t.rank || "?") + '</div>' +
       '<div class="titlewrap"><h3>' + escapeHtml(t.title) + delta + '</h3>' +
-      '<div class="meta">' + escapeHtml(t.nct_id) +
+      '<div class="meta">' + nctLink +
       '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
       '<span class="meta-sep">' + elig + '</span>' + cov + '</div></div>';
     card.appendChild(head);
@@ -470,7 +504,7 @@ function renderTrials(trials){
       row.dataset.nct = t.nct_id;
       row.dataset.critText = c.text;
       row.innerHTML =
-        '<div>' + verdictPair(c) + '<br><span class="tag ' + c.type + '">' + (c.type === "inclusion" ? "포함" : "제외") + '</span></div>' +
+        '<div>' + verdictPair(c) + '<br><span class="tag ' + c.type + '">' + (c.type === "inclusion" ? "포함" : "제외") + '</span>' + actionChip(c) + '</div>' +
         '<div><div class="crit-text">' + escapeHtml(c.text) +
         (lastVerdictChanges[t.nct_id + "::" + c.text]
           ? '<span class="delta-chip">' + escapeHtml(lastVerdictChanges[t.nct_id + "::" + c.text]) + '</span>' : '') +
