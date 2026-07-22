@@ -788,6 +788,9 @@ function resetView(){
   lastRenderedTrials = null;
   lastTrialsSig = null;
   lastQuestionsSig = null;
+  // Without this the previous patient's questions stay on screen while the new patient's
+  // pipeline is still running -- the dock would show another case's clarifying questions.
+  currentQuestionsCache = [];
 }
 
 function setModeBadge(mode){
