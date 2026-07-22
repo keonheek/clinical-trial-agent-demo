@@ -13,6 +13,7 @@ ranking is recomputed. Two entry paths:
 Reuses pipeline.py's agent functions directly -- no logic duplicated here.
 Python 3 stdlib only. Run: python3 live_server.py  (serves http://localhost:8765)
 """
+import copy
 import json
 import os
 import re
@@ -365,8 +366,148 @@ def find_affected(session, question_text):
     return affected
 
 
+def eligibility_path(trial):
+    """What stands between this patient and enrolment on this trial.
+
+    This is the screening worklist a coordinator actually keeps: what has already been
+    satisfied, what is blocking, and what still has to be chased down (with the action the
+    policy layer chose). Derived entirely from criteria already computed -- no extra call.
+    """
+    blocking, to_resolve, satisfied = [], [], []
+    for c in trial.get("criteria", []):
+        entry = {"text": c.get("text"), "type": c.get("type"), "verdict": c.get("verdict"),
+                 "evidence": c.get("evidence"), "action": c.get("action"),
+                 "uncertainty_type": c.get("uncertainty_type")}
+        eff = c.get("effect")
+        if eff == "FAIL":
+            blocking.append(entry)
+        elif eff == "PASS":
+            satisfied.append(entry)
+        else:
+            to_resolve.append(entry)
+    if blocking:
+        verdict = "제외 사유 있음"
+    elif to_resolve:
+        verdict = f"확인 {len(to_resolve)}건 남음"
+    else:
+        verdict = "선별 통과"
+    return {"blocking": blocking, "to_resolve": to_resolve, "satisfied": satisfied,
+            "summary": verdict, "n_blocking": len(blocking),
+            "n_to_resolve": len(to_resolve), "n_satisfied": len(satisfied)}
+
+
+def handle_answers_batch(session, items):
+    """Apply several answers, then re-evaluate once. One snapshot covers the whole batch,
+    so a single revert undoes the batch the way the reviewer entered it."""
+    with session["lock"]:
+        before = _snapshot(session)
+        round_n = len(session.get("answer_rounds", [])) + 1
+        applied, affected_all = [], []
+        seen = set()
+        for it in items:
+            q = str(it.get("question", "")).strip()
+            a = str(it.get("answer", "")).strip()
+            if not q or not a:
+                continue
+            session["extended_record"] = (
+                session.get("extended_record", "") + f"\n추가 문진 Q: {q} / A: {a}"
+            ).strip()
+            applied.append({"question": q, "answer": a})
+            for af in find_affected(session, q):
+                key = (af["nct_id"], af["text"])
+                if key not in seen:
+                    seen.add(key)
+                    affected_all.append(af)
+
+        if not applied:
+            return {"error": "no usable answers"}
+
+        verdict_changes = []
+        if affected_all:
+            rematched = rematch_affected_criteria(session["patient"],
+                                                   session["extended_record"], affected_all)
+            for r in rematched:
+                crit = session["trials_out"][r["trial_idx"]]["criteria"][r["crit_idx"]]
+                crit["verdict"] = r["after_verdict"]
+                crit["effect"] = effect_of(crit["type"], r["after_verdict"])
+                if r["after_evidence"]:
+                    crit["evidence"] = r["after_evidence"]
+                crit["reasoning"] = r["after_reasoning"]
+                if r["after_verdict"] != r["before_verdict"]:
+                    verdict_changes.append({"nct_id": r["nct_id"], "criterion": r["text"],
+                                             "before": r["before_verdict"],
+                                             "after": r["after_verdict"]})
+            recs = recommend(session["patient"], session["trials_out"])
+            for t in session["trials_out"]:
+                r = recs.get(t["nct_id"], {"eligibility": t.get("eligibility", "UNCERTAIN"),
+                                            "rank": t.get("rank", 99),
+                                            "rationale": t.get("rationale", "")})
+                t["eligibility"], t["rank"], t["rationale"] = r["eligibility"], r["rank"], r["rationale"]
+            session["trials_out"].sort(key=lambda t: t["rank"])
+
+        rank_changes = []
+        for t in session["trials_out"]:
+            prev = next((b for b in before["trials_out"] if b["nct_id"] == t["nct_id"]), None)
+            if prev and (prev.get("rank") != t.get("rank")
+                         or prev.get("eligibility") != t.get("eligibility")):
+                rank_changes.append({"nct_id": t["nct_id"], "title": t.get("title"),
+                                      "rank_before": prev.get("rank"), "rank_after": t.get("rank"),
+                                      "eligibility_before": prev.get("eligibility"),
+                                      "eligibility_after": t.get("eligibility")})
+
+        session.setdefault("answer_rounds", []).append({
+            "round": round_n, "batch": applied,
+            "question": " / ".join(i["question"] for i in applied),
+            "answer": " / ".join(i["answer"] for i in applied),
+            "verdict_changes": verdict_changes, "rank_changes": rank_changes, "_before": before,
+        })
+        persist_session(session)
+        return {
+            "round": round_n, "applied": applied,
+            "verdict_changes": verdict_changes, "rank_changes": rank_changes,
+            "affected": [{"nct_id": a["nct_id"], "text": a["text"]} for a in affected_all],
+            "updated_trials": session["trials_out"],
+            "recommendation": _ranking(session["trials_out"]),
+        }
+
+
+def _snapshot(session):
+    """Deep copy of everything an answer round mutates, so a round can be undone."""
+    return {
+        "trials_out": copy.deepcopy(session.get("trials_out", [])),
+        "extended_record": session.get("extended_record", ""),
+        "gaps": copy.deepcopy(session.get("gaps")),
+    }
+
+
+def revert_last_round(session):
+    """Undo the most recent answer round. Reviewers try an answer to see what it moves;
+    without this they would have to rebuild the whole session to take it back."""
+    with session["lock"]:
+        rounds = session.get("answer_rounds") or []
+        if not rounds:
+            return {"error": "되돌릴 답변이 없습니다."}
+        last = rounds.pop()
+        snap = last.get("_before")
+        if not snap:
+            rounds.append(last)
+            return {"error": "이 답변은 되돌릴 수 없습니다 (이전 상태 미기록)."}
+        session["trials_out"] = copy.deepcopy(snap["trials_out"])
+        session["extended_record"] = snap["extended_record"]
+        session["gaps"] = copy.deepcopy(snap["gaps"])
+        persist_session(session)
+        return {
+            "reverted_round": last.get("round"),
+            "reverted_question": last.get("question"),
+            "updated_trials": session["trials_out"],
+            "recommendation": _ranking(session["trials_out"]),
+            "rounds_left": len(rounds),
+        }
+
+
 def handle_answer(session, question_text, answer_text):
     with session["lock"]:
+        before = _snapshot(session)
         affected = find_affected(session, question_text)
         round_n = len(session.get("answer_rounds", [])) + 1
         session["extended_record"] = (
@@ -375,7 +516,8 @@ def handle_answer(session, question_text, answer_text):
 
         if not affected:
             session.setdefault("answer_rounds", []).append({
-                "round": round_n, "question": question_text, "answer": answer_text, "verdict_changes": [],
+                "round": round_n, "question": question_text, "answer": answer_text,
+                "verdict_changes": [], "_before": before,
             })
             return {
                 "verdict_changes": [], "affected": [],
@@ -409,12 +551,24 @@ def handle_answer(session, question_text, answer_text):
             t["rationale"] = r["rationale"]
         session["trials_out"].sort(key=lambda t: t["rank"])
 
+        rank_changes = []
+        for t in session["trials_out"]:
+            prev = next((b for b in before["trials_out"] if b["nct_id"] == t["nct_id"]), None)
+            if prev and (prev.get("rank") != t.get("rank") or prev.get("eligibility") != t.get("eligibility")):
+                rank_changes.append({"nct_id": t["nct_id"], "title": t.get("title"),
+                                      "rank_before": prev.get("rank"), "rank_after": t.get("rank"),
+                                      "eligibility_before": prev.get("eligibility"),
+                                      "eligibility_after": t.get("eligibility")})
+
         session.setdefault("answer_rounds", []).append({
-            "round": round_n, "question": question_text, "answer": answer_text, "verdict_changes": verdict_changes,
+            "round": round_n, "question": question_text, "answer": answer_text,
+            "verdict_changes": verdict_changes, "rank_changes": rank_changes, "_before": before,
         })
+        persist_session(session)
 
         return {
             "verdict_changes": verdict_changes,
+            "rank_changes": rank_changes,
             "affected": [{"nct_id": a["nct_id"], "text": a["text"]} for a in affected],
             "updated_trials": session["trials_out"],
             "recommendation": _ranking(session["trials_out"]),
@@ -427,6 +581,8 @@ def handle_answer(session, question_text, answer_text):
 # ---------------------------------------------------------------------------
 ROUTE_SESSION = re.compile(r"^/api/session/([a-f0-9]{32})$")
 ROUTE_ANSWER = re.compile(r"^/api/session/([a-f0-9]{32})/answer$")
+ROUTE_ANSWER_BATCH = re.compile(r"^/api/session/([a-f0-9]{32})/answers$")
+ROUTE_REVERT = re.compile(r"^/api/session/([a-f0-9]{32})/revert$")
 
 
 def session_snapshot(session):
@@ -442,7 +598,12 @@ def session_snapshot(session):
             "trials": session.get("trials_out", []),
             "questions": session.get("questions", []),
             "extended_record": session.get("extended_record", ""),
-            "answer_rounds": session.get("answer_rounds", []),
+            # _before holds a deep copy for revert; it is internal and must not be shipped
+            "answer_rounds": [{k: v for k, v in r.items() if k != "_before"}
+                              for r in session.get("answer_rounds", [])],
+            "eligibility_paths": {t["nct_id"]: eligibility_path(t)
+                                   for t in session.get("trials_out", [])},
+            "can_revert": bool(session.get("answer_rounds")),
         },
     }
 
@@ -598,6 +759,38 @@ class Handler(BaseHTTPRequestHandler):
                     return
 
                 self._send_json({"error": "provide patient_id or vignette"}, status=400)
+                return
+
+            m = ROUTE_ANSWER_BATCH.match(path)
+            if m:
+                # Answer several questions, then re-evaluate ONCE. Answering one at a time
+                # costs a full re-match + recommend per question; a reviewer filling in a
+                # chart wants to enter what they know and see the consequence together.
+                session = SESSIONS.get(m.group(1))
+                if not session:
+                    self._send_json({"error": "session not found"}, status=404)
+                    return
+                body = self._read_json_body()
+                items = body.get("answers")
+                if not isinstance(items, list) or not items:
+                    self._send_json({"error": "answers[] required"}, status=400)
+                    return
+                if session["stage"] != "done":
+                    self._send_json({"error": f"session not ready (stage={session['stage']})"}, status=200)
+                    return
+                try:
+                    self._send_json(handle_answers_batch(session, items))
+                except Exception as e:
+                    self._send_json({"error": str(e)}, status=200)
+                return
+
+            m = ROUTE_REVERT.match(path)
+            if m:
+                session = SESSIONS.get(m.group(1))
+                if not session:
+                    self._send_json({"error": "session not found"}, status=404)
+                    return
+                self._send_json(revert_last_round(session))
                 return
 
             m = ROUTE_ANSWER.match(path)
