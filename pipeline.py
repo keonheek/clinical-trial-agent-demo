@@ -466,8 +466,19 @@ QUESTION_GENERATOR_SYS = """You are a clinical clarifying-question generator.
 Given a list of information gaps identified for a patient being matched to clinical trials,
 write at most 3 short, specific clarifying questions a clinician or intake coordinator could
 ask the patient (or check their chart for) to resolve the MOST IMPORTANT gaps.
+
+For each question also supply `options`: 3-6 short, MUTUALLY DISTINCT answers a coordinator
+could tick off from a chart, so several can be selected at once. Rules for options:
+- Each option states one concrete finding, not a category ("활동성 감염 있음", not "감염 관련").
+- Write them so that ticking several together reads as a coherent answer.
+- Ground every option in the criteria the question is resolving; never invent a value the
+  criteria do not care about.
+- Include one explicit negative ("해당 사항 없음") and, where the record may simply be silent,
+  one "기록 없음/확인 불가". Never include a free-text placeholder -- the UI adds that itself.
+- Write options in Korean; keep clinical terms and units in their standard form (ANC, HbA1c, mg/dL).
+
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"questions": [{"field": "<matches a gap field>", "question": "<question text>", "why": "<short reason, <=20 words>"}]}
+{"questions": [{"field": "<matches a gap field>", "question": "<question text>", "why": "<short reason, <=20 words>", "options": ["<option>", "..."]}]}
 Return at most 3 questions, prioritizing gaps that affect the most trials."""
 
 
@@ -496,7 +507,17 @@ Generate at most 3 clarifying questions per your instructions."""
         why = str(q.get("why", "")).strip()
         if not question:
             continue
-        cleaned.append({"field": field, "question": question, "why": why})
+        # options are a UI affordance, not a decision input: they are only ever turned back
+        # into the same free-text answer string, so a malformed list degrades to free-text.
+        raw_options = q.get("options")
+        options = []
+        if isinstance(raw_options, list):
+            for opt in raw_options:
+                text = str(opt).strip()
+                if text and text not in options:
+                    options.append(text)
+        cleaned.append({"field": field, "question": question, "why": why,
+                        "options": options[:6]})
     return cleaned
 
 

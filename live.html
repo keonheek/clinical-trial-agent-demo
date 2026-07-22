@@ -144,6 +144,16 @@
      every button (transparent by default) so selecting doesn't shift the row's width/padding. */
   .patient-btn.selected{border-color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft);}
 
+  .opt-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;}
+  .opt-item{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--line);border-radius:8px;padding:5px 10px;
+    font-size:0.82rem;cursor:pointer;background:var(--bg);
+  }
+  .opt-item:hover{border-color:var(--accent);}
+  .opt-item input{margin:0;cursor:pointer;}
+  .opt-item:has(input:checked){background:var(--accent-soft);border-color:var(--accent);font-weight:600;}
+
   .model-pick{
     display:inline-flex;align-items:center;gap:6px;
     font-size:0.72rem;font-weight:700;color:var(--ink-soft);white-space:nowrap;
@@ -1096,15 +1106,52 @@ function renderQuestions(questions, trials){
     if (isAnswered){
       main.appendChild(el("div", "answered-note", "반영됨: " + escapeHtml(isAnswered)));
     } else {
+      // Multi-select first, free text underneath. Ticked options and the typed text are
+      // joined into ONE answer string -- the backend contract is unchanged, so this is
+      // purely an input affordance (a coordinator ticks a chart instead of typing prose).
+      var boxes = [];
+      if (q.options && q.options.length){
+        var optWrap = el("div", "opt-list");
+        q.options.forEach(function(optText, oi){
+          var id = "q" + qi + "opt" + oi;
+          var lab = el("label", "opt-item");
+          var cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.id = id;
+          cb.value = optText;
+          var span = document.createElement("span");
+          span.textContent = optText;
+          lab.appendChild(cb);
+          lab.appendChild(span);
+          optWrap.appendChild(lab);
+          boxes.push(cb);
+        });
+        main.appendChild(optWrap);
+      }
+
       var row = el("div", "answer-row");
       var input = document.createElement("input");
       input.type = "text";
-      input.placeholder = "답변을 입력하세요 (자유 입력)";
+      input.placeholder = boxes.length
+        ? "직접 입력 (선택 항목과 함께 반영됩니다)"
+        : "답변을 입력하세요 (자유 입력)";
       var btn = el("button", "btn btn-sm", "답변 반영");
+
+      function composeAnswer(){
+        var picked = boxes.filter(function(b){ return b.checked; })
+                          .map(function(b){ return b.value; });
+        var typed = input.value.trim();
+        if (typed) picked.push(typed);
+        return picked.join("; ");
+      }
+
       btn.addEventListener("click", function(){
-        var val = input.value.trim();
+        var val = composeAnswer();
         if (!val) return;
         submitAnswer(q.question, val, card, input, btn);
+      });
+      input.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" && !btn.disabled) btn.click();
       });
       row.appendChild(input);
       row.appendChild(btn);
