@@ -12,3 +12,6 @@ TEAM-RESEARCH-SPLIT.md
 
 # internal team docs — repo is PUBLIC via GitHub Pages, do not publish these
 handoff/
+cache/bakeoff/
+model_bakeoff_results.json
+model_bakeoff_full.json

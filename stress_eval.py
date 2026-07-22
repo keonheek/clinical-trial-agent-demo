@@ -159,7 +159,9 @@ def build_criteria_by_patient(labels, patients_by_id):
 # ---------------------------------------------------------------------------
 def _cache_key(patient, criteria_by_nct):
     backend = os.environ.get("LLM_BACKEND", "anthropic")
-    model = getattr(pipeline, "DEFAULT_MODEL", "unknown-model")
+    # ACTIVE_MODEL, not DEFAULT_MODEL: the model can be switched at runtime, and a cache
+    # key that ignored the switch would serve one model's answers under another's name.
+    model = getattr(pipeline, "ACTIVE_MODEL", getattr(pipeline, "DEFAULT_MODEL", "unknown-model"))
     payload = json.dumps(
         {"text": patient["text"], "criteria": criteria_by_nct, "backend": backend, "model": model},
         sort_keys=True, ensure_ascii=False,
