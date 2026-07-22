@@ -86,6 +86,27 @@ try:
 except FileNotFoundError:
     pass
 
+# The stress patients' own trials, fetched from ClinicalTrials.gov. Without these the
+# keyword picker had to choose from the S001-S010 pool, which contains no Alzheimer's or
+# HFrEF trial at all -- so a 72-year-old dementia patient was scored against a paediatric
+# trial and everything came back INELIGIBLE for reasons that had nothing to do with them.
+STRESS_TRIALS = {}
+STRESS_TRIALS_BY_PATIENT = {}
+try:
+    with open(os.path.join(HERE, "trials_stress.json"), encoding="utf-8") as f:
+        STRESS_TRIALS = json.load(f)
+    # which trials belong to which patient comes from the human answer key, not a guess
+    with open(os.path.join(HERE, "eval_labels_stress.json"), encoding="utf-8") as f:
+        for _row in json.load(f):
+            STRESS_TRIALS_BY_PATIENT.setdefault(_row["patient_id"], set()).add(_row["nct_id"])
+    # a variant inherits its base case's trials (T001-b is still the T001 bladder-cancer case)
+    for _pid in list(STRESS_PATIENTS_BY_ID):
+        base = _pid.rsplit("-", 1)[0] if "-" in _pid else _pid
+        if not STRESS_TRIALS_BY_PATIENT.get(_pid) and STRESS_TRIALS_BY_PATIENT.get(base):
+            STRESS_TRIALS_BY_PATIENT[_pid] = set(STRESS_TRIALS_BY_PATIENT[base])
+except FileNotFoundError:
+    pass
+
 with open(os.path.join(HERE, "trials_raw.json")) as f:
     TRIALS_RAW = json.load(f)
 _all_trials = {}
@@ -240,7 +261,12 @@ def build_session_live(session):
         fields, dropped = extract_patient(patient)
         session["extraction"] = fields
 
-        candidates = select_candidate_trials(patient["text"], fields, TRIALS_PER_PATIENT)
+        # A stress patient is scored against ITS OWN trials (the ones the human answer key
+        # was written against), not whatever the keyword picker finds in the demo pool.
+        pinned = STRESS_TRIALS_BY_PATIENT.get(patient.get("patient_id")) or set()
+        candidates = [STRESS_TRIALS[n] for n in sorted(pinned) if n in STRESS_TRIALS]
+        if not candidates:
+            candidates = select_candidate_trials(patient["text"], fields, TRIALS_PER_PATIENT)
         session["trials_total"] = len(candidates)
         session["trials_done"] = 0
 
