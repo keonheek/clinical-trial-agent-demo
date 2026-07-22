@@ -144,6 +144,24 @@
      every button (transparent by default) so selecting doesn't shift the row's width/padding. */
   .patient-btn.selected{border-color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft);}
 
+  .model-pick{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:0.72rem;font-weight:700;color:var(--ink-soft);white-space:nowrap;
+  }
+  .model-pick select{
+    font-family:inherit;font-size:0.74rem;padding:3px 6px;
+    border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);
+  }
+  .model-pick select:disabled{opacity:0.6;}
+
+  .group-head{
+    font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;
+    color:var(--ink-soft);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line);
+  }
+  .group-head:first-child{margin-top:0;}
+  .patient-btn.stress{border-left-color:#c8b273;}
+  .patient-btn .stress-note{display:block;color:#8a7430;font-size:0.7rem;margin-top:2px;}
+
   .custom-box{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;}
   .custom-box h2{font-size:0.82rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin:0 0 8px;}
   .custom-box textarea{
@@ -429,7 +447,11 @@
 <header class="topbar">
   <h1>Interactive Clinical Trial Recommendation</h1>
   <p class="subtitle">사람이 직접 답변을 입력하면 영향받는 기준만 실시간 재평가됩니다</p>
-  <span class="badge-pill">백엔드: Groq (llama-3.3-70b)</span>
+  <span class="badge-pill" id="backendBadge">백엔드 확인 중</span>
+  <label class="model-pick" title="다음 실행부터 적용됩니다. 이미 계산된 결과는 그대로 유지됩니다.">
+    모델
+    <select id="modelSelect"><option>불러오는 중</option></select>
+  </label>
   <span class="badge-pill" id="modeBadge" style="display:none;"></span>
 </header>
 
@@ -492,7 +514,7 @@
 </div>
 
 <footer class="disclaimer">
-  본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 Groq LLM 호출로 영향받는 기준만 재평가됩니다.
+  본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 LLM 호출로 영향받는 기준만 재평가됩니다.
 </footer>
 
 <script>
@@ -632,13 +654,70 @@ function buildCritRow(nctId, c, rowNum){
 }
 
 // ---- patient list ----
+function renderBackendBadge(m){
+  var b = document.getElementById("backendBadge");
+  if (b) b.textContent = "백엔드: " + (m.backend || "?") + " / " + (m.model || "?");
+}
+
+// The picker changes which model subsequent runs use. Cache keys include the model, so a
+// switch never serves another model's cached answer -- and never rewrites a finished run.
+function loadBackendBadge(){
+  fetch("/api/meta").then(function(r){ return r.json(); }).then(function(m){
+    renderBackendBadge(m);
+    var sel = document.getElementById("modelSelect");
+    if (!sel) return;
+    var models = m.models || [];
+    if (!models.length){
+      sel.innerHTML = '<option>' + escapeHtml(m.model || "?") + '</option>';
+      sel.disabled = true;
+      return;
+    }
+    sel.innerHTML = "";
+    models.forEach(function(opt){
+      var o = document.createElement("option");
+      o.value = opt.id;
+      o.textContent = opt.label || opt.id;
+      if (opt.id === m.model) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", function(){
+      var prev = m.model;
+      sel.disabled = true;
+      fetch("/api/meta", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({model: sel.value})
+      }).then(function(r){ return r.json(); }).then(function(res){
+        sel.disabled = false;
+        if (res.error){ sel.value = prev; showError(res.error); return; }
+        m.model = res.model;
+        renderBackendBadge(res);
+      }).catch(function(){
+        sel.disabled = false;
+        sel.value = prev;
+        showError("모델 변경에 실패했습니다.");
+      });
+    });
+  }).catch(function(){});
+}
+
 function loadPatients(){
   fetch("/api/patients").then(function(r){ return r.json(); }).then(function(list){
     var box = document.getElementById("patientList");
     box.innerHTML = "";
+    var lastGroup = null;
     list.forEach(function(p){
-      var btn = el("button", "patient-btn");
-      btn.innerHTML = '<strong>' + escapeHtml(p.id) + '</strong><span class="snippet">' + escapeHtml(p.title) + '</span>';
+      var group = p.group || "demo";
+      if (group !== lastGroup){
+        lastGroup = group;
+        box.appendChild(el("div", "group-head",
+          group === "stress"
+            ? "스트레스 세트 (40) — 실시간 실행"
+            : "데모 환자 (10) — 사전 계산"));
+      }
+      var btn = el("button", "patient-btn" + (group === "stress" ? " stress" : ""));
+      btn.innerHTML = '<strong>' + escapeHtml(p.id) + '</strong><span class="snippet">' +
+        escapeHtml(p.title) + '</span>' +
+        (p.note ? '<span class="snippet stress-note">' + escapeHtml(p.note) + '</span>' : '');
       btn.addEventListener("click", function(){
         if (sessionStarting) return;
         document.querySelectorAll(".patient-btn").forEach(function(b){ b.classList.remove("selected"); });
@@ -1157,6 +1236,7 @@ document.getElementById("guideToggle").addEventListener("click", function(){
 });
 
 loadPatients();
+loadBackendBadge();
 </script>
 </body>
 </html>

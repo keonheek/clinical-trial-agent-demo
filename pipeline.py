@@ -45,13 +45,31 @@ from evidence import assess_evidence
 
 _BACKEND = os.environ.get("LLM_BACKEND", "anthropic")
 if _BACKEND == "ollama":
-    from ollama_client import call_llm as call_groq, stats, DEFAULT_MODEL
+    from ollama_client import call_llm as _call_backend, stats, DEFAULT_MODEL
 elif _BACKEND == "groq":
-    from groq_client import call_groq, stats, DEFAULT_MODEL
+    from groq_client import call_groq as _call_backend, stats, DEFAULT_MODEL
 elif _BACKEND == "anthropic":
-    from anthropic_client import call_llm as call_groq, stats, DEFAULT_MODEL
+    from anthropic_client import call_llm as _call_backend, stats, DEFAULT_MODEL
 else:
-    from claude_client import call_llm as call_groq, stats, DEFAULT_MODEL
+    from claude_client import call_llm as _call_backend, stats, DEFAULT_MODEL
+
+# Which model the calls actually use. Starts at the backend's default and can be changed
+# at runtime (the local UI's model picker) without restarting the process. The cache key
+# already includes the model, so switching never returns another model's cached answer.
+ACTIVE_MODEL = DEFAULT_MODEL
+
+
+def set_active_model(model):
+    """Point subsequent LLM calls at `model`. Returns the value actually set."""
+    global ACTIVE_MODEL
+    ACTIVE_MODEL = model or DEFAULT_MODEL
+    return ACTIVE_MODEL
+
+
+def call_groq(role, system_prompt, user_prompt, model=None, **kwargs):
+    """Single funnel for every pipeline LLM call, so the active model applies everywhere."""
+    return _call_backend(role, system_prompt, user_prompt,
+                         model=model or ACTIVE_MODEL, **kwargs)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TRIALS_PER_PATIENT = 4

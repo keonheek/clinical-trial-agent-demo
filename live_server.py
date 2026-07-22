@@ -21,6 +21,7 @@ import time
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+import pipeline
 from pipeline import (
     extract_patient,
     parse_criteria,
@@ -44,6 +45,31 @@ with open(os.path.join(HERE, "patients.json")) as f:
     PATIENTS = json.load(f)
 PATIENTS_BY_ID = {p["patient_id"]: p for p in PATIENTS}
 
+# The 40 stress-test patients (5 base cases x 7 single-defect variants, 지우's set) are
+# offered here too -- selecting one runs it through the LIVE pipeline exactly like a pasted
+# vignette. They carry no precomputed trace, so they always take the live path; the frozen
+# S001-S010 demo traces are untouched. Local only: the deployed API never exposes these.
+STRESS_PATIENTS_BY_ID = {}
+try:
+    with open(os.path.join(HERE, "patients_stress.json")) as f:
+        for _p in json.load(f):
+            STRESS_PATIENTS_BY_ID[_p["patient_id"]] = _p
+except FileNotFoundError:
+    pass
+
+# What each variant is SUPPOSED to induce, read straight from the human answer key rather
+# than asserted here -- the letters are not a clean 1:1 map (a/b/g carry a single cause,
+# c/d/e/f mix several), so hardcoding a meaning per letter would misdescribe the data.
+STRESS_EXPECTED_CAUSES = {}
+try:
+    with open(os.path.join(HERE, "eval_labels_stress.json")) as f:
+        for _row in json.load(f):
+            if _row.get("uncertainty_type"):
+                STRESS_EXPECTED_CAUSES.setdefault(_row["patient_id"], set()).add(
+                    _row["uncertainty_type"])
+except FileNotFoundError:
+    pass
+
 with open(os.path.join(HERE, "traces.json")) as f:
     TRACES = json.load(f)
 TRACES_BY_ID = {t["patient_id"]: t for t in TRACES}
@@ -55,6 +81,28 @@ for _entry in TRIALS_RAW.values():
     for _t in _entry["trials"]:
         _all_trials[_t["nct_id"]] = _t
 ALL_TRIALS = list(_all_trials.values())
+
+# Models offerable per backend, for the local UI's picker. IDs are the exact strings the
+# provider expects -- Anthropic aliases carry no date suffix. Local only: the deployed
+# endpoint stays pinned to its configured model so a visitor can't select a costlier one.
+MODEL_CHOICES = {
+    "anthropic": [
+        {"id": "claude-haiku-4-5", "label": "Haiku 4.5 (기본, 가장 저렴)"},
+        {"id": "claude-sonnet-5", "label": "Sonnet 5 (균형)"},
+        {"id": "claude-opus-4-8", "label": "Opus 4.8 (최고 성능, 비쌈)"},
+    ],
+    "claude": [
+        {"id": "claude-haiku-4-5", "label": "Haiku 4.5 (기본, 가장 빠름)"},
+        {"id": "claude-sonnet-5", "label": "Sonnet 5 (균형)"},
+        {"id": "claude-opus-4-8", "label": "Opus 4.8 (최고 성능, 가장 느림)"},
+    ],
+    "groq": [
+        {"id": "llama-3.3-70b-versatile", "label": "Llama 3.3 70B (무료)"},
+    ],
+    "ollama": [
+        {"id": "qwen3.6:35b", "label": "Qwen3.6 35B (로컬)"},
+    ],
+}
 
 SESSIONS = {}
 SESSIONS_LOCK = threading.Lock()
@@ -341,11 +389,32 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(body)
                 return
 
+            if path == "/api/meta":
+                # report the backend actually in use -- the badge used to hardcode "Groq"
+                # and kept saying so after the default moved to Anthropic/subscription.
+                backend = os.environ.get("LLM_BACKEND", "anthropic")
+                self._send_json({
+                    "backend": backend,
+                    "model": getattr(pipeline, "ACTIVE_MODEL", "unknown"),
+                    "default_model": getattr(pipeline, "DEFAULT_MODEL", "unknown"),
+                    "models": MODEL_CHOICES.get(backend, []),
+                })
+                return
+
             if path == "/api/patients":
                 out = []
                 for pid in sorted(PATIENTS_BY_ID):
                     p = PATIENTS_BY_ID[pid]
-                    out.append({"id": pid, "title": p.get("condition", pid), "vignette": p["text"]})
+                    out.append({"id": pid, "title": p.get("condition", pid), "vignette": p["text"],
+                                "group": "demo"})
+                for pid in sorted(STRESS_PATIENTS_BY_ID):
+                    p = STRESS_PATIENTS_BY_ID[pid]
+                    causes = sorted(STRESS_EXPECTED_CAUSES.get(pid, ()))
+                    out.append({"id": pid, "title": p.get("condition", pid),
+                                "vignette": p["text"], "group": "stress",
+                                "expected_causes": causes,
+                                "note": ("정답지 예상 원인: " + ", ".join(causes)) if causes
+                                        else "원본 (단일 결함 없음)"})
                 self._send_json(out)
                 return
 
@@ -365,6 +434,19 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         path = self.path.split("?", 1)[0]
         try:
+            if path == "/api/meta":
+                # switch the model for subsequent runs; only ids offered for this backend
+                body = self._read_json_body()
+                backend = os.environ.get("LLM_BACKEND", "anthropic")
+                wanted = str(body.get("model", "")).strip()
+                allowed = {m["id"] for m in MODEL_CHOICES.get(backend, [])}
+                if wanted not in allowed:
+                    self._send_json({"error": f"model not available on backend {backend}"},
+                                     status=400)
+                    return
+                self._send_json({"backend": backend, "model": pipeline.set_active_model(wanted)})
+                return
+
             if path == "/api/session":
                 body = self._read_json_body()
                 patient_id = str(body.get("patient_id", "")).strip()
@@ -387,6 +469,24 @@ class Handler(BaseHTTPRequestHandler):
                         SESSIONS[sid] = session
                     threading.Thread(target=build_session_precomputed, args=(session, trace), daemon=True).start()
                     self._send_json({"session_id": sid, "mode": "precomputed"})
+                    return
+
+                # stress patients have no precomputed trace by design -- they take the same
+                # live path as a pasted vignette, keeping their own id for the changelog.
+                if patient_id and patient_id in STRESS_PATIENTS_BY_ID:
+                    sp = STRESS_PATIENTS_BY_ID[patient_id]
+                    sid = uuid.uuid4().hex
+                    session = {
+                        "id": sid, "mode": "live",
+                        "patient": {"patient_id": patient_id, "text": sp["text"]},
+                        "stage": "queued", "error": None, "extraction": [], "trials_out": [],
+                        "gaps": None, "questions": [], "extended_record": "", "answer_rounds": [],
+                        "lock": threading.Lock(), "created": time.time(),
+                    }
+                    with SESSIONS_LOCK:
+                        SESSIONS[sid] = session
+                    threading.Thread(target=build_session_live, args=(session,), daemon=True).start()
+                    self._send_json({"session_id": sid, "mode": "live"})
                     return
 
                 if vignette:
