@@ -211,6 +211,16 @@
   .question-card .answered-note{font-size:0.8rem;color:var(--accent-dark);font-weight:600;margin-top:6px;}
   .question-card .char-count{font-size:0.72rem;color:var(--ink-soft);margin-top:4px;}
 
+  .opt-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 6px;}
+  .opt-item{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--line);border-radius:8px;padding:5px 10px;
+    font-size:0.82rem;cursor:pointer;background:var(--bg);
+  }
+  .opt-item:hover{border-color:var(--accent);}
+  .opt-item input{margin:0;cursor:pointer;}
+  .opt-item:has(input:checked){background:var(--accent-soft);border-color:var(--accent);font-weight:600;}
+
   .summary-strip{
     display:flex;flex-wrap:wrap;gap:18px;align-items:center;
     border:1px solid var(--line);border-radius:10px;background:var(--bg-alt);
@@ -538,14 +548,40 @@ function renderQuestions(questions, trials){
     if (isAnswered){
       card.appendChild(el("div", "answered-note", "반영됨: " + escapeHtml(isAnswered)));
     } else {
+      // Multi-select first, free text underneath; both are joined into one answer string
+      // so the /api/answer contract is unchanged.
+      var boxes = [];
+      if (q.options && q.options.length){
+        var optWrap = el("div", "opt-list");
+        q.options.forEach(function(optText, oi){
+          var lab = el("label", "opt-item");
+          var cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.value = optText;
+          var span = document.createElement("span");
+          span.textContent = optText;
+          lab.appendChild(cb);
+          lab.appendChild(span);
+          optWrap.appendChild(lab);
+          boxes.push(cb);
+        });
+        card.appendChild(optWrap);
+      }
+
       var row = el("div", "answer-row");
       var input = document.createElement("input");
       input.type = "text";
-      input.placeholder = "자유 서술로 입력 (검사 수치, 병력, 복용 약 등) 후 Enter";
+      input.placeholder = boxes.length
+        ? "직접 입력 (선택 항목과 함께 반영됩니다)"
+        : "자유 서술로 입력 (검사 수치, 병력, 복용 약 등) 후 Enter";
       input.maxLength = MAX_ANSWER_LEN;
       var btn = el("button", "btn btn-sm", "답변 반영");
       btn.addEventListener("click", function(){
-        var val = input.value.trim();
+        var picked = boxes.filter(function(b){ return b.checked; })
+                          .map(function(b){ return b.value; });
+        var typed = input.value.trim();
+        if (typed) picked.push(typed);
+        var val = picked.join("; ");
         if (!val) return;
         submitAnswer(q.question, val, card, input, btn);
       });

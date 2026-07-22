@@ -467,14 +467,19 @@ Given a list of information gaps identified for a patient being matched to clini
 write at most 3 short, specific clarifying questions a clinician or intake coordinator could
 ask the patient (or check their chart for) to resolve the MOST IMPORTANT gaps.
 
-For each question also supply `options`: 3-6 short, MUTUALLY DISTINCT answers a coordinator
-could tick off from a chart, so several can be selected at once. Rules for options:
+For each question also supply `options`: exactly 3-4 short, MUTUALLY DISTINCT findings a
+coordinator could tick off from a chart (several selectable at once), PLUS the two closing
+options described below -- 6 total at most. Rules for options:
 - Each option states one concrete finding, not a category ("활동성 감염 있음", not "감염 관련").
 - Write them so that ticking several together reads as a coherent answer.
 - Ground every option in the criteria the question is resolving; never invent a value the
   criteria do not care about.
-- Include one explicit negative ("해당 사항 없음") and, where the record may simply be silent,
-  one "기록 없음/확인 불가". Never include a free-text placeholder -- the UI adds that itself.
+- ALWAYS include BOTH of these, as the last two options, never only one of them:
+  (a) an explicit clean/negative answer, phrased for what the question asks -- for lab or
+      measurement questions "모두 정상 범위" (not just "없음"), for history questions "해당 사항 없음";
+  (b) "기록 없음/확인 불가" for when the chart is simply silent.
+  Without (a) a coordinator holding a normal result has no way to say so, which is a real answer.
+  Never include a free-text placeholder -- the UI adds that itself.
 - Write options in Korean; keep clinical terms and units in their standard form (ANC, HbA1c, mg/dL).
 
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
@@ -516,8 +521,13 @@ Generate at most 3 clarifying questions per your instructions."""
                 text = str(opt).strip()
                 if text and text not in options:
                     options.append(text)
+        # Truncating from the end would drop the two closing options the prompt requires
+        # (the clean answer and "기록 없음"), which are the ones a coordinator needs most --
+        # so when over the cap, drop from the MIDDLE and keep the tail.
+        if len(options) > 6:
+            options = options[:4] + options[-2:]
         cleaned.append({"field": field, "question": question, "why": why,
-                        "options": options[:6]})
+                        "options": options})
     return cleaned
 
 

@@ -1,0 +1,238 @@
+{
+  "Does the patient have any immunosuppressive conditions, active infections, or significant comorbidities (e.g., HIV, diabetes, renal or hepatic disease)?": [
+    "HIV 감염 또는 기타 면역저하 상태",
+    "당뇨병 (조절 여부 무관, HbA1c 기록 확인)",
+    "만성 신질환 또는 간질환",
+    "현재 치료 중인 활동성 감염",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Has the patient had any prior pancreatic or biliary surgery, ERCP, or other endoscopic interventions?": [
+    "췌장 수술 이력 있음 (원위췌장절제술, 췌십이지장절제술, Frey 수술, 췌장 괴사절제술 등)",
+    "췌장 괴사 조직에 대한 내시경적 괴사절제술 또는 경피적 배액/괴사절제술 이력 있음",
+    "ERCP 시행 이력 있음 (ERCP 후 급성 췌장염 발생 여부 포함)",
+    "췌장액 저류에 대한 내시경적 치료 이력 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "What do CT, MRI, or MRCP imaging results show regarding pancreatic structure, biliary obstruction, or malignancy?": [
+    "췌장 실질 또는 췌관 석회화 확인 (CT/MRI/MRCP상 만성췌장염 소견)",
+    "췌장 종양 의심 소견 (선암, 신경내분비종양, 전이 또는 주췌관 확장 동반 낭성 종양)",
+    "췌장액 저류 또는 괴사성 저류 소견",
+    "담도 폐쇄 소견",
+    "모두 정상 범위",
+    "기록 없음/확인 불가"
+  ],
+  "What are her recent TSH, free T4/T3, TRAb/TSI, CBC, and liver/renal panel results?": [
+    "TSH 억제 및 free T4/T3 상승 (생화학적 갑상선기능항진증 확인)",
+    "TRAb 또는 TSI 양성",
+    "CBC 이상 소견 (예: 호중구감소증 등)",
+    "간기능 또는 신기능 검사 이상 소견",
+    "모두 정상 범위",
+    "기록 없음/확인 불가"
+  ],
+  "Does she have any history of cancer, cardiac disease, hypertension, neurological conditions, or chronic fatigue?": [
+    "악성 종양(암) 병력 있음",
+    "심장 질환 병력 있음",
+    "고혈압 병력 있음",
+    "신경계 질환 또는 만성 피로 병력 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "When was she diagnosed, and what medications, prior antithyroid treatments, or surgeries has she had?": [
+    "그레이브스병 진단 후 항갑상선제 복용 중 (메티마졸/PTU 등)",
+    "아미오다론 복용력 또는 아미오다론 유발 갑상선중독증(AIT) 관련 치료력 있음",
+    "갑상선 수술 과거력 있음 (재수술 해당 가능)",
+    "악성 종양 과거력 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Has the patient/guardian consented to research, and are they already enrolled in the NEPTUNE registry or another nephrotic syndrome trial?": [
+    "NEPTUNE 관찰연구(생검 또는 비생검 코호트)에 동의 후 등록되어 있음",
+    "NEPTUNE 외 다른 신증후군 임상시험에 현재 참여 중임",
+    "NEPTUNE 연구기관에서 정기적인 신장내과 진료를 받고 있음",
+    "환자/보호자가 NEPTUNE Match 참여에 대한 동의(해당 시 승낙 포함) 의사가 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Has a renal biopsy or genetic panel been done, and if so, what histologic subtype (MCD/FSGS/MN/IgA/MPGN) or genetic cause was identified?": [
+    "신장 조직검사 시행됨 — MCD (미세변화신염)",
+    "신장 조직검사 시행됨 — FSGS (국소분절사구체경화증)",
+    "신장 조직검사 시행됨 — MN (막성신병증) 또는 기타 아형 (IgA/MPGN)",
+    "유전자 패널에서 신증후군 관련 질병 유발 돌연변이 확인됨",
+    "조직검사 및 유전자 검사 모두 시행되지 않음",
+    "기록 없음/확인 불가"
+  ],
+  "Has workup for secondary nephrotic syndrome (infection serologies, autoimmune markers) been completed, and is any active infection present?": [
+    "감염 혈청검사 양성 (HBV, HCV, HIV 등)",
+    "자가면역 표지자 양성 (ANA, anti-dsDNA, 보체 저하 등)",
+    "현재 활동성 감염 있음",
+    "이차성 신증후군 검사(workup) 미완료",
+    "검사 완료 — 이차성 원인 및 활동성 감염 해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Does the patient have significant comorbidities (renal, cardiac, hepatic), active infections, or residual toxicity/CNS involvement from any prior treatment?": [
+    "크레아티닌 청소율(CrCl) 60 mL/min 미만 (Galsky 기준 시스플라틴 부적격)",
+    "NYHA class II 이상 울혈성 심부전",
+    "CTCAE Grade 2 이상 말초신경병증 또는 청력 저하 (이전 치료 잔존 독성)",
+    "총 빌리루빈 2.0 x ULN 초과 또는 AST/ALT 상승 (간기능 이상)",
+    "모두 정상 범위",
+    "기록 없음/확인 불가"
+  ],
+  "Has the bladder mass been biopsied to confirm histology and stage, and is any treatment already planned or given?": [
+    "조직검사(TURBT) 완료 — 근침윤성 방광암(MIBC) 확진",
+    "조직검사 완료 — 양성 또는 비근침윤성 병변으로 확인",
+    "시스플라틴 부적격 또는 환자 거부로 시스플라틴 기반 치료 미시행",
+    "근치적 방광절제술 + 회장도관(ileal conduit) 요로전환 계획됨",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "What procedure (e.g., TURBT) is planned, does he have drug/antibiotic allergies, and can he provide informed consent?": [
+    "암성 또는 양성 질환으로 방광절제술(cystectomy) 예정, 요로전환은 회장도관(ileal conduit) 계획",
+    "항생제(항균제) 치료에 대한 중증 알레르기 반응 병력 있음",
+    "시험약 첨가제(부형제)에 대한 중증 알레르기 반응 병력 있음",
+    "방광절제술 후에도 지속 예정인 장기 예방적 항생제 치료 중",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Are you currently pregnant, breastfeeding, or planning a pregnancy, and what contraception method are you using?": [
+    "현재 임신 중 — 단태 임신(태아 1명)",
+    "현재 임신 중 — 다태 임신(태아 2명 이상)",
+    "자궁내 임신 확인 서류 제출 가능(초음파 보고서, beta-hCG 검사 결과, 분만예정일 포함 의사 확인서 중 하나)",
+    "현재 수유 중이거나 임신을 계획 중임",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Do you have any other significant medical conditions (e.g., diabetes, liver/kidney disease, autoimmune disorders) besides your headaches?": [
+    "두통 외 만성 질환(당뇨병, 간/신장 질환, 자가면역질환 등) 진단 이력 있음",
+    "주치의 또는 연구책임자 판단상 연구 참여를 저해할 수 있는 기타 질환 있음",
+    "최대 약물 치료에 불응성인 만성 편두통, 편두통 지속상태(status migrainosus) 또는 두개안면 통증으로 MMA 동맥내 리도카인 주입 치료를 받는 중",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Do you have a history of depression, anxiety, or suicidality, and are you taking any psychiatric medications now?": [
+    "우울증 진단 이력 있음",
+    "불안장애 진단 이력 있음",
+    "자살 사고 또는 자살 시도 이력 있음",
+    "현재 정신과 약물 복용 중",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Has mucormycosis been confirmed by mycology culture, PCR, or histopathology per EORTC-MSGERC criteria, and has pulmonary involvement or co-infection been excluded?": [
+    "배양·PCR·조직병리 중 1개 이상 양성으로 mucormycosis 확진 (EORTC/MSGERC 2020, proven/probable)",
+    "흉부 포함 CT에서 폐 침범 소견 확인됨",
+    "폐 침범 없음 — 타 부위 국한 또는 파종성",
+    "동시감염 확인 (침습성 아스페르길루스증 또는 파종성 칸디다증 등)",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Does the patient currently have intact decision-making capacity to provide informed consent, or is a legal guardian required?": [
+    "인지장애·치매 등으로 의사결정 능력 저하 소견 있음",
+    "진정·의식저하 상태로 현재 동의 취득 불가",
+    "법정대리인(성년후견인 등) 지정되어 있음",
+    "미성년자 — 친권자 정보 제공 후 아동 본인 동의 필요",
+    "의사결정 능력 온전 — 본인이 직접 동의 가능",
+    "기록 없음/확인 불가"
+  ],
+  "What is the patient's insurance status, treatment site/date, and any prior head/neck radiotherapy history?": [
+    "사회보험(의료보험) 가입 확인됨",
+    "2009년 1월 1일부터 2025년 6월 3일 사이 스트라스부르 대학병원(Strasbourg University Hospital)에서 치료받음",
+    "릴 대학병원(Lille University Hospital) 진료과 입원 이력 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Does the infant have any prior GI disease, bowel surgery, or resection, and if so what is the residual bowel length?": [
+    "선천성 또는 기타 주요 위장관 질환 진단력 있음 (염증성 장질환, 암 등)",
+    "장 절제술 시행 이력 있음 — 잔여 장 길이가 예상 길이의 50% 이하 (단장증후군)",
+    "잔여 장 길이 3 cm 미만 (초단장증후군)",
+    "장 절제술 이력은 있으나 잔여 장 길이 3 cm 이상",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Is there any known coagulopathy, immunodeficiency, prior radiotherapy, or oncologic/cachexia risk in this infant?": [
+    "응고장애(coagulopathy) 진단 있음",
+    "면역결핍(immunodeficiency) 확인됨",
+    "방사선치료(radiotherapy) 과거력 있음",
+    "악성종양 진단 또는 악액질(cachexia) 위험 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Has informed consent/assent been documented from the parent or legal guardian for trial enrollment?": [
+    "부모/법정대리인의 서면 동의서가 서명·날짜 기재되어 차트에 보관됨",
+    "환아 연령에 따른 동의(assent)까지 확보됨",
+    "부모/법정대리인이 동의 절차를 이해하지 못하거나 동의를 거부함",
+    "동의는 받았으나 방문 일정 등 연구 요구사항 이행 의사가 불확실함",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Has a specific ILD subtype been confirmed (e.g., IPF vs RA-ILD) via HRCT pattern, serology, or MDD, ruling out other causes?": [
+    "HRCT에서 확실한(definite) UIP 패턴 확인, 2022 ATS/ERS/JRS/ALAT 지침에 따른 IPF 진단 확정",
+    "다학제 논의(MDD)를 통해 대체 진단 배제 후 IPF로 최종 진단됨",
+    "혈청검사(자가항체 포함)에서 결체조직질환 등 타 원인 음성 확인",
+    "IPF가 아닌 다른 ILD 아형(예: RA-ILD, 과민성폐렴)으로 진단되었거나 아형 미확정",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Is the patient in an acute exacerbation now, what is the onset/timing and O2 or ventilation need, and has infection, heart failure, or PE been excluded?": [
+    "국제 워킹그룹 기준에 부합하는 확진 또는 의심 급성 악화 상태 (최근 발생한 급성 호흡 악화)",
+    "감염, 심부전, 폐색전증 등 대체 원인 배제 완료 (감염 원인 확인 시 별도 표기)",
+    "감염이 원인으로 확인된 급성 악화 (세균/바이러스/진균 등, SARS-CoV-2·인플루엔자 A/B·RSV 양성 포함)",
+    "기계환기 적용 중 또는 기계환기 필요 상태",
+    "급성 악화 소견 없음 (해당 사항 없음)",
+    "기록 없음/확인 불가"
+  ],
+  "What medications is the patient currently on or has taken in the past 4-8 weeks, including antifibrotics, steroids, immunosuppressants, and any drug hypersensitivities?": [
+    "최근 15일 내 글루코코르티코이드 > 1 mg/kg/일을 7일 초과 투여받음",
+    "글루코코르티코이드 > 1 mg/kg/일 미만 또는 7일 이하의 스테로이드 사용력 있음",
+    "항섬유화제(피르페니돈 또는 닌테다닙) 복용 중",
+    "글루코코르티코이드 또는 시험약 구성 성분에 대한 과민반응 병력 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Does the patient have any history of autoimmune disease, immunodeficiency, organ failure, or psychiatric illness?": [
+    "자가면역질환 진단/치료 이력 있음",
+    "면역결핍 상태 또는 관련 진단 있음",
+    "주요 장기부전(간/신/심/폐 등) 이력 있음",
+    "정신과 질환 진단/치료 이력 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "Has the patient (or legal guardian) signed informed consent for trial participation?": [
+    "환자 본인이 서면 동의서에 서명함",
+    "법정대리인/보호자가 대리 서명함 (미성년자 또는 대리 필요 시)",
+    "동의 절차 진행 중이며 서명 미완료",
+    "동의서 서명 기록 확인됨 (해당 사항 없음)",
+    "기록 없음/확인 불가"
+  ],
+  "What are the patient's EBV-specific antibody titers (VCA-IgM/IgG, EBNA) or quantitative EBV DNA viral load?": [
+    "anti-VCA IgM 양성 (급성/원발성 감염 시사)",
+    "anti-VCA IgG 양성",
+    "anti-EBNA IgG 음성 (원발성 감염과 부합)",
+    "말초혈 EBV DNA 정량 상승 검출",
+    "모두 정상 범위 / 음성",
+    "기록 없음/확인 불가"
+  ],
+  "Is the macula attached or detached, how long have symptoms been present, and what is the retinal break's clock-hour location and PVR grade?": [
+    "황반 박리(macula-off) 상태",
+    "황반 부착(macula-on) 유지",
+    "PVR 동반 (Grade C 이상)",
+    "재발성 망막박리(recurrent RD)",
+    "해당 사항 없음 (합병증 없는 단순 열공성 망막박리)",
+    "기록 없음/확인 불가"
+  ],
+  "Has the patient had any prior surgery in the right eye, such as cataract surgery, vitrectomy, or phacovitrectomy?": [
+    "우안 백내장 수술 과거력 있음",
+    "우안 유리체절제술 과거력 있음",
+    "우안 유리체절제술+백내장 병합수술(phacovitrectomy) 과거력 있음",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ],
+  "What surgical approach is planned for the right eye — standard PPV, combined phacovitrectomy, or scleral buckle — and is it elective or emergency?": [
+    "정규(선택적) 백내장-유리체절제 병합수술(phacovitrectomy) 예정 — 25G 유리체절제 기구 사용",
+    "표준 유리체절제술(PPV) 단독 예정 (백내장 수술 병합 없음)",
+    "공막돌륭술(scleral buckle) 예정",
+    "응급/비계획(unplanned) 수술로 진행 예정",
+    "해당 사항 없음",
+    "기록 없음/확인 불가"
+  ]
+}

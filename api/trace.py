@@ -36,6 +36,17 @@ try:
 except FileNotFoundError:
     pass  # coverage is an enrichment, never a reason for the trace endpoint to fail
 
+# Multi-select answer options for the frozen questions, same sidecar pattern as coverage.
+try:
+    with open(os.path.join(ROOT, "question_options.json"), encoding="utf-8") as f:
+        _Q_OPTIONS = json.load(f)
+    for _trace in TRACES:
+        for _q in _trace.get("questions", []):
+            if not _q.get("options") and _Q_OPTIONS.get(_q.get("question")):
+                _q["options"] = _Q_OPTIONS[_q["question"]]
+except FileNotFoundError:
+    pass
+
 # The frozen traces predate the uncertainty/action fields and must never be regenerated
 # (relabelling constraint). Derive both at serve time with the SAME policy code the live
 # pipeline uses for metadata-less verdicts: UNKNOWN means the record is silent (MISSING ->

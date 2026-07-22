@@ -74,6 +74,18 @@ with open(os.path.join(HERE, "traces.json")) as f:
     TRACES = json.load(f)
 TRACES_BY_ID = {t["patient_id"]: t for t in TRACES}
 
+# Answer options for the frozen questions live in a sidecar (traces.json must not be
+# regenerated -- the blind eval labels join on its criterion text). Attached in memory.
+try:
+    with open(os.path.join(HERE, "question_options.json"), encoding="utf-8") as f:
+        _Q_OPTIONS = json.load(f)
+    for _t in TRACES:
+        for _q in _t.get("questions", []):
+            if not _q.get("options") and _Q_OPTIONS.get(_q.get("question")):
+                _q["options"] = _Q_OPTIONS[_q["question"]]
+except FileNotFoundError:
+    pass
+
 with open(os.path.join(HERE, "trials_raw.json")) as f:
     TRIALS_RAW = json.load(f)
 _all_trials = {}
@@ -96,6 +108,9 @@ MODEL_CHOICES = {
         {"id": "claude-sonnet-5", "label": "Sonnet 5 (균형)"},
         {"id": "claude-opus-4-8", "label": "Opus 4.8 (최고 성능, 가장 느림)"},
     ],
+# Fable is deliberately NOT offered in the UI: it screens inputs for bio content and can
+# decline clinical prompts. It stays reachable for offline smoke tests via
+# pipeline.set_active_model("claude-fable-5") in a script.
     "groq": [
         {"id": "llama-3.3-70b-versatile", "label": "Llama 3.3 70B (무료)"},
     ],

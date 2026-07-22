@@ -786,6 +786,8 @@ function resetView(){
   answeredQuestions = {};
   humanOverrides = {};
   lastRenderedTrials = null;
+  lastTrialsSig = null;
+  lastQuestionsSig = null;
 }
 
 function setModeBadge(mode){
@@ -855,15 +857,28 @@ function renderVignette(patient){
 }
 
 var lastRenderedTrials = null;
+// Signature of what is currently on screen. poll() fires every 500ms and used to rebuild
+// the DOM unconditionally, which destroyed every bit of interaction state within half a
+// second -- expanded "더보기" lists collapsed on their own, and ticked answer checkboxes
+// would clear mid-selection. Re-render only when the payload actually changed.
+var lastTrialsSig = null;
+var lastQuestionsSig = null;
 
-function renderTrials(trials){
+function renderTrials(trials, force){
   var box = document.getElementById("trialsBody");
   var legend = document.getElementById("verdictLegend");
   if (!trials || trials.length === 0){
     box.innerHTML = "";
+    lastTrialsSig = null;
     if (legend) legend.style.display = "none";
     return;
   }
+  var sig = JSON.stringify(trials);
+  if (!force && sig === lastTrialsSig && box.childNodes.length){
+    lastRenderedTrials = trials;
+    return;  // identical data already on screen -- leave the user's expansions alone
+  }
+  lastTrialsSig = sig;
   lastRenderedTrials = trials;
   if (legend) legend.style.display = "";
   var sorted = trials.slice().sort(function(a,b){ return (a.rank||99) - (b.rank||99); });
@@ -1070,11 +1085,23 @@ function buildRelatedCriteriaBlock(q, trials){
   return wrap;
 }
 
-function renderQuestions(questions, trials){
+function renderQuestions(questions, trials, force){
   var dock = document.getElementById("questionsDock");
   var body = document.getElementById("questionsBody");
-  if (!questions || questions.length === 0){ dock.style.display = "none"; return; }
+  if (!questions || questions.length === 0){
+    dock.style.display = "none";
+    lastQuestionsSig = null;
+    return;
+  }
   dock.style.display = "block";
+  // Same guard as renderTrials: a 500ms rebuild would clear checkboxes the user is
+  // still ticking. The signature includes answeredQuestions so a submitted answer
+  // still forces the card to re-render into its answered state.
+  var qsig = JSON.stringify([questions, answeredQuestions, (trials || []).map(function(t){
+    return [t.nct_id, t.rank, t.eligibility];
+  })]);
+  if (!force && qsig === lastQuestionsSig && body.childNodes.length) return;
+  lastQuestionsSig = qsig;
 
   // Banner summarizes the top-priority question -- questions arrive already sorted
   // most-impactful first (enrich_questions' sort key), so [0] is the headline number.
