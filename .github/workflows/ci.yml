@@ -1,0 +1,61 @@
+# CI guard for the frozen-eval invariants. Everything here runs offline -- no LLM calls,
+# no secrets. The point is to make the two expensive historical failures impossible to
+# merge silently:
+#   1. traces.json regenerated without relabelling (canonical 82.5% n=40 pairing breaks)
+#      -> the md5 pin + eval.py accuracy assert both fail.
+#   2. label drift / silent label shrinkage -> eval.py exits 1 on any unmatched label.
+# If a change legitimately regenerates traces (final Opus accuracy run, WITH relabelling),
+# update the pinned md5 and expected accuracy in this file in the same PR -- that forced
+# diff is the review flag, not an obstacle.
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Compile every Python module
+        run: python -m py_compile *.py api/*.py
+
+      - name: Lint (ruff)
+        run: |
+          pip install --quiet ruff
+          ruff check .
+
+      - name: Selftests (no LLM calls)
+        run: |
+          python action_policy.py
+          python evidence.py
+          python stress_eval.py --selftest
+          python build_trial_intent.py --selftest
+
+      - name: Frozen-trace integrity (assert_traces.py, node-backed)
+        run: python assert_traces.py
+
+      - name: traces.json md5 pin
+        run: echo "66e0891efc785a583bb531815ad91b7e  traces.json" | md5sum -c -
+
+      - name: Canonical eval intact (82.5%, n=40, 0 unmatched)
+        run: |
+          python eval.py
+          python - << 'EOF'
+          import json, sys
+          r = json.load(open("eval_results.json"))
+          ok = (r["n"] == 40 and r["n_unmatched"] == 0 and abs(r["accuracy"] - 0.825) < 1e-9)
+          print("eval guard:", "PASS" if ok else "FAIL", r["accuracy"], r["n"], r["n_unmatched"])
+          sys.exit(0 if ok else 1)
+          EOF
+
+      - name: Eval results byte-stable after rerun
+        run: git diff --exit-code eval_results.json eval_results.js

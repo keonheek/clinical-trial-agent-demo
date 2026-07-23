@@ -201,7 +201,14 @@ def _norm_phase(phase):
 
 
 def classify_trial_intent(trial):
-    """therapeutic | supportive | care_delivery for one trial record. Pure, deterministic."""
+    """therapeutic | supportive | care_delivery for one trial record. Pure, deterministic.
+
+    SUPERSEDED for anything serving live.html/site.html: build_trial_intent.py's
+    classify_trial_intent (4-bucket taxonomy incl. observational, returns
+    {intent, confidence, signals}, materialized in trial_intent.json). This 3-bucket
+    string version survives only for the CLI regen path below and its selftests —
+    the two disagree on NA-phase/no-signal trials (care_delivery here, observational
+    there), so never treat this copy as the live source of truth."""
     haystack = " ".join([
         trial.get("title", "") or "",
         " ".join(trial.get("conditions", []) or []),
@@ -773,10 +780,10 @@ def run_reeval(patient, gaps, questions, trials_out):
     if not questions or not gaps:
         return empty
 
-    print(f"  [reeval] simulating extended patient record + answer round...")
+    print("  [reeval] simulating extended patient record + answer round...")
     extended_record, answers = generate_extended_record(patient, questions)
     if not extended_record or not answers:
-        print(f"    -> record/answer generation failed grounding check, skipping reeval")
+        print("    -> record/answer generation failed grounding check, skipping reeval")
         return empty
 
     gaps_by_field = {g["field"]: g for g in gaps}
@@ -798,7 +805,7 @@ def run_reeval(patient, gaps, questions, trials_out):
                 })
 
     if not affected:
-        print(f"    -> no criteria matched to answered gaps, skipping rematch")
+        print("    -> no criteria matched to answered gaps, skipping rematch")
         return {**empty, "extended_record": extended_record, "answers": answers}
 
     print(f"  [reeval] re-matching {len(affected)} affected criteria...")
@@ -827,7 +834,7 @@ def run_reeval(patient, gaps, questions, trials_out):
             })
 
     print(f"    -> {len(verdict_changes)} verdict change(s)")
-    print(f"  [reeval] re-ranking with updated criteria...")
+    print("  [reeval] re-ranking with updated criteria...")
     recs = recommend(patient, updated_trials)
     final_ranking = []
     for t in updated_trials:
@@ -852,7 +859,7 @@ def run_patient(patient, trials_raw_for_patient):
     print(f"\n=== Patient {pid} ===")
     trials = trials_raw_for_patient["trials"][:TRIALS_PER_PATIENT]
 
-    print(f"  [patient-extractor] extracting fields from vignette...")
+    print("  [patient-extractor] extracting fields from vignette...")
     fields, dropped_fields = extract_patient(patient)
     if dropped_fields:
         print(f"    dropped {len(dropped_fields)} field(s) failing verbatim-substring check")
@@ -876,15 +883,19 @@ def run_patient(patient, trials_raw_for_patient):
             "nct_id": t["nct_id"],
             "title": t["title"],
             "phase": t["phase"],
+            # Legacy 3-bucket STRING — live UIs expect the {intent, confidence} dict from
+            # trial_intent.json (build_trial_intent.py). If you regenerate traces, rerun
+            # build_trial_intent.py too; serve-time enrichment overwrites this field only
+            # for nct_ids present in that sidecar.
             "trial_intent": classify_trial_intent(t),
             "criteria": matched,
         })
 
-    print(f"  [gap-detector] aggregating UNKNOWN/UNCERTAIN gaps...")
+    print("  [gap-detector] aggregating UNKNOWN/UNCERTAIN gaps...")
     gaps = detect_gaps(patient, all_criteria_flat)
     print(f"    -> {len(gaps)} gap(s) identified")
 
-    print(f"  [question-generator] generating clarifying questions...")
+    print("  [question-generator] generating clarifying questions...")
     questions = generate_questions(patient, gaps)
     print(f"    -> {len(questions)} question(s) generated")
 

@@ -1,0 +1,462 @@
+{
+  "NCT00032513": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT01016613": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT03297775": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT04515251": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT04571658": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT04885179": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "title-keyword:registry->observational",
+      "title-keyword:observational->observational",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT04916990": {
+    "confidence": "high",
+    "intent": "care_delivery",
+    "signals": [
+      "title-keyword:improving care->care_delivery",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT04947059": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE3 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT05127980": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT05406037": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "observational title pattern (biomarkers/role-of/outcomes-after/etc) -> phase-NA default raised to high confidence"
+    ]
+  },
+  "NCT05461820": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE4 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT05535361": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT05674994": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE3 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT05678374": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT05778006": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "title-keyword:registry->observational",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT05879653": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "title-keyword:pembrolizumab->therapeutic",
+      "title-keyword:radiation therapy->therapeutic",
+      "phase:PHASE 2 (interventional)"
+    ]
+  },
+  "NCT05879835": {
+    "confidence": "low",
+    "intent": "supportive",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "eligibility-text-keyword:rehabilitation->supportive (weak tiebreak, non-interventional only)"
+    ]
+  },
+  "NCT05944237": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE1 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06005246": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "title-keyword:cohort->observational",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT06031025": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "title-keyword:natural history->observational",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT06113419": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT06162546": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "title-keyword:registry->observational",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT06179459": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "title-keyword:registry->observational",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT06291935": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE 1 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06294847": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE3 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06334692": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT06392906": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "title-keyword:radiotherapy->therapeutic",
+      "phase:PHASE3 (interventional)"
+    ]
+  },
+  "NCT06401577": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "title-keyword:outcomes using->observational",
+      "title-keyword:mechanisms->observational",
+      "title-keyword:metabolic outcomes->observational",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT06440915": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT06493370": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE2 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06587945": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE4 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06589219": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE1 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06607991": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE1 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06670053": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT06687564": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "observational title pattern (biomarkers/role-of/outcomes-after/etc) -> phase-NA default raised to high confidence"
+    ]
+  },
+  "NCT06709196": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE4 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06785129": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT06788977": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT06906549": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE 4 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT06908096": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "title-keyword:vaccine->therapeutic",
+      "phase:PHASE1 (interventional)"
+    ]
+  },
+  "NCT06963203": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT06995729": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE1 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT07081945": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT07144917": {
+    "confidence": "high",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "observational title pattern (biomarkers/role-of/outcomes-after/etc) -> phase-NA default raised to high confidence"
+    ]
+  },
+  "NCT07153809": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "title-keyword:fecal microbiota transplant->therapeutic",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT07167368": {
+    "confidence": "high",
+    "intent": "supportive",
+    "signals": [
+      "title-keyword:rehabilitation->supportive",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
+    ]
+  },
+  "NCT07185503": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT07214727": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE 1 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT07228091": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT07299695": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE3 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT07308392": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE2 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT07333677": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:EARLY_PHASE1 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT07339800": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT07346560": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT07402954": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  },
+  "NCT07447102": {
+    "confidence": "high",
+    "intent": "therapeutic",
+    "signals": [
+      "phase:PHASE2 (interventional)",
+      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+    ]
+  },
+  "NCT07654647": {
+    "confidence": "low",
+    "intent": "observational",
+    "signals": [
+      "phase:NA (non-interventional, against therapeutic but not decisive)",
+      "no keyword signal; NA/non-interventional phase-only default -> observational"
+    ]
+  }
+}

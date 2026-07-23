@@ -170,6 +170,15 @@
   .trial-card-head .meta span.meta-sep{margin-left:8px;padding-left:8px;border-left:1px solid var(--line);}
   .coverage-pill{cursor:help;}
   .coverage-low{color:var(--uncertain);font-weight:700;}
+  .intent-chip{
+    display:inline-block;margin-left:8px;padding:1px 6px;border-radius:4px;
+    background:#eef2f6;border:1px solid var(--line);color:var(--ink-soft);
+    font-size:0.68rem;font-weight:600;cursor:help;white-space:nowrap;
+  }
+  .intent-therapeutic{background:var(--met-bg);color:var(--met);}
+  .intent-supportive{background:#f2ecf9;color:#6b4fa0;}
+  .intent-care_delivery{background:#e8f0fb;color:#2f5fa3;}
+  .intent-observational{background:var(--unknown-bg);color:var(--unknown);}
   .nct-link{color:var(--accent-dark);text-decoration:none;font-weight:600;}
   .nct-link:hover{text-decoration:underline;}
   .action-chip{
@@ -486,6 +495,27 @@ function renderTrials(trials){
         t.coverage.parsed + '개가 평가에 반영되었습니다. 표시되지 않은 조항이 있을 수 있습니다.">' +
         covLabel + '</span>';
     }
+    // Trial intent: a trial that TREATS the disease should not read the same as one that
+    // only observes it, provides supportive care, or studies care logistics (지우's ask).
+    // {intent, confidence} comes from the trial_intent sidecar (build_trial_intent.py),
+    // attached at serve time -- see api/trace.py.
+    var intentLabels = {
+      therapeutic: "치료 목적", supportive: "지지·완화",
+      care_delivery: "의료전달·관리", observational: "관찰 연구"
+    };
+    var intentTitles = {
+      therapeutic: "질병을 직접 치료/개선하려는 시험입니다.",
+      supportive: "질병 자체를 치료하기보다 증상 완화, 삶의 질 개선을 목표로 합니다.",
+      care_delivery: "치료 내용보다 진료 전달 방식(원격진료, 안내, 순응도 등)을 연구합니다.",
+      observational: "중재 없이 관찰/추적하는 연구입니다 (레지스트리, 자연경과 등)."
+    };
+    var intentChip = "";
+    if (t.trial_intent && intentLabels[t.trial_intent.intent]){
+      var lowSuffix = t.trial_intent.confidence === "low" ? " (추정)" : "";
+      intentChip = '<span class="meta-sep intent-chip intent-' + t.trial_intent.intent + '"' +
+        ' title="' + escapeHtml(intentTitles[t.trial_intent.intent]) + '">' +
+        intentLabels[t.trial_intent.intent] + lowSuffix + '</span>';
+    }
     // Rank movement since the last answer: the cause-and-effect a reviewer is watching for.
     var delta = "";
     var prev = prevRanks[t.nct_id];
@@ -503,7 +533,7 @@ function renderTrials(trials){
       '<div class="titlewrap"><h3>' + escapeHtml(t.title) + delta + '</h3>' +
       '<div class="meta">' + nctLink +
       '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
-      '<span class="meta-sep">' + elig + '</span>' + cov + '</div></div>';
+      '<span class="meta-sep">' + elig + '</span>' + cov + intentChip + '</div></div>';
     card.appendChild(head);
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));

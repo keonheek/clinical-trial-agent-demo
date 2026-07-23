@@ -35,6 +35,7 @@ from pipeline import (
     TRIALS_PER_PATIENT,
 )
 from action_policy import enrich_questions
+from build_trial_intent import classify_trial_intent
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PORT = 8765
@@ -84,6 +85,20 @@ try:
         for _q in _t.get("questions", []):
             if not _q.get("options") and _Q_OPTIONS.get(_q.get("question")):
                 _q["options"] = _Q_OPTIONS[_q["question"]]
+except FileNotFoundError:
+    pass
+
+# Trial-intent enrichment for the frozen demo traces, same sidecar pattern (see build_trial_intent.py
+# and api/trace.py's identical block): the trace's trial entries carry only nct_id/title/phase, not
+# enough to classify from, so the precomputed {intent, confidence} comes from trial_intent.json.
+try:
+    with open(os.path.join(HERE, "trial_intent.json"), encoding="utf-8") as f:
+        _TRIAL_INTENT = json.load(f)
+    for _t in TRACES:
+        for _tr in _t.get("trials", []):
+            _intent = _TRIAL_INTENT.get(_tr["nct_id"])
+            if _intent:
+                _tr["trial_intent"] = {"intent": _intent["intent"], "confidence": _intent["confidence"]}
 except FileNotFoundError:
     pass
 
@@ -294,6 +309,7 @@ def build_session_live(session):
             for c in matched:
                 all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
                                            "verdict": c["verdict"], "action": c.get("action")})
+            _intent = classify_trial_intent(t)
             trials_out.append({
                 "nct_id": t["nct_id"], "title": t["title"], "phase": t.get("phase", "NA"),
                 "criteria": matched,
@@ -302,6 +318,10 @@ def build_session_live(session):
                 # screening was run against criteria fetched on this date, not "current".
                 "criteria_fetched_at": t.get("fetched_at"),
                 "criteria_source": t.get("source"),
+                # therapeutic/supportive/care_delivery/observational -- classified live since
+                # `t` here is the raw trial record (title/phase/conditions/eligibility text
+                # all present), same rule-based classifier the sidecar uses for frozen traces.
+                "trial_intent": {"intent": _intent["intent"], "confidence": _intent["confidence"]},
             })
             session["trials_done"] += 1
 

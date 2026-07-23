@@ -402,7 +402,7 @@ def run(patients_path, labels_path, results_path, use_cache=True, cache_dir=CACH
         print(f"Uncertainty-type accuracy: {report['uncertainty_type_accuracy']:.1%} "
               f"(on the {report['n_uncertainty_type_labeled']} rows that label a cause)")
     s = report["safety"]
-    print(f"\n--- Safety (what the aggregate hides) ---")
+    print("\n--- Safety (what the aggregate hides) ---")
     print(f"Disqualifying criteria: {s['n_disqualifying_criteria']}  "
           f"| WRONGLY PASSED: {s['n_wrongly_passed']}  | deferred to review: {s['n_deferred_to_review']}")
     if s["false_certainty_rate"] is not None:
@@ -467,7 +467,6 @@ def _selftest():
             is_young = "9-year-old" in user_prompt
             matches = []
             if "Age under 18 years old" in user_prompt:
-                idx = [i for i, line in enumerate(user_prompt.splitlines()) if "Age under 18" in line]
                 matches.append({"index": 1 if "1. " in user_prompt.split("Age under 18")[0][-6:] else 1,
                                  "verdict": "MET" if is_young else "NOT_MET",
                                  "uncertainty_type": None, "evidence": "age", "reasoning": "age check"})
@@ -591,7 +590,7 @@ def main():
         sys.exit(_selftest())
 
     if not os.path.exists(args.patients) or not os.path.exists(args.labels):
-        print(f"Waiting on input files -- not yet present:")
+        print("Waiting on input files -- not yet present:")
         if not os.path.exists(args.patients):
             print(f"  missing: {args.patients}")
         if not os.path.exists(args.labels):

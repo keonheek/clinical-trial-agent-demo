@@ -1,0 +1,17 @@
+# Lint gate: catch real defects (undefined names, unused imports, accidental
+# shadowing, f-string mistakes), not style. The codebase predates the linter --
+# rules that would force a cosmetic rewrite stay off.
+line-length = 120
+target-version = "py312"
+
+[lint]
+# E9/F = pyflakes-class real errors; B = bugbear traps; PLE = pylint errors.
+select = ["E9", "F", "B", "PLE"]
+ignore = [
+  "E501",   # long lines -- prose-heavy docstrings/comments are the house style
+  "B905",   # zip() without strict= -- pre-existing idiom
+]
+
+[lint.per-file-ignores]
+# selftest blocks use asserts and intentionally-unused locals as documentation
+"*_test.py" = ["F841"]

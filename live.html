@@ -347,6 +347,15 @@
     display:inline-block;padding:1px 7px;border:1px solid var(--line);border-radius:8px;
     font-size:0.7rem;font-weight:400;color:var(--ink-soft);cursor:help;white-space:nowrap;
   }
+  .intent-chip{
+    display:inline-block;padding:1px 6px;border-radius:4px;border:1px solid var(--line);
+    background:var(--bg-alt);color:var(--ink-soft);font-size:0.68rem;font-weight:600;
+    cursor:help;white-space:nowrap;
+  }
+  .intent-therapeutic{background:var(--met-bg);color:var(--met);}
+  .intent-supportive{background:#f2ecf9;color:#6b4fa0;}
+  .intent-care_delivery{background:#e8f0fb;color:#2f5fa3;}
+  .intent-observational{background:var(--unknown-bg);color:var(--unknown);}
   .crit-row{
     display:grid;grid-template-columns:60px 1fr 170px;gap:12px;align-items:start;
     padding:12px 14px;border-top:1px solid var(--line);
@@ -873,7 +882,14 @@ var I18N = {
     batchApplyN:function(n){return "선택 답변 "+n+"건 일괄 반영";}, reeval:"재평가 중...",
     round:"회차", answers:"답변", verdictChanges:"판정 변경", rankChanges:"순위/적격 변경",
     andMore:function(n){return "외 "+n+"건";}, overallElig:"전체 적격성: ",
-    coverageTip:"시험 원문의 전체 기준 중 파싱된 것만 평가 대상입니다. 원문에는 더 많은 조항이 있을 수 있습니다."
+    coverageTip:"시험 원문의 전체 기준 중 파싱된 것만 평가 대상입니다. 원문에는 더 많은 조항이 있을 수 있습니다.",
+    intent_therapeutic:"치료 목적", intent_supportive:"지지·완화",
+    intent_care_delivery:"의료전달·관리", intent_observational:"관찰 연구",
+    intentTip_therapeutic:"질병을 직접 치료/개선하려는 시험입니다.",
+    intentTip_supportive:"질병 자체를 치료하기보다 증상 완화, 삶의 질 개선을 목표로 합니다.",
+    intentTip_care_delivery:"치료 내용보다 진료 전달 방식(원격진료, 안내, 순응도 등)을 연구합니다.",
+    intentTip_observational:"중재 없이 관찰/추적하는 연구입니다 (레지스트리, 자연경과 등).",
+    intentLow:" (추정)"
   },
   en: {
     remaining:"Path to enrolment", blocking:"Disqualifying", resolve:"Resolve to decide",
@@ -884,7 +900,14 @@ var I18N = {
     batchApplyN:function(n){return "Apply "+n+" answer"+(n>1?"s":"");}, reeval:"Re-evaluating...",
     round:"round", answers:"answers", verdictChanges:"verdict changes", rankChanges:"rank/eligibility changes",
     andMore:function(n){return "+"+n+" more";}, overallElig:"Overall: ",
-    coverageTip:"Only parsed criteria are evaluated; the full protocol may contain more clauses."
+    coverageTip:"Only parsed criteria are evaluated; the full protocol may contain more clauses.",
+    intent_therapeutic:"Therapeutic", intent_supportive:"Supportive care",
+    intent_care_delivery:"Care delivery", intent_observational:"Observational",
+    intentTip_therapeutic:"Aims to directly treat or improve the condition.",
+    intentTip_supportive:"Aims at symptom relief / quality of life, not treating the condition itself.",
+    intentTip_care_delivery:"Studies how care is delivered (telehealth, navigation, adherence), not the treatment itself.",
+    intentTip_observational:"No intervention -- observes/tracks patients (registry, natural history, etc).",
+    intentLow:" (est.)"
   }
 };
 function T(k, arg){ var v=(I18N[LANG]||I18N.ko)[k]; if(typeof v==="function")return v(arg); return (v==null)?k:v; }
@@ -1158,6 +1181,20 @@ var canRevert = false;
 var lastTrialsSig = null;
 var lastQuestionsSig = null;
 
+// Trial intent chip: a trial that TREATS the disease should not read the same as one that
+// only observes it, provides supportive care, or studies care logistics (지우's ask).
+// {intent, confidence} comes from the trial_intent sidecar (build_trial_intent.py), attached
+// server-side (see live_server.py) -- same enrichment mechanism as the coverage caveat above.
+function intentChip(t){
+  var intent = t.trial_intent && t.trial_intent.intent;
+  if (!intent) return "";
+  var label = T("intent_" + intent);
+  var tip = T("intentTip_" + intent);
+  var lowSuffix = t.trial_intent.confidence === "low" ? T("intentLow") : "";
+  return '<span class="meta-sep intent-chip intent-' + intent + '" title="' + escapeHtml(tip) + '">' +
+    escapeHtml(label + lowSuffix) + '</span>';
+}
+
 function renderTrials(trials, force){
   var box = document.getElementById("trialsBody");
   var legend = document.getElementById("verdictLegend");
@@ -1192,7 +1229,8 @@ function renderTrials(trials, force){
       '<div class="title-row"><h3>' + escapeHtml(t.title) + '</h3>' +
       '<span class="badge-lg-wrap">' + elig + '</span></div>' +
       '<div class="meta">' + escapeHtml(t.nct_id) +
-      '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span></div></div>';
+      '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
+      intentChip(t) + '</div></div>';
     card.appendChild(head);
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));

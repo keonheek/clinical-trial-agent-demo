@@ -36,6 +36,22 @@ try:
 except FileNotFoundError:
     pass  # coverage is an enrichment, never a reason for the trace endpoint to fail
 
+# Trial-intent enrichment (therapeutic/supportive/care_delivery/observational), same sidecar
+# pattern: build_trial_intent.py classifies every trial in trials_raw.json + trials_stress.json
+# from its own raw fields (title/phase/conditions/eligibility text) into trial_intent.json
+# ({nct_id: {intent, confidence, signals}}), because the frozen trace's trial entries carry
+# only nct_id/title/phase/eligibility/rank/rationale -- not enough to classify from directly.
+try:
+    with open(os.path.join(ROOT, "trial_intent.json"), encoding="utf-8") as f:
+        _TRIAL_INTENT = json.load(f)
+    for _trace in TRACES:
+        for _t in _trace.get("trials", []):
+            intent = _TRIAL_INTENT.get(_t["nct_id"])
+            if intent:
+                _t["trial_intent"] = {"intent": intent["intent"], "confidence": intent["confidence"]}
+except FileNotFoundError:
+    pass  # trial_intent is an enrichment, never a reason for the trace endpoint to fail
+
 # Multi-select answer options for the frozen questions, same sidecar pattern as coverage.
 try:
     with open(os.path.join(ROOT, "question_options.json"), encoding="utf-8") as f:

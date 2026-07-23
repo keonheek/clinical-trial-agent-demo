@@ -270,7 +270,7 @@ def check_matcher_evidence_soft(traces):
 
 
 def main():
-    node_ok = check_js_parses_via_node()
+    check_js_parses_via_node()
     traces = check_json_and_js_payload_match()
     if traces is None:
         print("\nCannot continue further checks without parseable traces data.")
