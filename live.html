@@ -154,6 +154,13 @@
   .opt-item input{margin:0;cursor:pointer;}
   .opt-item:has(input:checked){background:var(--accent-soft);border-color:var(--accent);font-weight:600;}
 
+  .lang-toggle{
+    font-family:inherit;font-size:0.74rem;font-weight:700;cursor:pointer;
+    border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);
+    padding:3px 10px;
+  }
+  .lang-toggle:hover{border-color:var(--accent);color:var(--accent-dark);}
+
   .path-box{
     border:1px solid var(--line);border-radius:10px;background:var(--bg-alt);
     padding:10px 12px;margin:0 0 12px;
@@ -512,37 +519,38 @@
 
 <header class="topbar">
   <h1>Interactive Clinical Trial Recommendation</h1>
-  <p class="subtitle">사람이 직접 답변을 입력하면 영향받는 기준만 실시간 재평가됩니다</p>
+  <p class="subtitle" data-ko="사람이 직접 답변을 입력하면 영향받는 기준만 실시간 재평가됩니다" data-en="Answer a question and only the affected criteria re-evaluate in real time">사람이 직접 답변을 입력하면 영향받는 기준만 실시간 재평가됩니다</p>
   <span class="badge-pill" id="backendBadge">백엔드 확인 중</span>
   <label class="model-pick" title="다음 실행부터 적용됩니다. 이미 계산된 결과는 그대로 유지됩니다.">
     모델
     <select id="modelSelect"><option>불러오는 중</option></select>
   </label>
   <span class="badge-pill" id="modeBadge" style="display:none;"></span>
+  <button type="button" class="lang-toggle" id="langToggle" title="Interface language">EN</button>
 </header>
 
 <nav class="agent-map" id="agentMap">
-  <div class="agent-step" data-stage="extract"><span class="n">1</span><span class="stage-icon"></span>정보 추출</div>
-  <div class="agent-step" data-stage="parse"><span class="n">2</span><span class="stage-icon"></span>기준 파싱</div>
-  <div class="agent-step" data-stage="match"><span class="n">3</span><span class="stage-icon"></span>매칭</div>
-  <div class="agent-step" data-stage="gaps"><span class="n">4</span><span class="stage-icon"></span>갭 탐지</div>
-  <div class="agent-step" data-stage="questions"><span class="n">5</span><span class="stage-icon"></span>질문 생성</div>
-  <div class="agent-step" data-stage="recommend"><span class="n">6</span><span class="stage-icon"></span>추천</div>
+  <div class="agent-step" data-stage="extract"><span class="n">1</span><span class="stage-icon"></span><span data-ko="정보 추출" data-en="Extract">정보 추출</span></div>
+  <div class="agent-step" data-stage="parse"><span class="n">2</span><span class="stage-icon"></span><span data-ko="기준 파싱" data-en="Parse">기준 파싱</span></div>
+  <div class="agent-step" data-stage="match"><span class="n">3</span><span class="stage-icon"></span><span data-ko="매칭" data-en="Match">매칭</span></div>
+  <div class="agent-step" data-stage="gaps"><span class="n">4</span><span class="stage-icon"></span><span data-ko="갭 탐지" data-en="Detect gaps">갭 탐지</span></div>
+  <div class="agent-step" data-stage="questions"><span class="n">5</span><span class="stage-icon"></span><span data-ko="질문 생성" data-en="Questions">질문 생성</span></div>
+  <div class="agent-step" data-stage="recommend"><span class="n">6</span><span class="stage-icon"></span><span data-ko="추천" data-en="Recommend">추천</span></div>
 </nav>
 
 <div class="shell">
   <aside class="sidebar">
-    <h2>환자 선택</h2>
+    <h2 data-ko="환자 선택" data-en="Patients">환자 선택</h2>
     <div id="patientList"></div>
     <div class="custom-box">
-      <h2>새 환자 직접 입력</h2>
+      <h2 data-ko="새 환자 직접 입력" data-en="New patient">새 환자 직접 입력</h2>
       <textarea id="customVignette" placeholder="예: 55세 여성, 제2형 당뇨, HbA1c 8.4%, 메트포르민 복용 중..."></textarea>
-      <button class="btn" id="runCustomBtn">실행</button>
+      <button class="btn" id="runCustomBtn" data-ko="실행" data-en="Run">실행</button>
     </div>
   </aside>
 
   <main id="mainContent">
-    <div class="empty-note" id="emptyNote">왼쪽에서 환자를 선택하거나 새 환자 정보를 입력하세요.</div>
+    <div class="empty-note" id="emptyNote" data-ko="왼쪽에서 환자를 선택하거나 새 환자 정보를 입력하세요." data-en="Select a patient on the left, or enter a new one.">왼쪽에서 환자를 선택하거나 새 환자 정보를 입력하세요.</div>
 
     <div id="vignetteBox" class="vignette" style="display:none;"></div>
     <div class="legend-bar" id="verdictLegend" style="display:none;">
@@ -558,10 +566,10 @@
     <div id="roundsBox" class="rounds-box" style="display:none;"></div>
     <div id="questionsDock" class="questions-dock" style="display:none;">
       <div class="dock-header">
-        <h2>확인 질문</h2>
+        <h2 data-ko="확인 질문" data-en="Clarifying questions">확인 질문</h2>
         <div class="dock-header-right">
           <span class="dock-banner" id="dockBanner"></span>
-          <button class="guide-btn" type="button" id="guideToggle">질문 안내 가이드</button>
+          <button class="guide-btn" type="button" id="guideToggle" data-ko="질문 안내 가이드" data-en="Question guide">질문 안내 가이드</button>
         </div>
       </div>
       <p class="stage-note">아래 질문은 관련 임상시험의 포함/제외 기준과 환자 원문을 기반으로 생성되었습니다. 의료진의 답변에 따라 최종 자격 판정이 달라질 수 있습니다.</p>
@@ -575,7 +583,7 @@
         </ol>
       </div>
       <div class="batch-bar">
-        <span class="batch-note">여러 질문에 답한 뒤 한 번에 반영하면 재평가가 1회만 실행됩니다.</span>
+        <span class="batch-note" data-ko="여러 질문에 답한 뒤 한 번에 반영하면 재평가가 1회만 실행됩니다." data-en="Answer several questions, then apply once — one re-evaluation.">여러 질문에 답한 뒤 한 번에 반영하면 재평가가 1회만 실행됩니다.</span>
         <button class="btn btn-sm" type="button" id="batchApplyBtn" disabled>선택 답변 일괄 반영</button>
       </div>
       <div id="questionsBody"></div>
@@ -734,16 +742,15 @@ function renderRounds(rounds){
   if (box.dataset.sig === sig) return;
   box.dataset.sig = sig;
   box.style.display = "block";
-  var html = '<div class="rounds-head"><span>변경 이력</span>' +
-    '<button type="button" class="btn btn-sm btn-quiet" id="revertBtn">마지막 답변 되돌리기</button></div>';
+  var html = '<div class="rounds-head"><span>' + T('history') + '</span>' +
+    '<button type="button" class="btn btn-sm btn-quiet" id="revertBtn">'+T('revertLast')+'</button></div>';
   rounds.slice().reverse().forEach(function(r){
     var vc = r.verdict_changes || [], rc = r.rank_changes || [];
     var qs = r.batch && r.batch.length
       ? r.batch.map(function(b){ return b.question; })
       : [r.question];
     html += '<div class="round-item">' +
-      '<div class="round-title">' + r.round + '회차 · 답변 ' + qs.length + '건 · 판정 변경 ' +
-        vc.length + '건 · 순위/적격 변경 ' + rc.length + '건</div>';
+      '<div class="round-title">' + r.round + T('round') + ' · ' + T('answers') + ' ' + qs.length + ' · ' + T('verdictChanges') + ' ' + vc.length + ' · ' + T('rankChanges') + ' ' + rc.length + '</div>';
     qs.forEach(function(q, i){
       var a = r.batch && r.batch[i] ? r.batch[i].answer : r.answer;
       html += '<div class="round-qa"><b>Q</b> ' + escapeHtml(q) + '<br><b>A</b> ' + escapeHtml(a) + '</div>';
@@ -752,7 +759,7 @@ function renderRounds(rounds){
       html += '<div class="round-change"><span class="delta-chip">' + escapeHtml(c.before) +
         ' → ' + escapeHtml(c.after) + '</span> ' + escapeHtml(c.criterion) + '</div>';
     });
-    if (vc.length > 6) html += '<div class="round-more">외 ' + (vc.length - 6) + '건</div>';
+    if (vc.length > 6) html += '<div class="round-more">' + T('andMore', vc.length - 6) + '</div>';
     rc.forEach(function(c){
       html += '<div class="round-change rank">' + escapeHtml(c.title || c.nct_id) +
         ': ' + c.rank_before + '위 → ' + c.rank_after + '위' +
@@ -765,13 +772,15 @@ function renderRounds(rounds){
   box.innerHTML = html;
   var rb = document.getElementById("revertBtn");
   if (rb) rb.addEventListener("click", function(){
-    rb.disabled = true; rb.textContent = "되돌리는 중...";
+    rb.disabled = true; rb.textContent = T('reverting');
     fetch("/api/session/" + currentSessionId + "/revert", {method: "POST"})
       .then(function(r){ return r.json(); }).then(function(res){
-        rb.disabled = false; rb.textContent = "마지막 답변 되돌리기";
+        rb.disabled = false; rb.textContent = T("revertLast");
         if (res.error){ showError(res.error); return; }
-        // the answered flags must drop too, or the reverted question stays greyed out
-        answeredQuestions = {};
+        // Un-grey only the reverted round's own questions. Wiping the whole map re-opened
+        // earlier committed rounds, letting a field be answered twice -> conflicting answers
+        // in extended_record (review #3).
+        (res.reverted_questions || []).forEach(function(q){ delete answeredQuestions[q]; });
         (res.updated_trials || []).length && renderTrials(res.updated_trials, true);
         poll();
       }).catch(function(){
@@ -789,7 +798,7 @@ function refreshBatchButton(){
   if (!btn) return;
   var n = Object.keys(pendingAnswers).filter(function(k){ return pendingAnswers[k]; }).length;
   btn.disabled = n === 0 || answerInFlight;
-  btn.textContent = n ? ("선택 답변 " + n + "건 일괄 반영") : "선택 답변 일괄 반영";
+  btn.textContent = n ? T("batchApplyN", n) : T("batchApply");
 }
 
 function submitBatch(){
@@ -800,7 +809,7 @@ function submitBatch(){
   answerInFlight = true;
   setAnswerControlsDisabled(true);
   var btn = document.getElementById("batchApplyBtn");
-  if (btn){ btn.disabled = true; btn.textContent = "재평가 중..."; }
+  if (btn){ btn.disabled = true; btn.textContent = T("reeval"); }
 
   // A batch re-matches every criterion the answers touch, so it is inherently slower than a
   // single answer -- and on the subscription backend each call shells out. A deadline shorter
@@ -840,6 +849,50 @@ function submitBatch(){
     }
     refreshBatchButton();
   });
+}
+
+// ---- interface language (EN/KR). Only the UI CHROME toggles; AI-generated clinical text
+// (English criteria from the registry, Korean questions/options from the model) is left as
+// produced, since it is model output tied to the evaluation, not translatable chrome.
+var LANG = localStorage.getItem("ctm_lang") || "ko";
+var I18N = {
+  ko: {
+    remaining:"등록까지 남은 것", blocking:"등록 불가 사유", resolve:"확인하면 판정 가능",
+    excl:"제외 사유", need:"확인 필요", ok:"충족", passScreen:"선별 통과", hasExcl:"제외 사유 있음",
+    critEval:"평가된 기준", critUnit:"개", srcPartial:"시험 원문 일부", crit:"기준",
+    verdictEvidence:"판정 및 근거", aiHuman:"AI / 사람 판정", history:"변경 이력",
+    revertLast:"마지막 답변 되돌리기", reverting:"되돌리는 중...", batchApply:"선택 답변 일괄 반영",
+    batchApplyN:function(n){return "선택 답변 "+n+"건 일괄 반영";}, reeval:"재평가 중...",
+    round:"회차", answers:"답변", verdictChanges:"판정 변경", rankChanges:"순위/적격 변경",
+    andMore:function(n){return "외 "+n+"건";}, overallElig:"전체 적격성: ",
+    coverageTip:"시험 원문의 전체 기준 중 파싱된 것만 평가 대상입니다. 원문에는 더 많은 조항이 있을 수 있습니다."
+  },
+  en: {
+    remaining:"Path to enrolment", blocking:"Disqualifying", resolve:"Resolve to decide",
+    excl:"Excluded", need:"To confirm", ok:"Met", passScreen:"Passes screening", hasExcl:"Has exclusion",
+    critEval:"Criteria evaluated", critUnit:"", srcPartial:"subset of protocol", crit:"Criterion",
+    verdictEvidence:"Verdict & evidence", aiHuman:"AI / human", history:"Change history",
+    revertLast:"Undo last answer", reverting:"Undoing...", batchApply:"Apply selected answers",
+    batchApplyN:function(n){return "Apply "+n+" answer"+(n>1?"s":"");}, reeval:"Re-evaluating...",
+    round:"round", answers:"answers", verdictChanges:"verdict changes", rankChanges:"rank/eligibility changes",
+    andMore:function(n){return "+"+n+" more";}, overallElig:"Overall: ",
+    coverageTip:"Only parsed criteria are evaluated; the full protocol may contain more clauses."
+  }
+};
+function T(k, arg){ var v=(I18N[LANG]||I18N.ko)[k]; if(typeof v==="function")return v(arg); return (v==null)?k:v; }
+
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-ko]").forEach(function(el){
+    var t = LANG==="en" ? el.getAttribute("data-en") : el.getAttribute("data-ko");
+    if (t) el.textContent = t;
+  });
+  var lb = document.getElementById("langToggle");
+  if (lb) lb.textContent = LANG==="en" ? "KR" : "EN";
+  // re-render the dynamic panels so their T() strings pick up the new language
+  if (lastRenderedTrials) renderTrials(lastRenderedTrials, true);
+  refreshBatchButton();
+  if (currentSessionId) poll();
 }
 
 // If a request times out client-side the work may still have completed on the server.
@@ -995,6 +1048,14 @@ function resetView(){
   // Without this the previous patient's questions stay on screen while the new patient's
   // pipeline is still running -- the dock would show another case's clarifying questions.
   currentQuestionsCache = [];
+  // Ticked-but-unsubmitted answers, path panels, and history belong to the OUTGOING patient;
+  // not clearing pendingAnswers let a batch on patient B POST patient A's answers (review #1).
+  pendingAnswers = {};
+  lastEligibilityPaths = null;
+  canRevert = false;
+  var _rb = document.getElementById("roundsBox");
+  if (_rb){ _rb.innerHTML = ""; _rb.style.display = "none"; _rb.dataset.sig = ""; }
+  refreshBatchButton();
 }
 
 function setModeBadge(mode){
@@ -1112,7 +1173,7 @@ function renderTrials(trials, force){
     card.dataset.nct = t.nct_id;
     var eligKind = t.eligibility === "ELIGIBLE" ? "ELIGIBLE"
       : t.eligibility === "INELIGIBLE" ? "INELIGIBLE" : "ELIG_UNCERTAIN";
-    var elig = t.eligibility ? badge(eligKind, "전체 적격성: " + t.eligibility) : "";
+    var elig = t.eligibility ? badge(eligKind, T("overallElig") + t.eligibility) : "";
     var head = el("div", "trial-card-head");
     // Title + overall eligibility are what a reviewer checks first, so they share the top line;
     // NCT id / phase are lookup details, not decision inputs, so they drop to a quieter line below.
@@ -1131,15 +1192,20 @@ function renderTrials(trials, force){
     // 등록까지 남은 것 -- the screening worklist. A coordinator's first question is not
     // "what did the AI decide" but "what stands between this patient and enrolment", so
     // this sits above the per-criterion table (which stays, expandable, underneath).
-    var path = (lastEligibilityPaths || {})[t.nct_id];
+    function pathSummaryText(p){
+        if (p.n_blocking) return T('hasExcl');
+        if (p.n_to_resolve) return T('need') + ' ' + p.n_to_resolve;
+        return T('passScreen');
+      }
+      var path = (lastEligibilityPaths || {})[t.nct_id];
     if (path){
       var pathBox = el("div", "path-box");
       var chips =
-        '<span class="path-chip blocking' + (path.n_blocking ? '' : ' zero') + '">제외 사유 ' + path.n_blocking + '</span>' +
-        '<span class="path-chip resolve' + (path.n_to_resolve ? '' : ' zero') + '">확인 필요 ' + path.n_to_resolve + '</span>' +
-        '<span class="path-chip ok">충족 ' + path.n_satisfied + '</span>';
+        '<span class="path-chip blocking' + (path.n_blocking ? '' : ' zero') + '">' + T('excl') + ' ' + path.n_blocking + '</span>' +
+        '<span class="path-chip resolve' + (path.n_to_resolve ? '' : ' zero') + '">' + T('need') + ' ' + path.n_to_resolve + '</span>' +
+        '<span class="path-chip ok">' + T('ok') + ' ' + path.n_satisfied + '</span>';
       var pathHead = el("div", "path-head",
-        '<span class="path-summary">' + escapeHtml(path.summary) + '</span>' + chips);
+        '<span class="path-summary">' + escapeHtml(pathSummaryText(path)) + '</span>' + chips);
       pathBox.appendChild(pathHead);
 
       function pathList(items, cls, label, showAction){
@@ -1154,12 +1220,12 @@ function renderTrials(trials, force){
           wrap.appendChild(line);
         });
         if (items.length > 6){
-          wrap.appendChild(el("div", "path-more", "외 " + (items.length - 6) + "건"));
+          wrap.appendChild(el("div", "path-more", T("andMore", items.length - 6)));
         }
         pathBox.appendChild(wrap);
       }
-      pathList(path.blocking, "blocking", "등록 불가 사유", false);
-      pathList(path.to_resolve, "resolve", "확인하면 판정 가능", true);
+      pathList(path.blocking, "blocking", T("blocking"), false);
+      pathList(path.to_resolve, "resolve", T("resolve"), true);
       card.appendChild(pathBox);
     }
 
@@ -1169,11 +1235,11 @@ function renderTrials(trials, force){
     // The count + coverage caveat used to live inside the 60px first column and wrapped
     // into an unreadable stack. It belongs on its own full-width line above the columns.
     var tcap = el("div", "crit-table-caption",
-      '<span class="crit-count">평가된 기준 ' + criteria.length + '개</span>' +
-      '<span class="coverage-note" title="시험 원문의 전체 기준 중 파싱된 것만 평가 대상입니다. 원문에는 더 많은 조항이 있을 수 있습니다.">시험 원문 일부</span>');
+      '<span class="crit-count">' + T('critEval') + ' ' + criteria.length + T('critUnit') + '</span>' +
+      '<span class="coverage-note" title="'+T('coverageTip')+'">'+T('srcPartial')+'</span>');
     table.appendChild(tcap);
     var thead = el("div", "crit-table-head",
-      '<span>기준</span><span>판정 및 근거</span><span>AI / 사람 판정</span>');
+      '<span>' + T('crit') + '</span><span>' + T('verdictEvidence') + '</span><span>' + T('aiHuman') + '</span>');
     table.appendChild(thead);
 
     var VISIBLE_ROWS = 4;
@@ -1607,40 +1673,10 @@ document.getElementById("guideToggle").addEventListener("click", function(){
 loadPatients();
 loadBackendBadge();
 document.getElementById("batchApplyBtn").addEventListener("click", submitBatch);
-
-// Opt-in frame meter: open with ?fps=1 to get a live overlay (avg FPS over the last second,
-// worst frame in ms, and long-task count). Off by default -- it must never render during a
-// demo. Exists so "the page feels laggy" can be answered with a number instead of a guess.
-if (new URLSearchParams(location.search).has("fps")){
-  var fpsBox = el("div", "");
-  fpsBox.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#0f0;" +
-    "font:11px/1.4 ui-monospace,Menlo,monospace;padding:6px 8px;border-radius:6px;white-space:pre;opacity:0.85;";
-  document.body.appendChild(fpsBox);
-  var fpsLongTasks = 0, fpsWorstTask = 0;
-  try {
-    new PerformanceObserver(function(list){
-      list.getEntries().forEach(function(e){
-        fpsLongTasks += 1;
-        if (e.duration > fpsWorstTask) fpsWorstTask = Math.round(e.duration);
-      });
-    }).observe({entryTypes: ["longtask"]});
-  } catch (e) {}
-  var fpsFrames = 0, fpsWorstFrame = 0, fpsLast = performance.now(), fpsWindowStart = fpsLast;
-  (function fpsTick(now){
-    var delta = now - fpsLast;
-    fpsLast = now;
-    fpsFrames += 1;
-    if (delta > fpsWorstFrame) fpsWorstFrame = delta;
-    if (now - fpsWindowStart >= 1000){
-      fpsBox.textContent =
-        "fps " + Math.round(fpsFrames / ((now - fpsWindowStart) / 1000)) +
-        "\nworst " + Math.round(fpsWorstFrame) + "ms" +
-        "\nlongtask " + fpsLongTasks + (fpsWorstTask ? " (" + fpsWorstTask + "ms)" : "");
-      fpsFrames = 0; fpsWorstFrame = 0; fpsWindowStart = now;
-    }
-    requestAnimationFrame(fpsTick);
-  })(performance.now());
-}
+document.getElementById("langToggle").addEventListener("click", function(){
+  LANG = LANG==="en" ? "ko" : "en"; localStorage.setItem("ctm_lang", LANG); applyLang();
+});
+applyLang();
 </script>
 </body>
 </html>

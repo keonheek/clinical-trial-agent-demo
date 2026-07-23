@@ -158,6 +158,13 @@ def persist_session(session):
     try:
         os.makedirs(SESSION_STORE, exist_ok=True)
         data = {k: session.get(k) for k in _SESSION_PERSIST_KEYS}
+        # Each answer round carries a `_before` deep copy of the whole trial state for revert.
+        # Persisting it would bloat the file by a full copy per round (and revert doesn't
+        # survive a restart anyway -- a restored session is inert). Strip it, matching the
+        # API output, so disk holds only the reviewable history.
+        if isinstance(data.get("answer_rounds"), list):
+            data["answer_rounds"] = [{k: v for k, v in r.items() if k != "_before"}
+                                     for r in data["answer_rounds"]]
         tmp = os.path.join(SESSION_STORE, f".{session['id']}.tmp")
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False)
@@ -182,6 +189,11 @@ def load_persisted_sessions(max_age_hours=12):
         except Exception:
             continue
         if not data.get("id") or (data.get("created") or 0) < cutoff:
+            # too old to restore -- also delete it so the store doesn't grow across restarts
+            try:
+                os.remove(path)
+            except OSError:
+                pass
             continue
         # a restored session is inert: its builder thread is gone, so anything not
         # finished is marked done at whatever stage it reached rather than hanging.
@@ -285,6 +297,11 @@ def build_session_live(session):
             trials_out.append({
                 "nct_id": t["nct_id"], "title": t["title"], "phase": t.get("phase", "NA"),
                 "criteria": matched,
+                # recency: how fresh the eligibility criteria are. Trial criteria on
+                # ClinicalTrials.gov change over time; a coordinator needs to know the
+                # screening was run against criteria fetched on this date, not "current".
+                "criteria_fetched_at": t.get("fetched_at"),
+                "criteria_source": t.get("source"),
             })
             session["trials_done"] += 1
 
@@ -496,9 +513,14 @@ def revert_last_round(session):
         session["extended_record"] = snap["extended_record"]
         session["gaps"] = copy.deepcopy(snap["gaps"])
         persist_session(session)
+        # the exact questions this round answered, so the client un-greys ONLY these cards
+        # rather than re-opening every prior committed round (review #3).
+        reverted_qs = ([b.get("question") for b in (last.get("batch") or [])]
+                       or [last.get("question")])
         return {
             "reverted_round": last.get("round"),
             "reverted_question": last.get("question"),
+            "reverted_questions": [q for q in reverted_qs if q],
             "updated_trials": session["trials_out"],
             "recommendation": _ranking(session["trials_out"]),
             "rounds_left": len(rounds),
@@ -585,7 +607,23 @@ ROUTE_ANSWER_BATCH = re.compile(r"^/api/session/([a-f0-9]{32})/answers$")
 ROUTE_REVERT = re.compile(r"^/api/session/([a-f0-9]{32})/revert$")
 
 
+# caps shared by the single-answer and batch endpoints -- both spend the paid key
+MAX_ANSWERS_PER_BATCH = 20
+MAX_ANSWER_CHARS = 600
+MAX_QUESTION_CHARS = 400
+
+
 def session_snapshot(session):
+    # trials_out is sorted in place under session["lock"] by every answer round; a poll
+    # landing mid-sort could serialize a torn/empty list. Read under the same lock (review #4).
+    lock = session.get("lock")
+    if lock is not None:
+        with lock:
+            return _session_snapshot_locked(session)
+    return _session_snapshot_locked(session)
+
+
+def _session_snapshot_locked(session):
     return {
         "session_id": session["id"],
         "mode": session["mode"],
@@ -783,6 +821,14 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(items, list) or not items:
                     self._send_json({"error": "answers[] required"}, status=400)
                     return
+                if len(items) > MAX_ANSWERS_PER_BATCH:
+                    self._send_json({"error": f"too many answers (max {MAX_ANSWERS_PER_BATCH})"}, status=400)
+                    return
+                for _it in items:
+                    if len(str(_it.get("answer", ""))) > MAX_ANSWER_CHARS or \
+                       len(str(_it.get("question", ""))) > MAX_QUESTION_CHARS:
+                        self._send_json({"error": "answer or question too long"}, status=400)
+                        return
                 if session["stage"] != "done":
                     self._send_json({"error": f"session not ready (stage={session['stage']})"}, status=200)
                     return
