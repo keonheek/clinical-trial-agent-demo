@@ -664,11 +664,19 @@ class Handler(BaseHTTPRequestHandler):
                 for pid in sorted(STRESS_PATIENTS_BY_ID):
                     p = STRESS_PATIENTS_BY_ID[pid]
                     causes = sorted(STRESS_EXPECTED_CAUSES.get(pid, ()))
+                    is_variant = "-" in pid
+                    if causes:
+                        note = "정답지 예상 원인: " + ", ".join(causes)
+                    elif is_variant:
+                        # a variant with no labeled cause is NOT the original: the corruption
+                        # exists, it just still leaves the criterion decidable (expected MET).
+                        note = "변형 (판정 가능 — 원인 표기 없음)"
+                    else:
+                        note = "원본 (손상 없음)"
                     out.append({"id": pid, "title": p.get("condition", pid),
                                 "vignette": p["text"], "group": "stress",
-                                "expected_causes": causes,
-                                "note": ("정답지 예상 원인: " + ", ".join(causes)) if causes
-                                        else "원본 (단일 결함 없음)"})
+                                "expected_causes": causes, "is_variant": is_variant,
+                                "note": note})
                 self._send_json(out)
                 return
 
