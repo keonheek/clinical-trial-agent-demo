@@ -154,12 +154,17 @@
   .opt-item input{margin:0;cursor:pointer;}
   .opt-item:has(input:checked){background:var(--accent-soft);border-color:var(--accent);font-weight:600;}
 
-  .lang-toggle{
-    font-family:inherit;font-size:0.74rem;font-weight:700;cursor:pointer;
-    border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);
-    padding:3px 10px;
+  .lang-seg{
+    display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;
+    font-family:inherit;
   }
-  .lang-toggle:hover{border-color:var(--accent);color:var(--accent-dark);}
+  .lang-opt{
+    font-family:inherit;font-size:0.74rem;font-weight:700;cursor:pointer;border:none;
+    background:var(--bg);color:var(--ink-soft);padding:4px 11px;
+  }
+  .lang-opt + .lang-opt{border-left:1px solid var(--line);}
+  .lang-opt:hover{color:var(--accent-dark);}
+  .lang-opt.active{background:var(--accent);color:#fff;}
 
   .path-box{
     border:1px solid var(--line);border-radius:10px;background:var(--bg-alt);
@@ -526,7 +531,10 @@
     <select id="modelSelect"><option>불러오는 중</option></select>
   </label>
   <span class="badge-pill" id="modeBadge" style="display:none;"></span>
-  <button type="button" class="lang-toggle" id="langToggle" title="Interface language">EN</button>
+  <div class="lang-seg" id="langToggle" role="group" aria-label="Interface language">
+    <button type="button" class="lang-opt" data-lang="ko">한국어</button>
+    <button type="button" class="lang-opt" data-lang="en">EN</button>
+  </div>
 </header>
 
 <nav class="agent-map" id="agentMap">
@@ -887,8 +895,9 @@ function applyLang(){
     var t = LANG==="en" ? el.getAttribute("data-en") : el.getAttribute("data-ko");
     if (t) el.textContent = t;
   });
-  var lb = document.getElementById("langToggle");
-  if (lb) lb.textContent = LANG==="en" ? "KR" : "EN";
+  document.querySelectorAll("#langToggle .lang-opt").forEach(function(b){
+    b.classList.toggle("active", b.dataset.lang === LANG);
+  });
   // re-render the dynamic panels so their T() strings pick up the new language
   if (lastRenderedTrials) renderTrials(lastRenderedTrials, true);
   refreshBatchButton();
@@ -1673,8 +1682,10 @@ document.getElementById("guideToggle").addEventListener("click", function(){
 loadPatients();
 loadBackendBadge();
 document.getElementById("batchApplyBtn").addEventListener("click", submitBatch);
-document.getElementById("langToggle").addEventListener("click", function(){
-  LANG = LANG==="en" ? "ko" : "en"; localStorage.setItem("ctm_lang", LANG); applyLang();
+document.querySelectorAll("#langToggle .lang-opt").forEach(function(b){
+  b.addEventListener("click", function(){
+    LANG = b.dataset.lang; localStorage.setItem("ctm_lang", LANG); applyLang();
+  });
 });
 applyLang();
 </script>
