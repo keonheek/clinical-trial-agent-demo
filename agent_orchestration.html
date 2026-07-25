@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에이전트 구성도 — Healthcare Agentic AI Challenge 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root{ --bg:#0b1533; --panel:#12204a; --ink:#eaf0ff; --soft:#9fb3d9; --line:#2a3d6e; }
+  *{box-sizing:border-box}
+  body{margin:0;background:#0b1533;color:#eaf0ff;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:28px 20px}
+  h1{font-size:1.35rem;margin:0 0 4px}
+  .sub{color:#9fb3d9;font-size:.9rem;margin-bottom:18px}
+  .diagram{background:#0e1b40;border:1px solid #26386a;border-radius:12px;padding:18px;overflow-x:auto}
+  .mermaid{display:flex;justify-content:center}
+  .notes{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card{background:#12204a;border:1px solid #26386a;border-radius:10px;padding:14px 16px}
+  .card h3{margin:0 0 6px;font-size:.95rem;color:#8fd0ff}
+  .card p{margin:0;font-size:.82rem;color:#c7d4ef;line-height:1.5}
+  .tag{display:inline-block;font-size:.68rem;background:#1c2f63;color:#9fc4ff;border-radius:4px;padding:1px 7px;margin-bottom:8px}
+  code{background:#0b1533;padding:1px 5px;border-radius:4px;color:#ffd27a;font-size:.78rem}
+</style>
+</head>
+<body>
+  <h1>에이전트 구성도 (역할 · 오케스트레이션)</h1>
+  <div class="sub">Interactive Clinical Trial Recommendation — 6개 역할 분담 에이전트 · 코드 도구 활용 · 불확실성 진단 기반 행동 선택 &nbsp;|&nbsp; <span style="color:#8fd0ff">실선 = 구현됨</span> · <span style="color:#c79a3a">점선 = 다음 단계(미구현)</span></div>
+
+  <div class="diagram">
+  <pre class="mermaid">
+flowchart TB
+  IN["입력<br/>선정/제외 기준 · 임상시험 상세<br/>+ 환자 비네트 (불완전 기록)"]
+
+  subgraph ORCH["⚙ 실행 제어 · 재평가 루프"]
+    plan["고정 실행 순서 (parser→…→recommender)<br/>답변 유입 시 <b>영향받은 criterion만</b> 재매칭<br/><i>rematch_affected_criteria</i>"]
+  end
+
+  A1["① 기준 파싱 에이전트<br/>Criteria Parser<br/><i>선정/제외 → 구조화 규칙</i>"]
+  A2["② 환자 이해 에이전트<br/>Patient Extractor<br/><i>프로파일 → 사실 + evidence_quote</i>"]
+  A3["③ 추론·매칭 에이전트<br/>Reasoning · Matcher<br/><i>criterion별 verdict (LLM 판정만)</i>"]
+  A4["④ 질문 생성 에이전트<br/>Question Generator"]
+  A5["⑤ 추천 에이전트 · Recommender<br/><i>적격성 위계로 순위화</i><br/>Phase·중재목적(intent) = <b>표시</b>"]
+  A6["⑥ 결과 설명 에이전트<br/>Explainer<br/><i>근거·판단 서술</i>"]
+
+  DEC{"<b>action_policy</b><br/>불확실성 10종 진단 →<br/>행동 분류 (질문 여부 게이트)<br/>IGNORE·STOP = skip / 그 외 = 질문"}
+  Q["확인 질문 생성<br/>'왜 이 질문인가' 카드<br/>affects_trials/criteria/rank"]
+
+  subgraph TOOLS["🔧 도구 (결정은 코드가 — LLM 아님)"]
+    T1["ClinicalTrials.gov API<br/>fetch_trials"]
+    T2["evidence.py<br/>근거 충분성 · 의심≠확진"]
+    T3["EFFECT_TABLE<br/>PASS/FAIL/REVIEW"]
+    T4["decide_eligibility<br/>위계 판정 · hard FAIL 1개면 탈락"]
+    T5["coverage_map<br/>파싱 커버리지 %"]
+  end
+
+  SAFE["🛡 안전 계층<br/>exclusion+MET=FAIL 강제<br/>maker≠checker: LLM 판정 / 코드 결정"]
+  OUT["출력<br/>참여 가능성 판정 + 근거<br/>+ 적격성 순위 추천"]
+
+  subgraph TARGET["🎯 다음 단계 (미구현 · 발표 로드맵)"]
+    G1["action_policy → 실제 오케스트레이터<br/>행동별 개별 실행 (RETRIEVE/CALCULATE/<br/>VERIFY/ESCALATE) + 에이전트 시퀀싱"]
+    G2["추천 순위에 임상 적합성 반영<br/>Phase · 중재목적 · 환자부담<br/><i>(주최 확인 기준 — 07-23)</i>"]
+    G3["근거 recency / 유효기간<br/>lab·영상 유효 윈도우 → 만료 시 재검"]
+  end
+
+  IN --> plan
+  plan --> A1 --> A2 --> A3
+  A1 -.기준 검색.-> T1
+  A3 --> T2 --> T3 --> T4
+  A3 --> A4 --> DEC
+  DEC -- "질문 대상" --> Q
+  Q -- "환자 답변" --> plan
+  DEC -- "결정됨" --> A5
+  A5 --> T5
+  A5 --> A6 --> OUT
+  SAFE -.-> T3
+  SAFE -.-> T4
+  DEC -.승격.-> G1
+  A5 -.확장.-> G2
+  A3 -.확장.-> G3
+
+  classDef agent fill:#173a7a,stroke:#4a7bd0,color:#eaf0ff,stroke-width:1.5px;
+  classDef tool fill:#3a2d0e,stroke:#c79a3a,color:#ffe9b0;
+  classDef safe fill:#4a1620,stroke:#d05a6a,color:#ffd7dd;
+  classDef dec fill:#123a2e,stroke:#3ac78a,color:#c7ffe6,stroke-width:2px;
+  classDef io fill:#0e1b40,stroke:#26386a,color:#c7d4ef;
+  classDef target fill:#161d33,stroke:#c79a3a,color:#e6d3a8,stroke-dasharray:5 4;
+  class A1,A2,A3,A4,A5,A6 agent;
+  class T1,T2,T3,T4,T5 tool;
+  class SAFE safe;
+  class DEC dec;
+  class IN,OUT,Q,plan io;
+  class G1,G2,G3 target;
+  </pre>
+  </div>
+
+  <div class="notes">
+    <div class="card">
+      <span class="tag">구현됨 · 진짜 강점</span>
+      <h3>불확실성 진단이 행동을 가른다</h3>
+      <p>단순 QA가 아니다. <code>action_policy</code>가 불확실성 10종을 <b>진단</b>하고, 그 분류가 <b>질문할지 말지를 게이트</b>한다(IGNORE·STOP은 안 묻고 skip). 이 진단-기반 결정이 '단일 질의응답형' 제외 기준을 넘어서는 핵심 증거. <i>(6개 행동의 개별 실행은 다음 단계)</i></p>
+    </div>
+    <div class="card">
+      <span class="tag">구현됨 · 안전</span>
+      <h3>판정은 LLM, 결정은 코드</h3>
+      <p>LLM은 verdict만 내고, <b>효력·적격성 결정은 코드 도구</b>(EFFECT_TABLE, decide_eligibility)가 한다. maker≠checker. hard exclusion 하나면 강제 탈락 — 평균으로 못 덮는다. 현재 추천 순위 = <b>적격성 위계</b>.</p>
+    </div>
+    <div class="card">
+      <span class="tag">다음 단계 · 로드맵</span>
+      <h3>정직한 목표 (점선 노드)</h3>
+      <p>① action_policy를 실제 오케스트레이터로 승격(행동별 실행). ② 추천 순위에 <b>임상 적합성</b>(Phase·중재목적·환자부담 — 주최 07-23 확인 기준) 반영. ③ 근거 recency/유효기간. 발표에서 '구현 vs 로드맵'을 나눠 제시 = 과장 없이 깊이 전달.</p>
+    </div>
+  </div>
+<script>
+  mermaid.initialize({ startOnLoad:true, theme:'dark', flowchart:{ curve:'basis', nodeSpacing:38, rankSpacing:46 }, themeVariables:{ fontSize:'13px' } });
+</script>
+</body>
+</html>

@@ -1,0 +1,1097 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>임상시험 적격성 기준 맵 — prototype</title>
+<style>
+:root{
+  --bg:#0b1533; --panel:#12204a; --ink:#eaf0ff; --soft:#9fb3d9; --hairline:#2a3d6e;
+  --pass-fill:#123a2e; --pass-stroke:#3ac78a; --pass-text:#c7ffe6;
+  --review-fill:#3a2d0e; --review-stroke:#c79a3a; --review-text:#ffe9b0;
+  --fail-fill:#4a1620; --fail-stroke:#d05a6a; --fail-text:#ffd7dd;
+  --io-fill:#0e1b40; --io-stroke:#26386a; --io-text:#c7d4ef;
+  --edge:#4a6bb0;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  line-height:1.5; padding:22px 18px 60px;
+}
+h1{font-size:1.3rem;margin:0 0 4px;}
+.sub{color:var(--soft);font-size:.85rem;margin:0 0 16px;max-width:900px;}
+.scope-note{
+  background:var(--panel); border:1px solid var(--hairline); border-radius:8px;
+  padding:8px 12px; font-size:.76rem; color:var(--soft); margin-bottom:18px; max-width:900px;
+}
+
+.legend{
+  display:flex; flex-wrap:wrap; gap:14px; align-items:center;
+  background:var(--panel); border:1px solid var(--hairline); border-radius:10px;
+  padding:10px 14px; margin-bottom:20px; font-size:.76rem; color:var(--soft); max-width:900px;
+}
+.legend b{color:var(--ink);font-size:.78rem;margin-right:2px;}
+.legend .swatch{display:inline-flex;align-items:center;gap:6px;}
+.legend .chip{width:14px;height:14px;border-radius:4px;display:inline-block;flex:none;}
+.legend .chip.dashed{border-style:dashed;border-width:2px;background:transparent;}
+
+.patient-card{
+  background:var(--panel); border:1px solid var(--hairline); border-radius:12px;
+  padding:16px 18px; margin-bottom:20px; max-width:900px;
+}
+.patient-card .pid{font-size:.72rem;letter-spacing:.04em;color:#8fd0ff;text-transform:uppercase;margin-bottom:4px;}
+.patient-card .ptext{font-size:.92rem;color:var(--ink);}
+
+.trials-list{max-width:900px;display:flex;flex-direction:column;gap:10px;}
+.trial-card{background:var(--panel);border:1px solid var(--hairline);border-radius:10px;overflow:hidden;}
+.trial-head{
+  display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer;
+  user-select:none;
+}
+.trial-head:hover{background:#16265a;}
+.trial-head .rank{
+  flex:none; width:28px; height:28px; border-radius:50%; background:#1c2f63; color:#9fc4ff;
+  display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700;
+}
+.trial-head .titlewrap{flex:1 1 auto; min-width:0;}
+.trial-head h3{margin:0 0 3px; font-size:.94rem; color:var(--ink); font-weight:700;}
+.trial-head .meta{font-size:.74rem; color:var(--soft); display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+.trial-head .meta a{color:#8fd0ff;text-decoration:none;}
+.trial-head .meta a:hover{text-decoration:underline;}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.badge.ELIGIBLE{background:var(--pass-fill);color:var(--pass-text);border:1px solid var(--pass-stroke);}
+.badge.UNCERTAIN{background:var(--review-fill);color:var(--review-text);border:1px solid var(--review-stroke);}
+.badge.INELIGIBLE{background:var(--fail-fill);color:var(--fail-text);border:1px solid var(--fail-stroke);}
+.trial-head .caret{flex:none;color:var(--soft);font-size:.8rem;transition:transform .15s;}
+.trial-card.open .caret{transform:rotate(90deg);}
+
+.rationale{margin:0 16px 10px;font-size:.8rem;color:var(--soft);font-style:italic;}
+
+.crit-body{border-top:1px solid var(--hairline); padding:14px 16px 16px; background:#0e1a3e;}
+
+.map-toggle{
+  display:inline-block; background:none; border:1px solid var(--hairline); color:#8fd0ff;
+  font-size:.76rem; padding:5px 12px; border-radius:99px; cursor:pointer; margin-bottom:10px;
+  font-family:inherit;
+}
+.map-toggle:hover{border-color:#4a6bb0;}
+
+.map-wrap{overflow-x:auto; border-radius:8px; background:#0a132e; padding:6px 0;}
+
+.caption{font-size:.74rem; color:var(--soft); margin-top:10px; line-height:1.55; max-width:820px;}
+.caption.overflow-note{color:#e6d3a8;}
+.mismatch-banner{
+  background:var(--fail-fill); border:1px solid var(--fail-stroke); color:var(--fail-text);
+  font-size:.78rem; padding:6px 10px; border-radius:6px; margin-bottom:10px;
+}
+
+.verdict-why{
+  display:flex; align-items:flex-start; gap:8px; max-width:820px;
+  background:var(--panel); border:1px solid var(--hairline); border-radius:8px;
+  padding:8px 12px; margin-bottom:10px; font-size:.82rem; color:var(--ink); line-height:1.5;
+}
+.verdict-why .vw-dot{flex:none; width:10px; height:10px; border-radius:50%; margin-top:5px;}
+.verdict-why .vw-dot.FAIL{background:var(--fail-stroke);}
+.verdict-why .vw-dot.REVIEW{background:var(--review-stroke);}
+.verdict-why .vw-dot.PASS{background:var(--pass-stroke);}
+.verdict-why .vw-label{
+  color:var(--soft); font-size:.72rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:.03em; margin-right:5px;
+}
+
+.detail-panel{
+  margin-top:12px; background:var(--panel); border:1px solid var(--hairline); border-radius:10px;
+  padding:14px 16px; max-height:340px; overflow-y:auto; font-size:.82rem;
+}
+.detail-panel .empty{color:var(--soft); font-style:italic;}
+.detail-panel .dp-row{display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap;}
+.detail-panel .type-badge{font-size:.68rem; font-weight:700; padding:2px 8px; border-radius:99px; background:#1c2f63; color:#9fc4ff;}
+.detail-panel .effect-badge{font-size:.68rem; font-weight:700; padding:2px 8px; border-radius:99px;}
+.detail-panel .effect-badge.PASS{background:var(--pass-fill);color:var(--pass-text);}
+.detail-panel .effect-badge.REVIEW{background:var(--review-fill);color:var(--review-text);}
+.detail-panel .effect-badge.FAIL{background:var(--fail-fill);color:var(--fail-text);}
+.detail-panel .verdict-tag{font-size:.68rem; color:var(--soft);}
+.crit-text{font-size:.86rem; color:var(--ink); margin-bottom:8px; line-height:1.55;}
+.crit-evidence{font-size:.78rem; color:#ffe9b0; background:#241d0a; border-left:3px solid var(--review-stroke); padding:6px 9px; margin-bottom:8px; border-radius:4px;}
+.crit-reason{font-size:.78rem; color:var(--soft); background:#0e1b40; border-left:3px solid var(--io-stroke); padding:6px 9px; border-radius:4px;}
+
+.node-label{
+  width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; font-size:12px; line-height:1.35; padding:2px 8px; font-family:inherit; overflow:hidden;
+}
+.node-label .l1{font-weight:700; font-size:11.5px;}
+.node-label .l2{font-size:11px; opacity:.85;}
+.node-label .l3{font-size:10.5px; opacity:.8; margin-top:1px;}
+</style>
+</head>
+<body>
+<h1>임상시험 적격성 기준 맵 — prototype</h1>
+<p class="sub">site.html 기존 base view(순위 정렬 시험 카드 목록)에 추가되는 in-tool 기능의 단독 프로토타입입니다.
+카드 헤드 클릭 → 기존 방식 그대로 in-place로 펼쳐지지만, 펼쳐지는 내용이 평평한 기준 목록 대신 게이트 트리 맵으로 바뀝니다.</p>
+<div class="scope-note">범위: traces.json의 첫 번째 환자(S001) 데이터만 인라인 포함 — 실제 배치 시에는 10명 환자 전원의 site.html base view에 동일하게 적용됩니다. 외부 CDN/라이브러리 없음 (Mermaid 미사용) · 오프라인에서 그대로 렌더링됩니다.</div>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+
+var TRACE = {
+  "patient_id": "S001",
+  "patient_text": "A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.",
+  "trials": [
+    {
+      "nct_id": "NCT06179459",
+      "title": "Registry of Patients Undergoing Endoscopic Management of Pancreatic Fluid Collections",
+      "phase": "NA",
+      "eligibility": "UNCERTAIN",
+      "rank": 1,
+      "rationale": "Acute pancreatitis confirmed, but vignette gives no data on a pancreatic fluid collection or endoscopic treatment, so eligibility for this registry is unresolved.",
+      "criteria": [
+        {
+          "text": "Age ≥ 18 years",
+          "type": "inclusion",
+          "verdict": "MET",
+          "effect": "PASS",
+          "evidence": "54-year-old man",
+          "reasoning": "Patient is 54 years old, which satisfies age of 18 or older."
+        },
+        {
+          "text": "All patients undergoing endoscopic treatment of pancreatic fluid collections",
+          "type": "inclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Vignette does not mention any endoscopic treatment or pancreatic fluid collections."
+        },
+        {
+          "text": "Age < 18 years",
+          "type": "exclusion",
+          "verdict": "NOT_MET",
+          "effect": "PASS",
+          "evidence": "54-year-old man",
+          "reasoning": "Patient is 54 years old, not under 18."
+        },
+        {
+          "text": "Patients who did not receive endoscopic treatment of pancreatic fluid collections",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No information given on whether patient received endoscopic treatment of fluid collections."
+        }
+      ]
+    },
+    {
+      "nct_id": "NCT06401577",
+      "title": "Diabetes RElated to Acute Pancreatitis and Its Mechanisms: Metabolic Outcomes Using Novel CGM Metrics",
+      "phase": "NA",
+      "eligibility": "UNCERTAIN",
+      "rank": 2,
+      "rationale": "Alcohol-related acute pancreatitis fits the study population, but consent capacity, chronic-pancreatitis imaging findings, and post-ERCP hospitalization duration are not stated.",
+      "criteria": [
+        {
+          "text": "Diagnosis of acute pancreatitis (AP) 0-90 days prior to enrollment",
+          "type": "inclusion",
+          "verdict": "MET",
+          "effect": "PASS",
+          "evidence": "severe epigastric pain radiating to the back...markedly elevated serum lipase and amylase",
+          "reasoning": "Pain radiating to back plus markedly elevated lipase/amylase meet diagnostic criteria for current acute pancreatitis."
+        },
+        {
+          "text": "Participant fully understands and is able to participate in all aspects of the study, including providing informed consent, completion of case report forms, telephone interviews, metabolic testing, and planned longitudinal follow-ups",
+          "type": "inclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Vignette gives no information about capacity or willingness to complete study procedures."
+        },
+        {
+          "text": "Diagnosis of definite chronic pancreatitis (CP) at enrollment based on CT scan (including non-contrast enhanced), MRI, or MRCP: parenchymal or ductal calcifications on CT scan (after excluding the possibility that calcifications are vascular), or intraductal filling defects suggestive of calcifications on MRI and/or MRCP",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No CT, MRI, or MRCP findings reported to assess for chronic pancreatitis calcifications."
+        },
+        {
+          "text": "Potential participants with post-endoscopic retrograde cholangiopancreatography (ERCP) AP who are hospitalized for <48 hours",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No mention of ERCP or hospitalization duration in the vignette."
+        },
+        {
+          "text": "Prior (before enrollment) direct endoscopic necrosectomy of the pancreas or percutaneous necrosectomy or drainage of necrotic collection(s)",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No mention of prior necrosectomy or drainage procedures."
+        },
+        {
+          "text": "Pancreatic tumors, including ductal adenocarcinoma, neuroendocrine tumors, and metastasis",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No imaging or pathology findings addressing pancreatic tumors reported."
+        },
+        {
+          "text": "Confirmed or suspected cystic tumor associated with main pancreatic duct dilation, or believed to be the cause of AP (in the site-PI's judgement)",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No mention of cystic tumor or duct dilation; also rests partly on PI judgement."
+        },
+        {
+          "text": "Prior pancreatic surgery, including, but not limited to: distal pancreatectomy, pancreaticoduodenectomy, pancreatic necrosectomy, Frey procedure",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No surgical history provided in the vignette."
+        },
+        {
+          "text": "Use of disallowed concomitant medications within 30 days prior to enrollment",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No medication history is given in the vignette."
+        },
+        {
+          "text": "Severe systemic illness that in the judgement of the investigative team will confound outcome assessments of diabetes mellitus and immunological outcomes or pose additional risk for harms, including: history of solid organ transplant, acquired immunodeficiency syndrome (AIDS), active treatment for cancer (except non-melanoma skin cancer) within 12 months prior to enrollment, chronic kidney disease with estimated glomerular filtration rate (eGFR) < 30 or on dialysis prior to AP, and decompensated cirrhosis (based on imaging or biopsy), or any other medical condition that in the opinion of the site-PI carries a life expectancy of <12 months",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No information on transplant, AIDS, cancer treatment, renal function, or cirrhosis provided."
+        },
+        {
+          "text": "Known pregnancy at the time of enrollment",
+          "type": "exclusion",
+          "verdict": "NOT_MET",
+          "effect": "PASS",
+          "evidence": "sex: male",
+          "reasoning": "Patient is male, so pregnancy is not applicable."
+        },
+        {
+          "text": "Incarceration",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No information about incarceration status in the vignette."
+        }
+      ]
+    },
+    {
+      "nct_id": "NCT06113419",
+      "title": "Timing of CHolecystectomy In Severe PAncreatitis",
+      "phase": "NA",
+      "eligibility": "UNCERTAIN",
+      "rank": 3,
+      "rationale": "Acute pancreatitis present, but severity grade (APACHE score), biliary versus alcoholic etiology on imaging, and oral-intake recovery status are not reported.",
+      "criteria": [
+        {
+          "text": "Age ≥18 years",
+          "type": "inclusion",
+          "verdict": "MET",
+          "effect": "PASS",
+          "evidence": "54-year-old man",
+          "reasoning": "Patient is 54 years old, satisfying age >=18."
+        },
+        {
+          "text": "Diagnosis of pancreatitis according to Atlanta guidelines, moderately severe or severe pancreatitis (APACHE score ≥8 on admittance)",
+          "type": "inclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Labs/pain support a pancreatitis diagnosis, but no APACHE score or Atlanta severity grade given."
+        },
+        {
+          "text": "Biliary pancreatitis diagnosed on imaging (ultrasound, magnetic resonance imaging and/or tomography)",
+          "type": "inclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No imaging (ultrasound/MRI/CT) findings reported to establish biliary etiology."
+        },
+        {
+          "text": "Recovery of pancreatitis by tolerance of oral intake (defined as 24 hours of food consumption of any consistency without emetic episodes and pain defined as 4/10 on the visual analogue score of pain)",
+          "type": "inclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Vignette describes acute presentation only; no data on oral intake tolerance or recovery."
+        },
+        {
+          "text": "Written informed consent",
+          "type": "inclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Informed consent status is not addressed anywhere in the vignette."
+        },
+        {
+          "text": "Pregnancy",
+          "type": "exclusion",
+          "verdict": "NOT_MET",
+          "effect": "PASS",
+          "evidence": "54-year-old man",
+          "reasoning": "Patient is male, so pregnancy is not possible."
+        },
+        {
+          "text": "History of cholecystectomy",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No mention of prior cholecystectomy in history."
+        },
+        {
+          "text": "Planned open cholecystectomy",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No surgical plan is described in the vignette."
+        },
+        {
+          "text": "Pancreatitis-associated complication before laparoscopic cholecystectomy (compartment syndrome, bleeding and/or need for peripancreatic collection drainage)",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No complications like compartment syndrome, bleeding, or collections mentioned."
+        },
+        {
+          "text": "Chronic pancreatitis",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Only chronic alcohol use is noted; chronic pancreatitis diagnosis itself is not addressed."
+        },
+        {
+          "text": "Active malignant disease",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No information on malignant disease is given."
+        },
+        {
+          "text": "Septic shock",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No vitals or shock/sepsis indicators reported."
+        }
+      ]
+    },
+    {
+      "nct_id": "NCT07144917",
+      "title": "Immunoparalysis After Pancreaticoduodenectomy",
+      "phase": "NA",
+      "eligibility": "INELIGIBLE",
+      "rank": 4,
+      "rationale": "Excluded: alcohol-related acute pancreatitis is not a tumor indication for pancreaticoduodenectomy, which the trial's exclusion criterion explicitly bars.",
+      "criteria": [
+        {
+          "text": "Any patient undergoing a Pancreaticoduodenectomy in one of the four participating centers for a benign or malignant tumor of the pancreatic head",
+          "type": "inclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Vignette describes acute pancreatitis symptoms; no mention of surgery, tumor, or participating center."
+        },
+        {
+          "text": "Age < 18 years",
+          "type": "exclusion",
+          "verdict": "NOT_MET",
+          "effect": "PASS",
+          "evidence": "54-year-old man",
+          "reasoning": "Patient is 54 years old, not under 18."
+        },
+        {
+          "text": "Pregnant, postpartum, or breastfeeding women",
+          "type": "exclusion",
+          "verdict": "NOT_MET",
+          "effect": "PASS",
+          "evidence": "54-year-old man",
+          "reasoning": "Patient is male; cannot be pregnant, postpartum, or breastfeeding."
+        },
+        {
+          "text": "Indication other than tumor-related (e.g., chronic pancreatitis)",
+          "type": "exclusion",
+          "verdict": "MET",
+          "effect": "FAIL",
+          "evidence": "markedly elevated serum lipase and amylase",
+          "reasoning": "Presentation with alcohol history and elevated lipase/amylase indicates pancreatitis, a non-tumor indication."
+        },
+        {
+          "text": "Patient with an infectious syndrome at the time of inclusion",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "Vignette gives no information about an infectious syndrome at inclusion."
+        },
+        {
+          "text": "Preoperative immunosuppression",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No mention of preoperative immunosuppression status in the vignette."
+        },
+        {
+          "text": "Congenital or acquired immune deficiency",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No information on congenital or acquired immune deficiency provided."
+        },
+        {
+          "text": "Functional hyposplenism or asplenia, patient under long-term antibiotic prophylaxis for this reason",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No mention of splenic function or antibiotic prophylaxis in the vignette."
+        },
+        {
+          "text": "Patient with HIV (and CD4 < cells/mm³)",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No HIV status or CD4 count provided in the vignette."
+        },
+        {
+          "text": "Aplasia defined by circulating neutrophil count < 500 cells/mm³",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No neutrophil count or aplasia information given in the vignette."
+        },
+        {
+          "text": "Immunosuppressive treatment other than chemotherapy: Biotherapy, Corticosteroid therapy >10 mg/day or cumulative dose >700 mg prednisolone equivalent",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No information on biotherapy or corticosteroid dosing provided."
+        },
+        {
+          "text": "Patient expected to receive immunosuppressive treatment within the first 7 postoperative days",
+          "type": "exclusion",
+          "verdict": "UNKNOWN",
+          "effect": "REVIEW",
+          "evidence": null,
+          "reasoning": "No information on planned postoperative immunosuppressive treatment in vignette."
+        }
+      ]
+    }
+  ],
+  "dataset_note": {
+    "total_patients": 10,
+    "total_trials": 40,
+    "total_criteria": 374,
+    "eligible_count": 0
+  }
+};
+
+var SVGNS = 'http://www.w3.org/2000/svg';
+var XHTMLNS = 'http://www.w3.org/1999/xhtml';
+
+var ROW_H = 62, ROW_GAP = 16, COL_W = 240, COL_GAP = 90, MARGIN = 30;
+var ROOT_H = 66, GATE_H = 78, GAP_ROOT_GATE = 54, GAP_GATE_LEAF = 46;
+
+var COLORS = {
+  PASS:   {fill:'#123a2e', stroke:'#3ac78a', text:'#c7ffe6'},
+  REVIEW: {fill:'#3a2d0e', stroke:'#c79a3a', text:'#ffe9b0'},
+  FAIL:   {fill:'#4a1620', stroke:'#d05a6a', text:'#ffd7dd'},
+  IO:     {fill:'#0e1b40', stroke:'#26386a', text:'#c7d4ef'}
+};
+
+// brighter/lighter stroke used to emphasize the decisive criterion (or a fold row containing it)
+var DECISIVE_STROKE = {
+  PASS:   '#7dffc4',
+  REVIEW: '#ffd98a',
+  FAIL:   '#ff8a9c'
+};
+
+var TYPE_KO = {inclusion:'포함', exclusion:'제외'};
+var ELIG_KO = {ELIGIBLE:'적격 (ELIGIBLE)', UNCERTAIN:'판단 보류 (UNCERTAIN)', INELIGIBLE:'부적격 (INELIGIBLE)'};
+
+// ---------- small DOM helpers (textContent only for any untrusted string -- no innerHTML with
+// interpolated data anywhere in this file, so nothing needs manual HTML-escaping) ----------
+function el(tag, className, text){
+  var e = document.createElement(tag);
+  if (className) e.className = className;
+  if (text != null) e.textContent = text;
+  return e;
+}
+function svgNode(tag, attrs){
+  var n = document.createElementNS(SVGNS, tag);
+  if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+function firstWords(str, n){
+  str = (str || '').trim();
+  var words = str.split(/\s+/);
+  if (words.length <= n) return str;
+  return words.slice(0, n).join(' ') + '\u2026';
+}
+function glyphFor(effect, verdict){
+  if (effect === 'PASS') return '\u2713';
+  if (effect === 'FAIL') return '\u2715';
+  if (effect === 'REVIEW') return verdict === 'UNCERTAIN' ? '\u25D0' : '\u25CB';
+  return '\u2022';
+}
+
+// ---------- SVG node label (foreignObject, textContent-only) ----------
+function labelNode(x, y, w, h, lines){
+  // lines: array of {cls, text}
+  var fo = svgNode('foreignObject', {x:x, y:y, width:w, height:h});
+  var div = document.createElementNS(XHTMLNS, 'div');
+  div.setAttribute('class', 'node-label');
+  lines.forEach(function(ln){
+    var d2 = document.createElementNS(XHTMLNS, 'div');
+    d2.setAttribute('class', ln.cls);
+    d2.textContent = ln.text;
+    if (ln.opacity != null) d2.style.opacity = ln.opacity;
+    if (ln.color != null) d2.style.color = ln.color;
+    div.appendChild(d2);
+  });
+  fo.appendChild(div);
+  return fo;
+}
+
+// ---------- shapes ----------
+function shapeStadium(cx, cy, w, h, colors){
+  return svgNode('rect', {
+    x: cx - w/2, y: cy - h/2, width: w, height: h, rx: h/2, ry: h/2,
+    fill: colors.fill, stroke: colors.stroke, 'stroke-width': 2.5
+  });
+}
+function shapeDiamond(cx, cy, w, h, colors){
+  var pts = [
+    [cx, cy - h/2], [cx + w/2, cy], [cx, cy + h/2], [cx - w/2, cy]
+  ].map(function(p){ return p[0] + ',' + p[1]; }).join(' ');
+  return svgNode('polygon', {points: pts, fill: colors.fill, stroke: colors.stroke, 'stroke-width': 2.5});
+}
+function shapeHexagon(cx, cy, w, h, colors, dashed){
+  var x0 = cx - w/2, x1 = cx + w/2, y0 = cy - h/2, y1 = cy + h/2;
+  var notch = h/2;
+  var pts = [
+    [x0+notch,y0],[x1-notch,y0],[x1,cy],[x1-notch,y1],[x0+notch,y1],[x0,cy]
+  ].map(function(p){ return p[0] + ',' + p[1]; }).join(' ');
+  var attrs = {points: pts, fill: colors.fill, stroke: colors.stroke, 'stroke-width': 2};
+  if (dashed) attrs['stroke-dasharray'] = '5 4';
+  return svgNode('polygon', attrs);
+}
+function shapeRoundRect(cx, cy, w, h, rx, colors, dashed){
+  var attrs = {
+    x: cx - w/2, y: cy - h/2, width: w, height: h, rx: rx, ry: rx,
+    fill: colors.fill, stroke: colors.stroke, 'stroke-width': 2
+  };
+  if (dashed) attrs['stroke-dasharray'] = '5 4';
+  return svgNode('rect', attrs);
+}
+
+// ---------- data shaping ----------
+function gateGroups(trial, type){
+  var items = [];
+  trial.criteria.forEach(function(c, idx){
+    if (c.type === type) items.push({idx: idx, c: c});
+  });
+  var groups = {FAIL:[], REVIEW:[], PASS:[]};
+  items.forEach(function(it){ groups[it.c.effect].push(it); });
+  var worst = groups.FAIL.length ? 'FAIL' : (groups.REVIEW.length ? 'REVIEW' : (groups.PASS.length ? 'PASS' : 'NONE'));
+  return {type: type, items: items, groups: groups, total: items.length, worst: worst};
+}
+
+function drivingEffectFor(eligibility){
+  if (eligibility === 'INELIGIBLE') return 'FAIL';
+  if (eligibility === 'UNCERTAIN') return 'REVIEW';
+  return 'NONE'; // ELIGIBLE -- no driving bucket, render all-satisfied summary
+}
+
+// rows: [{kind:'leaf', item}, {kind:'fold', effect, items, overflow}, {kind:'summary'}]
+function buildRows(gd, driving, showAll){
+  var order = ['FAIL', 'REVIEW', 'PASS'];
+  var rows = [];
+  if (showAll){
+    order.forEach(function(eff){
+      gd.groups[eff].forEach(function(it){ rows.push({kind:'leaf', item: it}); });
+    });
+    return rows;
+  }
+  if (driving === 'NONE'){
+    if (gd.total > 0) rows.push({kind:'summary'});
+    return rows;
+  }
+  order.forEach(function(eff){
+    var items = gd.groups[eff];
+    if (items.length === 0) return;
+    if (eff === driving){
+      var shown = items.slice(0, 6);
+      shown.forEach(function(it){ rows.push({kind:'leaf', item: it}); });
+      if (items.length > 6){
+        rows.push({kind:'fold', effect: eff, items: items.slice(6), overflow: true});
+      }
+    } else {
+      rows.push({kind:'fold', effect: eff, items: items});
+    }
+  });
+  return rows;
+}
+
+function deriveEligibilityFromGates(inclWorst, exclWorst){
+  if (inclWorst === 'FAIL' || exclWorst === 'FAIL') return 'INELIGIBLE';
+  if (inclWorst === 'REVIEW' || exclWorst === 'REVIEW') return 'UNCERTAIN';
+  return 'ELIGIBLE';
+}
+
+// ---------- decision rationale: which criterion/criteria actually decided the verdict, and why
+// the rest don't matter. Mirrors the same hard-FAIL-dominates, else-any-REVIEW hierarchy as
+// deriveEligibilityFromGates() -- derived from the real gate data, not from the trial.eligibility
+// field, so a field/gate mismatch surfaces via the existing mismatch banner rather than being
+// silently papered over here.
+function computeRationale(gdIncl, gdExcl, eligibility){
+  var failIncl = gdIncl.groups.FAIL, failExcl = gdExcl.groups.FAIL;
+  var totalCriteria = gdIncl.total + gdExcl.total;
+
+  if (failIncl.length || failExcl.length){
+    var gateLabels = [];
+    if (failExcl.length) gateLabels.push('제외');
+    if (failIncl.length) gateLabels.push('포함');
+    var failItems = failExcl.concat(failIncl);
+    var n = failItems.length, m = totalCriteria - n;
+    return {
+      text: gateLabels.join('/') + ' 기준 ' + n + '건이 차단(FAIL) → 하드 제외 규칙상, 나머지 ' + m + '건과 무관하게 부적격.',
+      decisive: failItems.map(function(it){ return it.idx; }),
+      drivingEffect: 'FAIL'
+    };
+  }
+
+  var reviewItems = gdIncl.groups.REVIEW.concat(gdExcl.groups.REVIEW);
+  if (reviewItems.length){
+    return {
+      text: '차단(FAIL) 기준 없음. 확인 필요 ' + reviewItems.length + '건이 해소되면 적격 판정 가능 — 평균이 아니라 위계 판정.',
+      decisive: reviewItems.map(function(it){ return it.idx; }),
+      drivingEffect: 'REVIEW'
+    };
+  }
+
+  return {
+    text: '모든 기준 충족 — 차단·미확인 없음 → 적격.',
+    decisive: [],
+    drivingEffect: 'PASS'
+  };
+}
+
+// ---------- "판정 이유" strip shown above the SVG ----------
+function buildVerdictWhy(rationale){
+  var wrap = el('div', 'verdict-why');
+  wrap.appendChild(el('span', 'vw-dot ' + rationale.drivingEffect));
+  var body = document.createElement('span');
+  var label = document.createElement('b');
+  label.className = 'vw-label';
+  label.textContent = '판정 이유';
+  body.appendChild(label);
+  body.appendChild(document.createTextNode(rationale.text));
+  wrap.appendChild(body);
+  return wrap;
+}
+
+function foldLabelParts(effect, n, overflow){
+  var glyph = effect === 'FAIL' ? '\u2715' : (effect === 'REVIEW' ? '\u25CB' : '\u2713');
+  var word = effect === 'FAIL' ? '\uCC28\uB2E8' : (effect === 'REVIEW' ? '\uD655\uC778 \uD544\uC694' : '\uCDA9\uC871');
+  var suffix = overflow ? '\uAC74 \uB354 \uBCF4\uAE30' : '\uAC74 \uBCF4\uAE30';
+  return glyph + ' ' + n + suffix + ' (' + word + ') >';
+}
+
+// ---------- layout ----------
+function layout(rowsIncl, rowsExcl){
+  var colWidth = COL_W;
+  var totalW = MARGIN*2 + colWidth*2 + COL_GAP;
+  var leftX = MARGIN + colWidth/2;
+  var rightX = MARGIN + colWidth + COL_GAP + colWidth/2;
+  var rootX = (leftX + rightX) / 2;
+
+  var rootY0 = 16, rootCY = rootY0 + ROOT_H/2, rootBottom = rootY0 + ROOT_H;
+  var gateY0 = rootBottom + GAP_ROOT_GATE, gateCY = gateY0 + GATE_H/2, gateBottom = gateY0 + GATE_H;
+  var leafY0 = gateBottom + GAP_GATE_LEAF;
+
+  function colBoxes(rows){
+    var boxes = [];
+    var y = leafY0;
+    rows.forEach(function(row){
+      boxes.push({row: row, y: y, cy: y + ROW_H/2});
+      y += ROW_H + ROW_GAP;
+    });
+    return {boxes: boxes, bottom: rows.length ? (y - ROW_GAP) : leafY0};
+  }
+  var leftCol = colBoxes(rowsIncl);
+  var rightCol = colBoxes(rowsExcl);
+  var contentBottom = Math.max(leftCol.bottom, rightCol.bottom, gateBottom);
+  var totalH = contentBottom + 24;
+
+  return {
+    width: totalW, height: totalH,
+    rootX: rootX, rootCY: rootCY, rootBottom: rootBottom, rootY0: rootY0,
+    leftX: leftX, rightX: rightX, gateY0: gateY0, gateCY: gateCY, gateBottom: gateBottom,
+    leftBoxes: leftCol.boxes, rightBoxes: rightCol.boxes
+  };
+}
+
+// ---------- SVG rendering for one gate-tree state (default or full) ----------
+function renderMapSVG(trial, gdIncl, gdExcl, rowsIncl, rowsExcl, criteriaById, onFoldClick, decisiveMap){
+  var L = layout(rowsIncl, rowsExcl);
+  var svg = svgNode('svg', {
+    width: L.width, height: L.height, viewBox: '0 0 ' + L.width + ' ' + L.height,
+    role: 'img', 'aria-label': trial.nct_id + ' \uAC8C\uC774\uD2B8 \uD2B8\uB9AC'
+  });
+
+  var derivedElig = deriveEligibilityFromGates(gdIncl.worst === 'NONE' ? 'PASS' : gdIncl.worst,
+                                                gdExcl.worst === 'NONE' ? 'PASS' : gdExcl.worst);
+  var mismatch = derivedElig !== trial.eligibility;
+
+  // ---- edges first (drawn behind nodes) ----
+  var edgeAttrs = {stroke: '#4a6bb0', 'stroke-width': 2, fill: 'none'};
+  [L.leftX, L.rightX].forEach(function(colX){
+    var midY = L.rootBottom + (L.gateY0 - L.rootBottom) / 2;
+    var d = 'M ' + L.rootX + ' ' + L.rootBottom + ' L ' + L.rootX + ' ' + midY +
+            ' L ' + colX + ' ' + midY + ' L ' + colX + ' ' + L.gateY0;
+    var p = svgNode('path', edgeAttrs); p.setAttribute('d', d); svg.appendChild(p);
+  });
+  function trunk(colX, boxes){
+    if (!boxes.length) return;
+    var lastCY = boxes[boxes.length - 1].cy;
+    var d = 'M ' + colX + ' ' + L.gateBottom + ' L ' + colX + ' ' + lastCY;
+    var p = svgNode('path', edgeAttrs); p.setAttribute('d', d); svg.appendChild(p);
+  }
+  trunk(L.leftX, L.leftBoxes);
+  trunk(L.rightX, L.rightBoxes);
+
+  // ---- root node ----
+  var rootRowColor = trial.eligibility === 'ELIGIBLE' ? COLORS.PASS :
+                      (trial.eligibility === 'INELIGIBLE' ? COLORS.FAIL : COLORS.REVIEW);
+  svg.appendChild(shapeStadium(L.rootX, L.rootCY, 260, ROOT_H, rootRowColor));
+  svg.appendChild(labelNode(L.rootX - 130, L.rootY0, 260, ROOT_H, [
+    {cls:'l1', text: trial.nct_id},
+    {cls:'l2', text: ELIG_KO[trial.eligibility] || trial.eligibility}
+  ]));
+  if (mismatch){
+    svg.appendChild(labelNode(L.rootX - 130, L.rootY0 - 20, 260, 18, [
+      {cls:'l3', text: '\u26A0 gates/verdict mismatch \u2014 \uD544\uB4DC\uAC12 \uC6B0\uC120'}
+    ]));
+  }
+
+  // ---- gate nodes ----
+  function gateNode(colX, gd, koLabel, enLabel){
+    var color = gd.total === 0 ? COLORS.IO :
+      (gd.worst === 'FAIL' ? COLORS.FAIL : (gd.worst === 'REVIEW' ? COLORS.REVIEW : COLORS.PASS));
+    svg.appendChild(shapeDiamond(colX, L.gateCY, COL_W + 30, GATE_H, color));
+    var line3 = gd.total === 0
+      ? '\uD574\uB2F9 \uC5C6\uC74C (\uAE30\uC900 0\uAC1C)'
+      : (gd.groups.FAIL.length + '\uAC74 \uCC28\uB2E8 \u00B7 ' + gd.groups.REVIEW.length + '\uAC74 \uD655\uC778\uD544\uC694 \u00B7 ' + gd.groups.PASS.length + '\uAC74 \uCDA9\uC871');
+    svg.appendChild(labelNode(colX - (COL_W+30)/2 + 15, L.gateY0 + 10, COL_W, GATE_H - 20, [
+      {cls:'l1', text: koLabel},
+      {cls:'l2', text: enLabel},
+      {cls:'l3', text: line3}
+    ]));
+  }
+  gateNode(L.leftX, gdIncl, '\uD3EC\uD568 \uAC8C\uC774\uD2B8', 'Inclusion Gate');
+  gateNode(L.rightX, gdExcl, '\uC81C\uC678 \uAC8C\uC774\uD2B8', 'Exclusion Gate');
+
+  // ---- leaf / fold / summary rows ----
+  function renderColumn(boxes, colX){
+    boxes.forEach(function(b){
+      var row = b.row, cy = b.cy;
+      if (row.kind === 'leaf'){
+        var c = row.item.c, idx = row.item.idx;
+        var id = 'C' + idx + '_' + trial.nct_id;
+        var isUnknownReview = c.effect === 'REVIEW' && c.verdict !== 'UNCERTAIN';
+        var isDecisive = !!(decisiveMap && decisiveMap[idx]);
+        var colors = c.effect === 'PASS' ? COLORS.PASS : (c.effect === 'FAIL' ? COLORS.FAIL : COLORS.REVIEW);
+        var g = svgNode('g', {'data-crit-id': id, style: 'cursor:pointer'});
+        var shape;
+        if (c.effect === 'PASS'){
+          shape = shapeRoundRect(colX, cy, COL_W, ROW_H, 16, colors, false);
+        } else if (c.effect === 'FAIL'){
+          shape = shapeHexagon(colX, cy, COL_W, ROW_H, colors, false);
+        } else {
+          shape = shapeRoundRect(colX, cy, COL_W, ROW_H, 6, colors, isUnknownReview);
+        }
+        if (isDecisive){
+          shape.setAttribute('stroke-width', 3);
+          shape.setAttribute('stroke', DECISIVE_STROKE[c.effect] || DECISIVE_STROKE.FAIL);
+        }
+        g.appendChild(shape);
+        var glyph = glyphFor(c.effect, c.verdict);
+        var leafLines = [];
+        if (isDecisive){
+          leafLines.push({cls:'l3', text: '★ 결정적', color: DECISIVE_STROKE[c.effect] || DECISIVE_STROKE.FAIL});
+        }
+        leafLines.push({cls:'l1', text: glyph + ' ' + firstWords(c.text, 7), opacity: isUnknownReview ? 0.8 : null});
+        var lbl = labelNode(colX - COL_W/2 + 6, cy - ROW_H/2, COL_W - 12, ROW_H, leafLines);
+        g.appendChild(lbl);
+        g.addEventListener('click', function(){ onFoldClick.onLeaf(id); });
+        svg.appendChild(g);
+        criteriaById[id] = {c: c, idx: idx, nct_id: trial.nct_id};
+      } else if (row.kind === 'fold'){
+        var foldHasDecisive = false;
+        if (decisiveMap){
+          for (var fdi = 0; fdi < row.items.length; fdi++){
+            if (decisiveMap[row.items[fdi].idx]) { foldHasDecisive = true; break; }
+          }
+        }
+        var g2 = svgNode('g', {style:'cursor:pointer'});
+        var foldShape = shapeRoundRect(colX, cy, COL_W, ROW_H, 8, COLORS.IO, false);
+        if (foldHasDecisive){
+          foldShape.setAttribute('stroke-width', 3);
+          foldShape.setAttribute('stroke', DECISIVE_STROKE[row.effect] || DECISIVE_STROKE.FAIL);
+        }
+        g2.appendChild(foldShape);
+        var label = foldLabelParts(row.effect, row.items.length, !!row.overflow);
+        var foldLines = [];
+        if (foldHasDecisive){
+          foldLines.push({cls:'l3', text: '★ 결정적 포함', color: DECISIVE_STROKE[row.effect] || DECISIVE_STROKE.FAIL});
+        }
+        foldLines.push({cls:'l1', text: label});
+        g2.appendChild(labelNode(colX - COL_W/2 + 6, cy - ROW_H/2, COL_W - 12, ROW_H, foldLines));
+        g2.addEventListener('click', function(){ onFoldClick.onFold(); });
+        svg.appendChild(g2);
+      } else if (row.kind === 'summary'){
+        var g3 = svgNode('g');
+        g3.appendChild(shapeRoundRect(colX, cy, COL_W, ROW_H, 16, COLORS.PASS, false));
+        g3.appendChild(labelNode(colX - COL_W/2 + 6, cy - ROW_H/2, COL_W - 12, ROW_H, [
+          {cls:'l1', text: '\u2713 \uBAA8\uB4E0 \uAE30\uC900 \uCDA9\uC871'}
+        ]));
+        svg.appendChild(g3);
+      }
+    });
+  }
+  renderColumn(L.leftBoxes, L.leftX);
+  renderColumn(L.rightBoxes, L.rightX);
+
+  return {svg: svg, mismatch: mismatch};
+}
+
+// ---------- detail panel ----------
+function showDetailInPanel(panel, entry){
+  panel.innerHTML = '';
+  var c = entry.c;
+  var row1 = el('div', 'dp-row');
+  row1.appendChild(el('span', 'type-badge', TYPE_KO[c.type] || c.type));
+  var eb = el('span', 'effect-badge ' + c.effect, c.effect);
+  row1.appendChild(eb);
+  row1.appendChild(el('span', 'verdict-tag', 'verdict: ' + c.verdict));
+  panel.appendChild(row1);
+  panel.appendChild(el('div', 'crit-text', c.text));
+  var evidenceText = c.evidence ? ('\u201C' + c.evidence + '\u201D') : '\uADFC\uAC70 \uC5C6\uC74C \u2014 \uBE44\uB124\uD2F8\uC5D0 \uC5B8\uAE09\uB418\uC9C0 \uC54A\uC74C';
+  panel.appendChild(el('div', 'crit-evidence', evidenceText));
+  if (c.reasoning){
+    panel.appendChild(el('div', 'crit-reason', c.reasoning));
+  }
+}
+
+// ---------- build the whole expanded body for one trial ----------
+function buildCritBody(body, trial){
+  var gdIncl = gateGroups(trial, 'inclusion');
+  var gdExcl = gateGroups(trial, 'exclusion');
+  var driving = drivingEffectFor(trial.eligibility);
+
+  var rationale = computeRationale(gdIncl, gdExcl, trial.eligibility);
+  var decisiveMap = {};
+  rationale.decisive.forEach(function(idx){ decisiveMap[idx] = true; });
+
+  var rowsInclDefault = buildRows(gdIncl, driving, false);
+  var rowsExclDefault = buildRows(gdExcl, driving, false);
+  var rowsInclFull = buildRows(gdIncl, driving, true);
+  var rowsExclFull = buildRows(gdExcl, driving, true);
+
+  var criteriaById = {};
+  var detailPanel = el('div', 'detail-panel');
+  detailPanel.appendChild(el('div', 'empty', '\uAE30\uC900\uC744 \uD074\uB9AD\uD558\uBA74 \uC0C1\uC138 \uC815\uBCF4\uAC00 \uC5EC\uAE30\uC5D0 \uD45C\uC2DC\uB429\uB2C8\uB2E4.'));
+
+  var defaultWrap = el('div', 'map-wrap map-state');
+  var fullWrap = el('div', 'map-wrap map-state');
+  fullWrap.style.display = 'none';
+
+  var toggleBtn = el('button', 'map-toggle');
+  var totalCriteria = trial.criteria.length;
+  function setToggleLabel(showingFull){
+    toggleBtn.textContent = showingFull
+      ? ('\uAE30\uBCF8 \uBCF4\uAE30\uB85C \uC811\uAE30 / Back to default view')
+      : ('\uBAA8\uB4E0 \uAE30\uC900 ' + totalCriteria + '\uAC1C \uBCF4\uAE30 / Show all ' + totalCriteria + ' criteria');
+  }
+  var showingFull = false;
+  setToggleLabel(false);
+  toggleBtn.addEventListener('click', function(){
+    showingFull = !showingFull;
+    defaultWrap.style.display = showingFull ? 'none' : 'block';
+    fullWrap.style.display = showingFull ? 'block' : 'none';
+    setToggleLabel(showingFull);
+  });
+
+  var onCallbacks = {
+    onLeaf: function(id){ showDetailInPanel(detailPanel, criteriaById[id]); },
+    onFold: function(){
+      if (!showingFull){
+        showingFull = true;
+        defaultWrap.style.display = 'none';
+        fullWrap.style.display = 'block';
+        setToggleLabel(true);
+      }
+    }
+  };
+
+  var resDefault = renderMapSVG(trial, gdIncl, gdExcl, rowsInclDefault, rowsExclDefault, criteriaById, onCallbacks, decisiveMap);
+  defaultWrap.appendChild(resDefault.svg);
+  var resFull = renderMapSVG(trial, gdIncl, gdExcl, rowsInclFull, rowsExclFull, criteriaById, onCallbacks, decisiveMap);
+  fullWrap.appendChild(resFull.svg);
+
+  if (resDefault.mismatch){
+    var banner = el('div', 'mismatch-banner',
+      '\u26A0 gates/verdict mismatch: field=' + trial.eligibility + ' \u2014 \uD544\uB4DC\uAC12(root)\uC744 \uADF8\uB300\uB85C \uD45C\uC2DC\uD558\uACE0 \uAC8C\uC774\uD2B8\uB294 \uAC15\uC81C\uB85C \uB9DE\uCD94\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.');
+    body.appendChild(banner);
+  }
+
+  body.appendChild(buildVerdictWhy(rationale));
+  body.appendChild(toggleBtn);
+  body.appendChild(defaultWrap);
+  body.appendChild(fullWrap);
+
+  var overflowed = rowsInclDefault.some(function(r){ return r.kind === 'fold' && r.overflow; }) ||
+                   rowsExclDefault.some(function(r){ return r.kind === 'fold' && r.overflow; });
+  if (overflowed){
+    body.appendChild(el('div', 'caption overflow-note',
+      '\uAC19\uC740 \uD6A8\uB825 \uB0B4\uC5D0\uC11C\uB294 \uC6D0\uBCF8 \uB370\uC774\uD130 \uC21C\uC11C\uB300\uB85C \uD45C\uC2DC\uB429\uB2C8\uB2E4 \u2014 \uC5B4\uB5A4 \uAC83\uC744 \uBA3C\uC800 \uD574\uACB0\uD560\uC9C0 \uC6B0\uC120\uC21C\uC704\uB97C \uB9E4\uAE30\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.'));
+  }
+
+  body.appendChild(el('div', 'caption',
+    '\uB450 \uAC8C\uC774\uD2B8 \uC911 \uD558\uB098\uB9CC FAIL\uC774\uC5B4\uB3C4 \uACB0\uACFC\uB294 \uAC19\uC2B5\uB2C8\uB2E4 \u2014 \uC81C\uC678 \uAE30\uC900\uC774 \uBA3C\uC800 \uAC80\uC0AC\uB418\uB294 \uAC83\uB3C4, ' +
+    '\uC720\uC77C\uD55C \uD0C8\uB77D \uC0AC\uC720\uB3C4 \uC544\uB2D9\uB2C8\uB2E4. \uD310\uC815\uC740 \uD30C\uC774\uD504\uB77C\uC778 \uAC12 \uADF8\uB300\uB85C, \uAC8C\uC774\uD2B8 \uC0C9\uC740 \uAC01 \uAC8C\uC774\uD2B8\uC758 \uCD5C\uC545 \uD6A8\uB825\uC73C\uB85C \uACC4\uC0B0\uB429\uB2C8\uB2E4.'));
+
+  body.appendChild(detailPanel);
+}
+
+// ---------- trial card (base view) ----------
+function renderTrialCard(trial){
+  var card = el('div', 'trial-card');
+  var head = el('div', 'trial-head');
+
+  var rank = el('div', 'rank', String(trial.rank != null ? trial.rank : '?'));
+  head.appendChild(rank);
+
+  var titlewrap = el('div', 'titlewrap');
+  titlewrap.appendChild(el('h3', null, trial.title));
+  var meta = el('div', 'meta');
+  if (/^NCT\d+$/.test(trial.nct_id || '')){
+    var a = document.createElement('a');
+    a.href = 'https://clinicaltrials.gov/study/' + trial.nct_id;
+    a.target = '_blank'; a.rel = 'noopener';
+    a.title = 'ClinicalTrials.gov \uC6D0\uBB38 \uD504\uB85C\uD1A0\uCF5C';
+    a.textContent = trial.nct_id + ' \uC6D0\uBB38 \u2197';
+    meta.appendChild(a);
+  } else {
+    meta.appendChild(el('span', null, trial.nct_id));
+  }
+  meta.appendChild(el('span', null, 'Phase ' + (trial.phase || 'NA')));
+  meta.appendChild(el('span', 'badge ' + trial.eligibility, trial.eligibility));
+  titlewrap.appendChild(meta);
+  head.appendChild(titlewrap);
+  head.appendChild(el('div', 'caret', '\u25B8'));
+  card.appendChild(head);
+
+  if (trial.rationale){
+    card.appendChild(el('p', 'rationale', trial.rationale));
+  }
+
+  var body = el('div', 'crit-body');
+  body.style.display = 'none';
+  card.appendChild(body);
+
+  head.addEventListener('click', function(){
+    var isOpen = body.style.display === 'block';
+    if (isOpen){
+      body.style.display = 'none';
+      card.classList.remove('open');
+      return;
+    }
+    if (!body.dataset.built){
+      buildCritBody(body, trial);
+      body.dataset.built = '1';
+    }
+    body.style.display = 'block';
+    card.classList.add('open');
+  });
+
+  return card;
+}
+
+// ---------- legend ----------
+function renderLegend(container){
+  var items = [
+    {label: 'PASS / \uCDA9\uC871', fill: COLORS.PASS.fill, stroke: COLORS.PASS.stroke},
+    {label: 'REVIEW (UNCERTAIN) / \uD655\uC778\uD544\uC694', fill: COLORS.REVIEW.fill, stroke: COLORS.REVIEW.stroke},
+    {label: 'REVIEW (UNKNOWN, \uD76C\uBBFC) / \uBB3C\uC5B4\uBCF8 \uC801 \uC5C6\uC74C', fill: COLORS.REVIEW.fill, stroke: COLORS.REVIEW.stroke, dashed: true},
+    {label: 'FAIL / \uCC28\uB2E8', fill: COLORS.FAIL.fill, stroke: COLORS.FAIL.stroke},
+    {label: '\uC811\uC74C(fold) / \uC911\uB9BD', fill: COLORS.IO.fill, stroke: COLORS.IO.stroke}
+  ];
+  items.forEach(function(it){
+    var sw = el('span', 'swatch');
+    var chip = el('span', 'chip' + (it.dashed ? ' dashed' : ''));
+    chip.style.background = it.dashed ? 'transparent' : it.fill;
+    chip.style.border = '2px ' + (it.dashed ? 'dashed' : 'solid') + ' ' + it.stroke;
+    sw.appendChild(chip);
+    sw.appendChild(document.createTextNode(it.label));
+    container.appendChild(sw);
+  });
+}
+
+// ---------- app root ----------
+function renderApp(){
+  var app = document.getElementById('app');
+
+  var patientCard = el('div', 'patient-card');
+  patientCard.appendChild(el('div', 'pid', TRACE.patient_id));
+  patientCard.appendChild(el('div', 'ptext', TRACE.patient_text));
+  app.appendChild(patientCard);
+
+  var legendWrap = el('div', 'legend');
+  legendWrap.appendChild(el('b', null, '\uC0C9 \uBC94\uB840:'));
+  renderLegend(legendWrap);
+  app.appendChild(legendWrap);
+
+  var eligCount = TRACE.trials.filter(function(t){ return t.eligibility === 'ELIGIBLE'; }).length;
+  if (eligCount === 0){
+    app.appendChild(el('div', 'scope-note',
+      '\uC774 \uD658\uC790\uC758 ' + TRACE.trials.length + '\uAC1C \uC2DC\uD5D8 \uC911 ELIGIBLE \uC0AC\uB840\uB294 \uC5C6\uC2B5\uB2C8\uB2E4 (\uC804\uCCB4 ' +
+      TRACE.dataset_note.total_patients + '\uBA85 \uD658\uC790 \u00B7 ' + TRACE.dataset_note.total_trials +
+      '\uAC1C \uC2DC\uD5D8 \uB370\uC774\uD130\uC14B\uC5D0\uB3C4 \uC5C6\uC2B5\uB2C8\uB2E4 \u2014 \uC784\uC758\uB85C \uB9CC\uB4E0 \uC608\uC2DC\uAC00 \uC544\uB2D9\uB2C8\uB2E4).'));
+  }
+
+  var list = el('div', 'trials-list');
+  var sorted = TRACE.trials.slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); });
+  sorted.forEach(function(t){ list.appendChild(renderTrialCard(t)); });
+  app.appendChild(list);
+}
+
+document.addEventListener('DOMContentLoaded', renderApp);
+})();
+</script>
+</body>
+</html>
