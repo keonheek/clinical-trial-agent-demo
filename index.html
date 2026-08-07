@@ -22,6 +22,12 @@
     --uncertain-bg:#fdf3dd;
     --unknown:#5f6b7a;
     --unknown-bg:#eef0f2;
+    /* human override styling gets its own color rather than reusing --accent: a human
+       correction is the system's final word on this criterion, and should read as a
+       different kind of event from "the pipeline reached a stage", not a shade of green. */
+    --human:#1f5fa8;
+    --human-bg:#eaf1fb;
+    --human-border:#a9c6e8;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -372,6 +378,76 @@
   .final-rank-card .rationale{font-size:0.88rem;color:var(--ink);}
   .final-rank-card .elig-change{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 
+  .view-tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--line);}
+  .view-tab{
+    appearance:none;border:none;background:none;padding:10px 16px;font-size:0.9rem;font-weight:600;
+    color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+  }
+  .view-tab:hover{color:var(--ink);}
+  .view-tab.selected{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab-panel{display:none;}
+  .tab-panel.selected{display:block;}
+
+  .dag-picker{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .dag-picker label{font-size:0.85rem;color:var(--ink-soft);white-space:nowrap;}
+  .dag-picker select{
+    flex:1 1 420px;min-width:280px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;
+    font-size:0.85rem;color:var(--ink);background:var(--bg);
+  }
+
+  /* One chain (question -> criterion -> trial -> rank) at a time, laid out wide
+     instead of stacked: each column holds exactly one card, so the row reads
+     left-to-right instead of scrolling through many overlapping rows. Columns
+     get real width (minmax) rather than an even 1fr split, since criterion text
+     is the longest content and was getting crushed into a narrow column before. */
+  #dagView{position:relative;margin-top:10px;overflow-x:auto;padding-bottom:8px;}
+  #dagEdges{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+  #dagGrid{
+    display:grid;grid-template-columns:repeat(4, minmax(220px, 1fr));gap:28px;
+    position:relative;z-index:1;min-width:960px;align-items:start;
+  }
+  .dag-col::before{
+    content:attr(data-label);display:block;font-size:0.72rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.03em;color:var(--ink-soft);margin-bottom:8px;
+  }
+  .dag-card{
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:8px;
+    padding:14px 16px;font-size:0.88rem;min-height:64px;
+  }
+  .dag-card-text{margin-bottom:8px;word-break:break-word;line-height:1.5;}
+  /* stroke color must live in CSS, not as an SVG attribute -- var() in a presentation
+     attribute string is unreliable across browsers (renders in Firefox/Safari but not
+     consistently in Chromium). */
+  .dag-edge{stroke:var(--ink-soft);stroke-width:1.5px;}
+  #dagEdges marker path{fill:var(--ink-soft);}
+
+  /* human-in-the-loop override controls on the criterion DAG card (ported from an earlier
+     live.html commit -- "AI 판정 사람 override" -- that logic was dropped in a later refactor). */
+  .judgment-label{display:inline-block;font-size:0.66rem;color:#9aa2ad;margin-top:6px;}
+  .override-toggle{
+    display:inline-block;font-size:0.7rem;font-weight:700;cursor:pointer;margin-left:8px;
+    color:var(--ink-soft);background:none;border:1px solid var(--line);
+    border-radius:99px;padding:1px 7px;line-height:1.3;
+  }
+  .override-toggle:hover{color:var(--accent-dark);border-color:var(--accent);}
+  .override-panel{
+    display:none;margin-top:8px;padding:8px;border:1px dashed var(--line);border-radius:6px;
+    background:var(--bg);width:100%;
+  }
+  .override-panel.open{display:block;}
+  .override-panel .op-label{display:block;font-size:0.7rem;color:var(--ink-soft);margin-bottom:5px;}
+  .override-panel .op-btn{
+    font-size:0.75rem;font-weight:700;padding:3px 9px;margin:0 4px 4px 0;border-radius:5px;
+    border:1px solid var(--line);background:var(--bg-alt);cursor:pointer;
+  }
+  .override-panel .op-btn:hover{border-color:var(--accent);color:var(--accent-dark);}
+  .override-panel .op-btn.current{border-color:var(--human);color:var(--human);background:var(--human-bg);}
+  .human-confirmed-tag{
+    display:inline-block;font-size:0.7rem;font-weight:800;margin-top:6px;
+    color:var(--human);background:var(--human-bg);border:1px solid var(--human-border);
+    border-radius:99px;padding:2px 9px;
+  }
+
   .delta{
     display:inline-block;
     font-size:0.74rem;
@@ -475,6 +551,13 @@
       traces.js 없음: <code>python3 pipeline.py</code> 실행 후 새로고침 해주세요.
     </div>
 
+    <div class="view-tabs" id="viewTabs">
+      <button type="button" class="view-tab selected" data-tab="stages">단계별 뷰</button>
+      <button type="button" class="view-tab" data-tab="dag">인과 그래프</button>
+    </div>
+
+    <div id="tabPanel-stages" class="tab-panel selected">
+
     <section class="stage" id="stage-extraction" data-group="extraction">
       <div class="stage-head"><span class="num">①</span><h2>환자 정보 추출</h2></div>
       <div class="vignette" id="vignetteBox"></div>
@@ -506,6 +589,15 @@
       <div class="stage-head"><span class="num">⑤</span><h2>질문 → 답변 반영 → 재평가</h2></div>
       <div id="reevalBody"></div>
     </section>
+
+    </div>
+
+    <div id="tabPanel-dag" class="tab-panel">
+      <section class="stage" id="stage-dag">
+        <div class="stage-head"><h2>왜 이렇게 됐는가 — 판정 → 시험 상태 → 순위 인과 흐름</h2></div>
+        <div id="dagTabBody"></div>
+      </section>
+    </div>
   </main>
 </div>
 
@@ -869,6 +961,244 @@
     });
   }
 
+  var DAG_BADGE_VALUES = {
+    "MET":1, "NOT_MET":1, "UNCERTAIN":1, "UNKNOWN":1,
+    "ELIGIBLE":1, "INELIGIBLE":1, "PASS":1, "FAIL":1, "REVIEW":1
+  };
+
+  // Same table as pipeline.py's EFFECT_TABLE / live.html's original effectOf() (that logic
+  // existed in an earlier live.html commit -- "AI 판정 사람 override" -- but was dropped in a
+  // later refactor; reintroduced here). Verdict polarity is never inverted for exclusion
+  // criteria: effect is looked up here, not re-derived by reasoning about the label.
+  var DAG_EFFECT_TABLE = {
+    "inclusion|MET": "PASS", "inclusion|NOT_MET": "FAIL",
+    "exclusion|MET": "FAIL", "exclusion|NOT_MET": "PASS"
+  };
+  function dagEffectOf(type, verdict){
+    return DAG_EFFECT_TABLE[type + "|" + verdict] || "REVIEW";
+  }
+
+  var OVERRIDE_VERDICTS = ["MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"];
+  // key = patient_id + "::" + nct_id + "::" + criterion text -> the verdict a coordinator
+  // picked to override the AI's. Keyed by text (not array index) so it survives re-renders
+  // even if criteria get reordered. This view never writes back to the pipeline/traces.js --
+  // it's a local, session-only correction so a coordinator can flag "the AI got this one
+  // wrong" while looking at the causal chain, without needing live_server.py running.
+  var dagHumanOverrides = {};
+
+  // DOM-API only (no innerHTML on user/LLM-authored text): criterion_text routinely
+  // contains "<"/">" (e.g. "eGFR < 90 mL/min/1.73m^2"), which breaks innerHTML parsing.
+  //
+  // opts.override (optional): {onPick(verdict)} -- when present, renders a "판정 수정"
+  // toggle + the four verdict buttons beneath the card. Only the criterion card passes
+  // this; question/trial/rank cards are read-only (a coordinator corrects the criterion
+  // reading, not the trial's derived eligibility -- that recomputes from the correction).
+  function makeDagCard(id, lines, verdict, opts){
+    opts = opts || {};
+    var div = document.createElement("div");
+    div.id = id;
+    div.className = "dag-card";
+    var textDiv = document.createElement("div");
+    textDiv.className = "dag-card-text";
+    lines.forEach(function(line, i){
+      if(i > 0) textDiv.appendChild(document.createElement("br"));
+      textDiv.appendChild(document.createTextNode(line));
+    });
+    div.appendChild(textDiv);
+    var v = (verdict || "").toUpperCase();
+    if(DAG_BADGE_VALUES[v]){
+      var span = document.createElement("span");
+      span.className = "badge badge-" + v;
+      span.textContent = v;
+      div.appendChild(span);
+    }
+
+    if(opts.override){
+      var tag = document.createElement("span");
+      tag.className = opts.override.isHuman ? "human-confirmed-tag" : "judgment-label";
+      tag.textContent = opts.override.isHuman ? "✓ 사람 확정" : "AI 1차 판단";
+      div.appendChild(document.createElement("br"));
+      div.appendChild(tag);
+
+      var toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "override-toggle";
+      toggle.textContent = opts.override.isHuman ? "다시 수정" : "판정 수정";
+      div.appendChild(toggle);
+
+      var panel = document.createElement("div");
+      panel.className = "override-panel";
+      var panelLabel = document.createElement("span");
+      panelLabel.className = "op-label";
+      panelLabel.textContent = "사람이 다시 판정:";
+      panel.appendChild(panelLabel);
+      OVERRIDE_VERDICTS.forEach(function(ov){
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "op-btn" + (ov === v ? " current" : "");
+        btn.textContent = ov;
+        btn.addEventListener("click", function(){ opts.override.onPick(ov); });
+        panel.appendChild(btn);
+      });
+      div.appendChild(panel);
+
+      toggle.addEventListener("click", function(e){
+        e.stopPropagation();
+        panel.classList.toggle("open");
+      });
+    }
+    return div;
+  }
+
+  function drawDagEdges(container, pairs){
+    var svg = document.getElementById("dagEdges");
+    if(!svg) return;
+    svg.innerHTML = "<defs><marker id=\"dagArrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0,0 L8,4 L0,8 Z\"></path></marker></defs>";
+    var box = container.getBoundingClientRect();
+    pairs.forEach(function(p){
+      var fromEl = document.getElementById(p.from), toEl = document.getElementById(p.to);
+      if(!fromEl || !toEl) return;
+      var a = fromEl.getBoundingClientRect(), b = toEl.getBoundingClientRect();
+      var x1 = a.right - box.left, y1 = a.top + a.height/2 - box.top;
+      var x2 = b.left - box.left, y2 = b.top + b.height/2 - box.top;
+      var midX = (x1+x2)/2;
+      var path = document.createElementNS("http://www.w3.org/2000/svg","path");
+      path.setAttribute("class","dag-edge");
+      path.setAttribute("d","M"+x1+","+y1+" C"+midX+","+y1+" "+midX+","+y2+" "+x2+","+y2);
+      path.setAttribute("fill","none");
+      path.setAttribute("marker-end","url(#dagArrow)");
+      svg.appendChild(path);
+    });
+  }
+
+  // Which verdict-change chain the dropdown is currently showing, per patient
+  // (keyed by patient_id so switching patients doesn't leak a stale index into
+  // a trace that may have fewer changes).
+  var dagSelectedIndex = {};
+
+  // Builds the dropdown's option list + the single 4-card chain for the chosen
+  // change. Reuses data already computed by the pipeline (verdict_changes,
+  // final_ranking) -- no new backend calls. Deliberately renders ONE chain at a
+  // time (not all of them stacked) because a round can have 15-20 verdict
+  // changes, and drawing all of them in one grid was unreadable (too many rows,
+  // too many crossing arrows, columns too narrow for the criterion text).
+  function renderDag(trace){
+    var container = document.getElementById("dagTabBody");
+    container.innerHTML = "";
+    var reeval = trace && trace.reeval;
+    var verdictChanges = (reeval && reeval.verdict_changes) || [];
+    if(!verdictChanges.length){
+      container.innerHTML = "<p class=\"hint\">이 환자는 재평가 후 확정적으로 바뀐 판정이 없어 인과 그래프가 비어 있습니다. 왼쪽에서 다른 환자를 선택해보세요.</p>";
+      return;
+    }
+    var finalRanking = reeval.final_ranking || [];
+    var answers = reeval.answers || [];
+    var origByNct = {};
+    (trace.trials || []).forEach(function(t){ origByNct[t.nct_id] = t; });
+
+    var pid = trace.patient_id || "";
+    if(dagSelectedIndex[pid] == null || dagSelectedIndex[pid] >= verdictChanges.length){
+      dagSelectedIndex[pid] = 0;
+    }
+
+    var pickerWrap = document.createElement("div");
+    pickerWrap.className = "dag-picker";
+    var label = document.createElement("label");
+    label.textContent = "판정 변화 선택 (" + verdictChanges.length + "건 중)";
+    label.setAttribute("for", "dagPicker");
+    var select = document.createElement("select");
+    select.id = "dagPicker";
+    verdictChanges.forEach(function(vc, i){
+      var opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = (vc.nct_id || "") + " — " + (vc.criterion || "").slice(0, 60) +
+        ((vc.criterion || "").length > 60 ? "…" : "") + " (" + vc.before + " → " + vc.after + ")";
+      if(i === dagSelectedIndex[pid]) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener("change", function(){
+      dagSelectedIndex[pid] = parseInt(select.value, 10) || 0;
+      renderDag(trace);
+    });
+    pickerWrap.appendChild(label);
+    pickerWrap.appendChild(select);
+    container.appendChild(pickerWrap);
+
+    var dagSub = document.createElement("div");
+    dagSub.className = "stage-sub";
+    dagSub.innerHTML = "<p class=\"stage-note\">선택한 한 건의 판정 변화가 시험 상태와 추천 순위까지 어떻게 이어졌는지의 인과 흐름입니다.</p>" +
+      "<div id=\"dagView\"><svg id=\"dagEdges\"></svg>" +
+      "<div id=\"dagGrid\">" +
+      "<div class=\"dag-col\" data-col=\"question\" data-label=\"질문\"></div>" +
+      "<div class=\"dag-col\" data-col=\"criterion\" data-label=\"Criterion 판정\"></div>" +
+      "<div class=\"dag-col\" data-col=\"trial\" data-label=\"시험 상태\"></div>" +
+      "<div class=\"dag-col\" data-col=\"rank\" data-label=\"추천 순위\"></div>" +
+      "</div></div>";
+    container.appendChild(dagSub);
+
+    var grid = dagSub.querySelector("#dagGrid");
+    var edges = [];
+    var vc = verdictChanges[dagSelectedIndex[pid]];
+
+    var qCol = grid.querySelector('[data-col="question"]');
+    // best-effort link: with N questions and N verdict changes, pair by index;
+    // otherwise show the first question as a reasonable default rather than
+    // guessing a wrong one-to-one mapping.
+    var qIdx = (answers.length === verdictChanges.length) ? dagSelectedIndex[pid] : 0;
+    var qText = (answers[qIdx] && answers[qIdx].question) || "(관련 질문 없음 — 정보가 다른 경로로 확보됨)";
+    qCol.appendChild(makeDagCard("dag-q-0", [qText], null));
+
+    // Find this criterion's inclusion/exclusion type from the original trace so an
+    // override can recompute effect the same way pipeline.py does (dagEffectOf), not
+    // just relabel the verdict badge without touching the derived PASS/FAIL/REVIEW.
+    var origTrial = (trace.trials || []).filter(function(t){ return t.nct_id === vc.nct_id; })[0];
+    var origCrit = origTrial && (origTrial.criteria || []).filter(function(c){ return c.text === vc.criterion; })[0];
+    var critType = (origCrit && origCrit.type) || "inclusion";
+    var overrideKey = pid + "::" + vc.nct_id + "::" + vc.criterion;
+    var isOverridden = dagHumanOverrides.hasOwnProperty(overrideKey);
+    var effectiveVerdict = isOverridden ? dagHumanOverrides[overrideKey] : vc.after;
+
+    var cCol = grid.querySelector('[data-col="criterion"]');
+    cCol.appendChild(makeDagCard("dag-c-0", [
+      (vc.nct_id || "") + ": " + (vc.criterion || ""),
+      (vc.before || "?") + " → " + (effectiveVerdict || "?")
+    ], effectiveVerdict, {override: {
+      isHuman: isOverridden,
+      onPick: function(newVerdict){
+        dagHumanOverrides[overrideKey] = newVerdict;
+        renderDag(trace); // re-render: card badge, effect chip, and downstream trial card all recompute
+      }
+    }}));
+    if(answers[qIdx]) edges.push({from:"dag-q-0", to:"dag-c-0"});
+
+    var tCol = grid.querySelector('[data-col="trial"]');
+    var fr = finalRanking.filter(function(f){ return f.nct_id === vc.nct_id; })[0];
+    var orig = origByNct[vc.nct_id] || {};
+    var beforeElig = orig.eligibility || "UNKNOWN";
+    // If a coordinator overrode this criterion, the trial's headline eligibility badge
+    // shown here is NOT recomputed against every other criterion on that trial (this
+    // view only tracks the one chain the dropdown has selected) -- it's flagged instead
+    // so nobody reads it as an authoritative re-run of decide_eligibility().
+    var afterElig = fr ? (fr.eligibility || beforeElig) : beforeElig;
+    var trialLines = [vc.nct_id || "", beforeElig + " → " + afterElig];
+    if(isOverridden){
+      var overriddenEffect = dagEffectOf(critType, effectiveVerdict);
+      trialLines.push("(사람 정정 반영 시 이 criterion effect: " + overriddenEffect + " -- 전체 시험 재계산은 아님)");
+    }
+    tCol.appendChild(makeDagCard("dag-t-0", trialLines, afterElig));
+    edges.push({from:"dag-c-0", to:"dag-t-0"});
+
+    var rCol = grid.querySelector('[data-col="rank"]');
+    if(fr && orig.rank != null && fr.rank != null && orig.rank !== fr.rank){
+      rCol.appendChild(makeDagCard("dag-r-0", [orig.rank + "위 → " + fr.rank + "위"], null));
+      edges.push({from:"dag-t-0", to:"dag-r-0"});
+    } else {
+      rCol.appendChild(makeDagCard("dag-r-0", ["순위 변동 없음"], null));
+    }
+
+    requestAnimationFrame(function(){ drawDagEdges(document.getElementById("dagView"), edges); });
+  }
+
   function renderAll(){
     if(!traces || traces.length === 0){
       document.getElementById("emptyNote").style.display = "block";
@@ -884,6 +1214,27 @@
     renderQuestions(trace);
     renderRecommend(trace);
     renderReeval(trace);
+    renderDag(trace);
+  }
+
+  /* ---- view tabs (단계별 뷰 / 인과 그래프) ---- */
+  function initViewTabs(){
+    var tabs = document.getElementById("viewTabs");
+    if(!tabs) return;
+    tabs.querySelectorAll(".view-tab").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        tabs.querySelectorAll(".view-tab").forEach(function(b){ b.classList.remove("selected"); });
+        document.querySelectorAll(".tab-panel").forEach(function(p){ p.classList.remove("selected"); });
+        btn.classList.add("selected");
+        document.getElementById("tabPanel-" + btn.dataset.tab).classList.add("selected");
+        // switching into the DAG tab reveals previously display:none nodes, so
+        // getBoundingClientRect() would have returned 0-size boxes if we'd drawn
+        // the edges while hidden -- redraw now that the panel is actually visible.
+        if(btn.dataset.tab === "dag" && traces && traces.length){
+          renderDag(traces[currentIndex]);
+        }
+      });
+    });
   }
 
   /* ---- scroll-spy over agent map ---- */
@@ -1080,6 +1431,7 @@
   renderEvalPanel();
   renderAll();
   initScrollSpy();
+  initViewTabs();
 
   var params = new URLSearchParams(window.location.search);
   if(params.get("selftest") === "1"){
