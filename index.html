@@ -966,16 +966,33 @@
     "ELIGIBLE":1, "INELIGIBLE":1, "PASS":1, "FAIL":1, "REVIEW":1
   };
 
-  // Same table as pipeline.py's EFFECT_TABLE / live.html's original effectOf() (that logic
-  // existed in an earlier live.html commit -- "AI 판정 사람 override" -- but was dropped in a
-  // later refactor; reintroduced here). Verdict polarity is never inverted for exclusion
-  // criteria: effect is looked up here, not re-derived by reasoning about the label.
-  var DAG_EFFECT_TABLE = {
-    "inclusion|MET": "PASS", "inclusion|NOT_MET": "FAIL",
-    "exclusion|MET": "FAIL", "exclusion|NOT_MET": "PASS"
-  };
+  // The (criterion_type, verdict) -> effect mapping is pipeline.py's EFFECT_TABLE, and
+  // that table must have exactly one source of truth (see pipeline.py comment: an earlier
+  // bug came from two different places re-deriving this by "reasoning about the label"
+  // and disagreeing). Hardcoding a second copy of the table here would recreate exactly
+  // that problem the moment pipeline.py's table changes and this one doesn't. Instead,
+  // this scans every criterion already loaded in traces.js and learns the mapping from
+  // effects the server actually computed -- so it can only ever say what pipeline.py
+  // already said, never invent a value pipeline.py wouldn't have produced.
+  var DAG_EFFECT_TABLE = null;
   function dagEffectOf(type, verdict){
-    return DAG_EFFECT_TABLE[type + "|" + verdict] || "REVIEW";
+    if(!DAG_EFFECT_TABLE){
+      DAG_EFFECT_TABLE = {};
+      (traces || []).forEach(function(p){
+        (p.trials || []).forEach(function(t){
+          (t.criteria || []).forEach(function(c){
+            if(c.type && c.verdict && c.effect){
+              DAG_EFFECT_TABLE[c.type + "|" + String(c.verdict).toUpperCase()] = String(c.effect).toUpperCase();
+            }
+          });
+        });
+      });
+    }
+    var key = type + "|" + verdict;
+    if(DAG_EFFECT_TABLE.hasOwnProperty(key)) return DAG_EFFECT_TABLE[key];
+    // Nothing in the loaded traces demonstrated this combination -- rather than guess,
+    // say so explicitly. REVIEW would silently claim server agreement that was never observed.
+    return "미확인 조합";
   }
 
   var OVERRIDE_VERDICTS = ["MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"];
