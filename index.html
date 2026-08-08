@@ -961,6 +961,15 @@
     });
   }
 
+  // Unlike DAG_EFFECT_TABLE below, this can't be *learned* from traces.js -- a whitelist
+  // has to include every valid value even if one never happened to appear in the currently
+  // loaded traces (e.g. no UNCERTAIN row this round shouldn't make UNCERTAIN "invalid").
+  // So this is transcribed directly from pipeline.py's own constants, not invented here:
+  //   VALID_VERDICTS    = {"MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"}   (pipeline.py:61)
+  //   VALID_ELIGIBILITY = {"ELIGIBLE", "INELIGIBLE", "UNCERTAIN"}      (pipeline.py:62)
+  //   VALID_EFFECTS     = {"PASS", "FAIL", "REVIEW"}                   (pipeline.py:63)
+  // If those change, this needs a matching edit -- there's no way around a second copy
+  // for a whitelist, only a documented, exact one instead of a plausible-looking guess.
   var DAG_BADGE_VALUES = {
     "MET":1, "NOT_MET":1, "UNCERTAIN":1, "UNKNOWN":1,
     "ELIGIBLE":1, "INELIGIBLE":1, "PASS":1, "FAIL":1, "REVIEW":1
