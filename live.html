@@ -325,6 +325,8 @@
   .trial-card-head .meta{font-size:0.72rem;color:#9aa2ad;margin-top:2px;}
   .trial-card-head .meta span.meta-sep{margin-left:8px;padding-left:8px;border-left:1px solid var(--line);}
   .trial-card .rationale{font-size:0.85rem;color:var(--ink-soft);margin:0 0 10px;}
+  .trial-card .rank-why{font-size:0.8rem;color:var(--ink-soft);margin:0 0 8px;padding-left:36px;}
+  .trial-card .rank-why b{color:var(--ink);}
 
   /* Table-style criteria list, mirroring the external reviewer's mockup: a header row naming
      the three columns, then one row per criterion. Columns, left-to-right: (1) row number +
@@ -1232,6 +1234,10 @@ function renderTrials(trials, force){
       '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
       intentChip(t) + '</div></div>';
     card.appendChild(head);
+    // Executed sort key, in Korean, from ranking.rank_basis (absent on older payloads).
+    if (t.rank_reason){
+      card.appendChild(el("p", "rank-why", "<b>왜 이 순위인가</b> " + escapeHtml(t.rank_reason)));
+    }
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));
     }

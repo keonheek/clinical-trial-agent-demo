@@ -181,7 +181,7 @@
     <!-- ============ S4 · 아키텍처 ============ -->
     <section class="slide">
       <p class="kicker">시스템 구조</p>
-      <h2 class="slide-title">전체 아키텍처 — 순차 파이프라인이 아니다</h2>
+      <h2 class="slide-title">주최 예시 6단계는 전부 포함 — 우리가 더한 세 계층</h2>
       <p class="slide-sub">NIH <strong style="color:var(--ink);">TrialGPT</strong>(Nature Communications, 2024) 구조에 독립적으로 수렴 — Retrieval → Matching(criterion별 verdict+설명) → Ranking. 행동 선택 계층(action_policy)이 흐름을 <strong style="color:var(--ink);">분기</strong>시킨다(질문 / 진행).</p>
       <div class="slide-body" style="display:flex;flex-direction:column;gap:10px;">
         <svg class="arch" viewBox="0 0 1160 300" width="100%" style="max-height:330px;" xmlns="http://www.w3.org/2000/svg">
@@ -223,8 +223,8 @@
             <!-- (5)(6) recommender -->
             <rect x="896" y="14" width="132" height="62" rx="8" fill="#173a7a" stroke="#4a7bd0"/>
             <text x="962" y="34" fill="#eaf0ff" font-weight="700">⑤⑥ 추천·설명</text>
-            <text x="962" y="51" fill="#bcd0f5" font-size="10">적격성 위계 순위</text>
-            <text x="962" y="64" fill="#bcd0f5" font-size="10">+ 근거 서술</text>
+            <text x="962" y="51" fill="#bcd0f5" font-size="10">순위 결정 = 코드</text>
+            <text x="962" y="64" fill="#bcd0f5" font-size="10">근거 서술 = LLM</text>
             <!-- OUT -->
             <rect x="1044" y="14" width="110" height="62" rx="8" fill="#0e1b40" stroke="#26386a"/>
             <text x="1099" y="34" fill="#c7d4ef" font-weight="700">출력</text>
@@ -266,8 +266,8 @@
             <text x="801" y="205" fill="#ffe9b0" font-weight="700" font-size="11.5">decide_eligibility</text>
             <text x="801" y="223" fill="#e6d3a8">hard FAIL 1개면 탈락 (평균 아님)</text>
             <rect x="940" y="182" width="214" height="60" rx="8" fill="#3a2d0e" stroke="#c79a3a"/>
-            <text x="1047" y="205" fill="#ffe9b0" font-weight="700" font-size="11.5">coverage_map</text>
-            <text x="1047" y="223" fill="#e6d3a8">원문 대비 커버리지 %</text>
+            <text x="1047" y="205" fill="#ffe9b0" font-weight="700" font-size="11.5">ranking.py + coverage_map</text>
+            <text x="1047" y="223" fill="#e6d3a8">적합성 우선순위 · 커버리지 %</text>
           </g>
           <path d="M520,176 L520,182" stroke="#7f93c4" stroke-width="1.4" fill="none"/>
           <!-- legend -->
@@ -276,37 +276,84 @@
             <line x1="150" y1="262" x2="178" y2="262" stroke="#c79a3a" stroke-width="2" stroke-dasharray="5 4"/><text x="184" y="266" fill="#9fb3d9">점선 = 다음 단계(로드맵)</text>
           </g>
         </svg>
+        <p style="font-size:12.5px;color:var(--soft);margin:0;">주최 예시의 6단계(정보 추출 → 기준 파싱 → 매칭 → 갭 탐지 → 질문 생성 → 추천)는 <strong style="color:var(--ink);">전부 그대로 있다</strong>. 우리가 <strong style="color:var(--ink);">더한 세 계층</strong> = ① <strong style="color:var(--ink);">action_policy</strong> 진단 → 행동 게이트 · ② <strong style="color:var(--ink);">verdict(모델) / effect(코드) 분리</strong> · ③ <strong style="color:var(--ink);">커버리지 · 중재목적 · 우선순위 계층</strong>.</p>
         <div class="cols-3" style="gap:12px;">
           <div class="road-card"><span class="tag">다음 단계</span><p>① <strong style="color:#fff2d6">action_policy → 실제 오케스트레이터</strong>: 행동별 개별 실행(RETRIEVE/VERIFY/ESCALATE)</p></div>
-          <div class="road-card"><span class="tag">다음 단계</span><p>② <strong style="color:#fff2d6">추천 순위에 임상 적합성</strong> 반영: Phase·중재목적·환자부담 <em>(주최 07-23 확인 기준)</em></p></div>
+          <div class="road-card" style="border-style:solid;border-color:var(--met);background:#0f2a22;"><span class="tag" style="color:var(--met);border-color:var(--met);">구현 2026-08-16</span><p style="color:#bff0d8;">② <strong style="color:#eafff5">추천 순위에 임상 적합성</strong> 반영: 중재목적·Phase 부담·커버리지를 순위 키에 <em>(다음 장)</em></p></div>
           <div class="road-card"><span class="tag">다음 단계</span><p>③ <strong style="color:#fff2d6">근거 recency</strong>: lab·영상 유효기간 → 만료 시 재검</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ============ S5 · 라이브 데모 ============ -->
+    <!-- ============ S5 · 추천 우선순위 (ranking.py) ============ -->
+    <section class="slide">
+      <p class="kicker">설계 · 이번 과제의 유일한 필수 산출물</p>
+      <h2 class="slide-title">추천 우선순위는 이렇게 정해진다</h2>
+      <p class="slide-sub">주최 07-23 기준: "가장 적절한" 순서는 적격성만이 아니라 <strong style="color:var(--ink);">임상적 적합성</strong>(Phase·중재 목적·환자 부담)까지 본다. 실제로 실행되는 정렬 키를 그대로 공개한다 — <span class="mono">ranking.py</span>, RANKING_VERSION 2026-08-16.</p>
+      <div class="slide-body" style="display:flex;flex-direction:column;gap:13px;">
+        <div class="cols-2 tight">
+          <div class="card">
+            <h3>실행되는 정렬 키 (위 단계가 항상 우선)</h3>
+            <table class="t" style="margin-top:4px;">
+              <tr><td style="width:26px;color:var(--accent);"><strong>0</strong></td><td><strong>적격성 클래스</strong> — 적격 &gt; 미확정 &gt; 부적격</td></tr>
+              <tr><td style="color:var(--accent);"><strong>1</strong></td><td><strong>차단 기준 수</strong> — hard FAIL이 적은 순</td></tr>
+              <tr><td style="color:var(--accent);"><strong>2</strong></td><td><strong>중재 목적</strong> — 치료 &gt; 지지 &gt; 관리 &gt; 관찰 <span style="color:var(--faint);">(확신 낮으면 관찰과 동급)</span></td></tr>
+              <tr><td style="color:var(--accent);"><strong>3</strong></td><td><strong>Phase 부담</strong> — 4 &gt; 3 &gt; 2 &gt; 1, NA는 중간</td></tr>
+              <tr><td style="color:var(--accent);"><strong>4</strong></td><td><strong>원문 커버리지</strong> — 50% 미만이면 감점</td></tr>
+              <tr><td style="color:var(--accent);"><strong>5</strong></td><td><strong>미해결 비율</strong> — (미해결/파싱 수) → 미해결 수 → NCT</td></tr>
+            </table>
+            <p style="margin-top:9px;font-size:12.5px;">모든 단계가 <strong>시험 레코드의 사실이거나 코드가 센 값</strong>이다 — 모델 의견은 한 칸도 들어가지 않는다. 각 시험 카드에 <span class="mono">rank_reason</span> 한 줄로 근거가 표시된다.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <div class="card" style="border-color:var(--accent2);padding:13px 15px;">
+              <h3 style="margin-bottom:6px;">왜 이 순서인가 (설계 근거)</h3>
+              <p style="font-size:12.5px;margin:0;">같은 적격성 클래스라면 <strong>환자에게 치료 기회가 되는 시험을 먼저 검토한다.</strong> 그리고 <strong>확신 없는 분류는 순위를 올리지 않는다</strong> — 추정 라벨이 실제 치료 시험을 밀어내면 안 되므로, 저확신 분류는 관찰 연구와 같은 칸으로 내린다.</p>
+            </div>
+            <div class="stat-row" style="gap:10px;">
+              <div class="stat-tile hero"><div class="num">24/40</div><div class="lbl">순위가 실제로 이동</div></div>
+              <div class="stat-tile hero"><div class="num">5/10</div><div class="lbl">1위 시험이 바뀐 환자</div></div>
+              <div class="stat-tile"><div class="num">2칸</div><div class="lbl">최대 이동 폭</div></div>
+              <div class="stat-tile good"><div class="num">10/10</div><div class="lbl">hard exclusion 유지</div></div>
+            </div>
+            <div class="card" style="padding:12px 14px;">
+              <h3 style="margin-bottom:6px;">전 → 후 (S002, Graves')</h3>
+              <p style="font-size:12.5px;margin:0 0 4px;"><span class="badge unknown">이전 1위</span> <span class="mono">NCT06963203</span> — <strong>관찰 연구(추정) · Phase NA</strong></p>
+              <p style="font-size:12.5px;margin:0;"><span class="badge met">현재 1위</span> <span class="mono">NCT05461820</span> — <strong>치료 목적 · Phase 4</strong></p>
+              <p style="font-size:11.5px;color:var(--faint);margin:6px 0 0;"><span class="mono">eval.py</span>는 rank를 읽지 않는다 — 블라인드 라벨과 짝지어진 <strong>정확도 82.5%(n=40)는 불변</strong>이며, 골든 순서는 <span class="mono">expected_ranking.json</span>으로 CI에서 고정된다.</p>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--faint);margin:0;"><strong style="color:var(--soft);">의도적으로 넣지 않은 것</strong> — '환자 부담'은 지금 <strong style="color:var(--soft);">Phase 프록시만</strong> 쓴다. 방문 횟수·이동 거리·시험 기간 데이터가 레코드에 없기 때문이다. 향후 <span class="mono">trial_design</span> 사이드카로 분리해 붙인다.</p>
+      </div>
+    </section>
+
+    <!-- ============ S6 · 라이브 데모 ============ -->
     <section class="slide">
       <p class="kicker">라이브 데모 · 발표 40% 배점의 승부처</p>
       <h2 class="slide-title">직접 실행되는 상호작용 데모</h2>
       <p class="slide-sub"><a href="https://sdic-trial-demo.vercel.app">sdic-trial-demo.vercel.app</a> — 사람이 답을 주면 영향받은 criterion만 실시간 재평가되고 순위가 바뀐다.</p>
-      <div class="slide-body" style="display:flex;flex-direction:column;gap:16px;">
+      <div class="slide-body" style="display:flex;flex-direction:column;gap:13px;">
         <div class="card">
           <h3>시연 시나리오 (고정)</h3>
-          <ol class="steps" style="margin-top:2px;">
-            <li><strong>환자 선택</strong> → 후보 임상시험 <strong>추천 목록</strong>과 각 시험의 판정·근거 표시</li>
-            <li><strong>'왜 이 질문인가' 카드</strong> — affects_trials / affects_criteria / may_change_rank가 실제 API 값으로 표시(가장 영향 큰 질문부터)</li>
-            <li><strong>답변 입력</strong> → 영향받은 criterion만 <strong>실시간 재평가(~10초)</strong> → <strong>순위 변화</strong> 확인</li>
-            <li><strong>사람 override</strong> 1회 시연 — 최종 판단은 사람이 한다</li>
+          <ol class="steps" style="margin-top:2px;margin-bottom:0;">
+            <li><strong>환자 선택</strong> → 후보 임상시험 <strong>추천 목록</strong> + 각 시험의 판정·근거, 그리고 <strong>순위 근거 한 줄</strong>(<span class="mono">rank_reason</span>) 표시</li>
+            <li><strong>'왜 이 질문인가' 카드</strong> — 아래 세 값이 <strong>배포 화면에 표시</strong>되고, 질문은 영향 큰 순서로 정렬되어 온다</li>
+            <li><strong>답변 입력</strong> → 영향받은 criterion만 <strong>실시간 재평가</strong> → <strong>순위 변화</strong> 확인</li>
           </ol>
         </div>
+        <div class="cols-3" style="gap:12px;">
+          <div class="card" style="padding:11px 13px;text-align:center;"><h3 style="margin-bottom:5px;">affects_trials</h3><p style="font-size:12px;margin:0;">이 답 하나가 <strong>몇 개 시험</strong>에 영향을 주는가</p></div>
+          <div class="card" style="padding:11px 13px;text-align:center;"><h3 style="margin-bottom:5px;">affects_criteria</h3><p style="font-size:12px;margin:0;">몇 개 <strong>조건(criterion)</strong>을 풀어주는가</p></div>
+          <div class="card" style="padding:11px 13px;text-align:center;"><h3 style="margin-bottom:5px;">may_change_rank</h3><p style="font-size:12px;margin:0;">추천 <strong>순위를 바꿀</strong> 수 있는가</p></div>
+        </div>
         <div class="cols-2 tight">
-          <div class="card"><h3>왜 라이브인가</h3><p>정적 화면이 아니라 <strong>불확실성 → 질문 → 재평가</strong>의 실제 루프를 보여준다. 이것이 "단일 질의응답형"과 갈리는 지점.</p></div>
+          <div class="card"><h3>왜 라이브인가</h3><p>정적 화면이 아니라 <strong>불확실성 → 질문 → 재평가</strong>의 실제 루프를 보여준다. 이것이 "단일 질의응답형"과 갈리는 지점.</p><p style="font-size:12px;color:var(--faint);margin:0;">세 값은 <span class="mono">action_policy.enrich_questions</span>가 트레이스에서 결정론적으로 계산해 API가 서빙한다 — 프론트가 지어내는 숫자가 아니다.</p></div>
           <div class="card" style="border-color:var(--uncertain);"><h3 style="color:var(--uncertain);">백업 (리허설 필수)</h3><p>네트워크 지연 대비: <strong>사전 녹화 영상</strong> + 정적 트레이스 뷰어를 준비. 데모 환자·질문 시나리오는 사전 고정한다.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ============ S6 · 설계1 verdict vs effect ============ -->
+    <!-- ============ S7 · 설계1 verdict vs effect ============ -->
     <section class="slide">
       <p class="kicker">설계 1 · 정성평가 어필 포인트</p>
       <h2 class="slide-title">verdict(판정)와 effect(효력)의 분리</h2>
@@ -327,7 +374,7 @@
             <span class="quote mono">exclusion: "Active autoimmune disease"<br>verdict = MET (문장이 참: 있다)</span>
             <p style="margin:8px 0;">순진한 해석: MET → "통과" ✗<br>올바른 효력: 제외기준이 <strong>참</strong> → <span class="badge notmet">FAIL</span> (탈락)</p>
             <div class="card" style="background:var(--met-bg);border-color:var(--met);padding:11px 13px;">
-              <p style="color:#bff0d8;margin:0;"><strong style="color:#fff;">격리된 전/후 효과</strong> — MET 정의 충돌 수정 <em>단독</em>, 동일 데이터: <strong style="color:#fff;font-size:15px;">72.5% → 77.5%</strong> <span style="color:#8fdcbb;">(수정 전 → 수정 후. 현재 헤드라인 아님)</span></p>
+              <p style="color:#bff0d8;margin:0;"><strong style="color:#fff;">격리된 전/후 효과</strong> — MET 정의 충돌 수정 <em>단독</em>, 동일 데이터: <strong style="color:#fff;font-size:15px;">+5.0pp</strong> <span style="color:#8fdcbb;">(이 수정만의 효과. 현재 헤드라인 아님)</span></p>
             </div>
           </div>
         </div>
@@ -335,33 +382,43 @@
       </div>
     </section>
 
-    <!-- ============ S7 · 설계2 불확실성 → 행동 ============ -->
+    <!-- ============ S8 · 설계2 불확실성 → 행동 ============ -->
     <section class="slide">
       <p class="kicker">설계 2 · 핵심 차별점의 구현</p>
       <h2 class="slide-title">불확실성 진단 → 행동 선택</h2>
       <p class="slide-sub">"질문 수를 줄였다"가 아니라 <strong style="color:var(--ink);">"질문이 필요한 경우를 판별한다"</strong>. 유형→행동 매핑은 <strong style="color:var(--ink);">코드가 결정</strong>한다(모델 아님).</p>
       <div class="slide-body" style="display:flex;flex-direction:column;gap:14px;">
         <div class="card">
-          <h3>불확실성 10종 → 행동 (action_policy.py)</h3>
-          <table class="t">
-            <tr><th>불확실성 유형</th><th>선택 행동</th></tr>
-            <tr><td>MISSING · INSUFFICIENT_EVIDENCE</td><td><span class="chip" style="margin:0">ASK 되묻기</span></td></tr>
-            <tr><td>CALCULABLE</td><td><span class="chip" style="margin:0">CALCULATE 계산</span></td></tr>
-            <tr><td>STALE</td><td><span class="chip" style="margin:0">REQUEST_LATEST 최신값 요청</span></td></tr>
-            <tr><td>AMBIGUOUS · BOUNDARY</td><td><span class="chip" style="margin:0">VERIFY 확인</span> / <span class="chip" style="margin:0">PROTOCOL_REVIEW</span></td></tr>
-            <tr><td>CONFLICTING · CLINICAL_JUDGMENT</td><td><span class="chip" style="margin:0">ESCALATE 사람에게 이관</span></td></tr>
-            <tr><td>NOT_APPLICABLE · DEFINITE_EXCLUSION</td><td><span class="badge unknown">IGNORE / STOP — 질문 안 함</span></td></tr>
-          </table>
+          <h3>불확실성 10종 → 행동 — <span class="mono" style="color:var(--soft);">action_policy.ACTION_TABLE</span> 전문</h3>
+          <div class="cols-2" style="gap:18px;">
+            <table class="t" style="margin-top:2px;">
+              <tr><th>불확실성 유형</th><th>선택 행동 <span style="color:var(--faint);font-weight:400;">(대체 행동)</span></th></tr>
+              <tr><td><strong>MISSING</strong> 기록에 없음</td><td><strong style="color:var(--accent);">ASK</strong> 되묻기 <span style="color:var(--faint);">(RETRIEVE)</span></td></tr>
+              <tr><td><strong>STALE</strong> 값이 오래됨</td><td><strong style="color:var(--accent);">REQUEST_LATEST</strong> 최신 검사 요청</td></tr>
+              <tr><td><strong>INSUFFICIENT_EVIDENCE</strong> 근거 부족</td><td><strong style="color:var(--accent);">VERIFY</strong> 근거 확인</td></tr>
+              <tr><td><strong>AMBIGUOUS</strong> 기준이 모호</td><td><strong style="color:var(--accent);">PROTOCOL_REVIEW</strong> <span style="color:var(--faint);">(ESCALATE)</span></td></tr>
+              <tr><td><strong>CONFLICTING</strong> 기록끼리 충돌</td><td><strong style="color:var(--accent);">ESCALATE</strong> 전문가 이관</td></tr>
+            </table>
+            <table class="t" style="margin-top:2px;">
+              <tr><th>불확실성 유형</th><th>선택 행동 <span style="color:var(--faint);font-weight:400;">(대체 행동)</span></th></tr>
+              <tr><td><strong>BOUNDARY</strong> 경계값</td><td><strong style="color:var(--accent);">REQUEST_LATEST</strong> <span style="color:var(--faint);">(ESCALATE)</span></td></tr>
+              <tr><td><strong>CLINICAL_JUDGMENT</strong> 임상 판단</td><td><strong style="color:var(--accent);">ESCALATE</strong> 전문가 이관</td></tr>
+              <tr><td><strong>NOT_APPLICABLE</strong> 해당 없음</td><td><span class="badge unknown">IGNORE — 질문 안 함</span></td></tr>
+              <tr><td><strong>CALCULABLE</strong> 계산 가능</td><td><strong style="color:var(--accent);">CALCULATE</strong> 도구로 계산</td></tr>
+              <tr><td><strong>DEFINITE_EXCLUSION</strong> 확정 제외</td><td><span class="badge unknown">STOP — 질문 안 함</span></td></tr>
+            </table>
+          </div>
+          <p style="font-size:11.5px;color:var(--faint);margin:9px 0 0;">정직한 단서: 표는 완전히 구현돼 있지만 <strong style="color:var(--soft);">유형을 맞히는 정확도는 유형마다 다르다</strong> — 스트레스셋에서 STALE 탐지는 <strong style="color:var(--soft);">0/3</strong>이었다(S11). 표의 매핑이 아니라 <em>유형 인식</em>이 아직 약한 지점이다.</p>
         </div>
         <div class="cols-3" style="gap:12px;">
-          <div class="card" style="padding:12px 14px;"><h3 style="margin-bottom:6px;">게이트</h3><p style="font-size:12px;">IGNORE·STOP은 gap 탐지 단계에서부터 <strong>질문으로 새지 않게</strong> 차단한다.</p></div>
+          <div class="card" style="padding:12px 14px;"><h3 style="margin-bottom:6px;">게이트 (실측)</h3><p style="font-size:12px;">IGNORE·STOP은 gap 탐지 단계에서부터 <strong>질문으로 새지 않게</strong> 차단한다. 데모 10명 374개 기준: <strong>ASK 201 · STOP 86 · ESCALATE 11 · 이미 판정 76</strong>.</p></div>
           <div class="card" style="padding:12px 14px;border-color:var(--met);"><h3 style="margin-bottom:6px;color:var(--met);">fail-safe</h3><p style="font-size:12px;">인식 못한 유형은 <strong>ESCALATE</strong>로 안전 실패 — 절대 조용히 통과시키지 않는다.</p></div>
           <div class="card" style="padding:12px 14px;"><h3 style="margin-bottom:6px;">고정 어휘</h3><p style="font-size:12px;">유형은 자유 텍스트가 아니라 <strong>고정 열거형</strong>. 매처는 유형만 제안, 매핑은 코드.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ============ S8 · 설계3 근거 충분성 ============ -->
+    <!-- ============ S9 · 설계3 근거 충분성 ============ -->
     <section class="slide">
       <p class="kicker">설계 3 · 의료 도메인 이해도</p>
       <h2 class="slide-title">근거 충분성 (evidence sufficiency)</h2>
@@ -384,25 +441,6 @@
           </div>
           <p>'의심'이 '확진'을 대신할 수 없으므로 확신하지 않고 <strong>VERIFY로 강등</strong>한다. 코드로 검증되는 규칙이라 판정마다 일관된다.</p>
           <p style="font-size:12px;color:var(--faint);">다음 단계: 매처가 100% criterion에 메타데이터를 붙이도록 커버리지 확대.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ S9 · 설계4 질문 우선순위 ============ -->
-    <section class="slide">
-      <p class="kicker">설계 4 · 설명 가능한 질문</p>
-      <h2 class="slide-title">어떤 질문부터 할 것인가</h2>
-      <p class="slide-sub">질문에도 우선순위가 있다. UI의 '왜 이 질문인가' 패널은 아래 세 값을 <strong style="color:var(--ink);">실제 API 값</strong>으로 표시한다(하드코딩 없음).</p>
-      <div class="slide-body" style="display:flex;flex-direction:column;gap:16px;">
-        <div class="cols-3">
-          <div class="card" style="text-align:center;"><h3 style="justify-content:center;">affects_trials</h3><p style="font-size:12.5px;">이 답 하나가 <strong>몇 개 시험</strong>에 영향을 주는가</p></div>
-          <div class="card" style="text-align:center;"><h3 style="justify-content:center;">affects_criteria</h3><p style="font-size:12.5px;">몇 개 <strong>조건(criterion)</strong>을 풀어주는가</p></div>
-          <div class="card" style="text-align:center;"><h3 style="justify-content:center;">may_change_rank</h3><p style="font-size:12.5px;">추천 <strong>순위를 바꿀</strong> 수 있는가</p></div>
-        </div>
-        <div class="card">
-          <h3>구현 (action_policy.enrich_questions)</h3>
-          <p>각 질문은 트레이스에서 <strong>결정론적으로</strong> 위 값이 계산되어 <strong>영향 큰 순서로 정렬</strong>되어 서빙된다. <span class="mono">live_server.py</span>가 서브 시점에 값을 붙이므로 프론트는 진짜 숫자를 그대로 소비한다.</p>
-          <p style="font-size:12px;color:var(--faint);">데모(S5)에서 이미 본 화면 — "질문을 왜 하는지 설명할 수 있다"는 프레임만 짧게 강조.</p>
         </div>
       </div>
     </section>
@@ -436,19 +474,21 @@
       <div class="slide-body" style="display:flex;flex-direction:column;gap:14px;">
         <div class="stat-row">
           <div class="stat-tile hero"><div class="num">82.5%</div><div class="lbl">정확도 (n=40, 블라인드 라벨)</div></div>
-          <div class="stat-tile good"><div class="num">0</div><div class="lbl">잘못 통과 (wrongly passed)</div></div>
+          <div class="stat-tile good"><div class="num">0</div><div class="lbl">잘못 통과 (wrongly passed)<br>기본셋 5건 중 0 · 스트레스셋 2건 중 0</div></div>
           <div class="stat-tile good"><div class="num">1 / 27</div><div class="lbl">false certainty (침묵한 기준 중 확신 오류, 약 4%)</div></div>
-          <div class="stat-tile warn"><div class="num">72.5→77.5</div><div class="lbl">MET 정의 수정 단독 효과 (전→후, 헤드라인 아님)</div></div>
+          <div class="stat-tile warn"><div class="num">+5.0pp</div><div class="lbl">MET 정의 수정 단독 효과 (동일 데이터, 헤드라인 아님)</div></div>
         </div>
         <div class="cols-2">
           <div class="card">
             <h3>안전성이 본론이다</h3>
-            <p>탈락시켜야 할 criterion <strong>5개 중</strong>: <span class="badge met">3건 적중</span> + <span class="badge uncertain">2건 사람 리뷰 이관(REVIEW)</span> → <strong style="color:var(--met);">잘못 통과 0건</strong>. 놓친 2건도 확정 통과가 아니라 REVIEW로 보냈다.</p>
+            <p>탈락시켜야 할 criterion <strong>5개 중</strong>: <span class="badge met">3건 적중</span> + <span class="badge uncertain">2건 사람 리뷰 이관(REVIEW)</span> → <strong style="color:var(--met);">잘못 통과 0건 (5건 중 0)</strong>. 놓친 2건도 확정 통과가 아니라 REVIEW로 보냈다.</p>
             <p style="font-size:12px;color:var(--faint);">근거: eval_results.json — disqualifying recall 0.6, wrongly_passed 0, false_certainty 0.037</p>
           </div>
           <div class="card" style="border-color:var(--uncertain);">
             <h3 style="color:var(--uncertain);">스트레스셋 — 정직한 스트레스 테스트 (n=51)</h3>
-            <p>더 어려운 손상 변형에서: verdict <strong>66.7%</strong> · action <strong>66.7%</strong> · false certainty <strong>41%</strong> — 그럼에도 <strong style="color:var(--met);">잘못 통과는 여전히 0건</strong>. 헤드라인 숫자가 아니라 <strong>한계를 드러내는 지표</strong>로 제시한다.</p>
+            <p>더 어려운 손상 변형에서: verdict <strong>66.7%</strong> · action <strong>66.7%</strong> · <strong>불확실성 유형 적중 36.4%</strong>(n=22) · false certainty <strong>41%</strong> — 그럼에도 <strong style="color:var(--met);">잘못 통과는 여전히 0건 (탈락 대상 2건 중 0)</strong>.</p>
+            <p style="font-size:12.5px;">유형별로 정직하게: <strong>MISSING 6/9 · INSUFFICIENT_EVIDENCE 1/2 · CONFLICTING 1/3</strong>은 잡는다. <strong style="color:var(--notmet);">STALE 0/3 · BOUNDARY 0/1 · CLINICAL_JUDGMENT 0/1 · AMBIGUOUS 0/3</strong>은 아직 못 잡는다.</p>
+            <p style="font-size:12.5px;margin-bottom:6px;"><strong style="color:var(--met);">fail-safe는 되묻기를 놓치지 않게 한다</strong> — 유형을 못 붙이면 매핑이 <strong>ESCALATE</strong>로 떨어져 사람에게 간다. <strong>잘못 통과 0건은 별개 계층의 결과다</strong> — 판정이 MET/NOT_MET이 아니면 effect가 REVIEW로 남고, exclusion+MET=FAIL을 EFFECT_TABLE이 강제하기 때문이다(S7). 유형 적중률과 잘못 통과는 서로 다른 계층에서 결정된다.</p>
             <p style="font-size:12px;color:var(--faint);">근거: stress_eval_results.json (n=51, 5질환×7손상변형, 블라인드)</p>
           </div>
         </div>
@@ -472,11 +512,12 @@
         <div class="card">
           <h3>책임의 경계</h3>
           <ul class="plain">
-            <li><strong>추천 에이전트는 판정에 관여하지 않는다</strong> — 순위와 근거 서술만 한다.</li>
-            <li>적격성 결정은 전부 <strong>코드 도구</strong>가 한다(maker≠checker).</li>
-            <li>UI에 <strong>사람 override</strong> — 최종 판단은 사람의 몫이다.</li>
+            <li><strong>추천 에이전트는 판정에도 순위에도 관여하지 않는다</strong> — <strong>근거 서술만</strong> 한다.</li>
+            <li>적격성 결정은 전부 <strong>코드 도구</strong>가 한다(maker≠checker) — <span class="mono">decide_eligibility</span>.</li>
+            <li>순위도 <strong>코드가 정한다</strong>(<span class="mono">ranking.py</span>) — 결정론적이고, <span class="mono">rank_reason</span>으로 근거가 화면에 노출된다.</li>
+            <li>부적격 확정 시험의 미해결 기준은 <strong>질문하지 않고 STOP</strong> — 무의미한 되묻기를 차단한다.</li>
           </ul>
-          <p style="margin-top:8px;font-size:12px;color:var(--faint);">시스템은 근거를 갖춘 초안을 낼 뿐, 등록 결정을 대신하지 않는다.</p>
+          <p style="margin-top:8px;font-size:12px;color:var(--faint);">시스템은 근거를 갖춘 초안을 낼 뿐, 등록 결정을 대신하지 않는다 — 최종 판단은 연구팀·의료진의 몫이다.</p>
         </div>
       </div>
     </section>
@@ -485,7 +526,7 @@
     <section class="slide">
       <p class="kicker">한계 · '몰라서'가 아니라 '알고' 쓴다</p>
       <h2 class="slide-title">우리가 아는 한계 — coverage blindness</h2>
-      <p class="slide-sub">현재 순위는 '미해결 criterion 수'로 결정된다. 그래서 <strong style="color:var(--ink);">parser가 원문을 적게 읽은 시험이 '더 확실해' 보일 수 있다</strong>.</p>
+      <p class="slide-sub">순위가 '미해결 criterion 수'만 보던 동안, <strong style="color:var(--ink);">parser가 원문을 적게 읽은 시험이 '더 확실해' 보였다</strong>. 이 한계를 우리가 먼저 문서화했고(RECOMMENDATION-DEFINITION.md), 08-16에 순위 키를 고쳤다.</p>
       <div class="slide-body" style="display:flex;flex-direction:column;gap:14px;">
         <div class="cols-2">
           <div class="card" style="border-color:var(--notmet);">
@@ -495,19 +536,19 @@
               <tr><td><strong>T001</strong> 종양학, 원문 <strong>길다</strong></td><td>4개만 뽑힘</td><td>1</td></tr>
               <tr><td><strong>T003</strong> 알츠하이머, 원문 <strong>짧다</strong></td><td>2개로 거의 커버</td><td>0</td></tr>
             </table>
-            <p style="margin-top:8px;">현 로직대로면 T003이 "더 확실"해 상위 추천 — 그러나 T001은 <strong>원문이 길어 덜 검토됐을 뿐</strong>일 수 있다. 지금 시스템은 둘을 구분 못한다.</p>
+            <p style="margin-top:8px;">이전 로직에서는 T003이 "더 확실"해 상위 추천됐다 — T001은 <strong>원문이 길어 덜 검토됐을 뿐</strong>인데도. 08-16 키는 데모셋에서 커버리지 50% 미만을 감점해 이 실패 유형을 막지만(4개 시험 발동), 스트레스셋 시험에는 아직 원문 추정치가 없어 <strong>이 사례 자체는 남아 있다</strong>.</p>
           </div>
           <div class="card">
-            <h3>순위 정의 A~D를 검토했다</h3>
+            <h3>순위 정의 A~D를 검토했고, 무엇을 채택했는지 밝힌다</h3>
             <ul class="plain">
-              <li><strong>A. 확인 부담 최소화</strong> (현재) — 구현됨, coverage 안 보이면 위 위험</li>
-              <li><strong>B. 적격 가능성 우선</strong> — 위험도(치명/사소) 반영 못함</li>
-              <li><strong>C. 질환/중재 관련성</strong> — trial_intent가 전부 TREATMENT라 <strong>변별력 없음</strong></li>
-              <li><strong style="color:var(--road);">D. 커버리지 정규화</strong> (권장·로드맵) — (미해결/파싱수) 정규화 + coverage 낮으면 보류 표시</li>
+              <li><strong>A. 확인 부담 최소화</strong> (구 기본값) — 위 반증 사례에 그대로 취약</li>
+              <li><strong>B. 적격 가능성 우선</strong> — 위험도(치명/사소) 반영 못함 → 미채택</li>
+              <li><strong style="color:var(--met);">C. 질환/중재 관련성</strong> — 실측 결과 <strong>변별력 있음</strong>: 데모 40개 시험 = 관찰 28(저확신 19) · 치료 11 · 의료전달 1 → <strong>순위 키에 반영(2026-08-16)</strong></li>
+              <li><strong style="color:var(--met);">D. 커버리지 정규화</strong> — 부분 채택: 미해결을 <strong>비율</strong>로 정규화 + 커버리지 50% 미만 <strong>감점</strong></li>
             </ul>
           </div>
         </div>
-        <p style="font-size:12.5px;color:var(--soft);margin:0;">대응: 당장은 A 유지 + <strong style="color:var(--ink);">원문 대비 커버리지 % 표시</strong>(구현 예정)만으로도 위험을 크게 줄인다. Phase·중재목적·환자부담은 현재 <strong>표시</strong>만 하고 순위엔 아직 반영하지 않는다(로드맵).</p>
+        <p style="font-size:12.5px;color:var(--soft);margin:0;">현재 상태: <strong style="color:var(--ink);">원문 대비 커버리지 %는 데모 40개 시험 카드 전부에 표시된다</strong>(구현·배포 완료, 스트레스셋은 미포함). Phase·중재목적은 표시만이 아니라 <strong style="color:var(--ink);">순위 키 안에 들어가 있다</strong>. 남은 한계 — 환자 부담은 아직 Phase 프록시뿐이다(방문·거리·기간 데이터 없음).</p>
       </div>
     </section>
 
@@ -515,15 +556,19 @@
     <section class="slide">
       <p class="kicker">향후 계획 · 연구실 후속 연구와의 접점</p>
       <h2 class="slide-title">다음 단계 (로드맵)</h2>
-      <p class="slide-sub">'구현 vs 로드맵'을 나눠 제시하는 것 자체가 깊이의 신호다. 아래는 <strong style="color:var(--ink);">아직 구현하지 않은</strong> 항목이다.</p>
-      <div class="slide-body" style="display:flex;flex-direction:column;gap:14px;">
+      <p class="slide-sub">'구현 vs 로드맵'을 나눠 제시하는 것 자체가 깊이의 신호다. 07-23 로드맵 중 <strong style="color:var(--ink);">두 항목은 이번에 구현으로 넘어갔다</strong>.</p>
+      <div class="slide-body" style="display:flex;flex-direction:column;gap:13px;">
+        <div class="card" style="border-color:var(--met);background:#0f2a22;padding:13px 16px;">
+          <h3 style="color:var(--met);margin-bottom:6px;">구현 완료 — 2026-08-16 (기존 로드맵 ②·③)</h3>
+          <p style="color:#bff0d8;margin:0;font-size:12.5px;"><strong style="color:#eafff5;">추천 순위에 임상 적합성 반영</strong> — 중재 목적·Phase 부담을 순위 키에 넣었다. <strong style="color:#eafff5;">커버리지 정규화(D안)</strong>는 부분 채택 — 미해결을 비율로 정규화 + 커버리지 50% 미만 감점. <span class="mono" style="color:#8fdcbb;">ranking.py</span> · 골든 순서는 <span class="mono" style="color:#8fdcbb;">expected_ranking.json</span>으로 CI에 고정 · 정확도 82.5%(n=40)는 불변.</p>
+        </div>
         <div class="cols-3">
-          <div class="road-card"><span class="tag">1</span><p><strong style="color:#fff2d6;">action_policy → 실제 오케스트레이터</strong><br>진단만 하는 게이트를 넘어, 행동별 개별 실행(RETRIEVE/CALCULATE/VERIFY/ESCALATE)과 에이전트 시퀀싱까지.</p></div>
-          <div class="road-card"><span class="tag">2</span><p><strong style="color:#fff2d6;">추천 순위에 임상 적합성</strong><br>Phase·중재목적(trial_intent)·환자부담을 순위에 반영. <em>주최측 07-23 확인 기준</em>. 현재는 표시만.</p></div>
-          <div class="road-card"><span class="tag">3</span><p><strong style="color:#fff2d6;">커버리지 정규화 랭킹 (D안)</strong><br>원문 대비 커버리지로 정규화, 낮으면 순위 보류. coverage_map을 순위에 연결.</p></div>
+          <div class="road-card"><span class="tag">1</span><p><strong style="color:#fff2d6;">action_policy → 실제 오케스트레이터</strong><br>진단·게이트를 넘어, 행동별 개별 실행(RETRIEVE/CALCULATE/VERIFY/ESCALATE)과 에이전트 시퀀싱까지.</p></div>
+          <div class="road-card"><span class="tag">2</span><p><strong style="color:#fff2d6;">환자 부담의 실데이터화</strong><br>지금은 Phase 프록시뿐. 방문 횟수·이동 거리·시험 기간을 trial_design 사이드카로 분리해 순위 키에 추가.</p></div>
+          <div class="road-card"><span class="tag">3</span><p><strong style="color:#fff2d6;">근거 recency / 유효기간</strong><br>lab·영상 유효 윈도우를 두고 만료 시 재검(STALE→REQUEST_LATEST)을 자동화.</p></div>
         </div>
         <div class="cols-2">
-          <div class="road-card"><span class="tag">4</span><p><strong style="color:#fff2d6;">근거 recency / 유효기간</strong> — lab·영상 유효 윈도우를 두고 만료 시 재검(STALE→REQUEST_LATEST)을 자동화.</p></div>
+          <div class="road-card"><span class="tag">4</span><p><strong style="color:#fff2d6;">불확실성 유형 인식 강화</strong> — 매핑 표는 완성됐지만 STALE·BOUNDARY·CLINICAL_JUDGMENT 인식이 약하다(S11). 유형별 판별 신호를 코드 규칙으로 보강.</p></div>
           <div class="road-card"><span class="tag">5</span><p><strong style="color:#fff2d6;">harmful interaction rate 실측 프로토콜</strong> + 스트레스셋 질환 축 확장 + 실제 EMR 연동 관점의 과제.</p></div>
         </div>
         <p style="font-size:12px;color:var(--faint);margin:0;">연구실 입장에서 "이 팀과 후속 연구를 하면 무엇을 하게 되는가"가 보이도록 구성했다.</p>
@@ -537,8 +582,8 @@
       <div class="slide-body" style="display:flex;flex-direction:column;justify-content:center;gap:20px;">
         <div class="cols-3">
           <div class="card" style="border-color:var(--accent2);"><h3 style="font-size:16px;">1. 질문이 아니라 행동을 고른다</h3><p>불확실성의 <strong>원인을 진단</strong>하고 가장 안전한 다음 행동을 선택한다.</p></div>
-          <div class="card" style="border-color:var(--accent2);"><h3 style="font-size:16px;">2. 판정은 모델, 효력은 코드</h3><p>verdict는 LLM, <strong>PASS/FAIL/적격성은 코드</strong>. maker ≠ checker.</p></div>
-          <div class="card" style="border-color:var(--met);"><h3 style="font-size:16px;color:var(--met);">3. 잘못 통과 0건</h3><p>기본셋·스트레스셋 <strong>모두 wrongly passed 0</strong>. 안전이 정확도보다 앞선다.</p></div>
+          <div class="card" style="border-color:var(--accent2);"><h3 style="font-size:16px;">2. 판정은 모델, 결정은 코드</h3><p>verdict는 LLM, <strong>PASS/FAIL·적격성·추천 순위는 코드</strong>. maker ≠ checker.</p></div>
+          <div class="card" style="border-color:var(--met);"><h3 style="font-size:16px;color:var(--met);">3. 잘못 통과 0건</h3><p><strong>기본셋 탈락 대상 5건 중 0 · 스트레스셋 2건 중 0</strong>. 안전이 정확도보다 앞선다.</p></div>
         </div>
         <p class="one-liner" style="text-align:center;font-size:20px;max-width:1000px;margin:6px auto 0;">
           "모든 불확실성에 <span style="color:var(--notmet);">질문으로 답하지 않는다</span> — <span class="hl">원인을 진단하고 안전한 행동을 고른다.</span>"
@@ -559,7 +604,7 @@
           <ul class="plain">
             <li><strong>ClinicalTrials.gov</strong> (미국 NLM/NIH) — 시험 레코드·제목·phase·참여조건 원문은 <strong>미국 정부 저작물, 공개 도메인</strong>. 현재 모집 중인 실제 시험을 API v2로 직접 조회(가상 데이터 아님).</li>
             <li><strong>환자 vignette</strong> — 과제 브리핑에 공개된 예시 환자를 그대로 인용한 <strong>가상 데이터</strong>, 실제 환자 정보 아님.</li>
-            <li><strong>LLM 추론</strong> — 백엔드 전환형. 기본값은 챌린지 지원 크레딧으로 제공된 <strong>Anthropic Haiku</strong>(이 프로젝트의 승인된 예외); Groq/Ollama/로컬 대안. 모든 호출은 디스크 캐시.</li>
+            <li><strong>LLM 추론</strong> — 파이프라인은 <strong>특정 모델에 종속되지 않는다</strong>(<span class="mono">LLM_BACKEND</span> 전환형). 현재 기본값은 챌린지 지원 크레딧의 Anthropic API(Haiku 4.5)이고 Sonnet 5·Opus 4.8·Groq·로컬 Ollama로 교체 가능하다. 판정 이후의 결정(effect·적격성·순위)은 전부 코드라 <strong>모델을 바꿔도 안전 성질이 유지된다</strong>(S17 Q4). 모든 호출은 모델별로 분리된 디스크 캐시.</li>
           </ul>
         </div>
         <div class="card" style="border-color:var(--uncertain);">
@@ -578,17 +623,24 @@
       <div class="slide-body cols-2">
         <div class="card">
           <h3>Q1 · 왜 LLM 판정을 그대로 안 쓰나</h3>
-          <p>LLM은 극성·효력을 거꾸로 낼 수 있다. verdict(LLM)와 effect(코드)를 분리해 <strong>exclusion+MET=FAIL을 코드가 강제</strong>한다(S6).</p>
+          <p>LLM은 극성·효력을 거꾸로 낼 수 있다. verdict(LLM)와 effect(코드)를 분리해 <strong>exclusion+MET=FAIL을 코드가 강제</strong>한다(S7).</p>
           <h3 style="margin-top:12px;">Q2 · 라벨 40개로 충분한가</h3>
           <p>기본셋 n=40에 더해 <strong>스트레스셋 n=51</strong>(5질환×7손상변형, 블라인드). 라벨은 시스템 출력을 보지 않고 작성(S10·S11).</p>
           <h3 style="margin-top:12px;">Q3 · 실제 병원 적용 장벽</h3>
-          <p>EMR 연동, 근거 recency 유효기간, coverage 정규화가 남은 과제(S14). 최종 판단은 사람 override.</p>
+          <p>EMR 연동, 근거 recency 유효기간, 환자 부담 실데이터가 남은 과제(S14). 최종 판단은 시험 연구팀·의료진의 몫이다.</p>
         </div>
         <div class="card">
-          <h3>Q4 · 비용 / 모델 선택 (Haiku)</h3>
-          <p>기본 백엔드 <strong>Anthropic Haiku</strong> — 챌린지 지원 크레딧. 모든 호출 디스크 캐시로 재실행 $0. Groq·Ollama로 전환 가능(캐시 키에 모델명 포함).</p>
-          <h3 style="margin-top:12px;">Q5 · coverage 미표시 상태의 ELIGIBLE 의미</h3>
-          <p>원문의 13%만 읽고 낸 ELIGIBLE과 90%를 읽고 낸 ELIGIBLE은 신뢰도가 다르다. 그래서 <strong>커버리지 % 표시</strong>를 우선 도입한다(S13).</p>
+          <h3>Q4 · 모델 선택과 비용 (모델 종속성)</h3>
+          <p style="margin-bottom:4px;">파이프라인은 <span class="mono">LLM_BACKEND</span>로 갈아끼운다. 동일한 블라인드 스트레스 라벨(n=51)로 3개 모델을 재실행한 결과:</p>
+          <table class="t" style="margin-top:4px;">
+            <tr><th>모델</th><th>verdict 정확도</th><th>잘못 통과</th></tr>
+            <tr><td>Opus 4.8</td><td><strong style="color:var(--accent);">80.4%</strong></td><td><span class="badge met">0건</span></td></tr>
+            <tr><td>Sonnet 5</td><td>76.5%</td><td><span class="badge met">0건</span></td></tr>
+            <tr><td>Haiku 4.5 <span style="color:var(--faint);">(현재 기본값)</span></td><td>72.6%</td><td><span class="badge met">0건</span></td></tr>
+          </table>
+          <p style="font-size:12px;color:var(--faint);margin-top:6px;">근거: model_bakeoff_full.json — 모델별 캐시를 분리한 <strong style="color:var(--soft);">별도 재실행</strong>이므로, S11의 커밋된 스트레스 결과(66.7%)를 대체하는 수치가 아니라 <strong style="color:var(--soft);">모델 간 비교</strong>용이다. 정확도는 모델에 따라 움직이지만 <strong style="color:var(--soft);">잘못 통과 0건은 셋 다 유지</strong> — 안전 성질이 모델이 아니라 코드 계층에 있기 때문이다.</p>
+          <h3 style="margin-top:12px;">Q5 · coverage가 낮은 상태의 ELIGIBLE 의미</h3>
+          <p>원문의 13%만 읽고 낸 ELIGIBLE과 90%를 읽고 낸 ELIGIBLE은 신뢰도가 다르다. 그래서 <strong>커버리지 %를 모든 시험 카드에 표시한다</strong>(구현·배포 완료). 나아가 커버리지 50% 미만은 <strong>순위에서 감점</strong>된다(S5).</p>
           <h3 style="margin-top:12px;">백업 자료</h3>
           <p style="font-size:12px;color:var(--faint);">confusion matrix, 스트레스셋 구성표, 아키텍처 상세(agent_orchestration.html), traces 뷰어.</p>
         </div>

@@ -30,12 +30,14 @@ from pipeline import (
     detect_gaps,
     generate_questions,
     recommend,
+    apply_recommendation,
     rematch_affected_criteria,
     effect_of,
     TRIALS_PER_PATIENT,
 )
-from action_policy import enrich_questions
+from action_policy import enrich_questions, apply_trial_level_actions
 from build_trial_intent import classify_trial_intent
+import ranking
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PORT = 8765
@@ -101,6 +103,29 @@ try:
                 _tr["trial_intent"] = {"intent": _intent["intent"], "confidence": _intent["confidence"]}
 except FileNotFoundError:
     pass
+
+# Coverage enrichment (parsed vs estimated raw criteria per trial), same sidecar pattern as
+# api/trace.py -- was missing here, so the local UI and the deployed UI disagreed on the pill.
+try:
+    with open(os.path.join(HERE, "coverage_map.json"), encoding="utf-8") as f:
+        _RAW_COUNT = json.load(f)
+    for _t in TRACES:
+        for _tr in _t.get("trials", []):
+            _raw_n = _RAW_COUNT.get(_tr["nct_id"])
+            if _raw_n:
+                _tr["coverage"] = {"parsed": len(_tr.get("criteria", [])), "raw_estimated": _raw_n}
+except FileNotFoundError:
+    pass
+
+# Recommendation priority + trial-level STOP for the frozen traces, identical to api/trace.py:
+# re-rank IN MEMORY (traces.json untouched) with ranking.rank_trials, and mark undecided criteria
+# on already-INELIGIBLE trials STOP instead of ASK.
+for _t in TRACES:
+    apply_trial_level_actions(_t.get("trials", []))
+    _t["frozen_rank_order"] = [x["nct_id"] for x in sorted(_t.get("trials", []), key=lambda x: x.get("rank", 99))]
+    ranking.rank_trials(_t.get("trials", []), trust_attached=False)
+    _t["ranking"] = {"version": ranking.RANKING_VERSION, "rule_ko": ranking.RANKING_RULE_KO,
+                     "hard_exclusion_holds": ranking.hard_exclusion_holds(_t.get("trials", []))}
 
 # The stress patients' own trials, fetched from ClinicalTrials.gov. Without these the
 # keyword picker had to choose from the S001-S010 pool, which contains no Alzheimer's or
@@ -308,7 +333,8 @@ def build_session_live(session):
             matched = match_trial(patient, fields, criteria)
             for c in matched:
                 all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
-                                           "verdict": c["verdict"], "action": c.get("action")})
+                                           "verdict": c["verdict"], "action": c.get("action"),
+                                           "effect": c.get("effect")})
             _intent = classify_trial_intent(t)
             trials_out.append({
                 "nct_id": t["nct_id"], "title": t["title"], "phase": t.get("phase", "NA"),
@@ -334,13 +360,11 @@ def build_session_live(session):
         session["questions"] = questions
 
         session["stage"] = "recommend"
-        recs = recommend(patient, trials_out)
-        for t in trials_out:
-            r = recs.get(t["nct_id"], {"eligibility": "UNCERTAIN", "rank": 99, "rationale": ""})
-            t["eligibility"] = r["eligibility"]
-            t["rank"] = r["rank"]
-            t["rationale"] = r["rationale"]
-        trials_out.sort(key=lambda t: t["rank"])
+        # trust_attached=True: the trial_intent on these dicts was classified server-side above
+        # (classify_trial_intent), so ranking may use it for trials outside the sidecar.
+        recs = recommend(patient, trials_out, trust_attached=True)
+        apply_recommendation(trials_out, recs)
+        apply_trial_level_actions(trials_out)
 
         # priority numbers now that eligibility/rank are decided
         enrich_questions(questions, gaps, trials_out)
@@ -360,7 +384,8 @@ def build_session_live(session):
 def ensure_gaps(session):
     if session.get("gaps") is None:
         all_criteria_flat = [
-            {"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"], "action": c.get("action")}
+            {"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"], "action": c.get("action"),
+             "effect": c.get("effect")}
             for t in session["trials_out"] for c in t["criteria"]
         ]
         session["gaps"] = detect_gaps(session["patient"], all_criteria_flat)
@@ -474,13 +499,9 @@ def handle_answers_batch(session, items):
                     verdict_changes.append({"nct_id": r["nct_id"], "criterion": r["text"],
                                              "before": r["before_verdict"],
                                              "after": r["after_verdict"]})
-            recs = recommend(session["patient"], session["trials_out"])
-            for t in session["trials_out"]:
-                r = recs.get(t["nct_id"], {"eligibility": t.get("eligibility", "UNCERTAIN"),
-                                            "rank": t.get("rank", 99),
-                                            "rationale": t.get("rationale", "")})
-                t["eligibility"], t["rank"], t["rationale"] = r["eligibility"], r["rank"], r["rationale"]
-            session["trials_out"].sort(key=lambda t: t["rank"])
+            recs = recommend(session["patient"], session["trials_out"], trust_attached=True)
+            apply_recommendation(session["trials_out"], recs)
+            apply_trial_level_actions(session["trials_out"])
 
         rank_changes = []
         for t in session["trials_out"]:
@@ -584,14 +605,9 @@ def handle_answer(session, question_text, answer_text):
                     "before": r["before_verdict"], "after": r["after_verdict"],
                 })
 
-        recs = recommend(session["patient"], session["trials_out"])
-        for t in session["trials_out"]:
-            r = recs.get(t["nct_id"], {"eligibility": t.get("eligibility", "UNCERTAIN"),
-                                        "rank": t.get("rank", 99), "rationale": t.get("rationale", "")})
-            t["eligibility"] = r["eligibility"]
-            t["rank"] = r["rank"]
-            t["rationale"] = r["rationale"]
-        session["trials_out"].sort(key=lambda t: t["rank"])
+        recs = recommend(session["patient"], session["trials_out"], trust_attached=True)
+        apply_recommendation(session["trials_out"], recs)
+        apply_trial_level_actions(session["trials_out"])
 
         rank_changes = []
         for t in session["trials_out"]:

@@ -32,7 +32,9 @@ import anthropic_client
 # shared file.
 anthropic_client.CACHE_DIR = "/tmp/cache"
 
-from pipeline import rematch_affected_criteria, recommend, effect_of, VALID_VERDICTS, classify_action
+from pipeline import (rematch_affected_criteria, recommend, apply_recommendation, effect_of,
+                      VALID_VERDICTS, classify_action, apply_evidence_sufficiency)
+from action_policy import trial_level_action, trial_is_blocked, enrich_questions
 
 with open(os.path.join(ROOT, "patients.json"), encoding="utf-8") as f:
     PATIENTS = json.load(f)
@@ -46,10 +48,19 @@ KNOWN_IDS = set(PATIENTS_BY_ID)
 with open(os.path.join(ROOT, "traces.json"), encoding="utf-8") as f:
     _TRACES = json.load(f)
 KNOWN_CRITERIA = {}
+# Server truth per (patient, trial): title/phase (they enter the ranking key) and the FULL
+# criterion-text set. A posted trial must carry exactly that set -- otherwise a client could drop
+# a trial's FAIL criteria and have it re-served as ELIGIBLE at rank 1 (adversarial review 08-16).
+KNOWN_TRIALS = {}
 for _p in _TRACES:
     KNOWN_CRITERIA[_p["patient_id"]] = {
         (t["nct_id"], c["text"]): c["type"]
         for t in _p.get("trials", []) for c in t.get("criteria", [])
+    }
+    KNOWN_TRIALS[_p["patient_id"]] = {
+        t["nct_id"]: {"title": t.get("title", ""), "phase": t.get("phase", "NA"),
+                      "criteria_texts": frozenset(c["text"] for c in t.get("criteria", []))}
+        for t in _p.get("trials", [])
     }
 del _TRACES
 
@@ -62,6 +73,7 @@ MAX_AFFECTED = 12
 MAX_BODY_BYTES = 128 * 1024      # real sessions serialize to a few KB
 MAX_TRIALS = 6                   # traces hold 4 per patient
 MAX_CRITERIA_PER_TRIAL = 16      # traces max is 13
+MAX_QUESTIONS = 12               # traces hold <= 5 per patient
 RATE_LIMIT_PER_MIN = 10          # per client IP, per warm instance (cheap brake, not a wall)
 
 _recent_calls = {}               # ip -> [monotonic-ish timestamps]
@@ -84,19 +96,39 @@ def _validate_trials(patient_id, trials):
     if len(trials) > MAX_TRIALS:
         return "too many trials"
     known = KNOWN_CRITERIA.get(patient_id, {})
+    known_trials = KNOWN_TRIALS.get(patient_id, {})
+    seen_nct = set()
     for t in trials:
+        nct = t.get("nct_id")
+        if nct not in known_trials or nct in seen_nct:
+            return "unknown or duplicate trial for this patient"
+        seen_nct.add(nct)
         criteria = t.get("criteria", [])
         if len(criteria) > MAX_CRITERIA_PER_TRIAL:
             return "too many criteria"
         for c in criteria:
-            key = (t.get("nct_id"), c.get("text"))
+            key = (nct, c.get("text"))
             if key not in known:
                 return "unknown criterion for this patient"
             if c.get("type") != known[key]:
                 return "criterion type mismatch"
             if c.get("verdict") is not None and c.get("verdict") not in VALID_VERDICTS:
                 return "invalid verdict value"
+        # the whole criterion set, not a subset: dropping a FAIL criterion must not un-exclude
+        if frozenset(c.get("text") for c in criteria) != known_trials[nct]["criteria_texts"]:
+            return "incomplete criterion set for trial"
     return None
+
+
+def _restore_server_fields(patient_id, trials):
+    """Title and phase come from traces.json, never from the body -- phase is a ranking tier."""
+    known_trials = KNOWN_TRIALS.get(patient_id, {})
+    for t in trials:
+        k = known_trials.get(t.get("nct_id"))
+        if k:
+            t["title"] = k["title"]
+            t["phase"] = k["phase"]
+    return trials
 
 STOPWORDS = set(
     "the a an of and or in on at to is are was were for this that with have has any does "
@@ -120,6 +152,10 @@ def find_affected(question_text, trials):
     qtok = _tokens(question_text)
     affected = []
     for t_idx, t in enumerate(trials):
+        # trial-level STOP: a trial that already carries a hard FAIL is out; re-evaluating its
+        # other criteria cannot change anything and only spends the metered key.
+        if trial_is_blocked(t):
+            continue
         for c_idx, c in enumerate(t.get("criteria", [])):
             if c.get("verdict") not in ("UNKNOWN", "UNCERTAIN"):
                 continue
@@ -133,6 +169,8 @@ def find_affected(question_text, trials):
         # no token overlap at all: still resolve every open criterion rather than silently
         # dropping the answer on the floor.
         for t_idx, t in enumerate(trials):
+            if trial_is_blocked(t):
+                continue
             for c_idx, c in enumerate(t.get("criteria", [])):
                 if c.get("verdict") in ("UNKNOWN", "UNCERTAIN"):
                     affected.append({
@@ -166,6 +204,14 @@ def handle(body):
     patient = {"patient_id": patient_id, "text": PATIENTS_BY_ID[patient_id]["text"]}
 
     trials_copy = [dict(t, criteria=[dict(c) for c in t.get("criteria", [])]) for t in trials]
+    _restore_server_fields(patient_id, trials_copy)
+    # optional: the client's current question list, so the three priority numbers can be
+    # recomputed against the post-answer trials (pure arithmetic, no LLM; text is only tokenized)
+    questions_in = body.get("questions")
+    if not isinstance(questions_in, list):
+        questions_in = []
+    questions_in = [{"field": str(q.get("field", ""))[:120], "question": str(q.get("question", ""))[:MAX_QUESTION_LEN]}
+                    for q in questions_in[:MAX_QUESTIONS] if isinstance(q, dict) and q.get("question")]
     affected = find_affected(question, trials_copy)
     new_record = (extended_record + f"\n추가 문진 Q: {question} / A: {answer}").strip()
 
@@ -177,6 +223,7 @@ def handle(body):
                 {"nct_id": t.get("nct_id"), "rank": t.get("rank", 99), "eligibility": t.get("eligibility", "UNCERTAIN")}
                 for t in trials_copy
             ],
+            "questions": enrich_questions(questions_in, [], trials_copy) if questions_in else None,
             "extended_record": new_record,
             "note": "이 답변으로 재평가할 미확정 기준이 없습니다.",
         }
@@ -189,35 +236,42 @@ def handle(body):
     verdict_changes = []
     for r in rematched:
         crit = trials_copy[r["trial_idx"]]["criteria"][r["crit_idx"]]
-        crit["verdict"] = r["after_verdict"]
-        crit["effect"] = effect_of(crit["type"], r["after_verdict"])
+        after_verdict = r["after_verdict"]
         # code-derived, same rule as the pipeline; clears stale badges on decided verdicts
-        crit["uncertainty_type"], crit["action"] = classify_action(
-            r["after_verdict"], r.get("after_uncertainty_type"))
+        utype, action = classify_action(after_verdict, r.get("after_uncertainty_type"))
+        # §6 evidence sufficiency, mirroring pipeline.run_reeval: a MET/NOT_MET resting on
+        # structurally insufficient evidence (suspected/indirect) is demoted to UNCERTAIN/VERIFY.
+        # No-op when the matcher returned no evidence_meta, so nothing changes silently.
+        after_verdict, d_ut, d_act, _suff = apply_evidence_sufficiency(after_verdict, r.get("after_evidence_meta"))
+        if d_ut:
+            utype, action = d_ut, d_act
+        crit["verdict"] = after_verdict
+        crit["effect"] = effect_of(crit["type"], after_verdict)
+        crit["uncertainty_type"], crit["action"] = utype, action
+        crit.pop("action_scope", None)   # a decided criterion carries no trial-level STOP
+        crit.pop("action_reason", None)  # (re-applied below if the trial is still blocked)
         if r.get("after_evidence"):
             crit["evidence"] = r["after_evidence"]
         crit["reasoning"] = r.get("after_reasoning", crit.get("reasoning", ""))
-        if r["after_verdict"] != r["before_verdict"]:
+        if after_verdict != r["before_verdict"]:
             verdict_changes.append({
                 "nct_id": r["nct_id"], "criterion": r["text"],
-                "before": r["before_verdict"], "after": r["after_verdict"],
+                "before": r["before_verdict"], "after": after_verdict,
             })
 
     try:
-        recs = recommend(patient, trials_copy)
+        # trust_attached=False: trial_intent/coverage rode in on the client body -- the sort reads
+        # only the server-side sidecars (ranking.resolve_intent), so a crafted POST cannot rig it.
+        recs = recommend(patient, trials_copy, trust_attached=False)
     except Exception as e:
         return {"error": f"추천 호출 실패: {e}"}
 
+    apply_recommendation(trials_copy, recs)
+    # Trial-level action context: once a trial carries a hard FAIL, asking about its remaining
+    # undecided criteria is moot -> STOP (same class of rule as effect_of; no model involved).
     for t in trials_copy:
-        r = recs.get(t.get("nct_id"), {
-            "eligibility": t.get("eligibility", "UNCERTAIN"),
-            "rank": t.get("rank", 99),
-            "rationale": t.get("rationale", ""),
-        })
-        t["eligibility"] = r["eligibility"]
-        t["rank"] = r["rank"]
-        t["rationale"] = r["rationale"]
-    trials_copy.sort(key=lambda t: t.get("rank", 99))
+        for c in t.get("criteria", []):
+            trial_level_action(c, t)
 
     return {
         "verdict_changes": verdict_changes,
@@ -226,6 +280,8 @@ def handle(body):
             {"nct_id": t.get("nct_id"), "rank": t.get("rank"), "eligibility": t.get("eligibility")}
             for t in trials_copy
         ],
+        # priority numbers recomputed against the post-answer state (None when the client sent none)
+        "questions": enrich_questions(questions_in, [], trials_copy) if questions_in else None,
         "extended_record": new_record,
     }
 

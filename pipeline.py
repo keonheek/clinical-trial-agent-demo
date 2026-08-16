@@ -42,6 +42,7 @@ from action_policy import (
     UNCERTAINTY_TYPES,
 )
 from evidence import assess_evidence
+import ranking
 
 _BACKEND = os.environ.get("LLM_BACKEND", "anthropic")
 if _BACKEND == "ollama":
@@ -432,10 +433,17 @@ Return at most 6 gaps, ordered by how many criteria/trials they affect (most imp
 
 def detect_gaps(patient, all_criteria_with_trial):
     unknown_lines = []
+    # Trial-level STOP: a trial that already carries a hard FAIL is out regardless of its other
+    # criteria, so those criteria are not worth a question either (action_policy.trial_level_action;
+    # same rule the serve path applies to frozen traces). Items carry "effect" when the caller
+    # has it; older callers without it simply get no trial-level gating.
+    blocked_trials = {item["nct_id"] for item in all_criteria_with_trial if item.get("effect") == "FAIL"}
     for item in all_criteria_with_trial:
         # Only undecided criteria whose policy action a question could actually advance.
         # IGNORE (not applicable) / STOP (already excluded) are resolved without asking, so
         # the action field gates the question pipeline here -- the differentiator in action.
+        if item["nct_id"] in blocked_trials:
+            continue
         if item["verdict"] in ("UNKNOWN", "UNCERTAIN") and is_question_worthy(item.get("action")):
             unknown_lines.append(f"- [{item['nct_id']}] ({item['verdict']}) {item['text']}")
     if not unknown_lines:
@@ -572,23 +580,43 @@ def decide_eligibility(criteria):
     return eligibility, fails, reviews
 
 
-ELIGIBILITY_ORDER = {"ELIGIBLE": 0, "UNCERTAIN": 1, "INELIGIBLE": 2}
+ELIGIBILITY_ORDER = ranking.ELIGIBILITY_ORDER  # single definition, lives in ranking.py
+
+# Fields recommend() decides in code and every caller must copy onto its trial dicts.
+RECOMMENDATION_FIELDS = ("eligibility", "rank", "rationale", "rank_reason", "rank_basis",
+                         "ranking_version", "trial_intent")
 
 
-def recommend(patient, trials_with_criteria):
-    # Layer 1: decide + rank in code.
+def apply_recommendation(trials, recs):
+    """Copy recommend()'s per-trial decision onto `trials` and sort them by rank. One helper so
+    the generation path, the reeval path, api/answer.py and live_server.py cannot drift apart."""
+    for t in trials:
+        r = recs.get(t.get("nct_id"))
+        if not r:
+            continue
+        for k in RECOMMENDATION_FIELDS:
+            if k in r and r[k] is not None:
+                t[k] = r[k]
+    trials.sort(key=lambda t: t.get("rank", 99))
+    return trials
+
+
+def recommend(patient, trials_with_criteria, trust_attached=False):
+    # Layer 1: decide + rank in code. Eligibility is a hierarchy (decide_eligibility); the
+    # priority order is ranking.rank_trials -- eligibility class first, then blocking count,
+    # then 임상적 적합성 (중재 목적, Phase 부담), then coverage / unresolved ratio. Deterministic,
+    # explainable (rank_reason), never a model opinion. trust_attached=True lets a server-side
+    # caller (live_server) vouch for a trial_intent it classified itself for trials outside the
+    # sidecar; api/answer.py must leave it False so a client body cannot rig the sort.
     decided = []
     for t in trials_with_criteria:
         eligibility, fails, reviews = decide_eligibility(t["criteria"])
         decided.append({
             "nct_id": t["nct_id"], "title": t["title"], "phase": t["phase"],
+            "criteria": t["criteria"], "trial_intent": t.get("trial_intent"),
             "eligibility": eligibility, "fails": fails, "reviews": reviews,
         })
-    # Best match first: eligible before uncertain before ineligible; within a class, the trial
-    # with the fewest unresolved criteria wins (a more confidently-established match).
-    decided.sort(key=lambda d: (ELIGIBILITY_ORDER[d["eligibility"]], len(d["reviews"]), len(d["fails"])))
-    for i, d in enumerate(decided):
-        d["rank"] = i + 1
+    ranking.rank_trials(decided, trust_attached=trust_attached)
 
     # Layer 2: the model only narrates the decision it was handed.
     trial_blocks = []
@@ -602,6 +630,7 @@ def recommend(patient, trials_with_criteria):
             drivers.append("  all criteria pass")
         trial_blocks.append(
             f"{d['nct_id']} ({d['title']}, phase {d['phase']}) -> {d['eligibility']}, rank {d['rank']}\n"
+            f"  RANK BASIS (code-decided, do not dispute): {d.get('rank_reason', '')}\n"
             + "\n".join(drivers)
         )
     user = f"""Patient vignette:
@@ -627,6 +656,10 @@ Write one rationale per trial per your instructions."""
             "eligibility": d["eligibility"],
             "rank": d["rank"],
             "rationale": rationales.get(d["nct_id"], "no rationale returned for this trial"),
+            "rank_reason": d.get("rank_reason"),
+            "rank_basis": d.get("rank_basis"),
+            "ranking_version": d.get("ranking_version"),
+            "trial_intent": d.get("trial_intent"),
         }
     return by_id
 
@@ -840,7 +873,8 @@ def run_reeval(patient, gaps, questions, trials_out):
     for t in updated_trials:
         r = recs.get(t["nct_id"], {"eligibility": t["eligibility"], "rank": t["rank"], "rationale": t["rationale"]})
         final_ranking.append({"nct_id": t["nct_id"], "rank": r["rank"],
-                               "eligibility": r["eligibility"], "rationale": r["rationale"]})
+                               "eligibility": r["eligibility"], "rationale": r["rationale"],
+                               "rank_reason": r.get("rank_reason")})
     final_ranking.sort(key=lambda r: r["rank"])
 
     return {
@@ -877,7 +911,8 @@ def run_patient(patient, trials_raw_for_patient):
 
         for c in matched:
             all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
-                                       "verdict": c["verdict"], "action": c.get("action")})
+                                       "verdict": c["verdict"], "action": c.get("action"),
+                                       "effect": c.get("effect")})
 
         trials_out.append({
             "nct_id": t["nct_id"],
@@ -901,14 +936,7 @@ def run_patient(patient, trials_raw_for_patient):
 
     print(f"  [recommender] ranking {len(trials_out)} trials...")
     recs = recommend(patient, trials_out)
-
-    for t in trials_out:
-        r = recs.get(t["nct_id"], {"eligibility": "UNCERTAIN", "rank": 99, "rationale": ""})
-        t["eligibility"] = r["eligibility"]
-        t["rank"] = r["rank"]
-        t["rationale"] = r["rationale"]
-
-    trials_out.sort(key=lambda t: t["rank"])
+    apply_recommendation(trials_out, recs)
 
     # attach the question-priority numbers 정원's cards show (pure, no LLM), now that
     # eligibility/rank are decided; also sorts questions most-impactful first.

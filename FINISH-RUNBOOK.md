@@ -29,3 +29,25 @@ labs quoted as evidence.
 UI features to narrate: summary strip recomputes per answer; changed criteria carry
 before→after chips; rank changes show movement chips; coverage pill per trial (39% one
 is the coverage-blindness talking point).
+
+### RANKING CHANGE — re-verify the script before demo day (added 2026-08-16)
+
+The recommendation priority key shipped on 2026-08-16 (`ranking.py`, RANKING_VERSION 2026-08-16;
+eligibility class → blocking count → 중재 목적 → Phase 부담 → coverage penalty → unresolved ratio).
+The script above is NOT deleted and its criterion-level effects still stand, but the RANK NARRATION
+in it predates the new key.
+
+- **S002's rank-1 trial is now `NCT05461820` (PHASE4, therapeutic), not `NCT06963203`.** Under the
+  old key the observational Phase-NA trial `NCT06963203` sat at rank 1; it is now rank 2.
+  Confirmed against `expected_ranking.json`, which pins the served order for all 10 patients.
+- The frozen (pre-key) order per patient rides on the trace as `frozen_rank_order`, but **no UI
+  renders it** — it is visible only in the raw `/api/trace?patient_id=…` JSON. To show the
+  before/after on demo day, keep that JSON endpoint open in a second tab as the backup.
+- **What still needs a live check:** the three answers above were verified live on the deployed URL
+  on 2026-07-22 — 미해결 31→28, 남은 질문 3→2, TRAb UNKNOWN → MET. Those criterion-level effects are
+  unaffected by ranking. What is NOT re-verified is which trials move rank and by how much AFTER
+  those answers land, since the answer round re-ranks through `pipeline.recommend` with the new key.
+  Re-run the three answers in one live round before demo day and re-write the rank narration from
+  what the screen actually shows.
+- **This spends the metered Anthropic key** (a real answer round is a live matcher call), so it is
+  Keonhee's call to fire, not an autonomous step. Everything else in this runbook is offline.

@@ -39,8 +39,10 @@ jobs:
           python evidence.py
           python stress_eval.py --selftest
           python build_trial_intent.py --selftest
+          python ranking.py
+          python ranking.py --golden
 
-      - name: Frozen-trace integrity (assert_traces.py, node-backed)
+      - name: Frozen-trace integrity + ranking invariants (assert_traces.py, node-backed)
         run: python assert_traces.py
 
       - name: traces.json md5 pin

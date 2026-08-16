@@ -17,6 +17,11 @@ Checks:
      hard-required to be verbatim per spec) are ALSO verbatim substrings of patient_text --
      reported as a quality signal, not a failure condition.
 
+  6. Reeval block structure + hard grounding (see check_reeval_structure_and_grounding).
+  7. Ranking invariants (hard): frozen ranks are 1..n permutations, no INELIGIBLE trial above a
+     non-INELIGIBLE one (frozen AND served), and the served order re-derived by ranking.py
+     matches expected_ranking.json (golden pin).
+
 Exit code 0 = all hard checks passed. Exit code 1 = at least one hard check failed.
 """
 import json
@@ -248,6 +253,37 @@ def check_reeval_structure_and_grounding(traces):
     return total_answers, ungrounded_answers, total_changes, bad_change_refs
 
 
+def check_ranking_invariants(traces):
+    """Check 7 (hard): ranking properties. (a) The frozen ranks in traces.json are a 1..n
+    permutation per patient and no INELIGIBLE trial ranks above a non-INELIGIBLE one (the
+    hard-exclusion claim). (b) The SERVED order -- ranking.rank_trials re-derived in memory over
+    these traces -- matches expected_ranking.json for the pinned RANKING_VERSION, so a key tweak
+    produces a visible golden diff exactly like the traces.json md5 pin does."""
+    print("\n--- Check 7 (hard): ranking invariants (frozen permutation + hard-exclusion; served golden) ---")
+    import ranking  # pure module, repo root
+    bad = 0
+    for trace in traces:
+        pid = trace.get("patient_id")
+        trials = trace.get("trials", [])
+        ranks = sorted(t.get("rank") for t in trials)
+        if ranks != list(range(1, len(trials) + 1)):
+            fail(f"[{pid}] frozen ranks are not a 1..n permutation: {ranks}")
+            bad += 1
+        if not ranking.hard_exclusion_holds(trials):
+            fail(f"[{pid}] frozen order ranks an INELIGIBLE trial above a non-INELIGIBLE one")
+            bad += 1
+        served = [dict(t, criteria=[dict(c) for c in t.get("criteria", [])]) for t in trials]
+        ranking.rank_trials(served)
+        if not ranking.hard_exclusion_holds(served):
+            fail(f"[{pid}] SERVED order ranks an INELIGIBLE trial above a non-INELIGIBLE one")
+            bad += 1
+    if not bad:
+        ok(f"frozen ranks are permutations and hard-exclusion holds (frozen + served) for {len(traces)} patients")
+    if not ranking.check_golden():
+        fail("served ranking order differs from expected_ranking.json "
+             "(deliberate key change? run `python3 ranking.py --write-golden` and review the diff)")
+
+
 def check_matcher_evidence_soft(traces):
     print("\n--- Check 5 (soft/informational): criteria[].evidence verbatim in patient_text ---")
     total_with_evidence = 0
@@ -279,6 +315,7 @@ def main():
     check_evidence_quotes_verbatim(traces)
     check_structural_shape(traces)
     check_reeval_structure_and_grounding(traces)
+    check_ranking_invariants(traces)
     check_matcher_evidence_soft(traces)
 
     print("\n=== SUMMARY ===")

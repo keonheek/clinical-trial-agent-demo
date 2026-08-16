@@ -13,8 +13,9 @@ ROOT = os.path.dirname(HERE)
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-# action_policy is a pure module (no LLM client imports) -- safe to bundle serverless.
-from action_policy import action_for
+# action_policy and ranking are pure modules (no LLM client imports) -- safe to bundle serverless.
+from action_policy import action_for, apply_trial_level_actions, enrich_questions
+import ranking
 
 with open(os.path.join(ROOT, "traces.json"), encoding="utf-8") as f:
     TRACES = json.load(f)
@@ -79,6 +80,29 @@ for _trace in TRACES:
             elif _c.get("verdict") == "UNCERTAIN":
                 _c["uncertainty_type"] = None
                 _c["action"] = action_for(None)
+    # Trial-level context: once a trial is INELIGIBLE (hard FAIL), its remaining undecided
+    # criteria are STOP, not ASK -- asking is moot. Deterministic (action_policy), no model.
+    apply_trial_level_actions(_trace.get("trials", []))
+
+# Recommendation priority (추천 우선순위), 2026-08-16. The rank frozen into traces.json was
+# eligibility-class + raw unresolved count only. The organizer's stated standard weighs 임상적
+# 적합성 too (Phase, 중재 목적, 환자 부담), so the served order is re-derived IN MEMORY by
+# ranking.rank_trials -- eligibility class first (a hard FAIL is never out-ranked), then blocking
+# count, 중재 목적, Phase 부담, coverage penalty, unresolved ratio. Same function the answer round
+# (api/answer.py -> pipeline.recommend) uses, so the order cannot flip back after the first
+# answer. traces.json on disk is untouched (md5 pin; blind-label pairing). Each trial carries
+# rank_reason / rank_basis so the UI can state the executed basis, and the trace carries the
+# rule text + a snapshot of the frozen order for transparency.
+for _trace in TRACES:
+    _trials = _trace.get("trials", [])
+    _trace["frozen_rank_order"] = [t["nct_id"] for t in sorted(_trials, key=lambda t: t.get("rank", 99))]
+    ranking.rank_trials(_trials, trust_attached=False)
+    _trace["ranking"] = {"version": ranking.RANKING_VERSION, "rule_ko": ranking.RANKING_RULE_KO,
+                         "hard_exclusion_holds": ranking.hard_exclusion_holds(_trials)}
+    # Question priority (affects_trials / affects_criteria / may_change_rank): pure arithmetic
+    # over the trace (action_policy.enrich_questions); frozen traces carry no gap links, so it
+    # uses the token-overlap fallback. Also orders the questions most-impactful first.
+    _trace["questions"] = enrich_questions(_trace.get("questions", []), _trace.get("gaps", []), _trials)
 
 
 class handler(BaseHTTPRequestHandler):

@@ -110,6 +110,50 @@ def action_for(utype):
 
 
 # ---------------------------------------------------------------------------
+# Trial-level context (added 2026-08-16). The criterion-level table answers "why is THIS
+# criterion undecided and what would resolve it". But once a trial carries a hard FAIL
+# (an exclusion the patient MEETS, or an inclusion contradicted -- effect_of, in code), the
+# patient is out of that trial regardless of its remaining undecided criteria, so asking about
+# them is moot: STOP. Same class of rule as effect_of -- deterministic, no model. Without it the
+# frozen judge-facing demo showed an ASK chip on 86 undecided criteria of already-INELIGIBLE
+# trials (the 질문 폭탄 failure the design claims to prevent).
+# The criterion's own uncertainty_type is left untouched (it still names the CAUSE); only the
+# ACTION changes, and action_scope records that it came from the trial, not the criterion.
+# ---------------------------------------------------------------------------
+_UNDECIDED_VERDICTS = ("UNKNOWN", "UNCERTAIN")
+
+
+def trial_is_blocked(trial):
+    """True when the trial already carries a hard FAIL (or is marked INELIGIBLE)."""
+    if trial.get("eligibility") == "INELIGIBLE":
+        return True
+    return any(c.get("effect") == "FAIL" for c in trial.get("criteria", []) or [])
+
+
+def trial_level_action(criterion, trial):
+    """Mutates and returns `criterion`: on a blocked trial, an undecided criterion's action
+    becomes STOP (action_scope="trial"). Otherwise untouched."""
+    if criterion.get("verdict") in _UNDECIDED_VERDICTS and trial_is_blocked(trial):
+        criterion["action"] = "STOP"
+        criterion["action_scope"] = "trial"
+        criterion["action_reason"] = "시험이 이미 부적격(하드 FAIL) — 이 기준을 더 확인해도 결과가 바뀌지 않음"
+    return criterion
+
+
+def apply_trial_level_actions(trials):
+    """Convenience: run trial_level_action over every criterion of every trial. Returns the
+    number of criteria switched to STOP."""
+    n = 0
+    for t in trials or []:
+        for c in t.get("criteria", []) or []:
+            before = c.get("action")
+            trial_level_action(c, t)
+            if before != "STOP" and c.get("action") == "STOP":
+                n += 1
+    return n
+
+
+# ---------------------------------------------------------------------------
 # Question-priority arithmetic (건희 [4], for 정원's question cards).
 #
 # A clarifying question is worth asking in proportion to how much it moves the
@@ -170,8 +214,14 @@ def _affected_criteria(question, gaps_by_field, trials):
 
     pairs = []
     for t in trials:
+        # trial-level STOP: criteria on an already-blocked trial are not work a question can
+        # advance, so they must not inflate affects_criteria / affects_trials / may_change_rank
+        if trial_is_blocked(t):
+            continue
         for c in t.get("criteria", []):
             if c.get("verdict") not in _UNDECIDED:
+                continue
+            if c.get("action") == "STOP":
                 continue
             # With explicit links, restrict to them; without any links at all,
             # fall back to token overlap directly against the criterion text so a
@@ -305,6 +355,30 @@ def _selftest():
     q_fb = {"question": "adequate renal function labs?"}
     nums_fb = priority_numbers(q_fb, [], trials)
     check(nums_fb["affects_criteria"] >= 1, "fallback overlap should find the renal criterion")
+
+    # trial-level STOP: undecided criteria on a hard-FAIL trial stop being questions; the
+    # criterion's own uncertainty_type (the cause) is preserved; clean trials are untouched.
+    blocked = {"nct_id": "NCTB", "eligibility": "INELIGIBLE", "criteria": [
+        {"text": "age > 18", "type": "inclusion", "verdict": "NOT_MET", "effect": "FAIL"},
+        {"text": "renal ok", "type": "inclusion", "verdict": "UNKNOWN", "effect": "REVIEW",
+         "uncertainty_type": "MISSING", "action": "ASK"},
+    ]}
+    clean = {"nct_id": "NCTC", "eligibility": "UNCERTAIN", "criteria": [
+        {"text": "renal ok", "type": "inclusion", "verdict": "UNKNOWN", "effect": "REVIEW",
+         "uncertainty_type": "MISSING", "action": "ASK"},
+    ]}
+    n_stop = apply_trial_level_actions([blocked, clean])
+    check(n_stop == 1, f"exactly one criterion should switch to STOP, got {n_stop}")
+    check(blocked["criteria"][1]["action"] == "STOP" and blocked["criteria"][1]["action_scope"] == "trial",
+          "undecided criterion on INELIGIBLE trial -> STOP with action_scope=trial")
+    check(blocked["criteria"][1]["uncertainty_type"] == "MISSING", "cause (uncertainty_type) preserved under trial-level STOP")
+    check(blocked["criteria"][0].get("action") != "STOP",
+          "decided (FAIL) criterion itself is not relabeled")
+    check(clean["criteria"][0]["action"] == "ASK", "criterion on a non-blocked trial keeps ASK")
+    check(not is_question_worthy("STOP"), "STOP is gated out of question generation")
+    # trial_is_blocked also fires on a FAIL effect before eligibility is decided (generation path)
+    check(trial_is_blocked({"criteria": [{"effect": "FAIL"}]}) and not trial_is_blocked({"criteria": [{"effect": "REVIEW"}]}),
+          "trial_is_blocked keys on FAIL effect when eligibility is not yet decided")
 
     if failures:
         print("FAIL:")

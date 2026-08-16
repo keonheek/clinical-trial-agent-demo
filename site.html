@@ -73,7 +73,7 @@
   }
   .agent-step{
     flex:1 1 auto;
-    min-width:100px;
+    min-width:84px;
     text-align:center;
     font-size:0.76rem;
     color:var(--ink-soft);
@@ -84,6 +84,19 @@
   }
   .agent-step .n{display:block;font-size:0.66rem;color:#9aa2ad;margin-bottom:2px;}
   .agent-step.done{color:var(--accent-dark);border-bottom-color:var(--accent);font-weight:700;}
+
+  .flow-caption{
+    max-width:1200px;margin:0 auto;padding:7px 24px 9px;
+    border-bottom:1px solid var(--line);background:var(--bg);
+    color:var(--ink-soft);font-size:0.76rem;
+  }
+
+  header.topbar .doclinks{display:flex;gap:8px;flex-wrap:wrap;}
+  header.topbar .doclinks a{
+    font-size:0.74rem;font-weight:600;text-decoration:none;color:var(--accent-dark);
+    border:1px solid var(--line);border-radius:99px;padding:3px 10px;white-space:nowrap;
+  }
+  header.topbar .doclinks a:hover{border-color:var(--accent);background:var(--accent-soft);}
 
   .shell{
     display:grid;
@@ -186,6 +199,7 @@
     background:var(--unknown-bg);border:1px solid var(--line);color:var(--unknown);
     font-size:0.68rem;font-weight:600;cursor:help;white-space:nowrap;
   }
+  .action-chip.stop{background:var(--not-met-bg);border-color:#e3c2bd;color:var(--not-met);}
   .trial-card .rationale{font-size:0.85rem;color:var(--ink-soft);margin:0 0 10px;}
 
   .crit-row{
@@ -211,7 +225,10 @@
   }
   .question-card .field{font-size:0.7rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;}
   .question-card .q{font-weight:600;margin:2px 0 4px;font-size:0.9rem;}
-  .question-card .why{font-size:0.78rem;color:var(--ink-soft);margin-bottom:8px;}
+  .question-card .why{font-size:0.78rem;color:var(--ink-soft);margin-bottom:4px;}
+  .question-card .qprio{font-size:0.74rem;color:var(--ink-soft);margin-bottom:8px;}
+  .question-card .qprio .rank-yes{color:var(--accent-dark);font-weight:700;}
+  .question-card .qprio .rank-no{color:#9aa2ad;}
   .question-card .answer-row{display:flex;gap:8px;flex-wrap:wrap;}
   .question-card input[type=text]{
     flex:1 1 220px;border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-family:inherit;font-size:0.85rem;
@@ -241,6 +258,34 @@
   .summary-strip .stat b.ok{color:var(--met);}
   .summary-strip .stat b.warn{color:var(--uncertain);}
   .summary-strip .stat b.bad{color:var(--not-met);}
+  .summary-strip .strip-note{
+    flex:1 1 100%;font-size:0.76rem;color:var(--ink-soft);
+    border-top:1px dashed var(--line);padding-top:8px;margin-top:2px;
+  }
+
+  .priority-head{margin:0 0 14px;}
+  .priority-head h2{font-size:1rem;margin:0 0 4px;}
+  .priority-head .rule{font-size:0.78rem;color:var(--ink-soft);margin:0;}
+  .priority-head .rule b{color:var(--ink);}
+  .priority-head .ver{color:#9aa2ad;font-size:0.7rem;}
+  .priority-head .guarantee{
+    display:inline-block;margin-top:6px;padding:2px 9px;border-radius:4px;
+    background:var(--met-bg);color:var(--met);font-size:0.73rem;font-weight:700;cursor:help;
+  }
+  .priority-head .action-count{font-size:0.78rem;color:var(--ink-soft);margin:7px 0 0;}
+  .priority-head .action-count b{color:var(--ink);}
+
+  .rank-why{font-size:0.8rem;color:var(--ink-soft);margin:0 0 6px;padding-left:36px;}
+  .rank-why b{color:var(--ink);}
+  .basis-chips{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 10px;padding-left:36px;}
+  .basis-chip{
+    display:inline-block;padding:1px 7px;border-radius:4px;font-size:0.68rem;font-weight:600;
+    background:var(--bg-alt);border:1px solid var(--line);color:var(--ink-soft);
+    white-space:nowrap;cursor:help;
+  }
+  .basis-chip.warn{background:var(--uncertain-bg);border-color:#e8d9a0;color:var(--uncertain);}
+  .basis-chip.bad{background:var(--not-met-bg);border-color:#e3c2bd;color:var(--not-met);}
+  .basis-chip.muted{color:#9aa2ad;}
 
   .rank-delta{
     display:inline-block;margin-left:8px;padding:1px 7px;border-radius:99px;
@@ -263,6 +308,7 @@
     max-width:1200px;margin:0 auto;padding:18px 24px 30px;border-top:1px solid var(--line);
     color:var(--ink-soft);font-size:0.78rem;
   }
+  footer.disclaimer .compliance{display:block;margin-top:7px;color:#9aa2ad;font-size:0.74rem;}
 </style>
 </head>
 <body>
@@ -271,16 +317,23 @@
   <h1>Interactive Clinical Trial Recommendation</h1>
   <p class="subtitle">사람이 직접 답변을 입력하면 영향받는 기준만 실시간 재평가됩니다</p>
   <span class="badge-pill">데모 환자 10명 중 선택</span>
+  <span class="doclinks">
+    <a href="/agent_orchestration.html" target="_blank" rel="noopener">에이전트 구성도</a>
+    <a href="/criteria_map.html" target="_blank" rel="noopener">기준 게이트맵</a>
+  </span>
 </header>
 
 <nav class="agent-map" id="agentMap">
-  <div class="agent-step" data-stage="extract"><span class="n">1</span>정보 추출</div>
-  <div class="agent-step" data-stage="parse"><span class="n">2</span>기준 파싱</div>
-  <div class="agent-step" data-stage="match"><span class="n">3</span>매칭</div>
-  <div class="agent-step" data-stage="gaps"><span class="n">4</span>갭 탐지</div>
-  <div class="agent-step" data-stage="questions"><span class="n">5</span>질문 생성</div>
-  <div class="agent-step" data-stage="recommend"><span class="n">6</span>추천</div>
+  <div class="agent-step" data-stage="extract" title="환자 vignette에서 나이, 진단, 검사 수치, 복용 약 등 구조화된 사실을 뽑아냅니다."><span class="n">1</span>정보 추출</div>
+  <div class="agent-step" data-stage="parse" title="시험 원문의 참여 조건을 포함/제외 기준 단위로 쪼갭니다."><span class="n">2</span>기준 파싱</div>
+  <div class="agent-step" data-stage="match" title="기준별 조건 판정(MET/NOT_MET/UNCERTAIN/UNKNOWN)은 모델이, 적격성 효과(PASS/FAIL/REVIEW)는 코드가 계산합니다."><span class="n">3</span>매칭·판정</div>
+  <div class="agent-step" data-stage="gaps" title="미확정 기준의 원인을 10종으로 분류합니다 (정보 없음, 정보 오래됨, 근거 불충분, 표현 모호, 근거 충돌, 경계값, 전문가 판단, 해당 없음, 계산 가능, 부적격 확정)."><span class="n">4</span>불확실성 진단·갭 탐지</div>
+  <div class="agent-step" data-stage="actions" title="원인별 다음 행동을 정책 테이블이 고릅니다: ASK 질문 · VERIFY 근거 재확인 · ESCALATE 전문가 이관 · STOP 중단."><span class="n">5</span>행동 선택</div>
+  <div class="agent-step" data-stage="questions" title="ASK로 분류된 기준만 사람에게 물을 질문으로 묶고, 영향 범위 순으로 정렬합니다."><span class="n">6</span>질문 생성</div>
+  <div class="agent-step" data-stage="reeval" title="답변이 들어오면 영향받는 기준만 다시 판정합니다. 나머지는 건드리지 않습니다."><span class="n">7</span>재평가</div>
+  <div class="agent-step" data-stage="recommend" title="적격성 클래스와 임상적 적합성으로 시험을 정렬하고, 각 순위의 근거를 문장으로 남깁니다."><span class="n">8</span>추천 우선순위</div>
 </nav>
+<p class="flow-caption">주최 예시 6단계를 모두 포함하고, 진단→행동 선택·재평가·우선순위 계층을 더했다</p>
 
 <div class="shell">
   <aside class="sidebar">
@@ -294,6 +347,7 @@
     <div id="vignetteBox" class="vignette" style="display:none;"></div>
     <div id="summaryStrip" class="summary-strip" style="display:none;"></div>
     <p class="stage-note" id="verdictLegend" style="display:none;">각 기준에는 두 가지가 표시됩니다. 적격성 효과(PASS, FAIL, REVIEW)는 참여 가능 여부에 미치는 영향이고, 그 옆의 조건 판정(MET, NOT_MET, UNKNOWN)은 기준 문장이 환자에게 해당하는지만 나타냅니다. 제외 기준의 조건 판정이 MET이면 환자가 그 조건을 가지고 있다는 뜻이므로 적격성 효과는 FAIL이 됩니다.</p>
+    <section id="priorityHead" class="priority-head" style="display:none;"></section>
     <div id="trialsBody"></div>
     <div id="questionsDock" class="questions-dock" style="display:none;">
       <h2>확인 질문</h2>
@@ -305,6 +359,7 @@
 
 <footer class="disclaimer">
   본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 LLM 호출로 영향받는 기준만 재평가됩니다. 이 데모는 10명의 사전 등록된 환자만 지원합니다.
+  <span class="compliance">데이터 출처 ClinicalTrials.gov API v2 (미국 NLM/NIH, 공공저작물) · 환자 = 대회 제공 합성 vignette · LLM 백엔드 = Anthropic (대회 지원 크레딧)</span>
 </footer>
 
 <script>
@@ -321,15 +376,149 @@ var MAX_ANSWER_LEN = 600;
 // rank changes per trial and before/after verdicts per criterion. Cleared on patient switch.
 var prevRanks = {};
 var lastVerdictChanges = {};
+// trace.ranking = {version, rule_ko, hard_exclusion_holds}, stamped by ranking.py at serve time.
+var currentRanking = null;
+
+// Korean labels for the ranking key's tiers. Mirrors ranking.FIT_LABEL_KO / ELIG_LABEL_KO so a
+// chip can never contradict the rank_reason sentence rendered beside it.
+var FIT_LABEL_KO = {
+  therapeutic: "치료 목적", supportive: "지지·완화",
+  care_delivery: "의료전달·관리", observational: "관찰 연구"
+};
+var ELIG_LABEL_KO = {ELIGIBLE: "적격", UNCERTAIN: "미확정", INELIGIBLE: "부적격"};
+// Only used when a response predates trace.ranking; states the same key, no invented numbers.
+var RULE_FALLBACK = "적격성 클래스(적격>미확정>부적격) → 차단 기준 수 → 중재 목적(치료>지지>관리>관찰) → " +
+  "Phase 부담(4>3>2>1, NA는 중간) → 원문 커버리지 감점 → 미해결 비율 → 미해결 수 → NCT";
+
+// The safety property the deck claims, recomputed from the order actually rendered. Shown only
+// when the server's own flag agrees (or is absent) -- never asserted against the backend.
+function hardExclusionHolds(trials){
+  var ranked = (trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); });
+  var seenInel = false, ok = true;
+  ranked.forEach(function(t){
+    if (t.eligibility === "INELIGIBLE") seenInel = true;
+    else if (seenInel) ok = false;
+  });
+  return ok;
+}
+
+// Live tally of what the action policy decided for every still-undecided criterion on screen.
+// Counted from the loaded trials, never hardcoded: the numbers move with the answer rounds.
+function actionCounts(trials){
+  var out = {total: 0, ASK: 0, VERIFY: 0, ESCALATE: 0, STOP: 0, other: 0};
+  (trials || []).forEach(function(t){
+    (t.criteria || []).forEach(function(c){
+      var v = (c.verdict || "").toUpperCase();
+      if (v !== "UNKNOWN" && v !== "UNCERTAIN") return;
+      out.total += 1;
+      var a = c.action ? String(c.action).toUpperCase() : "";
+      if (a === "ASK" || a === "VERIFY" || a === "ESCALATE" || a === "STOP") out[a] += 1;
+      else out.other += 1;
+    });
+  });
+  return out;
+}
+
+function phaseLabel(v){
+  var t = String(v == null ? "" : v).toUpperCase().replace(/[\s_]/g, "");
+  if (!t || t === "NA" || t === "N/A" || t === "NONE" || t === "NULL") return "Phase NA";
+  return "Phase " + t.replace(/PHASE/g, "").replace(/EARLY/g, "Early ");
+}
+
+// The fit tier demotes anything not confidently non-observational to the observational tier.
+// Three branches, matching ranking.rank_basis exactly -- a confidently-classified observational
+// trial is "관찰 연구", NOT "(추정)": nothing was estimated there.
+function fitChipText(b){
+  var v = b.value;
+  if (!b.demoted) return (FIT_LABEL_KO[v] || v || "중재 목적") + " 시험";
+  if (v === "observational") return "관찰 연구" + (b.confidence === "low" ? " (추정)" : "");
+  return "중재 목적 미확인 → 관찰과 동급";
+}
+
+var COVERAGE_FULL_TITLE = "원문 기준 수는 프로토콜 원문의 기준 줄을 세어 추정한 근사치입니다. " +
+  "한 문장을 여러 기준으로 나눠 파싱하면 추정치를 넘길 수 있고, 반대로 실제보다 적게 셀 수도 있습니다. " +
+  "따라서 전체(추정)는 단정이 아니라 추정입니다.";
+
+// One chip per fired tier of the ranking key, in key order. Every value comes from rank_basis,
+// which ranking.py builds from the same numbers the sort used.
+function basisChip(b){
+  if (!b || !b.key) return "";
+  var cls = "basis-chip", text = "", title = "";
+  if (b.key === "eligibility"){
+    text = "적격성 " + (ELIG_LABEL_KO[b.value] || b.value || "미확정");
+    title = "1순위 기준. 부적격 시험은 적격/미확정 시험 위로 올라오지 않습니다.";
+  } else if (b.key === "blocking"){
+    cls += " bad";
+    text = "차단 기준 " + b.value + "건";
+    title = "참여를 막는 기준(환자가 해당하는 제외 기준 등)의 수. 적을수록 앞섭니다.";
+  } else if (b.key === "fit"){
+    text = fitChipText(b);
+    if (b.demoted) cls += " muted";
+    title = "중재 목적. 치료 > 지지·완화 > 의료전달·관리 > 관찰 순이며, 분류 확신이 낮거나 " +
+      "분류되지 않은 시험은 관찰 연구와 같은 등급으로 내려갑니다.";
+  } else if (b.key === "phase"){
+    text = phaseLabel(b.value);
+    title = "Phase 부담 프록시. 후기 상일수록 개입이 잘 규명되어 환자 부담과 불확실성이 작다고 봅니다. " +
+      "NA는 중간으로 둡니다.";
+  } else if (b.key === "coverage"){
+    if (typeof b.value !== "number") return "";
+    var full = b.value >= 1;
+    text = "원문 커버리지 " + (full ? "전체(추정)" : Math.round(b.value * 100) + "%");
+    if (b.penalty){ cls += " warn"; text += " 감점"; }
+    title = full ? COVERAGE_FULL_TITLE
+      : "파싱된 기준 수 / 원문에서 추정한 기준 수. 50% 미만이면 감점되어 뒤로 밀립니다.";
+  } else if (b.key === "open"){
+    text = "미해결 " + b.value;
+    title = "아직 판정되지 않은 기준 수 / 파싱된 전체 기준 수. 비율이 낮을수록 앞섭니다.";
+  } else {
+    text = (b.label ? b.label + " " : "") + b.value;
+  }
+  return '<span class="' + cls + '" title="' + escapeHtml(title) + '">' + escapeHtml(text) + '</span>';
+}
+
+function basisChips(trial){
+  if (!trial || !Array.isArray(trial.rank_basis) || !trial.rank_basis.length) return "";
+  var chips = trial.rank_basis.slice()
+    .sort(function(a, b){ return (a && a.tier || 0) - (b && b.tier || 0); })
+    .map(basisChip).filter(function(h){ return !!h; });
+  if (!chips.length) return "";
+  return '<div class="basis-chips">' + chips.join("") + '</div>';
+}
+
+// Column header for the trial list: what the order means, and what it guarantees.
+function renderPriorityHead(trials){
+  var box = document.getElementById("priorityHead");
+  if (!box) return;
+  if (!trials || !trials.length){ box.innerHTML = ""; box.style.display = "none"; return; }
+  var rule = (currentRanking && currentRanking.rule_ko) || RULE_FALLBACK;
+  var ver = (currentRanking && currentRanking.version) || (trials[0] && trials[0].ranking_version) || "";
+  var holds = hardExclusionHolds(trials) &&
+              !(currentRanking && currentRanking.hard_exclusion_holds === false);
+  var ac = actionCounts(trials);
+  var html = "<h2>추천 우선순위</h2>" +
+    '<p class="rule"><b>정렬 기준</b> ' + escapeHtml(rule) +
+      (ver ? ' <span class="ver">(규칙 ' + escapeHtml(ver) + ')</span>' : "") + "</p>";
+  if (holds){
+    html += '<span class="guarantee" title="정렬 키의 1순위가 적격성 클래스이므로, 차단 기준이 있는 시험은 ' +
+      '아래 어떤 항목이 좋아도 위로 올라올 수 없습니다.">hard-exclusion 보장: 부적격 시험은 미확정/적격 위로 올라오지 않음</span>';
+  }
+  html += '<p class="action-count">미확정 기준 <b>' + ac.total + "건</b> → ASK " + ac.ASK +
+    " · VERIFY " + ac.VERIFY + " · ESCALATE " + ac.ESCALATE + " · STOP " + ac.STOP +
+    (ac.other ? " · 기타 " + ac.other : "") + "</p>";
+  box.innerHTML = html;
+  box.style.display = "block";
+}
 
 function renderSummary(trials){
   var strip = document.getElementById("summaryStrip");
   if (!trials || !trials.length){ strip.style.display = "none"; return; }
   var counts = {ELIGIBLE: 0, UNCERTAIN: 0, INELIGIBLE: 0};
   var unresolved = 0;
+  var totalCriteria = 0;
   trials.forEach(function(t){
     if (counts.hasOwnProperty(t.eligibility)) counts[t.eligibility] += 1;
     (t.criteria || []).forEach(function(c){
+      totalCriteria += 1;
       var v = (c.verdict || "").toUpperCase();
       if (v === "UNKNOWN" || v === "UNCERTAIN") unresolved += 1;
     });
@@ -342,7 +531,14 @@ function renderSummary(trials){
     '<span class="stat"><b class="warn">' + counts.UNCERTAIN + '</b><span class="lbl">불확실</span></span>' +
     '<span class="stat"><b class="bad">' + counts.INELIGIBLE + '</b><span class="lbl">부적격</span></span>' +
     '<span class="stat"><b>' + unresolved + '</b><span class="lbl">미해결 기준</span></span>' +
-    '<span class="stat"><b>' + open + '</b><span class="lbl">남은 확인 질문</span></span>';
+    '<span class="stat"><b>' + open + '</b><span class="lbl">남은 확인 질문</span></span>' +
+    // 적격 0 is the designed outcome, not a dead end: eligibility is only granted once every
+    // REVIEW criterion is resolved. The counts are live; the 0 wrongly-passed clause is the
+    // measured blind-eval fact (eval_results.json: n_wrongly_passed 0 of 5 disqualifying).
+    (counts.ELIGIBLE === 0
+      ? '<span class="strip-note">적격 판정은 확인 필요 기준이 모두 해소되어야 합니다 · 미해결 ' +
+        unresolved + '/' + totalCriteria + ' · 잘못 통과 0건(블라인드 평가)</span>'
+      : '');
 }
 
 function escapeHtml(s){
@@ -387,8 +583,15 @@ function actionChip(c){
   if (!c.action) return "";
   var cause = c.uncertainty_type ? (UTYPE_KO[c.uncertainty_type] || c.uncertainty_type) : "원인 미분류";
   var act = ACTION_KO[c.action] || c.action;
-  return '<br><span class="action-chip" title="불확실성의 원인과, 정책 테이블이 고른 다음 행동 (코드가 결정)">' +
-    escapeHtml(cause) + " → " + escapeHtml(act) + '</span>';
+  // Trial-level STOP: the trial already carries a hard FAIL, so asking about this criterion is
+  // moot. action_scope/action_reason come from action_policy.trial_level_action (code, no model).
+  var trialStop = String(c.action).toUpperCase() === "STOP" && c.action_scope === "trial";
+  var title = (trialStop && c.action_reason)
+    ? c.action_reason
+    : "불확실성의 원인과, 정책 테이블이 고른 다음 행동 (코드가 결정)";
+  return '<br><span class="action-chip' + (trialStop ? " stop" : "") +
+    '" title="' + escapeHtml(title) + '">' +
+    escapeHtml(cause) + " → " + escapeHtml(act) + (trialStop ? " (시험 단위)" : "") + '</span>';
 }
 
 function verdictPair(c){
@@ -423,6 +626,9 @@ function resetView(){
   document.getElementById("emptyNote").style.display = "none";
   document.getElementById("vignetteBox").style.display = "none";
   document.getElementById("trialsBody").innerHTML = "";
+  var head = document.getElementById("priorityHead");
+  if (head){ head.innerHTML = ""; head.style.display = "none"; }
+  currentRanking = null;
   document.getElementById("questionsDock").style.display = "none";
   document.getElementById("questionsBody").innerHTML = "";
   document.getElementById("changelog").innerHTML = "";
@@ -450,6 +656,7 @@ function loadTrace(patientId){
       currentPatientId = patientId;
       currentTrials = data.trials || [];
       currentQuestionsCache = data.questions || [];
+      currentRanking = data.ranking || null;
       prevRanks = {};
       lastVerdictChanges = {};
       markAllStagesDone();
@@ -471,6 +678,7 @@ function renderVignette(patient){
 function renderTrials(trials){
   var box = document.getElementById("trialsBody");
   var legend = document.getElementById("verdictLegend");
+  renderPriorityHead(trials);
   if (!trials || trials.length === 0){
     box.innerHTML = "";
     if (legend) legend.style.display = "none";
@@ -487,13 +695,19 @@ function renderTrials(trials){
     // Coverage: how much of the trial's raw protocol the parsed criteria represent. Shown so a
     // trial that was merely read less can't present as a more certain match (coverage blindness).
     var cov = "";
-    if (t.coverage && t.coverage.raw_estimated){
+    if (t.coverage && typeof t.coverage.parsed === "number" && t.coverage.raw_estimated > 0){
       var pct = Math.min(100, Math.round(100 * t.coverage.parsed / t.coverage.raw_estimated));
-      var covLabel = pct >= 100 ? '원문 전체 평가' : '원문 커버리지 약 ' + pct + '%';
+      // The denominator is an ESTIMATE (protocol lines counted by a heuristic), so a ratio at or
+      // above 1.0 must never be stated as full-protocol evaluation -- the estimator can
+      // undercount, and splitting one bullet into atomic criteria pushes the ratio past 100%.
+      var covFull = pct >= 100;
+      var covLabel = covFull ? '원문 커버리지 전체(추정)' : '원문 커버리지 약 ' + pct + '%';
+      var covTitle = covFull
+        ? COVERAGE_FULL_TITLE + ' (원문 추정 ' + t.coverage.raw_estimated + '개, 평가 반영 ' + t.coverage.parsed + '개)'
+        : '시험 원문에서 추정되는 기준 약 ' + t.coverage.raw_estimated + '개 중 ' +
+          t.coverage.parsed + '개가 평가에 반영되었습니다. 표시되지 않은 조항이 있을 수 있습니다.';
       cov = '<span class="meta-sep coverage-pill' + (pct < 50 ? ' coverage-low' : '') + '"' +
-        ' title="시험 원문에서 추정되는 기준 약 ' + t.coverage.raw_estimated + '개 중 ' +
-        t.coverage.parsed + '개가 평가에 반영되었습니다. 표시되지 않은 조항이 있을 수 있습니다.">' +
-        covLabel + '</span>';
+        ' title="' + escapeHtml(covTitle) + '">' + covLabel + '</span>';
     }
     // Trial intent: a trial that TREATS the disease should not read the same as one that
     // only observes it, provides supportive care, or studies care logistics (지우's ask).
@@ -535,6 +749,14 @@ function renderTrials(trials){
       '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
       '<span class="meta-sep">' + elig + '</span>' + cov + intentChip + '</div></div>';
     card.appendChild(head);
+    // Why THIS rank: the executed sort key, stated in Korean by ranking.rank_basis, plus one
+    // chip per fired tier. Both survive an answer round (pipeline.apply_recommendation restamps
+    // rank_reason / rank_basis), and both are simply absent on older responses.
+    if (t.rank_reason){
+      card.appendChild(el("p", "rank-why", "<b>왜 이 순위인가</b> " + escapeHtml(t.rank_reason)));
+    }
+    var chips = basisChips(t);
+    if (chips) card.insertAdjacentHTML("beforeend", chips);
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));
     }
@@ -561,6 +783,30 @@ function renderTrials(trials){
   });
 }
 
+// The three observable numbers action_policy.enrich_questions attaches to each question, so a
+// reviewer can see WHY this question is at the top. Rendered only when the fields are present.
+function questionPriorityLine(q){
+  if (!q) return "";
+  var hasTrials = typeof q.affects_trials === "number";
+  var hasCrit = typeof q.affects_criteria === "number";
+  var hasRank = typeof q.may_change_rank === "boolean";
+  if (!hasTrials && !hasCrit && !hasRank) return "";
+  var parts = ["왜 이 질문인가"];
+  // zero-impact question: its criteria are already decided or sit on a STOP (부적격) trial --
+  // say so instead of printing "시험 0개 · 기준 0개", which reads like a rendering bug.
+  if (hasTrials && hasCrit && q.affects_trials === 0 && q.affects_criteria === 0){
+    return '<div class="qprio">왜 이 질문인가 · 현재 열린 기준과 직접 연결된 항목을 찾지 못함 (근거 우선순위 낮음)</div>';
+  }
+  if (hasTrials) parts.push("시험 " + q.affects_trials + "개");
+  if (hasCrit) parts.push("기준 " + q.affects_criteria + "개");
+  var line = parts.join(" · ");
+  if (hasRank){
+    line += ' · <span class="' + (q.may_change_rank ? "rank-yes" : "rank-no") + '">' +
+      (q.may_change_rank ? "순위 변동 가능" : "순위 변동 불가") + "</span>";
+  }
+  return '<div class="qprio">' + line + "</div>";
+}
+
 function renderQuestions(questions, trials){
   var dock = document.getElementById("questionsDock");
   var body = document.getElementById("questionsBody");
@@ -574,7 +820,7 @@ function renderQuestions(questions, trials){
     card.innerHTML =
       '<div class="field">' + escapeHtml(q.field) + '</div>' +
       '<div class="q">' + escapeHtml(q.question) + '</div>' +
-      '<div class="why">' + escapeHtml(q.why) + '</div>';
+      '<div class="why">' + escapeHtml(q.why) + '</div>' + questionPriorityLine(q);
     if (isAnswered){
       card.appendChild(el("div", "answered-note", "반영됨: " + escapeHtml(isAnswered)));
     } else {
@@ -673,6 +919,7 @@ function submitAnswer(question, answer, card, input, btn){
       answer: answer,
       trials: currentTrials,
       extended_record: extendedRecord,
+      questions: (currentQuestionsCache || []).map(function(q){ return {field: q.field, question: q.question}; }),
     }),
     signal: aborter.signal
   }).then(function(r){ return r.json(); }).then(function(data){
@@ -690,6 +937,15 @@ function submitAnswer(question, answer, card, input, btn){
     });
     currentTrials = data.trials || currentTrials;
     extendedRecord = data.extended_record || extendedRecord;
+    // priority numbers recomputed server-side against the post-answer trials; merge by question text
+    if (Array.isArray(data.questions)){
+      var fresh = {};
+      data.questions.forEach(function(q){ if (q && q.question) fresh[q.question] = q; });
+      currentQuestionsCache.forEach(function(q){
+        var f = fresh[q.question];
+        if (f){ q.affects_trials = f.affects_trials; q.affects_criteria = f.affects_criteria; q.may_change_rank = f.may_change_rank; }
+      });
+    }
     renderTrials(currentTrials);
     renderSummary(currentTrials);
     flashChanged(data.verdict_changes || []);
