@@ -1,0 +1,699 @@
+<!--
+  디자인 전용 목업 파일입니다. 실제 파이프라인/traces.json과 연동되어 있지 않으며,
+  환자 정보·임상시험명·근거 문장 등은 전부 [placeholder] 또는 mock 데이터입니다.
+  나중에 live_server.py / traces.json 데이터를 연동할 때 레이아웃/스타일 기준으로 참고해 주세요.
+  작성: 정원 (UI/UX)
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trial Board Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#1E40AF; --secondary:#3B82F6; /* LOCKED from Concept A */
+    --bg:#F1F3F7; --ink:#181B22; --ink-soft:#6B7280;
+    --border:#DDE1E9; --card:#FFFFFF; --accent:#7C3AED; --orange:#C2410C; --orange-bg:#FFF1E8;
+    --met:#087F5B; --met-bg:#D9F4EB; --met-mid:#70B9A3; --notmet:#C0362C; --notmet-bg:#FBE3E1; --notmet-mid:#DD8C86;
+    --uncertain:#9A6700; --uncertain-bg:#FCEFCB; --uncertain-mid:#CBAB65; --unknown:#6B7280; --unknown-bg:#E7E9EE; --unknown-mid:#A9ADB7;
+    --up:#0F9D58; --down:#D93025;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR",sans-serif;}
+  .mono{font-family:"IBM Plex Mono",monospace;}
+
+  .utilbar{background:var(--primary);color:#fff;padding:10px 24px;display:flex;align-items:center;font-size:0.8rem;}
+  .utilbar .name{font-weight:700;}
+  .utilbar .eventtag{margin-left:auto;font-size:0.6rem;font-weight:500;letter-spacing:.03em;color:rgba(255,255,255,.65);
+    text-align:right;line-height:1.35;max-width:150px;}
+
+  /* live, per-patient loop status — replaces the old fixed "단계 4/6" progress text.
+     Modern flat chip: no border, soft shadow, LIVE rendered as its own micro-badge. */
+  .livestatus{flex:0 0 auto;display:flex;align-items:center;gap:10px;margin:12px 24px 12px auto;padding:7px 14px 7px 10px;
+    border-radius:10px;background:var(--bg);box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+    cursor:pointer;transition:box-shadow .15s;}
+  .livestatus:hover{box-shadow:0 2px 4px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.1);}
+  .livebadge{display:flex;align-items:center;gap:6px;background:#0A0F0A;color:#39FF6E;border-radius:8px;
+    padding:4px 9px;font-size:0.66rem;font-weight:700;letter-spacing:.08em;font-family:"IBM Plex Mono",monospace;}
+  .livedot{width:6px;height:6px;border-radius:50%;background:#39FF6E;flex:0 0 auto;
+    box-shadow:0 0 0 0 rgba(57,255,110,.5);animation:livepulse 1.8s infinite;}
+  @keyframes livepulse{
+    0%{box-shadow:0 0 0 0 rgba(57,255,110,.45);}
+    70%{box-shadow:0 0 0 6px rgba(57,255,110,0);}
+    100%{box-shadow:0 0 0 0 rgba(57,255,110,0);}
+  }
+  .statustext{font-size:0.85rem;font-weight:600;color:var(--ink);transition:color .15s;white-space:nowrap;}
+  .livestatus:hover .statustext{color:var(--secondary);}
+
+  /* tabbarouter hosts the global patient dropdown (fixed, never clipped) + the scrollable tab strip */
+  .tabbarouter{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;}
+  .tabbar{display:flex;align-items:stretch;padding-right:24px;overflow-x:auto;flex:1;min-width:0;}
+  .tab{padding:16px 22px;font-size:0.9rem;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;
+    display:flex;align-items:center;gap:8px;}
+  .tab.active{color:var(--primary);border-color:var(--secondary);}
+  .tabbadge{background:var(--secondary);color:#fff;font-size:0.66rem;font-weight:700;min-width:17px;height:17px;border-radius:99px;
+    display:inline-flex;align-items:center;justify-content:center;padding:0 4px;}
+
+  .patient-dropdown{position:relative;display:flex;align-items:stretch;flex:0 0 auto;background:#232B3D;}
+  .pdbtn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:0.9rem;font-weight:700;color:#fff;
+    display:flex;align-items:center;gap:8px;padding:0 22px;height:100%;transition:opacity .15s;}
+  .pdbtn:hover{opacity:.8;}
+  .pdbtn .pdmeta{font-weight:400;color:rgba(255,255,255,.6);font-size:0.8rem;}
+  .pdbtn .chev{font-size:0.7rem;color:rgba(255,255,255,.5);}
+  .pdmenu{display:none;position:absolute;left:0;top:52px;background:var(--card);border:1px solid var(--border);border-radius:10px;
+    box-shadow:0 14px 34px rgba(0,0,0,.14);width:220px;z-index:250;overflow:hidden;}
+  .pdmenu.open{display:block;}
+  .pditem{padding:12px 16px;cursor:pointer;font-size:0.86rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+  .pditem:last-child{border-bottom:none;}
+  .pditem:hover{background:var(--bg);}
+  .pditem span{color:var(--ink-soft);font-size:0.78rem;}
+  .pditem.sel{background:#EAF1FE;font-weight:700;}
+  .pditem.new{color:var(--secondary);font-weight:700;}
+
+  .view{display:none;padding:24px;}
+  .view.active{display:block;}
+
+  /* ===== TAB 1: patient detail + board ===== */
+  .sectionlabel{font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700;margin:0 0 12px;
+    display:flex;align-items:center;gap:8px;}
+  .sectionlabel::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--secondary);}
+  .boardhead{display:flex;justify-content:flex-end;margin-bottom:6px;}
+
+  .edittoggle{display:flex;align-items:center;gap:10px;font-size:0.84rem;color:var(--ink-soft);}
+  .switch{position:relative;width:44px;height:24px;flex:0 0 auto;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;inset:0;background:var(--border);border-radius:99px;cursor:pointer;transition:.2s;}
+  .slider::before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .switch input:checked + .slider{background:var(--accent);}
+  .switch input:checked + .slider::before{transform:translateX(20px);}
+  .edittoggle.on{color:var(--accent);font-weight:700;}
+
+  /* patient detail box — MOCK DATA ONLY, per user's explicit request for this feature. Fixed 3-col grid = even spacing. */
+  .pdetail{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:24px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px 28px;}
+  @media (max-width:760px){ .pdetail{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .pdetail{grid-template-columns:1fr;} }
+  .pdetail .field .k{font-size:0.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:4px;}
+  .pdetail .field .v{font-size:0.92rem;font-weight:600;line-height:1.4;}
+  .pdetail-tag{grid-column:1/-1;font-size:0.72rem;color:var(--ink-soft);border-top:1px solid var(--border);padding-top:12px;margin-top:2px;}
+
+  .board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;}
+  @media (max-width:900px){ .board{grid-template-columns:1fr;} }
+  .col{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:0 14px 14px;min-height:120px;
+    transition:background .15s,border-color .15s;overflow:hidden;}
+  .col.dragover{background:#EAF1FE;border-color:var(--secondary);}
+  /* column header is now a solid color band, not colored text on white */
+  .col h3{font-size:0.8rem;text-transform:uppercase;letter-spacing:.04em;margin:0 -14px 14px;display:flex;justify-content:space-between;
+    padding:7px 14px;font-weight:700;}
+  .col h3 .count{background:rgba(0,0,0,.18);color:#fff;border-radius:99px;padding:1px 9px;font-size:0.74rem;}
+  .kcard{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;cursor:pointer;font-size:0.85rem;}
+  .kcard.dragging{opacity:.4;}
+  .kcard[draggable="true"]{cursor:grab;}
+  .kcard .name{font-weight:600;} .kcard .nct{font-family:"IBM Plex Mono",monospace;font-size:0.7rem;color:var(--ink-soft);}
+  .kcard .hint{font-size:0.68rem;color:var(--secondary);margin-top:8px;}
+  .col-met h3{background:var(--met-mid);color:#fff;} .col-notmet h3{background:var(--notmet-mid);color:#fff;}
+  .col-uncertain h3{background:var(--uncertain-mid);color:#fff;} .col-unknown h3{background:var(--unknown-mid);color:#fff;}
+
+  /* detail overlay — bigger, scrollable, verdict emphasized, inc=blue / exc=orange, editable rows */
+  .overlay{position:fixed;inset:0;background:rgba(15,18,25,.6);display:none;align-items:center;justify-content:center;z-index:300;padding:32px;}
+  .overlay.open{display:flex;}
+  .modal{background:var(--card);border-radius:18px;max-width:820px;width:100%;height:min(88vh,900px);
+    display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,.4);}
+  .modalhead{flex:0 0 auto;padding:26px 30px;border-bottom:1px solid var(--border);}
+  .modalhead-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+  .modalhead .name{font-weight:700;font-size:1.3rem;}
+  .modalhead .nct{font-family:"IBM Plex Mono",monospace;font-size:0.8rem;color:var(--ink-soft);margin-top:4px;}
+  .modalclose{background:var(--bg);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:1.05rem;flex:0 0 auto;}
+  .verdict-banner{border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1rem;transition:background .2s,color .2s;}
+  .verdict-banner .lbl{font-size:0.74rem;font-weight:600;opacity:.75;text-transform:uppercase;letter-spacing:.05em;}
+  .verdict-met{background:var(--met-bg);color:var(--met);} .verdict-notmet{background:var(--notmet-bg);color:var(--notmet);}
+  .verdict-uncertain{background:var(--uncertain-bg);color:var(--uncertain);} .verdict-unknown{background:var(--unknown-bg);color:var(--unknown);}
+
+  .modalbody{flex:1 1 auto;overflow-y:auto;padding:10px 30px 30px;}
+  .critdetail{border-left:5px solid var(--border);border-radius:0 10px 10px 0;background:var(--bg);padding:16px 18px;margin:16px 0;}
+  .critdetail.inc{border-left-color:var(--secondary);}
+  .critdetail.exc{border-left-color:var(--orange);}
+  .crittag{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .critdetail.inc .crittag{color:var(--secondary);} .critdetail.exc .crittag{color:var(--orange);}
+  .crittext{font-size:0.98rem;margin-bottom:10px;}
+  .critevidence{font-size:0.86rem;color:var(--ink-soft);font-style:italic;background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+  .critnote{font-size:0.82rem;color:var(--ink-soft);margin-bottom:10px;}
+  .critfoot{display:flex;justify-content:space-between;align-items:center;}
+  .badge{display:inline-block;padding:3px 11px;border-radius:99px;font-size:0.72rem;font-weight:700;}
+  .b-met{background:var(--met-bg);color:var(--met);} .b-notmet{background:var(--notmet-bg);color:var(--notmet);}
+  .b-uncertain{background:var(--uncertain-bg);color:var(--uncertain);} .b-unknown{background:var(--unknown-bg);color:var(--unknown);}
+  .edit-select{background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:0.74rem;font-weight:700;cursor:pointer;
+    color:var(--ink);font-family:inherit;}
+  .edit-select:focus{outline:none;border-color:var(--secondary);}
+
+  /* ===== TAB: confirm questions as split chat + evidence ===== */
+  /* multiple trials can each carry their own questions — pills group them before the split view */
+  .trialpills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+  .trialpill{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:9px 16px;font-size:0.84rem;cursor:pointer;
+    display:flex;align-items:center;gap:8px;}
+  .trialpill.sel{border:2px solid var(--secondary);background:#EAF1FE;font-weight:700;}
+  .trialpill .pillcount{background:var(--secondary);color:#fff;font-size:0.66rem;font-weight:700;min-width:16px;height:16px;border-radius:99px;
+    display:inline-flex;align-items:center;justify-content:center;padding:0 4px;}
+  .trialpill.sel .pillcount{background:var(--primary);}
+
+  .splitwrap{display:grid;grid-template-columns:1fr 1fr;gap:0;height:calc(100vh - 270px);min-height:480px;
+    border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+  @media (max-width:860px){ .splitwrap{grid-template-columns:1fr;height:auto;} }
+  .evidencepane{border-right:1px solid var(--border);overflow-y:auto;padding:22px 24px;}
+  @media (max-width:860px){ .evidencepane{border-right:none;border-bottom:1px solid var(--border);} }
+  .evidencepane h3{font-size:0.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:0 0 14px;}
+  .evtrial{font-weight:700;font-size:1.02rem;margin-bottom:2px;}
+  .evnct{font-size:0.76rem;color:var(--ink-soft);margin-bottom:16px;}
+
+  .chatpane{display:flex;flex-direction:column;}
+  .chathead{padding:16px 20px;border-bottom:1px solid var(--border);font-size:0.86rem;font-weight:700;color:var(--ink-soft);}
+  .chatscroll{flex:1;overflow-y:auto;padding:20px;}
+  .msg{display:flex;gap:10px;margin-bottom:16px;align-items:flex-start;}
+  .msg .avatar{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;
+    align-items:center;justify-content:center;font-size:0.66rem;font-weight:700;flex:0 0 auto;}
+  .bubble{background:var(--bg);border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:12px 16px;font-size:0.88rem;max-width:82%;}
+  .msg.user{flex-direction:row-reverse;}
+  .msg.user .avatar{background:var(--ink-soft);}
+  .msg.user .bubble{border-radius:14px 4px 14px 14px;background:var(--primary);color:#fff;border-color:var(--primary);}
+  .chatinput{border-top:1px solid var(--border);padding:14px 16px;display:flex;gap:10px;}
+  .chatinput input{flex:1;border:1px solid var(--border);border-radius:99px;padding:11px 16px;font-family:inherit;font-size:0.86rem;}
+  .chatinput button{background:var(--secondary);color:#fff;border:none;border-radius:99px;padding:0 20px;font-weight:700;cursor:pointer;}
+
+  /* ===== TAB: ranking — narrow-ish but roomier cards, centered so peripheral vision covers both ends ===== */
+  .rankhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;max-width:560px;margin-left:auto;margin-right:auto;}
+  .rankhead .status{font-size:0.8rem;color:var(--ink-soft);}
+  .rankhead .status.fresh{color:var(--met);font-weight:700;}
+  .refresh-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:11px 22px;font-weight:700;cursor:pointer;font-size:0.86rem;
+    display:inline-flex;align-items:center;gap:8px;}
+  .refresh-btn.done{background:var(--met);}
+  .ranklist{display:flex;flex-direction:column;gap:10px;max-width:560px;margin:0 auto;}
+  .rankrow{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;transition:box-shadow .8s ease,border-color .8s ease,background .8s ease;}
+  .rankrow.flash{border-color:var(--secondary);box-shadow:0 0 0 3px rgba(59,130,246,.2);background:#F5F9FF;}
+  .rankrow .rnum{width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;
+    align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex:0 0 auto;}
+  .rankrow:first-child .rnum{background:var(--secondary);border-color:var(--secondary);color:#fff;}
+  .rankrow .rinfo{flex:1;min-width:0;}
+  .rankrow .rname{font-weight:600;font-size:0.94rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rankrow .rnct{font-size:0.72rem;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;margin-top:2px;}
+  .rankrow .rverdict{flex:0 0 auto;}
+  .rankrow .rverdict .badge{font-size:0.7rem;padding:3px 10px;}
+  .rankdelta{flex:0 0 auto;font-size:0.86rem;font-weight:700;display:flex;align-items:center;gap:3px;min-width:48px;justify-content:flex-end;}
+  .rankdelta.up{color:var(--up);} .rankdelta.down{color:var(--down);} .rankdelta.same{color:var(--ink-soft);}
+
+  /* ===== TAB: history — clean vertical timeline ===== */
+  .historywrap{max-width:640px;margin:0 auto;position:relative;padding-left:30px;}
+  .historywrap::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--border);}
+  .histitem{position:relative;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:16px;}
+  .histitem::before{content:"";position:absolute;left:-25px;top:20px;width:10px;height:10px;border-radius:50%;background:var(--secondary);
+    border:3px solid var(--bg);box-shadow:0 0 0 1px var(--border);}
+  .histitem.past::before{background:var(--ink-soft);}
+  .histtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .histround{font-weight:700;font-size:0.92rem;}
+  .histtime{font-size:0.74rem;color:var(--ink-soft);}
+  .histstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .histpill{background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:3px 12px;font-size:0.76rem;color:var(--ink-soft);}
+  .histpill b{color:var(--ink);}
+  .revert-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:7px 16px;cursor:pointer;color:var(--ink);font-size:0.8rem;font-weight:600;}
+  .revert-btn:hover{border-color:var(--secondary);color:var(--secondary);}
+  .revert-btn:disabled{opacity:.4;cursor:default;}
+</style>
+</head>
+<body>
+<div class="utilbar">
+  <span class="name">[시스템 이름]</span>
+  <span class="eventtag">2026 SKKU HEALTHCARE<br>AGENTIC CHALLENGE</span>
+</div>
+
+<div class="tabbarouter">
+  <div class="patient-dropdown" id="patientDropdown">
+    <button class="pdbtn" id="pdBtn">[환자 A] <span class="pdmeta">62F</span> <span class="chev">▾</span></button>
+    <div class="pdmenu" id="pdMenu">
+      <div class="pditem sel" data-p="A">[환자 A] <span>62F</span></div>
+      <div class="pditem" data-p="B">[환자 B] <span>54M</span></div>
+      <div class="pditem" data-p="C">[환자 C] <span>71F</span></div>
+      <div class="pditem new">+ 새 환자 입력</div>
+    </div>
+  </div>
+  <div class="tabbar" id="tabbar">
+    <div class="tab active" data-v="board">환자 &amp; 임상시험 보드</div>
+    <div class="tab" data-v="chat">확인 질문 <span class="tabbadge" id="qCountBadge">3</span></div>
+    <div class="tab" data-v="ranking">최종 순위 추천</div>
+    <div class="tab" data-v="history">변경 이력</div>
+  </div>
+  <div class="livestatus" id="liveStatus">
+    <span class="livebadge"><span class="livedot"></span>LIVE</span>
+    <span class="statustext" id="statusText">확인 질문 2개 대기중</span>
+  </div>
+</div>
+
+<!-- ===== TAB 1 ===== -->
+<div class="view active" id="v-board">
+  <div class="sectionlabel">환자 상세</div>
+  <div class="pdetail" id="pdetail">
+    <!-- filled by JS with mock patient data -->
+  </div>
+
+  <div class="boardhead">
+    <label class="edittoggle" id="edittoggle">
+      <span class="switch">
+        <input type="checkbox" id="dragEnable">
+        <span class="slider"></span>
+      </span>
+      <span id="toggleLabel">카드 이동 잠김 — 토글을 켜면 드래그로 칼럼 이동 가능</span>
+    </label>
+  </div>
+
+  <div class="sectionlabel">임상시험 매칭 현황</div>
+  <div class="board" id="board">
+    <div class="col col-met" data-col="met"><h3>MET <span class="count">2</span></h3>
+      <div class="kcard" data-modal="m1"><div class="name">[임상시험명 1]</div><div class="nct mono">[NCT ID]</div>
+        <div class="hint">클릭 → 세부 근거 보기</div></div>
+      <div class="kcard" data-modal="m5"><div class="name">[임상시험명 5]</div><div class="nct mono">[NCT ID]</div>
+        <div class="hint">클릭 → 세부 근거 보기</div></div>
+    </div>
+    <div class="col col-uncertain" data-col="uncertain"><h3>UNCERTAIN <span class="count">1</span></h3>
+      <div class="kcard" data-modal="m2"><div class="name">[임상시험명 2]</div><div class="nct mono">[NCT ID]</div>
+        <div class="hint">클릭 → 세부 근거 보기</div></div>
+    </div>
+    <div class="col col-notmet" data-col="notmet"><h3>NOT MET <span class="count">1</span></h3>
+      <div class="kcard" data-modal="m3"><div class="name">[임상시험명 3]</div><div class="nct mono">[NCT ID]</div>
+        <div class="hint">클릭 → 세부 근거 보기</div></div>
+    </div>
+    <div class="col col-unknown" data-col="unknown"><h3>UNKNOWN <span class="count">1</span></h3>
+      <div class="kcard" data-modal="m4"><div class="name">[임상시험명 4]</div><div class="nct mono">[NCT ID]</div>
+        <div class="hint">클릭 → 세부 근거 보기</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 2: chat + evidence split, grouped by trial via pills ===== -->
+<div class="view" id="v-chat">
+  <div class="trialpills" id="trialPills">
+    <!-- filled by JS: one pill per trial that has pending questions for the current patient -->
+  </div>
+  <div class="splitwrap">
+    <div class="evidencepane" id="evidencepane">
+      <!-- filled by JS: selected trial's criteria detail -->
+    </div>
+    <div class="chatpane">
+      <div class="chathead" id="chatHead">확인 질문</div>
+      <div class="chatscroll" id="chatscroll">
+        <!-- filled by JS: selected trial's question thread -->
+      </div>
+      <div class="chatinput">
+        <input type="text" id="chatText" placeholder="[답변 입력...]">
+        <button id="chatSend">전송</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 3: ranking ===== -->
+<div class="view" id="v-ranking">
+  <div class="rankhead">
+    <div class="status" id="rankStatus">마지막 업데이트: [초기 매칭 기준]</div>
+    <button class="refresh-btn" id="refreshBtn">↻ 최신화</button>
+  </div>
+  <div class="ranklist" id="ranklist">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- ===== TAB 4: history — clean timeline ===== -->
+<div class="view" id="v-history">
+  <div class="historywrap">
+    <div class="histitem">
+      <div class="histtop"><span class="histround">라운드 1</span><span class="histtime">[방금 전]</span></div>
+      <div class="histstats">
+        <span class="histpill">질문 <b>2개</b> 답변</span>
+        <span class="histpill">판정 변화 <b>3건</b></span>
+        <span class="histpill">순위 변화 <b>2건</b></span>
+      </div>
+      <button class="revert-btn">↩ 이 라운드 되돌리기</button>
+    </div>
+    <div class="histitem past">
+      <div class="histtop"><span class="histround">라운드 0</span><span class="histtime">[초기 실행]</span></div>
+      <div class="histstats"><span class="histpill">초기 매칭 <b>5건</b> 생성</span></div>
+      <button class="revert-btn" disabled>—</button>
+    </div>
+  </div>
+</div>
+
+<!-- detail overlay, shared by all cards -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modalhead">
+      <div class="modalhead-top">
+        <div><div class="name" id="modalName">[임상시험명]</div><div class="nct" id="modalNct">[NCT ID]</div></div>
+        <button class="modalclose" id="modalClose">✕</button>
+      </div>
+      <div class="verdict-banner" id="verdictBanner">
+        <span><span class="lbl">최종 판정</span><br><span id="verdictText">MET</span></span>
+        <span id="verdictSummary" style="font-weight:500;font-size:0.84rem;"></span>
+      </div>
+    </div>
+    <div class="modalbody" id="modalBody">
+      <!-- filled by JS per card -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- tab switching ----------
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('v-'+t.dataset.v).classList.add('active');
+  }));
+
+  // ---------- MOCK patient data (used only for this patient-detail feature) ----------
+  const patients={
+    A:{label:'[환자 A]',meta:'62F',name:'환자 A',age:'62세 · 여성',dx:'HER2+ 침윤성 유방암, Stage IIIA',ecog:'ECOG 1',
+       biomarker:'HER2 IHC 3+ / ER 음성',labs:'ANC 3.2×10⁹/L · Cr 0.8mg/dL',
+       surgery:'2024.03 유방 부분절제술 + 감시림프절 생검',
+       pastTx:'수술 전 선행항암 없음 · 방사선치료 이력 없음',
+       tx:'AC-T 보조항암 4주기 완료',note:'[정보 추출 단계에서 자동 요약된 가상 데이터입니다 — 실제 환자 기록 아님]'},
+    B:{label:'[환자 B]',meta:'54M',name:'환자 B',age:'54세 · 남성',dx:'비소세포폐암(NSCLC), Stage IV, 선암',ecog:'ECOG 0',
+       biomarker:'EGFR exon19 결손 양성',labs:'ANC 4.1×10⁹/L · Cr 1.0mg/dL',
+       surgery:'수술 이력 없음(진단 시 이미 전이성)',
+       pastTx:'2023.11 백금기반 세포독성항암 2주기 후 중단',
+       tx:'1차 EGFR-TKI 치료 중, 진행 소견 없음',note:'[정보 추출 단계에서 자동 요약된 가상 데이터입니다 — 실제 환자 기록 아님]'},
+    C:{label:'[환자 C]',meta:'71F',name:'환자 C',age:'71세 · 여성',dx:'다발성 골수종, ISS Stage II',ecog:'ECOG 2',
+       biomarker:'del(17p) 음성 · t(4;14) 음성',labs:'ANC 2.1×10⁹/L · Cr 1.4mg/dL',
+       surgery:'척추 압박골절로 인한 경피적 척추성형술(2023.06)',
+       pastTx:'1차 VRd 요법 6주기, 2차 자가조혈모세포이식 후 재발',
+       tx:'2차 치료 후 재발, 3차 치료 옵션 탐색중',note:'[정보 추출 단계에서 자동 요약된 가상 데이터입니다 — 실제 환자 기록 아님]'},
+  };
+  // ---------- MOCK confirm-question data, grouped by trial — different patients surface different trials/questions ----------
+  const questionData={
+    A:[
+      {trial:'[임상시험명 2]',nct:'[NCT ID]',verdict:'UNCERTAIN',
+       evrows:[
+         {type:'inc',tag:'포함기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용 — 해석이 모호함]"',note:'[이 기준이 왜 UNCERTAIN인지 설명]',badge:'UNCERTAIN'},
+         {type:'exc',tag:'제외기준 03',text:'[기준 조항 원문 문장]',ev:'[환자 기록에 명시 없음]',note:'[확인 질문으로 해소하려는 부분]',badge:'UNKNOWN'},
+       ],
+       questions:['[확인 질문 문장 1 — 좌측 근거의 모호한 부분을 명확히 하기 위한 질문]','[확인 질문 문장 2]']},
+      {trial:'[임상시험명 4]',nct:'[NCT ID]',verdict:'UNKNOWN',
+       evrows:[{type:'inc',tag:'포함기준 01',text:'[기준 조항 원문 문장]',ev:'[환자 기록에 근거 없음]',note:'[추가 확인이 필요한 이유]',badge:'UNKNOWN'}],
+       questions:['[확인 질문 문장 1]']},
+    ],
+    B:[
+      {trial:'[임상시험명 7]',nct:'[NCT ID]',verdict:'UNCERTAIN',
+       evrows:[
+         {type:'inc',tag:'포함기준 02',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'UNCERTAIN'},
+         {type:'exc',tag:'제외기준 01',text:'[기준 조항 원문 문장]',ev:'[명시 없음]',note:'[해석 설명]',badge:'UNKNOWN'},
+       ],
+       questions:['[확인 질문 문장 1]','[확인 질문 문장 2]','[확인 질문 문장 3]']},
+    ],
+    C:[
+      {trial:'[임상시험명 9]',nct:'[NCT ID]',verdict:'UNCERTAIN',
+       evrows:[{type:'inc',tag:'포함기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'UNCERTAIN'}],
+       questions:['[확인 질문 문장 1]']},
+      {trial:'[임상시험명 10]',nct:'[NCT ID]',verdict:'UNKNOWN',
+       evrows:[{type:'exc',tag:'제외기준 02',text:'[기준 조항 원문 문장]',ev:'[명시 없음]',note:'[해석 설명]',badge:'UNKNOWN'}],
+       questions:['[확인 질문 문장 1]']},
+    ],
+  };
+  let currentPatientId='A', currentTrialIdx=0;
+
+  // per-patient loop status — each patient can be sitting at a different point in the
+  // 파싱>정보추출>매칭/추론>부족정보탐지>질문생성>추천/설명>재평가 loop at any given time.
+  // Clicking the status jumps straight to the tab where that state lives.
+  const loopStatus={
+    A:{text:'확인 질문 2개 대기중',tab:'chat'},
+    B:{text:'매칭 결과 재평가 중',tab:'board'},
+    C:{text:'순위 업데이트 완료',tab:'ranking'},
+  };
+  function renderLiveStatus(id){
+    const s=loopStatus[id];
+    document.getElementById('statusText').textContent=s.text;
+    document.getElementById('liveStatus').dataset.tab=s.tab;
+  }
+  document.getElementById('liveStatus').addEventListener('click', ()=>{
+    const targetTab=document.getElementById('liveStatus').dataset.tab;
+    document.querySelector(`.tab[data-v="${targetTab}"]`)?.click();
+  });
+
+  function renderTrialPills(){
+    const groups=questionData[currentPatientId];
+    document.getElementById('trialPills').innerHTML=groups.map((g,i)=>`
+      <div class="trialpill ${i===currentTrialIdx?'sel':''}" data-idx="${i}">
+        ${g.trial} <span class="pillcount">${g.questions.length}</span>
+      </div>`).join('');
+    document.querySelectorAll('.trialpill').forEach(p=>p.addEventListener('click',()=>{
+      currentTrialIdx=+p.dataset.idx;
+      renderTrialPills();
+      renderSplitView();
+    }));
+  }
+  function renderSplitView(){
+    const g=questionData[currentPatientId][currentTrialIdx];
+    document.getElementById('evidencepane').innerHTML=`
+      <h3>관련 임상시험 근거</h3>
+      <div class="evtrial">${g.trial}</div>
+      <div class="evnct">${g.nct} · 현재 판정: ${g.verdict}</div>
+      ${g.evrows.map(r=>`
+        <div class="critdetail ${r.type}">
+          <div class="crittag">${r.tag}</div>
+          <div class="crittext">${r.text}</div>
+          <div class="critevidence">${r.ev}</div>
+          <div class="critnote">${r.note}</div>
+          <span class="badge ${badgeClass[r.badge]}">${r.badge}</span>
+        </div>`).join('')}`;
+    document.getElementById('chatHead').textContent=`확인 질문 — ${g.trial} 관련 대화`;
+    document.getElementById('chatscroll').innerHTML=g.questions.map((q,i)=>`
+      <div class="msg"><div class="avatar">SYS</div><div class="bubble">Q${i+1}. ${q}</div></div>`).join('');
+  }
+  function updateQuestionBadge(){
+    const total=questionData[currentPatientId].reduce((sum,g)=>sum+g.questions.length,0);
+    document.getElementById('qCountBadge').textContent=total;
+  }
+
+  function renderPatient(id){
+    currentPatientId=id; currentTrialIdx=0;
+    const p=patients[id];
+    document.getElementById('pdetail').innerHTML=`
+      <div class="field"><div class="k">환자</div><div class="v">${p.name} · ${p.age}</div></div>
+      <div class="field"><div class="k">진단</div><div class="v">${p.dx}</div></div>
+      <div class="field"><div class="k">전신상태</div><div class="v">${p.ecog}</div></div>
+      <div class="field"><div class="k">바이오마커</div><div class="v">${p.biomarker}</div></div>
+      <div class="field"><div class="k">주요 검사수치</div><div class="v">${p.labs}</div></div>
+      <div class="field"><div class="k">수술 이력</div><div class="v">${p.surgery}</div></div>
+      <div class="field"><div class="k">과거 치료 이력</div><div class="v">${p.pastTx}</div></div>
+      <div class="field"><div class="k">현재 치료</div><div class="v">${p.tx}</div></div>
+      <div class="pdetail-tag">${p.note}</div>`;
+    document.getElementById('pdBtn').innerHTML=`${p.label} <span class="pdmeta">${p.meta}</span> <span class="chev">▾</span>`;
+    renderTrialPills();
+    renderSplitView();
+    updateQuestionBadge();
+    renderLiveStatus(id);
+  }
+  // renderPatient('A') is called at the bottom of this script, once badgeClass etc. below are defined.
+
+  // ---------- global patient dropdown (lives in tabbar, visible from every tab) ----------
+  const pdBtn=document.getElementById('pdBtn'), pdMenu=document.getElementById('pdMenu');
+  pdBtn.addEventListener('click', e=>{ e.stopPropagation(); pdMenu.classList.toggle('open'); });
+  document.addEventListener('click', ()=>pdMenu.classList.remove('open'));
+  document.querySelectorAll('.pditem[data-p]').forEach(item=>item.addEventListener('click', e=>{
+    e.stopPropagation();
+    document.querySelectorAll('.pditem').forEach(x=>x.classList.remove('sel'));
+    item.classList.add('sel');
+    renderPatient(item.dataset.p);
+    pdMenu.classList.remove('open');
+  }));
+
+  // ---------- edit-mode toggle gates drag ----------
+  const dragEnable=document.getElementById('dragEnable');
+  const toggleLabel=document.getElementById('toggleLabel');
+  const editWrap=document.getElementById('edittoggle');
+  function applyDraggable(){
+    const on=dragEnable.checked;
+    document.querySelectorAll('.kcard').forEach(c=>c.draggable=on);
+    toggleLabel.textContent = on ? '카드 이동 켜짐 — 드래그해서 칼럼을 옮기세요' : '카드 이동 잠김 — 토글을 켜면 드래그로 칼럼 이동 가능';
+    editWrap.classList.toggle('on', on);
+  }
+  dragEnable.addEventListener('change', applyDraggable);
+  applyDraggable();
+
+  let dragged=null;
+  document.querySelectorAll('.kcard').forEach(card=>{
+    card.addEventListener('dragstart', e=>{
+      if(!dragEnable.checked){ e.preventDefault(); return; }
+      dragged=card; card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', ()=>{ card.classList.remove('dragging'); dragged=null; });
+  });
+  document.querySelectorAll('.col').forEach(col=>{
+    col.addEventListener('dragover', e=>{
+      if(!dragEnable.checked || !dragged) return;
+      e.preventDefault(); col.classList.add('dragover');
+    });
+    col.addEventListener('dragleave', ()=>col.classList.remove('dragover'));
+    col.addEventListener('drop', e=>{
+      if(!dragEnable.checked || !dragged) return;
+      e.preventDefault(); col.classList.remove('dragover');
+      col.appendChild(dragged);
+      updateCounts();
+    });
+  });
+  function updateCounts(){
+    document.querySelectorAll('.col').forEach(col=>{
+      const n=col.querySelectorAll('.kcard').length;
+      col.querySelector('.count').textContent=n;
+    });
+  }
+
+  // ---------- detail overlay: bigger, scrollable, verdict banner, inc=blue/exc=orange, editable ----------
+  const details={
+    m1:{name:'[임상시험명 1]',nct:'[NCT ID]',rows:[
+      {type:'inc',tag:'포함기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'MET'},
+      {type:'inc',tag:'포함기준 02',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'MET'},
+      {type:'exc',tag:'제외기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'MET'},
+      {type:'exc',tag:'제외기준 02',text:'[기준 조항 원문 문장]',ev:'[근거 없음]',note:'[해석 설명]',badge:'MET'},
+    ]},
+    m5:{name:'[임상시험명 5]',nct:'[NCT ID]',rows:[
+      {type:'inc',tag:'포함기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'MET'},
+      {type:'inc',tag:'포함기준 02',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'MET'},
+      {type:'exc',tag:'제외기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[해석 설명]',badge:'MET'},
+    ]},
+    m2:{name:'[임상시험명 2]',nct:'[NCT ID]',rows:[
+      {type:'inc',tag:'포함기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용, 해석 모호]"',note:'[왜 UNCERTAIN인지 설명]',badge:'UNCERTAIN'},
+      {type:'exc',tag:'제외기준 03',text:'[기준 조항 원문 문장]',ev:'[환자 기록에 명시 없음]',note:'[확인 질문으로 해소 예정]',badge:'UNKNOWN'},
+    ]},
+    m3:{name:'[임상시험명 3]',nct:'[NCT ID]',rows:[
+      {type:'exc',tag:'제외기준 01',text:'[기준 조항 원문 문장]',ev:'"[근거 문장 인용]"',note:'[제외 사유 설명]',badge:'NOT_MET'},
+    ]},
+    m4:{name:'[임상시험명 4]',nct:'[NCT ID]',rows:[
+      {type:'inc',tag:'포함기준 01',text:'[기준 조항 원문 문장]',ev:'[환자 기록에 근거 없음]',note:'[추가 확인 필요 이유]',badge:'UNKNOWN'},
+    ]},
+  };
+  const badgeClass={MET:'b-met',NOT_MET:'b-notmet',UNCERTAIN:'b-uncertain',UNKNOWN:'b-unknown'};
+  const verdictClass={MET:'verdict-met',NOT_MET:'verdict-notmet',UNCERTAIN:'verdict-uncertain',UNKNOWN:'verdict-unknown'};
+  const cycleOrder=['MET','UNCERTAIN','NOT_MET','UNKNOWN'];
+  const summaryText={MET:'모든 기준 충족',NOT_MET:'제외기준 저촉으로 부적격',UNCERTAIN:'일부 기준 해석 모호, 확인 필요',UNKNOWN:'핵심 정보 부족'};
+
+  function computeOverall(rows){
+    if(rows.some(r=>r.badge==='NOT_MET')) return 'NOT_MET';
+    if(rows.some(r=>r.badge==='UNCERTAIN')) return 'UNCERTAIN';
+    if(rows.some(r=>r.badge==='UNKNOWN')) return 'UNKNOWN';
+    return 'MET';
+  }
+  function renderModal(d){
+    document.getElementById('modalName').textContent=d.name;
+    document.getElementById('modalNct').textContent=d.nct;
+    const overall=computeOverall(d.rows);
+    const banner=document.getElementById('verdictBanner');
+    banner.className='verdict-banner '+verdictClass[overall];
+    document.getElementById('verdictText').textContent=overall;
+    document.getElementById('verdictSummary').textContent=summaryText[overall];
+    document.getElementById('modalBody').innerHTML=d.rows.map((r,i)=>`
+      <div class="critdetail ${r.type}">
+        <div class="crittag">${r.tag}</div>
+        <div class="crittext">${r.text}</div>
+        <div class="critevidence">${r.ev}</div>
+        <div class="critnote">${r.note}</div>
+        <div class="critfoot">
+          <span class="badge ${badgeClass[r.badge]}" data-rowidx="${i}">${r.badge}</span>
+          <select class="edit-select" data-rowidx="${i}">
+            ${cycleOrder.map(v=>`<option value="${v}" ${v===r.badge?'selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+      </div>`).join('');
+    // wire per-row dropdowns so any of the 4 verdicts can be picked directly, recomputing the overall banner
+    document.querySelectorAll('#modalBody .edit-select').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        const idx=+sel.dataset.rowidx;
+        d.rows[idx].badge=sel.value;
+        renderModal(d);
+      });
+    });
+  }
+  const overlay=document.getElementById('overlay');
+  document.querySelectorAll('.kcard').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      if(dragged) return;
+      const d=details[card.dataset.modal];
+      if(!d) return;
+      renderModal(d);
+      overlay.classList.add('open');
+    });
+  });
+  document.getElementById('modalClose').addEventListener('click', ()=>overlay.classList.remove('open'));
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.classList.remove('open'); });
+
+  // ---------- chat pane: send appends a user bubble ----------
+  const chatText=document.getElementById('chatText'), chatScroll=document.getElementById('chatscroll');
+  function sendChat(){
+    const val=chatText.value.trim();
+    if(!val) return;
+    const msg=document.createElement('div');
+    msg.className='msg user';
+    msg.innerHTML=`<div class="avatar">나</div><div class="bubble"></div>`;
+    msg.querySelector('.bubble').textContent=val;
+    chatScroll.appendChild(msg);
+    chatText.value='';
+    chatScroll.scrollTop=chatScroll.scrollHeight;
+  }
+  document.getElementById('chatSend').addEventListener('click', sendChat);
+  chatText.addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
+
+  // ---------- ranking tab: mock, randomized on each refresh ----------
+  const trialPool=[
+    {name:'[임상시험명 1]',nct:'[NCT ID]',verdict:'MET'},
+    {name:'[임상시험명 5]',nct:'[NCT ID]',verdict:'MET'},
+    {name:'[임상시험명 2]',nct:'[NCT ID]',verdict:'UNCERTAIN'},
+    {name:'[임상시험명 4]',nct:'[NCT ID]',verdict:'UNKNOWN'},
+    {name:'[임상시험명 3]',nct:'[NCT ID]',verdict:'NOT_MET'},
+  ];
+  function renderRanking(deltas){
+    // deltas[i] !== 0 marks a row that actually moved this refresh — only those get a persistent highlight
+    const list=document.getElementById('ranklist');
+    list.innerHTML=trialPool.map((t,i)=>{
+      const d=deltas ? deltas[i] : 0;
+      const dirClass = d>0?'up':d<0?'down':'same';
+      const arrow = d>0?'▲':d<0?'▼':'—';
+      const dtext = d===0?'—':`${arrow}${Math.abs(d)}`;
+      const changed = deltas && d!==0;
+      return `<div class="rankrow ${changed?'flash':''}">
+        <div class="rnum">${i+1}</div>
+        <div class="rinfo"><div class="rname">${t.name}</div><div class="rnct">${t.nct}</div></div>
+        <div class="rverdict"><span class="badge ${badgeClass[t.verdict]}">${t.verdict}</span></div>
+        <div class="rankdelta ${dirClass}">${dtext}</div>
+      </div>`;
+    }).join('');
+  }
+  renderRanking(null);
+  const refreshBtn=document.getElementById('refreshBtn');
+  const rankStatus=document.getElementById('rankStatus');
+  refreshBtn.addEventListener('click', ()=>{
+    const shuffled=[...trialPool].sort(()=>Math.random()-0.5);
+    trialPool.length=0; trialPool.push(...shuffled);
+    // at least one row is guaranteed to show a real change so the highlight always has something to point at
+    const deltas=trialPool.map(()=>Math.floor(Math.random()*5)-2);
+    if(deltas.every(d=>d===0)) deltas[0]=1;
+    renderRanking(deltas);
+    refreshBtn.classList.add('done');
+    refreshBtn.textContent='✓ 반영 완료';
+    const now=new Date();
+    rankStatus.textContent=`마지막 업데이트: 방금 확인 질문 답변이 반영됨 (${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')})`;
+    rankStatus.classList.add('fresh');
+    setTimeout(()=>{
+      refreshBtn.classList.remove('done');
+      refreshBtn.textContent='↻ 최신화';
+    }, 1400);
+    // changed rows stay highlighted briefly, then fade out on their own (not an abrupt cutoff)
+    setTimeout(()=>{
+      document.querySelectorAll('.rankrow.flash').forEach(r=>r.classList.remove('flash'));
+    }, 2000);
+  });
+
+  // now that badgeClass/renderSplitView/etc. are all defined, do the initial patient render
+  renderPatient('A');
+</script>
+</body>
+</html>
