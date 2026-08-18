@@ -300,9 +300,120 @@
     font-size:0.7rem;font-weight:700;white-space:nowrap;
   }
 
-  .changelog{margin-top:14px;font-size:0.8rem;color:var(--ink-soft);}
-  .changelog div{padding:4px 0;border-top:1px dashed var(--line);}
-  .changelog div:first-child{border-top:none;}
+  /* ---- 변경 이력 (answer-round history) ---- */
+  .changelog{margin-top:14px;font-size:0.8rem;color:var(--ink);}
+  .rounds-head{font-size:0.82rem;font-weight:700;color:var(--ink-soft);margin-bottom:2px;}
+  .round-item{border-top:1px solid var(--line);padding:8px 0;}
+  .round-title{font-size:0.8rem;font-weight:700;color:var(--accent-dark);margin-bottom:4px;}
+  .round-qa{font-size:0.78rem;color:var(--ink-soft);margin:2px 0 4px;line-height:1.5;overflow-wrap:anywhere;}
+  .round-change{font-size:0.78rem;padding:2px 0;overflow-wrap:anywhere;}
+  .round-change.rank{color:var(--ink-soft);}
+  .round-more{font-size:0.75rem;color:var(--ink-soft);}
+
+  /* ---- 이 환자에게 필요한 것 (need card) ---- */
+  .need-card{
+    border:1px solid var(--accent);border-left:6px solid var(--accent);border-radius:10px;
+    background:var(--accent-soft);padding:13px 16px;margin-bottom:16px;
+  }
+  .need-card .nc-label{display:block;font-size:0.74rem;font-weight:700;color:var(--accent-dark);letter-spacing:0.03em;}
+  .need-card .nc-need{font-size:1.45rem;font-weight:700;color:var(--accent-dark);margin:1px 0 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .need-card .nc-hedge{
+    font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:99px;
+    background:var(--uncertain-bg);color:var(--uncertain);white-space:nowrap;
+  }
+  .need-card .nc-reason{font-size:0.84rem;color:var(--ink);margin:2px 0 0;}
+  .need-card .nc-reason .nc-why{color:var(--ink-soft);font-size:0.76rem;margin-right:6px;font-weight:700;}
+  .need-card .nc-link{
+    font-size:0.78rem;color:var(--ink-soft);margin-top:8px;padding-top:7px;
+    border-top:1px dashed #bcd8ce;
+  }
+  .need-card .nc-link b{color:var(--accent-dark);}
+
+  /* ---- three-question chip groups on each trial card ---- */
+  .basis-groups{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 10px;padding-left:36px;}
+  .basis-group{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;}
+  .basis-group .bg-label{
+    font-size:0.7rem;font-weight:700;color:var(--ink-soft);cursor:help;white-space:nowrap;
+    border-bottom:1px dotted var(--line);
+  }
+
+  /* ---- 등록까지 남은 것 (per-trial screening worklist) ---- */
+  .path-box{
+    border:1px solid var(--line);border-radius:10px;background:var(--bg-alt);
+    padding:10px 12px;margin:0 0 12px;
+  }
+  .path-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px;}
+  .path-summary{font-weight:700;font-size:0.86rem;}
+  .path-chip{
+    font-size:0.72rem;font-weight:700;padding:2px 9px;border-radius:99px;
+    background:var(--unknown-bg);color:var(--unknown);white-space:nowrap;
+  }
+  .path-chip.blocking{background:var(--not-met-bg);color:var(--not-met);}
+  .path-chip.resolve{background:var(--uncertain-bg);color:var(--uncertain);}
+  .path-chip.ok{background:var(--met-bg);color:var(--met);}
+  .path-chip.zero{background:var(--unknown-bg);color:var(--unknown);}
+  .path-group{margin-top:6px;}
+  .path-group-label{
+    font-size:0.72rem;font-weight:700;color:var(--ink-soft);letter-spacing:0.02em;margin-bottom:3px;
+  }
+  .path-item{
+    display:flex;gap:8px;align-items:baseline;justify-content:space-between;
+    font-size:0.82rem;padding:3px 0;border-top:1px dashed var(--line);
+  }
+  .path-item .path-text{overflow-wrap:anywhere;min-width:0;}
+  .path-group.blocking .path-text{color:var(--not-met);}
+  .path-action{
+    flex:0 0 auto;font-size:0.7rem;font-weight:700;color:var(--accent-dark);
+    background:var(--accent-soft);border-radius:6px;padding:1px 7px;white-space:nowrap;
+  }
+  .path-more{font-size:0.75rem;color:var(--ink-soft);padding-top:3px;}
+
+  /* ---- 이 답변이 바꾼 것 (per-round cause-effect view) ---- */
+  .dag-section{
+    border:1px solid var(--line);border-radius:10px;background:var(--bg);
+    padding:10px 16px 14px;margin:18px 0 0;
+  }
+  .dag-section summary{
+    cursor:pointer;font-weight:700;font-size:0.95rem;color:var(--ink);
+    list-style-position:inside;
+  }
+  .dag-section .dag-sub{font-size:0.78rem;color:var(--ink-soft);margin:6px 0 10px;}
+  .dag-note{font-size:0.85rem;color:var(--ink-soft);margin:8px 0 2px;}
+  .dag-scroll{overflow-x:auto;}
+  .dag-inner{position:relative;min-width:680px;}
+  #dagEdges{position:absolute;top:0;left:0;pointer-events:none;z-index:0;}
+  .dag-edge{stroke:var(--ink-soft);stroke-width:1.5px;fill:none;}
+  #dagEdges marker path{fill:var(--ink-soft);}
+  .dag-grid{
+    display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:20px;
+    position:relative;z-index:1;
+  }
+  .dag-col-label{
+    font-size:0.72rem;font-weight:700;color:var(--ink-soft);letter-spacing:0.03em;
+    margin-bottom:6px;border-bottom:1px solid var(--line);padding-bottom:3px;
+  }
+  .dag-card{
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:8px;
+    padding:8px 10px;margin-bottom:10px;font-size:0.8rem;line-height:1.45;
+  }
+  .dag-card .dag-card-text{margin-bottom:5px;overflow-wrap:anywhere;}
+  .dag-card .dag-card-cap{display:block;font-size:0.68rem;font-weight:700;color:var(--ink-soft);margin-bottom:2px;}
+  .dag-card.clickable{cursor:pointer;}
+  .dag-card.clickable:hover{border-color:var(--accent);}
+  .dag-card .badge{margin-right:3px;}
+  .dag-rank-move{font-weight:700;}
+  .dag-rank-move.up{color:var(--met);}
+  .dag-rank-move.down{color:var(--not-met);}
+  .dag-empty{font-size:0.76rem;color:#9aa2ad;padding:6px 2px;}
+
+  /* long monospace evidence and criterion text must wrap, never widen the page */
+  .crit-row .crit-text,.crit-row .crit-evidence,.crit-row .crit-reason{overflow-wrap:anywhere;min-width:0;}
+  .trial-card-head .titlewrap h3{overflow-wrap:anywhere;}
+
+  @media (max-width:480px){
+    .crit-row{grid-template-columns:1fr;gap:4px;}
+    .rank-why,.basis-groups{padding-left:0;}
+  }
 
   footer.disclaimer{
     max-width:1200px;margin:0 auto;padding:18px 24px 30px;border-top:1px solid var(--line);
@@ -316,7 +427,7 @@
 <header class="topbar">
   <h1>Interactive Clinical Trial Recommendation</h1>
   <p class="subtitle">사람이 직접 답변을 입력하면 영향받는 기준만 실시간 재평가됩니다</p>
-  <span class="badge-pill">데모 환자 10명 중 선택</span>
+  <span class="badge-pill" id="patientCountPill">데모 환자 중 선택</span>
   <span class="doclinks">
     <a href="/agent_orchestration.html" target="_blank" rel="noopener">에이전트 구성도</a>
     <a href="/criteria_map.html" target="_blank" rel="noopener">기준 게이트맵</a>
@@ -345,12 +456,36 @@
     <div class="empty-note" id="emptyNote">왼쪽에서 환자를 선택하세요.</div>
 
     <div id="vignetteBox" class="vignette" style="display:none;"></div>
+    <section id="needCard" class="need-card" style="display:none;"></section>
     <div id="summaryStrip" class="summary-strip" style="display:none;"></div>
-    <p class="stage-note" id="verdictLegend" style="display:none;">각 기준에는 두 가지가 표시됩니다. 적격성 효과(PASS, FAIL, REVIEW)는 참여 가능 여부에 미치는 영향이고, 그 옆의 조건 판정(MET, NOT_MET, UNKNOWN)은 기준 문장이 환자에게 해당하는지만 나타냅니다. 제외 기준의 조건 판정이 MET이면 환자가 그 조건을 가지고 있다는 뜻이므로 적격성 효과는 FAIL이 됩니다.</p>
+    <p class="stage-note" id="verdictLegend" style="display:none;">각 기준에는 두 가지가 표시됩니다. 적격성 효과(PASS, FAIL, REVIEW)는 참여 가능 여부에 미치는 영향이고, 그 옆의 조건 판정(MET, NOT_MET, UNCERTAIN, UNKNOWN)은 기준 문장이 환자에게 해당하는지만 나타냅니다. 제외 기준의 조건 판정이 MET이면 환자가 그 조건을 가지고 있다는 뜻이므로 적격성 효과는 FAIL이 됩니다.</p>
     <section id="priorityHead" class="priority-head" style="display:none;"></section>
     <div id="trialsBody"></div>
+    <details id="dagSection" class="dag-section" style="display:none;" open>
+      <summary>이 답변이 바꾼 것</summary>
+      <p class="dag-sub">방금 넣은 답이 실제로 움직인 것만 그립니다. 여기 없는 기준은 건드리지 않았다는 뜻입니다. 기준 칸을 누르면 해당 기준으로 이동합니다.</p>
+      <p class="dag-note" id="dagNote" style="display:none;"></p>
+      <div class="dag-scroll" id="dagScroll">
+        <div class="dag-inner" id="dagInner">
+          <svg id="dagEdges" aria-hidden="true">
+            <defs>
+              <marker id="dagArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z"></path>
+              </marker>
+            </defs>
+          </svg>
+          <div class="dag-grid" id="dagGrid">
+            <div class="dag-col" data-col="question"><div class="dag-col-label">질문과 답</div></div>
+            <div class="dag-col" data-col="criterion"><div class="dag-col-label">다시 판정된 기준</div></div>
+            <div class="dag-col" data-col="trial"><div class="dag-col-label">시험 적격성</div></div>
+            <div class="dag-col" data-col="rank"><div class="dag-col-label">추천 순위</div></div>
+          </div>
+        </div>
+      </div>
+    </details>
     <div id="questionsDock" class="questions-dock" style="display:none;">
       <h2>확인 질문</h2>
+      <p class="stage-note" style="margin:0 0 12px;">위에 있는 질문일수록 답했을 때 다시 판정되는 기준이 많습니다. 답변은 그 답과 연결된 기준만 다시 판정합니다.</p>
       <div id="questionsBody"></div>
       <div class="changelog" id="changelog"></div>
     </div>
@@ -358,7 +493,7 @@
 </div>
 
 <footer class="disclaimer">
-  본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 LLM 호출로 영향받는 기준만 재평가됩니다. 이 데모는 10명의 사전 등록된 환자만 지원합니다.
+  본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 LLM 호출로 영향받는 기준만 재평가됩니다. 이 데모는 왼쪽 목록의 사전 등록된 환자만 지원합니다.
   <span class="compliance">데이터 출처 ClinicalTrials.gov API v2 (미국 NLM/NIH, 공공저작물) · 환자 = 대회 제공 합성 vignette · LLM 백엔드 = Anthropic (대회 지원 크레딧)</span>
 </footer>
 
@@ -370,7 +505,6 @@ var currentTrials = [];
 var currentQuestionsCache = [];
 var extendedRecord = "";
 var answeredQuestions = {};
-var lastTopNct = null;
 var MAX_ANSWER_LEN = 600;
 // Populated when an answer round returns, so the next render can show what MOVED --
 // rank changes per trial and before/after verdicts per criterion. Cleared on patient switch.
@@ -378,6 +512,12 @@ var prevRanks = {};
 var lastVerdictChanges = {};
 // trace.ranking = {version, rule_ko, hard_exclusion_holds}, stamped by ranking.py at serve time.
 var currentRanking = null;
+// trace.patient_need = {need, need_ko, confidence, reasons[]}, classified server-side.
+var currentNeed = null;
+// Answer-round history: [{round, question, answer, verdict_changes, rank_changes, note}].
+var rounds = [];
+// The last round's cause-effect data, kept so the arrows can be redrawn on resize/toggle.
+var lastDagRound = null;
 
 // Korean labels for the ranking key's tiers. Mirrors ranking.FIT_LABEL_KO / ELIG_LABEL_KO so a
 // chip can never contradict the rank_reason sentence rendered beside it.
@@ -386,9 +526,11 @@ var FIT_LABEL_KO = {
   care_delivery: "의료전달·관리", observational: "관찰 연구"
 };
 var ELIG_LABEL_KO = {ELIGIBLE: "적격", UNCERTAIN: "미확정", INELIGIBLE: "부적격"};
-// Only used when a response predates trace.ranking; states the same key, no invented numbers.
-var RULE_FALLBACK = "적격성 클래스(적격>미확정>부적격) → 차단 기준 수 → 중재 목적(치료>지지>관리>관찰) → " +
-  "Phase 부담(4>3>2>1, NA는 중간) → 원문 커버리지 감점 → 미해결 비율 → 미해결 수 → NCT";
+// Only used when a response predates trace.ranking; states the same three questions the
+// server rule (ranking.RANKING_RULE_KO) answers, no invented numbers.
+var RULE_FALLBACK = "1 참여할 수 있는가 -- 탈락이 확정된 시험은 항상 맨 아래 · " +
+  "2 도움이 되는가 -- 환자에게 필요한 것과 시험의 목적이 맞는 순, 같으면 검증이 더 된 후기 단계 먼저 · " +
+  "3 얼마나 확실한가 -- 적격 확정이 미확정보다 먼저, 원문을 절반도 못 읽었으면 감점, 미해결 기준이 적은 순";
 
 // The safety property the deck claims, recomputed from the order actually rendered. Shown only
 // when the server's own flag agrees (or is absent) -- never asserted against the backend.
@@ -430,59 +572,101 @@ function phaseLabel(v){
 // trial is "관찰 연구", NOT "(추정)": nothing was estimated there.
 function fitChipText(b){
   var v = b.value;
-  if (!b.demoted) return (FIT_LABEL_KO[v] || v || "중재 목적") + " 시험";
+  if (!b.demoted) return (FIT_LABEL_KO[v] || v || "목적 미확인") + " 시험";
   if (v === "observational") return "관찰 연구" + (b.confidence === "low" ? " (추정)" : "");
-  return "중재 목적 미확인 → 관찰과 동급";
+  return "시험 목적 미확인 → 관찰과 동급";
 }
 
 var COVERAGE_FULL_TITLE = "원문 기준 수는 프로토콜 원문의 기준 줄을 세어 추정한 근사치입니다. " +
   "한 문장을 여러 기준으로 나눠 파싱하면 추정치를 넘길 수 있고, 반대로 실제보다 적게 셀 수도 있습니다. " +
   "따라서 전체(추정)는 단정이 아니라 추정입니다.";
 
-// One chip per fired tier of the ranking key, in key order. Every value comes from rank_basis,
-// which ranking.py builds from the same numbers the sort used.
+// One chip per fired component of the three-question tree. Every value comes from rank_basis,
+// which ranking.py builds from the same numbers the sort used; tooltips narrate which of the
+// three questions the chip answers, in plain words.
 function basisChip(b){
   if (!b || !b.key) return "";
   var cls = "basis-chip", text = "", title = "";
   if (b.key === "eligibility"){
-    text = "적격성 " + (ELIG_LABEL_KO[b.value] || b.value || "미확정");
-    title = "1순위 기준. 부적격 시험은 적격/미확정 시험 위로 올라오지 않습니다.";
+    text = ELIG_LABEL_KO[b.value] || b.value || "미확정";
+    title = "질문 1 (참여할 수 있는가). 부적격 = 탈락이 확정된 시험이며, 아래 어떤 조건이 좋아도 " +
+      "적격/미확정 시험 위로 올라오지 않습니다.";
   } else if (b.key === "blocking"){
     cls += " bad";
-    text = "차단 기준 " + b.value + "건";
-    title = "참여를 막는 기준(환자가 해당하는 제외 기준 등)의 수. 적을수록 앞섭니다.";
+    text = "탈락 사유 " + b.value + "건";
+    title = "질문 1 (참여할 수 있는가). 참여를 막는 것으로 확정된 기준의 수입니다. 하나라도 있으면 " +
+      "이 시험은 맨 아래로 내려갑니다.";
+  } else if (b.key === "need"){
+    text = "환자 필요 " + (b.value || "미산출");
+    if (b.value === "미산출" || !b.need) cls += " muted";
+    if (b.confidence === "low") text += " (확신 낮음)";
+    title = "질문 2 (도움이 되는가)의 왼쪽 항. 환자 기록에서 읽어낸, 지금 이 환자에게 필요한 것입니다. " +
+      "맨 위의 환자 필요 카드와 같은 값입니다.";
+  } else if (b.key === "help"){
+    text = "맞춰본 결과: " + (b.value || "참고용");
+    if (b.score === 0) cls += " muted";
+    title = "질문 2 (도움이 되는가)의 답. 환자에게 필요한 것과 이 시험의 목적을 맞춰 본 결과로, " +
+      "도움 됨 > 부분적 > 참고용 순으로 앞섭니다.";
   } else if (b.key === "fit"){
     text = fitChipText(b);
     if (b.demoted) cls += " muted";
-    title = "중재 목적. 치료 > 지지·완화 > 의료전달·관리 > 관찰 순이며, 분류 확신이 낮거나 " +
-      "분류되지 않은 시험은 관찰 연구와 같은 등급으로 내려갑니다.";
+    title = "질문 2 (도움이 되는가)의 오른쪽 항. 이 시험이 무엇을 하려는 시험인지입니다. 환자 필요와 " +
+      "맞을수록 앞서고, 분류 확신이 낮거나 분류되지 않은 시험은 관찰 연구와 같은 등급으로 봅니다.";
   } else if (b.key === "phase"){
     text = phaseLabel(b.value);
-    title = "Phase 부담 프록시. 후기 상일수록 개입이 잘 규명되어 환자 부담과 불확실성이 작다고 봅니다. " +
-      "NA는 중간으로 둡니다.";
+    title = "질문 2에서 도움 정도가 같을 때의 보조 기준. 후기 단계(Phase 4에 가까울수록)는 개입이 더 " +
+      "검증되어 환자 부담과 불확실성이 작다고 봅니다. NA는 중간으로 둡니다.";
   } else if (b.key === "coverage"){
     if (typeof b.value !== "number") return "";
     var full = b.value >= 1;
     text = "원문 커버리지 " + (full ? "전체(추정)" : Math.round(b.value * 100) + "%");
     if (b.penalty){ cls += " warn"; text += " 감점"; }
-    title = full ? COVERAGE_FULL_TITLE
-      : "파싱된 기준 수 / 원문에서 추정한 기준 수. 50% 미만이면 감점되어 뒤로 밀립니다.";
+    title = "질문 3 (얼마나 확실한가). 시험 원문 조건 중 평가에 반영된 비율입니다. " +
+      (full ? COVERAGE_FULL_TITLE : "절반도 읽지 못했으면(50% 미만) 감점되어 뒤로 밀립니다.");
   } else if (b.key === "open"){
     text = "미해결 " + b.value;
-    title = "아직 판정되지 않은 기준 수 / 파싱된 전체 기준 수. 비율이 낮을수록 앞섭니다.";
+    title = "질문 3 (얼마나 확실한가). 아직 판정되지 않은 기준 수 / 전체 기준 수. 적을수록 확실합니다.";
   } else {
     text = (b.label ? b.label + " " : "") + b.value;
   }
   return '<span class="' + cls + '" title="' + escapeHtml(title) + '">' + escapeHtml(text) + '</span>';
 }
 
+// Which of the three questions a rank_basis entry belongs to. The server stamps group on every
+// chip (join | help | sure); the key map only covers payloads from before that field existed.
+var BASIS_GROUP_BY_KEY = {
+  eligibility: "join", blocking: "join",
+  need: "help", help: "help", fit: "help", phase: "help",
+  coverage: "sure", open: "sure"
+};
+var BASIS_GROUPS = [
+  {id: "join", label: "1 참여", title: "참여할 수 있는가 -- 탈락이 확정된 기준이 하나라도 있으면 이 시험은 맨 아래로 내려갑니다."},
+  {id: "help", label: "2 도움", title: "도움이 되는가 -- 환자에게 필요한 것과 시험의 목적을 맞춰 봅니다. 같으면 검증이 더 된 후기 단계 먼저."},
+  {id: "sure", label: "3 확실", title: "얼마나 확실한가 -- 적격 확정이 미확정보다 먼저, 원문을 덜 읽었거나 미해결 기준이 많으면 뒤로 밀립니다."}
+];
+
+// The chips, grouped under the three questions the rank_reason line answers -- so the line and
+// the chips read as one explanation, not two systems.
 function basisChips(trial){
   if (!trial || !Array.isArray(trial.rank_basis) || !trial.rank_basis.length) return "";
-  var chips = trial.rank_basis.slice()
+  var byGroup = {join: [], help: [], sure: []};
+  trial.rank_basis.slice()
     .sort(function(a, b){ return (a && a.tier || 0) - (b && b.tier || 0); })
-    .map(basisChip).filter(function(h){ return !!h; });
-  if (!chips.length) return "";
-  return '<div class="basis-chips">' + chips.join("") + '</div>';
+    .forEach(function(b){
+      if (!b) return;
+      var g = b.group || BASIS_GROUP_BY_KEY[b.key];
+      if (!byGroup[g]) return;
+      var html = basisChip(b);
+      if (html) byGroup[g].push(html);
+    });
+  var groups = BASIS_GROUPS.map(function(g){
+    if (!byGroup[g.id].length) return "";
+    return '<span class="basis-group ' + g.id + '">' +
+      '<span class="bg-label" title="' + escapeHtml(g.title) + '">' + escapeHtml(g.label) + '</span>' +
+      byGroup[g.id].join("") + '</span>';
+  }).filter(function(h){ return !!h; });
+  if (!groups.length) return "";
+  return '<div class="basis-groups">' + groups.join("") + '</div>';
 }
 
 // Column header for the trial list: what the order means, and what it guarantees.
@@ -495,16 +679,26 @@ function renderPriorityHead(trials){
   var holds = hardExclusionHolds(trials) &&
               !(currentRanking && currentRanking.hard_exclusion_holds === false);
   var ac = actionCounts(trials);
-  var html = "<h2>추천 우선순위</h2>" +
-    '<p class="rule"><b>정렬 기준</b> ' + escapeHtml(rule) +
-      (ver ? ' <span class="ver">(규칙 ' + escapeHtml(ver) + ')</span>' : "") + "</p>";
-  if (holds){
-    html += '<span class="guarantee" title="정렬 키의 1순위가 적격성 클래스이므로, 차단 기준이 있는 시험은 ' +
-      '아래 어떤 항목이 좋아도 위로 올라올 수 없습니다.">hard-exclusion 보장: 부적격 시험은 미확정/적격 위로 올라오지 않음</span>';
+  // The rule is one sentence answering three questions, joined by " · ". When it splits into
+  // exactly three parts, render them as three numbered lines -- the same 1/2/3 the chips on
+  // every card carry. Anything else renders verbatim on one line.
+  var ruleParts = rule.split(" · ");
+  var ruleHtml;
+  if (ruleParts.length === 3){
+    ruleHtml = ruleParts.map(function(p, i){
+      return '<p class="rule" style="margin:2px 0;"><b>' + (i + 1) + '</b> ' + escapeHtml(p) + '</p>';
+    }).join("");
+  } else {
+    ruleHtml = '<p class="rule">' + escapeHtml(rule) + '</p>';
   }
-  html += '<p class="action-count">미확정 기준 <b>' + ac.total + "건</b> → ASK " + ac.ASK +
-    " · VERIFY " + ac.VERIFY + " · ESCALATE " + ac.ESCALATE + " · STOP " + ac.STOP +
-    (ac.other ? " · 기타 " + ac.other : "") + "</p>";
+  var html = "<h2>추천 우선순위 -- 왜 이 순서인가</h2>" + ruleHtml +
+    (ver ? '<p class="rule"><span class="ver">(정렬 규칙 ' + escapeHtml(ver) + ')</span></p>' : "");
+  if (holds){
+    html += '<span class="guarantee" title="질문 1(참여할 수 있는가)이 정렬의 첫 기준이므로, 탈락 사유가 있는 시험은 아래 어떤 항목이 좋아도 위로 올라올 수 없습니다.">hard-exclusion 보장: 부적격 시험은 미확정/적격 위로 올라오지 않음</span>';
+  }
+  html += '<p class="action-count">미확정 기준 <b>' + ac.total + "건</b>의 다음 행동: 질문(ASK) " + ac.ASK +
+    " · 근거 재확인(VERIFY) " + ac.VERIFY + " · 전문가 이관(ESCALATE) " + ac.ESCALATE +
+    " · 중단(STOP) " + ac.STOP + (ac.other ? " · 기타 " + ac.other : "") + "</p>";
   box.innerHTML = html;
   box.style.display = "block";
 }
@@ -598,19 +792,26 @@ function verdictPair(c){
   var v = (c.verdict || "UNKNOWN").toUpperCase();
   var e = getEffect(c);
   var effectChip = e
-    ? '<span class="badge badge-' + e + '">' + escapeHtml(e) + '</span>'
+    ? '<span class="badge badge-' + (["PASS","FAIL","REVIEW"].indexOf(e) >= 0 ? e : "REVIEW") + '">' + escapeHtml(e) + '</span>'
     : '<span class="badge quiet">산출 전</span>';
   return effectChip + '<span class="badge quiet verdict-chip">' + escapeHtml(v) + '</span>';
 }
 
 // ---- patient list ----
+// Handles however many patients the backend lists (the official 10, plus extra demo patients
+// once their traces exist) -- nothing here assumes 10.
 function loadPatients(){
   fetch("/api/patients").then(function(r){ return r.json(); }).then(function(list){
     var box = document.getElementById("patientList");
     box.innerHTML = "";
+    var pill = document.getElementById("patientCountPill");
+    if (pill && list.length) pill.textContent = "데모 환자 " + list.length + "명 중 선택";
     list.forEach(function(p){
       var btn = el("button", "patient-btn");
-      btn.innerHTML = '<strong>' + escapeHtml(p.id) + '</strong><span class="snippet">' + escapeHtml(p.condition) + '</span>';
+      // /api/patients serves {id, condition}; the local live server serves {id, title} -- take
+      // whichever is present so the sidebar never shows "undefined".
+      var cond = p.condition || p.title || p.id;
+      btn.innerHTML = '<strong>' + escapeHtml(p.id) + '</strong><span class="snippet">' + escapeHtml(cond) + '</span>';
       btn.addEventListener("click", function(){
         document.querySelectorAll(".patient-btn").forEach(function(b){ b.classList.remove("selected"); });
         btn.classList.add("selected");
@@ -625,15 +826,22 @@ function loadPatients(){
 function resetView(){
   document.getElementById("emptyNote").style.display = "none";
   document.getElementById("vignetteBox").style.display = "none";
+  var nc = document.getElementById("needCard");
+  if (nc){ nc.innerHTML = ""; nc.style.display = "none"; }
   document.getElementById("trialsBody").innerHTML = "";
   var head = document.getElementById("priorityHead");
   if (head){ head.innerHTML = ""; head.style.display = "none"; }
   currentRanking = null;
+  currentNeed = null;
+  rounds = [];
+  lastDagRound = null;
+  var dag = document.getElementById("dagSection");
+  if (dag){ dag.style.display = "none"; }
+  clearDag();
   document.getElementById("questionsDock").style.display = "none";
   document.getElementById("questionsBody").innerHTML = "";
   document.getElementById("changelog").innerHTML = "";
   document.querySelectorAll(".agent-step").forEach(function(s){ s.classList.remove("done"); });
-  lastTopNct = null;
   answeredQuestions = {};
   extendedRecord = "";
 }
@@ -657,10 +865,12 @@ function loadTrace(patientId){
       currentTrials = data.trials || [];
       currentQuestionsCache = data.questions || [];
       currentRanking = data.ranking || null;
+      currentNeed = data.patient_need || null;
       prevRanks = {};
       lastVerdictChanges = {};
       markAllStagesDone();
       renderVignette({patient_id: data.patient_id, text: data.patient_text});
+      renderNeedCard(currentNeed);
       renderTrials(currentTrials);
       renderSummary(currentTrials);
       renderQuestions(currentQuestionsCache, currentTrials);
@@ -673,6 +883,67 @@ function renderVignette(patient){
   var box = document.getElementById("vignetteBox");
   box.style.display = "block";
   box.innerHTML = '<span class="lbl">' + escapeHtml(patient.patient_id) + '</span>' + escapeHtml(patient.text);
+}
+
+// The anchor of the whole screen: what THIS patient needs (trace.patient_need, classified
+// server-side from the vignette -- deterministic rules, no LLM). The trial order's second
+// question (도움이 되는가) compares every trial's purpose against exactly this value, so the
+// card states that link in one line.
+function renderNeedCard(need){
+  var box = document.getElementById("needCard");
+  if (!box) return;
+  if (!need || !need.need_ko){ box.innerHTML = ""; box.style.display = "none"; return; }
+  var hedge = need.confidence === "low"
+    ? '<span class="nc-hedge" title="환자 기록의 단서가 약해 분류 확신이 낮습니다. 사람이 한 번 확인하는 것이 안전합니다.">확신 낮음 -- 검토 권장</span>'
+    : "";
+  var reasons = (need.reasons || []).map(function(r){
+    return '<p class="nc-reason"><span class="nc-why">왜?</span>' + escapeHtml(r) + '</p>';
+  }).join("");
+  box.innerHTML =
+    '<span class="nc-label">이 환자에게 지금 필요한 것</span>' +
+    '<div class="nc-need">' + escapeHtml(need.need_ko) + hedge + '</div>' +
+    reasons +
+    '<div class="nc-link">아래 시험 순서의 질문 <b>2 도움이 되는가</b>는 이 필요와 각 시험의 목적을 맞춰 본 결과입니다.</div>';
+  box.style.display = "block";
+}
+
+// 등록까지 남은 것 -- the screening worklist, per trial. A coordinator's first question is not
+// "what did the AI decide" but "what stands between this patient and enrolment". Derived
+// client-side from each criterion's effect, the value pipeline.effect_of already computed:
+// FAIL = blocks enrolment, REVIEW = must be resolved first, PASS = already satisfied.
+function buildPathBox(t){
+  var blocking = [], toResolve = [], satisfied = 0;
+  (t.criteria || []).forEach(function(c){
+    var e = getEffect(c);
+    if (e === "FAIL") blocking.push(c);
+    else if (e === "REVIEW") toResolve.push(c);
+    else if (e === "PASS") satisfied += 1;
+  });
+  if (!blocking.length && !toResolve.length && !satisfied) return null;
+  var summary = blocking.length ? "등록 불가 사유 있음"
+    : (toResolve.length ? "확인할 것 " + toResolve.length + "건" : "선별 기준 통과");
+  var box = el("div", "path-box");
+  box.appendChild(el("div", "path-head",
+    '<span class="path-summary">등록까지 남은 것: ' + escapeHtml(summary) + '</span>' +
+    '<span class="path-chip blocking' + (blocking.length ? '' : ' zero') + '">막는 기준 ' + blocking.length + '</span>' +
+    '<span class="path-chip resolve' + (toResolve.length ? '' : ' zero') + '">확인 필요 ' + toResolve.length + '</span>' +
+    '<span class="path-chip ok">충족 ' + satisfied + '</span>'));
+  function pathList(items, cls, label, showAction){
+    if (!items.length) return;
+    var wrap = el("div", "path-group " + cls);
+    wrap.appendChild(el("div", "path-group-label", escapeHtml(label)));
+    items.slice(0, 6).forEach(function(c){
+      var act = showAction && c.action
+        ? '<span class="path-action">' + escapeHtml(ACTION_KO[c.action] || c.action) + '</span>' : '';
+      wrap.appendChild(el("div", "path-item",
+        '<span class="path-text">' + escapeHtml(c.text) + '</span>' + act));
+    });
+    if (items.length > 6) wrap.appendChild(el("div", "path-more", "외 " + (items.length - 6) + "건"));
+    box.appendChild(wrap);
+  }
+  pathList(blocking, "blocking", "등록을 막는 기준 (탈락 사유)", false);
+  pathList(toResolve, "resolve", "확인되면 판정할 수 있는 기준 (옆은 다음 행동)", true);
+  return box;
 }
 
 function renderTrials(trials){
@@ -746,7 +1017,7 @@ function renderTrials(trials){
       '<div class="rank">' + (t.rank || "?") + '</div>' +
       '<div class="titlewrap"><h3>' + escapeHtml(t.title) + delta + '</h3>' +
       '<div class="meta">' + nctLink +
-      '<span class="meta-sep">Phase ' + escapeHtml(t.phase || "NA") + '</span>' +
+      '<span class="meta-sep">' + escapeHtml(phaseLabel(t.phase)) + '</span>' +
       '<span class="meta-sep">' + elig + '</span>' + cov + intentChip + '</div></div>';
     card.appendChild(head);
     // Why THIS rank: the executed sort key, stated in Korean by ranking.rank_basis, plus one
@@ -760,11 +1031,15 @@ function renderTrials(trials){
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));
     }
+    var pathBox = buildPathBox(t);
+    if (pathBox) card.appendChild(pathBox);
     var body = el("div", "crit-body");
     (t.criteria || []).forEach(function(c){
       var row = el("div", "crit-row");
       row.dataset.nct = t.nct_id;
       row.dataset.critText = c.text;
+      // stable anchor (sha1 id stamped server-side) so the round graph can jump here
+      if (c.criterion_id){ row.dataset.critId = c.criterion_id; row.id = "crit-" + c.criterion_id; }
       row.innerHTML =
         '<div>' + verdictPair(c) + '<br><span class="tag ' + c.type + '">' + (c.type === "inclusion" ? "포함" : "제외") + '</span>' + actionChip(c) + '</div>' +
         '<div><div class="crit-text">' + escapeHtml(c.text) +
@@ -791,18 +1066,19 @@ function questionPriorityLine(q){
   var hasCrit = typeof q.affects_criteria === "number";
   var hasRank = typeof q.may_change_rank === "boolean";
   if (!hasTrials && !hasCrit && !hasRank) return "";
-  var parts = ["왜 이 질문인가"];
   // zero-impact question: its criteria are already decided or sit on a STOP (부적격) trial --
   // say so instead of printing "시험 0개 · 기준 0개", which reads like a rendering bug.
   if (hasTrials && hasCrit && q.affects_trials === 0 && q.affects_criteria === 0){
-    return '<div class="qprio">왜 이 질문인가 · 현재 열린 기준과 직접 연결된 항목을 찾지 못함 (근거 우선순위 낮음)</div>';
+    return '<div class="qprio">답해도 바뀌는 것 없음 · 지금 열려 있는 기준과 직접 연결된 항목이 없습니다 (우선순위 낮음)</div>';
   }
-  if (hasTrials) parts.push("시험 " + q.affects_trials + "개");
-  if (hasCrit) parts.push("기준 " + q.affects_criteria + "개");
+  var parts = ["답하면 바뀌는 것"];
+  if (hasCrit) parts.push("기준 " + q.affects_criteria + "개 다시 판정" +
+    (hasTrials ? " (시험 " + q.affects_trials + "개)" : ""));
+  else if (hasTrials) parts.push("시험 " + q.affects_trials + "개에 반영");
   var line = parts.join(" · ");
   if (hasRank){
     line += ' · <span class="' + (q.may_change_rank ? "rank-yes" : "rank-no") + '">' +
-      (q.may_change_rank ? "순위 변동 가능" : "순위 변동 불가") + "</span>";
+      (q.may_change_rank ? "추천 순위가 바뀔 수 있음" : "추천 순위는 그대로") + "</span>";
   }
   return '<div class="qprio">' + line + "</div>";
 }
@@ -930,13 +1206,31 @@ function submitAnswer(question, answer, card, input, btn){
     }
     answeredQuestions[question] = answer;
     prevRanks = {};
-    currentTrials.forEach(function(t){ if (t.nct_id && t.rank) prevRanks[t.nct_id] = t.rank; });
+    // before/after snapshot per trial: feeds the rank-delta pill, the round graph, and history
+    var prevState = {};
+    currentTrials.forEach(function(t){
+      if (!t.nct_id) return;
+      if (t.rank) prevRanks[t.nct_id] = t.rank;
+      prevState[t.nct_id] = {rank: t.rank, eligibility: t.eligibility, title: t.title};
+    });
     lastVerdictChanges = {};
     (data.verdict_changes || []).forEach(function(c){
       lastVerdictChanges[c.nct_id + "::" + c.criterion] = c.before + " → " + c.after;
     });
     currentTrials = data.trials || currentTrials;
     extendedRecord = data.extended_record || extendedRecord;
+    // what actually moved at trial level this round (rank or eligibility)
+    var rankChanges = [];
+    currentTrials.forEach(function(t){
+      var p = prevState[t.nct_id];
+      if (!p) return;
+      if ((p.rank && t.rank && p.rank !== t.rank) || (p.eligibility !== t.eligibility)){
+        rankChanges.push({nct_id: t.nct_id, title: t.title || p.title || t.nct_id,
+                          rank_before: p.rank, rank_after: t.rank,
+                          eligibility_before: p.eligibility, eligibility_after: t.eligibility});
+      }
+    });
+    if (data.patient_need){ currentNeed = data.patient_need; renderNeedCard(currentNeed); }
     // priority numbers recomputed server-side against the post-answer trials; merge by question text
     if (Array.isArray(data.questions)){
       var fresh = {};
@@ -949,7 +1243,13 @@ function submitAnswer(question, answer, card, input, btn){
     renderTrials(currentTrials);
     renderSummary(currentTrials);
     flashChanged(data.verdict_changes || []);
-    appendChangelog(data.verdict_changes || [], data.recommendation || [], data.note);
+    rounds.push({round: rounds.length + 1, question: question, answer: answer,
+                 verdict_changes: data.verdict_changes || [], rank_changes: rankChanges,
+                 note: data.note || null});
+    renderHistory();
+    renderDagRound({question: question, answer: answer,
+                    verdict_changes: data.verdict_changes || [],
+                    rank_changes: rankChanges, note: data.note || null});
     renderQuestions(currentQuestionsCache, currentTrials);
     answerInFlight = false;
     setAnswerControlsDisabled(false);
@@ -971,19 +1271,263 @@ function flashChanged(changes){
   });
 }
 
-function appendChangelog(changes, recommendation, note){
+// ---- 변경 이력: per round, what was asked and what it actually moved (newest first) ----
+function renderHistory(){
   var log = document.getElementById("changelog");
-  var newTop = recommendation.length ? recommendation.slice().sort(function(a,b){return a.rank-b.rank;})[0].nct_id : null;
-  var rankNote = "순위 변동 없음";
-  if (lastTopNct && newTop && lastTopNct !== newTop){
-    rankNote = "1위가 " + newTop + "(으)로 변경";
-  }
-  lastTopNct = newTop || lastTopNct;
-  var text = note ? ("답변 반영: " + note)
-    : ("답변 반영: " + changes.length + "개 기준 재평가, " + rankNote);
-  var line = el("div", "", escapeHtml(text));
-  log.insertBefore(line, log.firstChild);
+  if (!log) return;
+  if (!rounds.length){ log.innerHTML = ""; return; }
+  var html = '<div class="rounds-head">변경 이력</div>';
+  rounds.slice().reverse().forEach(function(r){
+    var vc = r.verdict_changes || [], rc = r.rank_changes || [];
+    html += '<div class="round-item">' +
+      '<div class="round-title">' + r.round + '회차 · 판정 바뀐 기준 ' + vc.length +
+      '건 · 순위/적격 변동 ' + rc.length + '건</div>' +
+      '<div class="round-qa"><b>Q</b> ' + escapeHtml(r.question) + '<br><b>A</b> ' + escapeHtml(r.answer) + '</div>';
+    if (r.note) html += '<div class="round-change">' + escapeHtml(r.note) + '</div>';
+    vc.slice(0, 6).forEach(function(c){
+      html += '<div class="round-change"><span class="delta-chip">' + escapeHtml(c.before) +
+        ' → ' + escapeHtml(c.after) + '</span> ' + escapeHtml(c.criterion) + '</div>';
+    });
+    if (vc.length > 6) html += '<div class="round-more">외 ' + (vc.length - 6) + '건</div>';
+    rc.forEach(function(c){
+      var seg = [];
+      if (c.rank_before && c.rank_after && c.rank_before !== c.rank_after){
+        seg.push(c.rank_before + "위 → " + c.rank_after + "위");
+      }
+      if (c.eligibility_before !== c.eligibility_after){
+        seg.push((ELIG_LABEL_KO[c.eligibility_before] || c.eligibility_before) + " → " +
+                 (ELIG_LABEL_KO[c.eligibility_after] || c.eligibility_after));
+      }
+      if (seg.length){
+        html += '<div class="round-change rank">' + escapeHtml(c.title || c.nct_id) + ': ' +
+          escapeHtml(seg.join(" · ")) + '</div>';
+      }
+    });
+    html += '</div>';
+  });
+  log.innerHTML = html;
 }
+
+// ---- 이 답변이 바꾼 것: per-round cause-effect view ----
+// Renders ONLY what this round actually moved (verdict_changes + trial rank/eligibility deltas):
+// an empty graph is itself the message that unrelated criteria were not touched. Node text goes
+// through DOM APIs (createTextNode -- never innerHTML for served text), badge values are
+// whitelisted, and the arrows are one SVG overlay positioned with getBoundingClientRect.
+var VALID_BADGE_VALUES = {MET:1, NOT_MET:1, UNCERTAIN:1, UNKNOWN:1,
+                          ELIGIBLE:1, INELIGIBLE:1, PASS:1, FAIL:1, REVIEW:1};
+var dagEdgeList = [];   // [{from, to}] element ids, rebuilt per round
+
+function clearDag(){
+  var grid = document.getElementById("dagGrid");
+  if (grid) grid.querySelectorAll(".dag-card, .dag-empty").forEach(function(n){ n.remove(); });
+  var svg = document.getElementById("dagEdges");
+  if (svg) svg.querySelectorAll("path.dag-edge").forEach(function(p){ p.remove(); });
+  var note = document.getElementById("dagNote");
+  if (note){ note.textContent = ""; note.style.display = "none"; }
+  dagEdgeList = [];
+}
+
+function dagBadge(v){
+  if (!VALID_BADGE_VALUES[v]) return null;
+  var s = document.createElement("span");
+  s.className = "badge badge-" + v;
+  s.textContent = v;
+  return s;
+}
+
+function dagTruncate(s, n){
+  s = String(s == null ? "" : s);
+  return s.length > n ? s.slice(0, n - 1) + "..." : s;
+}
+
+function makeDagCard(id, cap, text){
+  var div = document.createElement("div");
+  div.id = id;
+  div.className = "dag-card";
+  if (cap){
+    var c = document.createElement("span");
+    c.className = "dag-card-cap";
+    c.textContent = cap;
+    div.appendChild(c);
+  }
+  if (text != null){
+    var t = document.createElement("div");
+    t.className = "dag-card-text";
+    t.appendChild(document.createTextNode(text));
+    div.appendChild(t);
+  }
+  return div;
+}
+
+// before → after badge pair, appended with DOM nodes only
+function appendBadgePair(card, before, after){
+  var b1 = dagBadge(before), b2 = dagBadge(after);
+  if (!b1 && !b2) return;
+  if (b1) card.appendChild(b1);
+  if (b1 && b2) card.appendChild(document.createTextNode(" → "));
+  if (b2) card.appendChild(b2);
+}
+
+// The criterion's stable server id on the CURRENT state, so a graph node can jump to its row.
+function criterionAnchorId(nctId, critText){
+  for (var i = 0; i < currentTrials.length; i++){
+    var t = currentTrials[i];
+    if (t.nct_id !== nctId) continue;
+    var cs = t.criteria || [];
+    for (var j = 0; j < cs.length; j++){
+      if (cs[j].text === critText) return cs[j].criterion_id || null;
+    }
+  }
+  return null;
+}
+
+function renderDagRound(round){
+  lastDagRound = round;
+  var sec = document.getElementById("dagSection");
+  if (!sec) return;
+  clearDag();
+  sec.style.display = "block";
+  sec.open = true;
+  var vc = round.verdict_changes || [], rc = round.rank_changes || [];
+  var note = document.getElementById("dagNote");
+  var scroll = document.getElementById("dagScroll");
+  if (!vc.length && !rc.length){
+    if (note){
+      note.textContent = round.note ||
+        "이 답변으로 바뀐 판정이나 순위가 없습니다. 답과 연결되지 않은 기준은 재평가하지 않았습니다.";
+      note.style.display = "block";
+    }
+    if (scroll) scroll.style.display = "none";
+    sec.scrollIntoView({behavior: "smooth", block: "nearest"});
+    return;
+  }
+  if (scroll) scroll.style.display = "";
+  var grid = document.getElementById("dagGrid");
+  var qCol = grid.querySelector('[data-col="question"]');
+  var cCol = grid.querySelector('[data-col="criterion"]');
+  var tCol = grid.querySelector('[data-col="trial"]');
+  var rCol = grid.querySelector('[data-col="rank"]');
+
+  // column 1: the answered question (one node)
+  var qCard = makeDagCard("dag-q", "질문", dagTruncate(round.question, 110));
+  var aCap = document.createElement("span");
+  aCap.className = "dag-card-cap";
+  aCap.textContent = "답";
+  qCard.appendChild(aCap);
+  var aText = document.createElement("div");
+  aText.className = "dag-card-text";
+  aText.appendChild(document.createTextNode(dagTruncate(round.answer, 110)));
+  qCard.appendChild(aText);
+  qCol.appendChild(qCard);
+
+  // column 3 targets first, so criterion edges know which trials have nodes
+  var trialNodeByNct = {};
+  rc.forEach(function(c){
+    var id = "dag-t-" + c.nct_id;
+    var card = makeDagCard(id, c.nct_id, dagTruncate(c.title || c.nct_id, 70));
+    if (c.eligibility_before !== c.eligibility_after){
+      appendBadgePair(card, c.eligibility_before, c.eligibility_after);
+    } else {
+      var b = dagBadge(c.eligibility_after);
+      if (b) card.appendChild(b);
+    }
+    tCol.appendChild(card);
+    trialNodeByNct[c.nct_id] = id;
+  });
+
+  // column 2: only the criteria whose verdict actually changed
+  vc.forEach(function(c, i){
+    var id = "dag-c-" + i;
+    var card = makeDagCard(id, c.nct_id, dagTruncate(c.criterion, 90));
+    appendBadgePair(card, c.before, c.after);
+    var anchor = criterionAnchorId(c.nct_id, c.criterion);
+    if (anchor){
+      card.classList.add("clickable");
+      card.title = "누르면 이 기준으로 이동합니다";
+      card.addEventListener("click", function(){
+        var row = document.getElementById("crit-" + anchor);
+        if (!row) return;
+        row.scrollIntoView({behavior: "smooth", block: "center"});
+        row.classList.add("flash");
+        setTimeout(function(){ row.classList.remove("flash"); }, 1200);
+      });
+    }
+    cCol.appendChild(card);
+    dagEdgeList.push({from: "dag-q", to: id});
+    if (trialNodeByNct[c.nct_id]) dagEdgeList.push({from: id, to: trialNodeByNct[c.nct_id]});
+  });
+
+  // column 4: rank moves
+  rc.forEach(function(c){
+    if (!c.rank_before || !c.rank_after || c.rank_before === c.rank_after) return;
+    var id = "dag-r-" + c.nct_id;
+    var card = makeDagCard(id, c.nct_id, null);
+    var move = document.createElement("div");
+    move.className = "dag-rank-move " + (c.rank_after < c.rank_before ? "up" : "down");
+    move.textContent = c.rank_before + "위 → " + c.rank_after + "위";
+    card.appendChild(move);
+    rCol.appendChild(card);
+    if (trialNodeByNct[c.nct_id]) dagEdgeList.push({from: trialNodeByNct[c.nct_id], to: id});
+  });
+
+  // a column with no nodes is itself information: nothing at that level moved this round
+  [cCol, tCol, rCol].forEach(function(col){
+    if (!col.querySelector(".dag-card")){
+      var none = document.createElement("div");
+      none.className = "dag-empty";
+      none.textContent = "변동 없음";
+      col.appendChild(none);
+    }
+  });
+
+  requestAnimationFrame(drawDagEdges);
+  sec.scrollIntoView({behavior: "smooth", block: "nearest"});
+}
+
+function drawDagEdges(){
+  var svg = document.getElementById("dagEdges");
+  var inner = document.getElementById("dagInner");
+  if (!svg || !inner) return;
+  svg.querySelectorAll("path.dag-edge").forEach(function(p){ p.remove(); });
+  if (!dagEdgeList.length) return;
+  var base = inner.getBoundingClientRect();
+  if (!base.width) return;   // collapsed <details>: nothing to measure yet
+  svg.setAttribute("width", inner.scrollWidth);
+  svg.setAttribute("height", inner.scrollHeight);
+  // fan-in: edges converging on one node get vertically spread endpoints so they stay countable
+  var byTarget = {};
+  dagEdgeList.forEach(function(e){ (byTarget[e.to] = byTarget[e.to] || []).push(e); });
+  Object.keys(byTarget).forEach(function(toId){
+    var list = byTarget[toId];
+    list.forEach(function(e, i){
+      var a = document.getElementById(e.from), b = document.getElementById(e.to);
+      if (!a || !b) return;
+      var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      var x1 = ra.right - base.left, y1 = ra.top + ra.height / 2 - base.top;
+      var off = list.length > 1 ? (i - (list.length - 1) / 2) * 10 : 0;
+      var x2 = rb.left - base.left, y2 = rb.top + rb.height / 2 - base.top + off;
+      var mx = (x1 + x2) / 2;
+      var p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("class", "dag-edge");
+      p.setAttribute("d", "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2);
+      p.setAttribute("marker-end", "url(#dagArrow)");
+      svg.appendChild(p);
+    });
+  });
+}
+
+// arrows are coordinate-anchored: recompute when layout moves (resize / section reopened)
+var dagRedrawTimer = null;
+window.addEventListener("resize", function(){
+  if (dagRedrawTimer) clearTimeout(dagRedrawTimer);
+  dagRedrawTimer = setTimeout(drawDagEdges, 150);
+});
+(function(){
+  var sec = document.getElementById("dagSection");
+  if (sec) sec.addEventListener("toggle", function(){
+    if (sec.open) requestAnimationFrame(drawDagEdges);
+  });
+})();
 
 loadPatients();
 </script>

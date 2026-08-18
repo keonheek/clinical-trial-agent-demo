@@ -11,6 +11,15 @@ ROOT = os.path.dirname(HERE)
 
 with open(os.path.join(ROOT, "patients.json"), encoding="utf-8") as f:
     PATIENTS = json.load(f)
+try:  # extra demo patients (gen_extra.py) -- appear in the picker after the official 10,
+    # and only once their trace exists (a listed patient must never be a dead button)
+    with open(os.path.join(ROOT, "patients_extra.json"), encoding="utf-8") as f:
+        _extra = json.load(f)
+    with open(os.path.join(ROOT, "traces_extra.json"), encoding="utf-8") as f:
+        _have = {t["patient_id"] for t in json.load(f)}
+    PATIENTS = PATIENTS + [p for p in _extra if p["patient_id"] in _have]
+except FileNotFoundError:
+    pass
 
 
 class handler(BaseHTTPRequestHandler):

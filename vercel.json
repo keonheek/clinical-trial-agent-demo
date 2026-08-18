@@ -7,14 +7,14 @@
   ],
   "functions": {
     "api/answer.py": {
-      "includeFiles": "{pipeline.py,ranking.py,action_policy.py,evidence.py,anthropic_client.py,groq_client.py,claude_client.py,patients.json,traces.json,trial_intent.json,coverage_map.json}",
+      "includeFiles": "{pipeline.py,ranking.py,patient_need.py,action_policy.py,evidence.py,*_client.py,patients*.json,traces*.json,trial_intent*.json,coverage_map*.json}",
       "maxDuration": 60
     },
     "api/trace.py": {
-      "includeFiles": "{traces.json,coverage_map.json,trial_intent.json,question_options.json,action_policy.py,ranking.py}"
+      "includeFiles": "{traces*.json,coverage_map*.json,trial_intent*.json,question_options.json,action_policy.py,ranking.py,patient_need.py}"
     },
     "api/patients.py": {
-      "includeFiles": "patients.json"
+      "includeFiles": "{patients*.json,traces_extra.json}"
     }
   }
 }

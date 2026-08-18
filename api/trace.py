@@ -13,12 +13,23 @@ ROOT = os.path.dirname(HERE)
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-# action_policy and ranking are pure modules (no LLM client imports) -- safe to bundle serverless.
-from action_policy import action_for, apply_trial_level_actions, enrich_questions
+# action_policy, ranking, patient_need are pure modules (no LLM client imports) -- safe to
+# bundle serverless.
+from action_policy import action_for, apply_trial_level_actions, enrich_questions, criterion_id
+from patient_need import classify_patient_need
 import ranking
 
 with open(os.path.join(ROOT, "traces.json"), encoding="utf-8") as f:
     TRACES = json.load(f)
+
+# Extra demo patients (E001-...): generated separately (gen_extra.py) so the canonical
+# traces.json stays byte-frozen (md5 pin, blind-label pairing). Same shape, merged at load;
+# every enrichment below applies to them identically.
+try:
+    with open(os.path.join(ROOT, "traces_extra.json"), encoding="utf-8") as f:
+        TRACES.extend(json.load(f))
+except FileNotFoundError:
+    pass
 TRACES_BY_ID = {t["patient_id"]: t for t in TRACES}
 
 # Serve-time coverage enrichment: traces.json is a frozen artifact (regenerating it silently
@@ -29,6 +40,12 @@ TRACES_BY_ID = {t["patient_id"]: t for t in TRACES}
 try:
     with open(os.path.join(ROOT, "coverage_map.json"), encoding="utf-8") as f:
         _RAW_COUNT = json.load(f)
+    try:
+        with open(os.path.join(ROOT, "coverage_map_extra.json"), encoding="utf-8") as f:
+            for _k, _v in json.load(f).items():
+                _RAW_COUNT.setdefault(_k, _v)
+    except FileNotFoundError:
+        pass
     for _trace in TRACES:
         for _t in _trace.get("trials", []):
             raw_n = _RAW_COUNT.get(_t["nct_id"])
@@ -45,6 +62,12 @@ except FileNotFoundError:
 try:
     with open(os.path.join(ROOT, "trial_intent.json"), encoding="utf-8") as f:
         _TRIAL_INTENT = json.load(f)
+    try:
+        with open(os.path.join(ROOT, "trial_intent_extra.json"), encoding="utf-8") as f:
+            for _k, _v in json.load(f).items():
+                _TRIAL_INTENT.setdefault(_k, _v)
+    except FileNotFoundError:
+        pass
     for _trace in TRACES:
         for _t in _trace.get("trials", []):
             intent = _TRIAL_INTENT.get(_t["nct_id"])
@@ -63,6 +86,15 @@ try:
                 _q["options"] = _Q_OPTIONS[_q["question"]]
 except FileNotFoundError:
     pass
+
+# Stable criterion_id (added for the question-criterion linking fix): sha1(nct_id + normalized
+# text)[:10], attached here IN MEMORY only -- traces.json on disk never carries it. Lets a
+# client-round-tripped criterion be matched back to the exact one served, independent of any
+# text re-typing, once the UI starts using it instead of raw text for cross-checks.
+for _trace in TRACES:
+    for _t in _trace.get("trials", []):
+        for _c in _t.get("criteria", []):
+            _c["criterion_id"] = criterion_id(_t["nct_id"], _c.get("text", ""))
 
 # The frozen traces predate the uncertainty/action fields and must never be regenerated
 # (relabelling constraint). Derive both at serve time with the SAME policy code the live
@@ -84,19 +116,23 @@ for _trace in TRACES:
     # criteria are STOP, not ASK -- asking is moot. Deterministic (action_policy), no model.
     apply_trial_level_actions(_trace.get("trials", []))
 
-# Recommendation priority (추천 우선순위), 2026-08-16. The rank frozen into traces.json was
-# eligibility-class + raw unresolved count only. The organizer's stated standard weighs 임상적
-# 적합성 too (Phase, 중재 목적, 환자 부담), so the served order is re-derived IN MEMORY by
-# ranking.rank_trials -- eligibility class first (a hard FAIL is never out-ranked), then blocking
-# count, 중재 목적, Phase 부담, coverage penalty, unresolved ratio. Same function the answer round
-# (api/answer.py -> pipeline.recommend) uses, so the order cannot flip back after the first
-# answer. traces.json on disk is untouched (md5 pin; blind-label pairing). Each trial carries
-# rank_reason / rank_basis so the UI can state the executed basis, and the trace carries the
-# rule text + a snapshot of the frozen order for transparency.
+# Recommendation priority (추천 우선순위), 2026-08-18: the locked three-question tree. The rank
+# frozen into traces.json was eligibility-class + raw unresolved count only; the served order is
+# re-derived IN MEMORY by ranking.rank_trials -- gate (a hard FAIL is never out-ranked), help
+# (the patient's need x the trial's intent, then Phase 부담), sure (적격 before 미확정, coverage,
+# unresolved). The patient's need is classified here per trace from the vignette text
+# (patient_need.classify_patient_need, deterministic keyword rules, zero LLM) and attached as
+# trace["patient_need"] for the UI. Same function the answer round (api/answer.py ->
+# pipeline.recommend) uses, so the order cannot flip back after the first answer. traces.json on
+# disk is untouched (md5 pin; blind-label pairing). Each trial carries rank_reason / rank_basis
+# so the UI can state the executed basis, and the trace carries the rule text + a snapshot of
+# the frozen order for transparency.
 for _trace in TRACES:
     _trials = _trace.get("trials", [])
     _trace["frozen_rank_order"] = [t["nct_id"] for t in sorted(_trials, key=lambda t: t.get("rank", 99))]
-    ranking.rank_trials(_trials, trust_attached=False)
+    _need = classify_patient_need(_trace.get("patient_text", ""))
+    _trace["patient_need"] = _need
+    ranking.rank_trials(_trials, trust_attached=False, patient_need=_need)
     _trace["ranking"] = {"version": ranking.RANKING_VERSION, "rule_ko": ranking.RANKING_RULE_KO,
                          "hard_exclusion_holds": ranking.hard_exclusion_holds(_trials)}
     # Question priority (affects_trials / affects_criteria / may_change_rank): pure arithmetic

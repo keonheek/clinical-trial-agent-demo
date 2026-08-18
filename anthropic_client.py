@@ -31,7 +31,10 @@ import urllib.request
 API_URL = "https://api.anthropic.com/v1/messages"
 API_VERSION = "2023-06-01"
 
-DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-haiku-4-5-20251001")
+# Default switched Haiku -> Sonnet 2026-08-19 (Keonhee's go): the 3-model bake-off on the 51
+# blind stress labels measured verdict accuracy Sonnet 76.5% vs Haiku 72.6% (Opus excluded by
+# his 08-18 model order). Override with CLAUDE_PIPELINE_MODEL.
+DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-sonnet-5")
 
 # Roles where clinical reasoning quality decides the score. Everything else is extraction.
 THINKING_ROLES = {"matcher", "reeval-matcher"}

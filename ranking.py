@@ -1,39 +1,37 @@
 """ranking.py -- deterministic, explainable recommendation priority (추천 우선순위).
 
 Pure stdlib. NO LLM client imports (this module is bundled into the serverless api/ handlers,
-which must stay zero-LLM -- same rule as action_policy.py). Selftest: `python3 ranking.py`.
-Golden order over the frozen demo traces: `python3 ranking.py --golden` (check) /
-`--write-golden` (regenerate expected_ranking.json after a deliberate key change).
+which must stay zero-LLM -- same rule as action_policy.py and patient_need.py). Selftest:
+`python3 ranking.py`. Golden order over the frozen demo traces: `python3 ranking.py --golden`
+(check) / `--write-golden` (regenerate expected_ranking.json after a deliberate key change).
 
-WHY THIS EXISTS. The organizer (박호진, 07-23 Q&A) said the "가장 적절한" ordering must weigh
-not only eligibility but 임상적 적합성 -- Phase, 중재 목적, 환자 부담. The email of 08-16 made the
-per-patient priority order the ONE binding deliverable. Until this module, the sort key was
-(eligibility class, unresolved count, fail count) only, so within a class the trial whose
-protocol was parsed LEAST ranked first (RECOMMENDATION-DEFINITION.md's counter-example, live on
-S001) and observational registries out-ranked therapeutic Phase 4 trials (S002).
+WHY THIS SHAPE. Organizer email #2 made the per-patient priority order the ONE binding
+deliverable. Keonhee's 08-18 step-back locked the logic tree: trials exist to help patients who
+need help, so the order answers three questions asked IN ORDER, and the sort key is exactly
+three groups (lexicographic; earlier groups dominate; every term is a fact of the trial record,
+a code-derived count, or the deterministic patient_need classifier -- never a model opinion):
 
-THE KEY (lexicographic; earlier tiers dominate; every tier is a fact of the trial record or a
-code-derived count -- never a model opinion):
+  Q1 참여 (gate)  "Can they join?"
+     INELIGIBLE (any hard FAIL) sinks to the bottom and is never out-ranked -- the safety claim
+     on the deck. Within the excluded: fewer blocking FAILs first.
+  Q2 도움 (help)  "Will it help them?"
+     patient_need x trial_intent match via patient_need.HELP_MATRIX (부합 2 > 부분 1 > 무관/
+     미확인 0; a low-confidence or unclassified trial intent falls to the row's worst cell -- a
+     hedged guess never lifts a trial). Sub-key inside the help group: Phase 부담 (PHASE4 best
+     ... PHASE1/EARLY worst, NA mid -- a later phase means a better-characterized intervention,
+     lower burden/uncertainty for the patient). When the patient's need was not computed
+     (need=None) the help group falls back to intent-only order (치료 < 지지 < 관리 < 관찰,
+     low-confidence demoted) and rank_reason flags it: "환자 필요 미산출".
+  Q3 확실 (sure)  "How sure are we?"
+     ELIGIBLE before UNCERTAIN, then coverage penalty (parsed/raw < 50% sinks below fully-read
+     trials), then unresolved ratio (REVIEW/parsed), then unresolved count, then nct_id
+     (stable, reproducible last resort).
 
-  0. eligibility class      ELIGIBLE < UNCERTAIN < INELIGIBLE     (decide_eligibility; a hard
-                            FAIL is never out-ranked -- the safety claim on the deck)
-  1. blocking criteria      fewer FAIL effects first              (only non-zero for INELIGIBLE)
-  2. 중재 목적 (fit)         therapeutic < supportive < care_delivery < observational
-                            low-confidence or unclassified intent DEMOTES to the observational
-                            tier: a hedged guess never lifts a trial above a confirmed one
-  3. Phase 부담 proxy         PHASE4 < PHASE3 < PHASE2 < PHASE1 = EARLY_PHASE1; NA/unknown = mid
-                            (later phase = better-characterized intervention, lower burden and
-                            uncertainty for the patient; the only burden datum in the record)
-  4. coverage penalty       parsed/raw_estimated < 0.5 sinks below fully-read trials
-                            (a trial we read less is not a more certain match)
-  5. unresolved ratio       REVIEW / parsed, ascending  (normalized, per 지우's option D)
-  6. unresolved count       REVIEW count, ascending     (tie-break within equal ratio)
-  7. nct_id                 stable, reproducible last resort
-
-Keonhee's call (2026-08-16): 중재 목적 sits ABOVE certainty inside an eligibility class --
-"같은 적격성 클래스라면 환자에게 치료 기회가 되는 시험을 먼저 검토한다". Certainty (tiers 4-6) is
-mostly an artifact of vignette thinness on the demo set (284/374 criteria UNKNOWN), which is
-another reason not to let it outrank a fact of the trial record.
+PRINCIPLE CHANGE (deliberate, Keonhee 08-18): help comes BEFORE eligibility-certainty. A trial
+that serves the patient's need but is still UNCERTAIN may out-rank a trial that is ELIGIBLE but
+does not serve the need. Hard exclusion stays absolute (Q1). This replaces the 08-16 8-tier key
+(eligibility class > FAIL count > 중재 목적 > Phase > coverage > ratio > count > nct), where
+certainty sat above usefulness.
 
 INVARIANTS: eval.py never reads `rank`, and traces.json is never written -- this module re-ranks
 IN MEMORY at serve time (api/trace.py, live_server.py) and inside pipeline.recommend() for
@@ -43,10 +41,13 @@ import json
 import os
 import sys
 
-RANKING_VERSION = "2026-08-16"
+import patient_need as pn
+
+RANKING_VERSION = "2026-08-18"
 
 ELIGIBILITY_ORDER = {"ELIGIBLE": 0, "UNCERTAIN": 1, "INELIGIBLE": 2}
 
+# Intent-only order, used ONLY when the patient's need was not computed (need=None fallback).
 FIT_ORDER = {"therapeutic": 0, "supportive": 1, "care_delivery": 2, "observational": 3}
 FIT_UNKNOWN = 3  # unclassified / low-confidence -> same tier as observational (demote, never lift)
 
@@ -57,9 +58,12 @@ PHASE_BURDEN_DEFAULT = 2  # NA / unknown: burden not characterized by phase -> m
 LOW_COVERAGE_CUTOFF = 0.5
 
 # One-line statement of the executed rule, for the UI and the deck. Must match rank_key.
-RANKING_RULE_KO = ("적격성 클래스(적격>미확정>부적격) → 차단 기준 수 → 중재 목적(치료>지지>관리>관찰; "
-                   "확신 낮으면 관찰과 동급) → Phase 부담(4>3>2>1, NA는 중간) → "
-                   "원문 커버리지 50% 미만 감점 → 미해결 비율 → 미해결 수 → NCT")
+# The three questions, in plain words -- no technical term without a plain-word label.
+RANKING_RULE_KO = ("참여할 수 있는가 -- 부적격(탈락) 시험은 항상 맨 아래 · "
+                   "도움이 되는가 -- 환자에게 필요한 것(치료/진단 확정/관리/지지)과 시험의 목적이 맞는 순, "
+                   "같으면 검증이 더 된 후기 단계(Phase 4→1) 먼저 · "
+                   "얼마나 확실한가 -- 적격 확정이 미확정보다 먼저, 원문을 절반도 못 읽었으면 감점, "
+                   "미해결 기준이 적은 순")
 
 FIT_LABEL_KO = {"therapeutic": "치료 목적", "supportive": "지지·완화", "care_delivery": "의료전달·관리",
                 "observational": "관찰 연구"}
@@ -94,12 +98,35 @@ def phase_label(phase):
 
 def fit_rank(intent):
     """intent = {"intent": str, "confidence": "high"|"low"} or None. Only a HIGH-confidence
-    non-observational intent moves a trial up; everything else lands on the observational tier."""
+    non-observational intent moves a trial up; everything else lands on the observational tier.
+    Used ONLY for the need=None fallback ordering inside the help group -- when a need exists,
+    patient_need.helps() (which applies the same low-confidence demotion) decides instead."""
     if not isinstance(intent, dict):
         return FIT_UNKNOWN
     if str(intent.get("confidence", "low")).lower() != "high":
         return FIT_UNKNOWN
     return FIT_ORDER.get(intent.get("intent"), FIT_UNKNOWN)
+
+
+def _known_intent(intent):
+    """The trial intent name IF it is high-confidence and in the known vocabulary, else None.
+    Unlike fit_rank, a confirmed observational intent counts as known -- the help matrix can
+    score it as the DIRECT match (diagnosis/monitoring needs)."""
+    if not isinstance(intent, dict):
+        return None
+    if str(intent.get("confidence", "low")).lower() != "high":
+        return None
+    name = intent.get("intent")
+    return name if name in FIT_ORDER else None
+
+
+def _need_name(need):
+    """Accepts classify_patient_need's dict, a bare need string, or None."""
+    if isinstance(need, dict):
+        return need.get("need")
+    if isinstance(need, str):
+        return need
+    return None
 
 
 def coverage_ratio(parsed, raw_estimated):
@@ -130,6 +157,14 @@ def _load_sidecars():
                 _SIDECARS[key] = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             _SIDECARS[key] = {}
+        # extra demo patients (gen_extra.py) ship their trials' sidecar entries separately so
+        # the canonical files stay untouched; merged here so every caller sees one map.
+        try:
+            with open(os.path.join(_HERE, name.replace(".json", "_extra.json")), encoding="utf-8") as f:
+                for k, v in json.load(f).items():
+                    _SIDECARS[key].setdefault(k, v)  # canonical wins; extra only fills gaps
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
     return _SIDECARS
 
 
@@ -145,74 +180,125 @@ def resolve_intent(trial, intent_map, trust_attached):
     return None
 
 
-def rank_key(trial, intent=None, raw_estimated=None):
+def rank_key(trial, intent=None, raw_estimated=None, need=None):
+    """(gate, help, sure) -- the locked three-question tree as a nested lexicographic key.
+    `need` is classify_patient_need's dict (or a bare need string) for THE patient this list
+    belongs to: pass the same need for every trial in one sort. None -> the help group falls
+    back to intent-only order (its leading discriminator keeps the two modes from ever
+    comparing against each other)."""
     n, fails, reviews = _counts(trial.get("criteria"))
     ratio = round(reviews / n, 3) if n else 1.0
-    return (
-        ELIGIBILITY_ORDER.get(trial.get("eligibility"), 1),
-        fails,
-        fit_rank(intent),
-        phase_burden(trial.get("phase")),
+    elig = trial.get("eligibility", "UNCERTAIN")
+
+    gate = (1 if elig == "INELIGIBLE" else 0, fails)
+
+    burden = phase_burden(trial.get("phase"))
+    nname = _need_name(need)
+    if nname in pn.VALID_NEEDS:
+        # helps() scores 2 best -> invert so smaller sorts first; low-confidence/unknown
+        # trial intent already fell to the row's worst cell inside helps().
+        help_group = (0, 2 - pn.helps(nname, intent), burden)
+    else:
+        help_group = (1, fit_rank(intent), burden)
+
+    sure = (
+        ELIGIBILITY_ORDER.get(elig, 1),
         coverage_penalty(n, raw_estimated),
         ratio,
         reviews,
         str(trial.get("nct_id", "")),
     )
+    return (gate, help_group, sure)
 
 
-def rank_basis(trial, intent=None, raw_estimated=None):
-    """The fired components, in key order, as UI-ready chips + one Korean sentence."""
+def _help_sentence(nname, need_conf, score, known_intent, phase_txt):
+    """The 도움 part of rank_reason, plain Korean."""
+    if nname in pn.VALID_NEEDS:
+        need_ko = pn.NEED_KO[nname]
+        if known_intent is None:
+            txt = f"{need_ko} 필요인데 시험 목적 미확인 ({phase_txt})"
+        else:
+            fit_ko = FIT_LABEL_KO[known_intent]
+            if score == 2:
+                txt = f"{need_ko} 필요와 부합 ({fit_ko} 시험, {phase_txt})"
+            elif score == 1:
+                txt = f"{need_ko} 필요에 부분적 도움 ({fit_ko} 시험, {phase_txt})"
+            else:
+                txt = f"{need_ko} 필요와 무관 ({fit_ko} 시험, {phase_txt})"
+        if need_conf == "low":
+            txt += ", 필요 분류는 확신 낮음"
+        return txt
+    if known_intent is None:
+        return f"환자 필요 미산출, 시험 목적도 미확인 ({phase_txt})"
+    return f"환자 필요 미산출 → 시험 목적 순 ({FIT_LABEL_KO[known_intent]} 시험, {phase_txt})"
+
+
+def rank_basis(trial, intent=None, raw_estimated=None, need=None):
+    """The fired components of the three groups, as UI-ready chips (each chip carries
+    group: join | help | sure) + the rank_reason sentence -- the three questions answered in
+    plain Korean, e.g. '참여: 미확정 · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 4) · '
+    '확실: 미해결 10/12, 원문 39% (감점)'."""
     n, fails, reviews = _counts(trial.get("criteria"))
     elig = trial.get("eligibility", "UNCERTAIN")
-    fr = fit_rank(intent)
     intent_name = intent.get("intent") if isinstance(intent, dict) else None
     conf = intent.get("confidence") if isinstance(intent, dict) else None
+    known_intent = _known_intent(intent)
+    nname = _need_name(need)
+    need_conf = need.get("confidence") if isinstance(need, dict) else None
+    score = pn.helps(nname, intent) if nname in pn.VALID_NEEDS else None
     cov = coverage_ratio(n, raw_estimated)
     pen = coverage_penalty(n, raw_estimated)
 
-    basis = [{"key": "eligibility", "label": "적격성", "value": elig, "tier": 0}]
+    # -- chips, grouped by the three questions (tier kept numeric for stable UI sort order) --
+    basis = [{"key": "eligibility", "label": "참여", "value": elig, "group": "join", "tier": 0}]
     if fails:
-        basis.append({"key": "blocking", "label": "차단 기준", "value": fails, "tier": 1})
-    if fr < FIT_UNKNOWN:
-        basis.append({"key": "fit", "label": "중재 목적", "value": intent_name,
-                      "confidence": conf, "tier": 2})
+        basis.append({"key": "blocking", "label": "차단 기준", "value": fails, "group": "join", "tier": 0})
+    if nname in pn.VALID_NEEDS:
+        basis.append({"key": "need", "label": "환자 필요", "value": pn.NEED_KO[nname], "need": nname,
+                      "confidence": need_conf, "group": "help", "tier": 1})
+        basis.append({"key": "help", "label": "", "value": pn.help_label_ko(score), "score": score,
+                      "group": "help", "tier": 1})
     else:
-        basis.append({"key": "fit", "label": "중재 목적",
+        basis.append({"key": "need", "label": "환자 필요", "value": "미산출", "need": None,
+                      "group": "help", "tier": 1})
+    fr = fit_rank(intent)
+    if fr < FIT_UNKNOWN:
+        basis.append({"key": "fit", "label": "시험 목적", "value": intent_name,
+                      "confidence": conf, "group": "help", "tier": 1})
+    else:
+        basis.append({"key": "fit", "label": "시험 목적",
                       "value": intent_name or "unclassified",
-                      "confidence": conf, "demoted": True, "tier": 2})
+                      "confidence": conf, "demoted": True, "group": "help", "tier": 1})
     basis.append({"key": "phase", "label": "Phase", "value": (trial.get("phase") or "NA"),
-                  "burden": phase_burden(trial.get("phase")), "tier": 3})
+                  "burden": phase_burden(trial.get("phase")), "group": "help", "tier": 1})
     if cov is not None:
         basis.append({"key": "coverage", "label": "원문 커버리지", "value": round(cov, 2),
-                      "penalty": bool(pen), "tier": 4})
-    basis.append({"key": "open", "label": "미해결", "value": f"{reviews}/{n}", "tier": 5})
+                      "penalty": bool(pen), "group": "sure", "tier": 2})
+    basis.append({"key": "open", "label": "미해결", "value": f"{reviews}/{n}", "group": "sure", "tier": 2})
 
-    parts = [f"적격성 {ELIG_LABEL_KO.get(elig, elig)}"]
-    if fails:
-        parts.append(f"차단 기준 {fails}건")
-    if fr < FIT_UNKNOWN:
-        parts.append(f"{FIT_LABEL_KO.get(intent_name, intent_name)} 시험")
-    elif intent_name == "observational":
-        parts.append("관찰 연구" + (" (추정)" if conf == "low" else ""))
-    else:
-        parts.append("중재 목적 미확인 → 관찰과 동급")
-    parts.append(phase_label(trial.get("phase")))
+    # -- rank_reason: the three questions in one plain-Korean line --
+    join_txt = ELIG_LABEL_KO.get(elig, elig) + (f" (차단 기준 {fails}건)" if fails else "")
+    help_txt = _help_sentence(nname, need_conf, score, known_intent, phase_label(trial.get("phase")))
+    sure_txt = f"미해결 {reviews}/{n}"
     if cov is not None:
         # parsed can exceed the line-count estimate (multi-clause bullets split into atomic
         # criteria) -- never assert more than "전체(추정)", the estimator is an approximation.
-        parts.append("원문 커버리지 전체(추정)" if cov >= 1.0
-                     else f"원문 커버리지 {int(round(cov * 100))}%" + (" (감점)" if pen else ""))
-    parts.append(f"미해결 {reviews}/{n}")
-    return basis, " · ".join(parts)
+        sure_txt += (", 원문 전체(추정)" if cov >= 1.0
+                     else f", 원문 {int(round(cov * 100))}%" + (" (감점)" if pen else ""))
+    reason = " · ".join([f"참여: {join_txt}", f"도움: {help_txt}", f"확실: {sure_txt}"])
+    return basis, reason
 
 
-def rank_trials(trials, intent_map=None, coverage_map=None, trust_attached=False):
+def rank_trials(trials, intent_map=None, coverage_map=None, trust_attached=False, patient_need=None):
     """Sort `trials` in place by rank_key and stamp rank / rank_reason / rank_basis /
     ranking_version on each. Returns the same list. Also normalizes trial["trial_intent"] to the
     server-side sidecar value when one exists (display and sort then agree).
 
     trials: dicts with nct_id, phase, eligibility, criteria[{effect,...}] (+ optional
-    trial_intent). intent_map / coverage_map default to the repo-root sidecars."""
+    trial_intent). intent_map / coverage_map default to the repo-root sidecars.
+    patient_need: classify_patient_need's dict for the ONE patient this list belongs to, or
+    None -> the help group falls back to intent-only order and every rank_reason flags
+    "환자 필요 미산출"."""
     side = _load_sidecars()
     intent_map = side["intent"] if intent_map is None else intent_map
     coverage_map = side["coverage"] if coverage_map is None else coverage_map
@@ -223,12 +309,12 @@ def rank_trials(trials, intent_map=None, coverage_map=None, trust_attached=False
         if intent and (intent_map or {}).get(t.get("nct_id")):
             t["trial_intent"] = {"intent": intent["intent"], "confidence": intent.get("confidence", "low")}
         raw = (coverage_map or {}).get(t.get("nct_id"))
-        keyed.append((rank_key(t, intent, raw), t, intent, raw))
+        keyed.append((rank_key(t, intent, raw, patient_need), t, intent, raw))
     keyed.sort(key=lambda x: x[0])
     trials[:] = [t for _, t, _, _ in keyed]
     for i, (_, t, intent, raw) in enumerate(keyed):
         t["rank"] = i + 1
-        basis, reason = rank_basis(t, intent, raw)
+        basis, reason = rank_basis(t, intent, raw, patient_need)
         t["rank_basis"] = basis
         t["rank_reason"] = reason
         t["ranking_version"] = RANKING_VERSION
@@ -261,8 +347,9 @@ def golden_from_traces(traces_path=None):
         traces = json.load(f)
     out = {}
     for tr in traces:
+        need = pn.classify_patient_need(tr.get("patient_text", ""))
         trials = [dict(t, criteria=[dict(c) for c in t.get("criteria", [])]) for t in tr["trials"]]
-        rank_trials(trials)
+        rank_trials(trials, patient_need=need)
         assert hard_exclusion_holds(trials), tr["patient_id"]
         out[tr["patient_id"]] = [t["nct_id"] for t in trials]
     return out
@@ -298,26 +385,48 @@ def _selftest():
                              for i, e in enumerate(crit_effects)],
                 "trial_intent": intent}
 
-    # 1. hard exclusion is never out-ranked, whatever the appropriateness terms say
+    NEED_TX = {"need": "treatment", "need_ko": "치료", "confidence": "high", "reasons": []}
+    NEED_DX = {"need": "diagnosis", "need_ko": "진단 확정", "confidence": "high", "reasons": []}
+
+    # 0. the key is exactly three groups
+    k = rank_key(T("NCT0", "UNCERTAIN", "NA", ["REVIEW"]), None, None, NEED_TX)
+    check(len(k) == 3 and all(isinstance(g, tuple) for g in k), "rank_key returns (gate, help, sure)")
+
+    # 1. GATE: a hard exclusion is never out-ranked, whatever help/certainty say
     trials = [T("NCT1", "INELIGIBLE", "PHASE4", ["FAIL"], {"intent": "therapeutic", "confidence": "high"}),
               T("NCT2", "UNCERTAIN", "NA", ["REVIEW"] * 12, {"intent": "observational", "confidence": "low"})]
-    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True)
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=NEED_TX)
     check(trials[0]["nct_id"] == "NCT2" and hard_exclusion_holds(trials),
-          "eligibility class outranks intent/phase (INELIGIBLE therapeutic P4 stays below UNCERTAIN observational)")
+          "gate: INELIGIBLE helps-need P4 trial stays below UNCERTAIN no-help trial")
 
-    # 2. within a class, confirmed therapeutic beats observational even with more unresolved
-    trials = [T("NCTa", "UNCERTAIN", "NA", ["REVIEW"] * 2 + ["PASS"] * 2, {"intent": "observational", "confidence": "high"}),
-              T("NCTb", "UNCERTAIN", "PHASE4", ["REVIEW"] * 10 + ["PASS"] * 2, {"intent": "therapeutic", "confidence": "high"})]
-    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True)
-    check(trials[0]["nct_id"] == "NCTb", "중재 목적 above certainty inside a class (his 08-16 call)")
+    # 2. HELP BEFORE CERTAINTY (the 08-18 principle change): a trial that helps the need but is
+    # UNCERTAIN out-ranks a trial that is ELIGIBLE but does not help
+    trials = [T("NCTa", "ELIGIBLE", "NA", ["PASS"] * 4, {"intent": "observational", "confidence": "high"}),
+              T("NCTb", "UNCERTAIN", "PHASE2", ["REVIEW"] * 6 + ["PASS"] * 2, {"intent": "therapeutic", "confidence": "high"})]
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=NEED_TX)
+    check(trials[0]["nct_id"] == "NCTb", "help before certainty: helps+UNCERTAIN outranks not-helps+ELIGIBLE")
 
-    # 3. low-confidence therapeutic does NOT lift above high-confidence observational with fewer unresolved
-    trials = [T("NCTa", "UNCERTAIN", "NA", ["REVIEW"] * 2 + ["PASS"] * 2, {"intent": "observational", "confidence": "high"}),
-              T("NCTb", "UNCERTAIN", "NA", ["REVIEW"] * 3 + ["PASS"] * 1, {"intent": "therapeutic", "confidence": "low"})]
-    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True)
-    check(trials[0]["nct_id"] == "NCTa", "low-confidence intent demotes to observational tier (ratio decides)")
+    # 3. certainty INSIDE equal help: ELIGIBLE before UNCERTAIN
+    trials = [T("NCTu", "UNCERTAIN", "PHASE2", ["REVIEW"] * 2 + ["PASS"] * 2, {"intent": "therapeutic", "confidence": "high"}),
+              T("NCTe", "ELIGIBLE", "PHASE2", ["PASS"] * 4, {"intent": "therapeutic", "confidence": "high"})]
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=NEED_TX)
+    check(trials[0]["nct_id"] == "NCTe", "equal help: ELIGIBLE before UNCERTAIN (sure group)")
 
-    # 4. phase burden inside therapeutic: PHASE4 before PHASE1; spaced + EARLY forms normalize
+    # 4. the help matrix really drives: for a DIAGNOSIS need, an observational registry is the
+    # direct match and out-ranks a therapeutic trial (partial credit only)
+    trials = [T("NCTther", "UNCERTAIN", "PHASE4", ["REVIEW"] * 2, {"intent": "therapeutic", "confidence": "high"}),
+              T("NCTobs", "UNCERTAIN", "NA", ["REVIEW"] * 5, {"intent": "observational", "confidence": "high"})]
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=NEED_DX)
+    check(trials[0]["nct_id"] == "NCTobs", "need x intent: observational is the direct match for a diagnosis need")
+
+    # 5. low-confidence intent demotes INSIDE the help matrix (worst cell, never lifted)
+    trials = [T("NCTsup", "UNCERTAIN", "NA", ["REVIEW"] * 5, {"intent": "supportive", "confidence": "high"}),
+              T("NCTther", "UNCERTAIN", "PHASE4", ["REVIEW"] * 1, {"intent": "therapeutic", "confidence": "low"})]
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=NEED_TX)
+    check(trials[0]["nct_id"] == "NCTsup",
+          "low-confidence therapeutic falls to worst cell, below confirmed supportive (partial help)")
+
+    # 6. phase burden inside equal help: PHASE4 before PHASE1; normalization forms
     check(phase_burden("PHASE 2") == phase_burden("PHASE2") == 2, "phase normalization 'PHASE 2' == 'PHASE2'")
     check(phase_burden("EARLY_PHASE1") == phase_burden("PHASE1") == 3, "EARLY_PHASE1 == PHASE1 burden")
     check(phase_burden("NA") == PHASE_BURDEN_DEFAULT == phase_burden(None), "NA/None -> default mid burden")
@@ -326,37 +435,52 @@ def _selftest():
           "phase_label renders EARLY/spaced/NA/combined forms cleanly")
     trials = [T("NCT1", "UNCERTAIN", "PHASE1", ["REVIEW"] * 2, {"intent": "therapeutic", "confidence": "high"}),
               T("NCT4", "UNCERTAIN", "PHASE4", ["REVIEW"] * 5, {"intent": "therapeutic", "confidence": "high"})]
-    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True)
-    check(trials[0]["nct_id"] == "NCT4", "PHASE4 above PHASE1 within therapeutic despite more unresolved")
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=NEED_TX)
+    check(trials[0]["nct_id"] == "NCT4", "PHASE4 above PHASE1 within equal help despite more unresolved")
 
-    # 5. coverage penalty: a trial read at <50% sinks below a fully-read peer of the same fit/phase
+    # 7. need=None fallback: intent-only order, flagged in the reason
+    trials = [T("NCTobs", "UNCERTAIN", "NA", ["REVIEW"] * 1, {"intent": "observational", "confidence": "high"}),
+              T("NCTther", "UNCERTAIN", "NA", ["REVIEW"] * 5, {"intent": "therapeutic", "confidence": "high"})]
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=None)
+    check(trials[0]["nct_id"] == "NCTther", "need=None: help group falls back to intent-only order")
+    check(all("환자 필요 미산출" in t["rank_reason"] for t in trials),
+          "need=None: every rank_reason flags 환자 필요 미산출")
+
+    # 8. coverage penalty (sure group): read at <50% sinks below a fully-read peer of equal help
     trials = [T("NCTlow", "UNCERTAIN", "NA", ["REVIEW"] * 2 + ["PASS"] * 2, {"intent": "observational", "confidence": "high"}),
               T("NCTfull", "UNCERTAIN", "NA", ["REVIEW"] * 6 + ["PASS"] * 2, {"intent": "observational", "confidence": "high"})]
-    rank_trials(trials, intent_map={}, coverage_map={"NCTlow": 30, "NCTfull": 8}, trust_attached=True)
+    rank_trials(trials, intent_map={}, coverage_map={"NCTlow": 30, "NCTfull": 8}, trust_attached=True,
+                patient_need=NEED_TX)
     check(trials[0]["nct_id"] == "NCTfull", "coverage <50% penalized below a fully-read trial")
 
-    # 6. unresolved RATIO, not count, breaks ties (2/4 beats 4/12? no: 0.5 vs 0.33 -> 4/12 first)
+    # 9. unresolved RATIO, not count, breaks ties (0.5 vs 0.33 -> 4/12 first)
     trials = [T("NCTx", "UNCERTAIN", "NA", ["REVIEW"] * 2 + ["PASS"] * 2, {"intent": "observational", "confidence": "high"}),
               T("NCTy", "UNCERTAIN", "NA", ["REVIEW"] * 4 + ["PASS"] * 8, {"intent": "observational", "confidence": "high"})]
-    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True)
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=True, patient_need=NEED_TX)
     check(trials[0]["nct_id"] == "NCTy", "normalized unresolved ratio (4/12 < 2/4) decides, not raw count")
 
-    # 7. client-attached intent is ignored unless trusted; sidecar wins when present
+    # 10. client-attached intent is ignored unless trusted; sidecar wins when present
     trials = [T("NCTa", "UNCERTAIN", "NA", ["REVIEW"] * 2, {"intent": "therapeutic", "confidence": "high"}),
               T("NCTb", "UNCERTAIN", "NA", ["REVIEW"] * 1, {"intent": "observational", "confidence": "high"})]
-    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=False)
-    check(trials[0]["nct_id"] == "NCTb", "untrusted attached intent cannot rig the sort (both fall to unknown tier)")
+    rank_trials(trials, intent_map={}, coverage_map={}, trust_attached=False, patient_need=NEED_TX)
+    check(trials[0]["nct_id"] == "NCTb", "untrusted attached intent cannot rig the sort (both fall to worst cell)")
     trials = [T("NCTa", "UNCERTAIN", "NA", ["REVIEW"] * 2, {"intent": "observational", "confidence": "high"}),
               T("NCTb", "UNCERTAIN", "NA", ["REVIEW"] * 1, None)]
-    rank_trials(trials, intent_map={"NCTa": {"intent": "therapeutic", "confidence": "high"}}, coverage_map={}, trust_attached=True)
+    rank_trials(trials, intent_map={"NCTa": {"intent": "therapeutic", "confidence": "high"}}, coverage_map={},
+                trust_attached=True, patient_need=NEED_TX)
     check(trials[0]["nct_id"] == "NCTa" and trials[0]["trial_intent"]["intent"] == "therapeutic",
           "sidecar intent overrides attached and is written back for display")
 
-    # 8. stamps + reason strings present and ranks are 1..n
+    # 11. stamps + three-question reason + grouped chips; ranks are 1..n
     check([t["rank"] for t in trials] == [1, 2] and all(t.get("rank_reason") and t.get("rank_basis") for t in trials),
           "rank / rank_reason / rank_basis stamped, ranks are a 1..n permutation")
+    r = trials[0]["rank_reason"]
+    check(all(m in r for m in ("참여:", "도움:", "확실:")), "rank_reason answers the three questions")
+    groups = {b.get("group") for b in trials[0]["rank_basis"]}
+    check(groups <= {"join", "help", "sure"} and {"join", "help", "sure"} <= groups,
+          "rank_basis chips carry group join/help/sure")
 
-    # 9. deterministic on the frozen demo traces + safety property on all 10 patients
+    # 12. deterministic on the frozen demo traces + safety property on all 10 patients
     if os.path.exists(os.path.join(_HERE, "traces.json")):
         g1 = golden_from_traces()
         g2 = golden_from_traces()
@@ -368,9 +492,13 @@ def _selftest():
 
 if __name__ == "__main__":
     if "--write-golden" in sys.argv:
+        with open(TRACES_PATH, encoding="utf-8") as f:
+            _needs = {tr["patient_id"]: pn.classify_patient_need(tr.get("patient_text", ""))["need"]
+                      for tr in json.load(f)}
         with open(GOLDEN_PATH, "w", encoding="utf-8") as f:
             json.dump({"ranking_version": RANKING_VERSION, "rule_ko": RANKING_RULE_KO,
-                       "order": golden_from_traces()}, f, ensure_ascii=False, indent=1)
+                       "patient_need": _needs, "order": golden_from_traces()}, f,
+                      ensure_ascii=False, indent=1)
         print("wrote", GOLDEN_PATH)
     elif "--golden" in sys.argv:
         sys.exit(0 if check_golden() else 1)

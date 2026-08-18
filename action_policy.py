@@ -192,6 +192,37 @@ def _tokens(text):
     return {t for t in toks if t not in _STOPWORDS and (len(t) >= 3 or any(ch.isdigit() for ch in t))}
 
 
+# ---------------------------------------------------------------------------
+# Shared criterion-text normalization + stable id (added for the question-criterion
+# linking fix, 지우's DAS28 case: a criterion's text is re-typed by an LLM into a
+# gap's related_criteria list, so a stray extra space or trailing punctuation mark
+# breaks an exact-string comparison even though the two strings name the same
+# criterion. Every exact-text link in the codebase (here, live_server.find_affected,
+# api/trace.py / live_server.py's serve-time id stamping) goes through this one
+# function so a whitespace/punctuation drift can never silently break a link again.
+# Deterministic, pure stdlib -- safe in the serverless bundle.
+# ---------------------------------------------------------------------------
+import hashlib
+import re as _re
+
+
+def normalize_criterion_text(text):
+    """lowercase, collapse internal whitespace, strip trailing punctuation. NOT used for
+    display -- only as the comparison/hash key."""
+    t = _re.sub(r"\s+", " ", str(text or "").strip().lower())
+    return t.rstrip(".,;:!?)]}。，")  # incl. 。 ， in case of Korean-punctuated text
+
+
+def criterion_id(nct_id, text):
+    """Stable short id for one (trial, criterion) pair: sha1 hex[:10] of
+    "{nct_id}|{normalized text}". Same nct_id + differently-whitespaced same criterion text
+    -> same id (the DAS28 case); different nct_id or genuinely different text -> a different
+    id. Attached at SERVE time only (api/trace.py, live_server.py, pipeline.match_trial) --
+    never written into traces.json on disk."""
+    basis = f"{nct_id}|{normalize_criterion_text(text)}"
+    return hashlib.sha1(basis.encode("utf-8")).hexdigest()[:10]
+
+
 def _affected_criteria(question, gaps_by_field, trials):
     """Locate the still-undecided criteria a question bears on.
 
@@ -211,6 +242,10 @@ def _affected_criteria(question, gaps_by_field, trials):
             gtok = _tokens(g.get("field", "") + " " + g.get("why_needed", ""))
             if qtok & gtok:
                 target_texts.update(g.get("related_criteria", []))
+    # normalized once up front (지우's DAS28 case: a re-typed related_criteria entry that
+    # differs from the real criterion text only by whitespace/trailing punctuation must
+    # still link) -- see action_policy.normalize_criterion_text.
+    target_norm = {normalize_criterion_text(x) for x in target_texts}
 
     pairs = []
     for t in trials:
@@ -223,11 +258,11 @@ def _affected_criteria(question, gaps_by_field, trials):
                 continue
             if c.get("action") == "STOP":
                 continue
-            # With explicit links, restrict to them; without any links at all,
-            # fall back to token overlap directly against the criterion text so a
+            # With explicit links, restrict to them (normalized compare); without any links
+            # at all, fall back to token overlap directly against the criterion text so a
             # question still surfaces its criteria on gap-less traces.
-            if target_texts:
-                if c.get("text") not in target_texts:
+            if target_norm:
+                if normalize_criterion_text(c.get("text", "")) not in target_norm:
                     continue
             else:
                 if not (_tokens(question.get("question", "")) & _tokens(c.get("text", ""))):
@@ -355,6 +390,43 @@ def _selftest():
     q_fb = {"question": "adequate renal function labs?"}
     nums_fb = priority_numbers(q_fb, [], trials)
     check(nums_fb["affects_criteria"] >= 1, "fallback overlap should find the renal criterion")
+
+    # ---- question-criterion linking fix (지우's DAS28 bug) ----
+    # a related_criteria entry that differs from the real criterion text only by
+    # whitespace/case/trailing punctuation must still link (normalized compare)
+    gaps_ws = [{"field": "renal", "why_needed": "kidney labs",
+                "related_criteria": ["  Adequate  renal function.  "]}]
+    nums_ws = priority_numbers(q, gaps_ws, trials)
+    check(nums_ws["affects_criteria"] == 2,
+          f"whitespace/punctuation-variant related_criteria must still link, got {nums_ws['affects_criteria']}")
+
+    # a field IS found (target set non-empty) but names a criterion that does not exist
+    # anywhere -> zero pairs, never "everything" (the bug this fix removes)
+    gaps_nomatch = [{"field": "renal", "why_needed": "kidney labs",
+                      "related_criteria": ["some criterion that is not on any trial"]}]
+    q_nomatch = {"field": "renal", "question": "unrelated wording entirely"}
+    nums_nomatch = priority_numbers(q_nomatch, gaps_nomatch, trials)
+    check(nums_nomatch["affects_criteria"] == 0,
+          f"a linked-but-non-matching gap must yield zero pairs, not every open criterion, got {nums_nomatch['affects_criteria']}")
+
+    # normalize_criterion_text: whitespace/case/trailing-punctuation insensitive
+    check(normalize_criterion_text("  Adequate  renal function.  ") == normalize_criterion_text("adequate renal function"),
+          "normalize_criterion_text collapses whitespace/case/trailing punctuation")
+
+    # criterion_id: stable across repeated calls, distinct across different criteria,
+    # and distinct across trials even when the criterion TEXT is identical (NCT1/NCT2
+    # both carry "Adequate renal function" above -- ids must not collide)
+    id_a1 = criterion_id("NCT1", "Adequate renal function")
+    id_a2 = criterion_id("NCT1", "Adequate renal function")
+    id_b = criterion_id("NCT1", "ECOG 0-1")
+    id_diff_trial = criterion_id("NCT2", "Adequate renal function")
+    check(id_a1 == id_a2, "criterion_id is stable across repeated calls on the same input")
+    check(id_a1 != id_b, "criterion_id differs for a different criterion on the same trial")
+    check(id_a1 != id_diff_trial,
+          "criterion_id differs across trials even when the criterion text is identical")
+    # whitespace/trailing-punctuation drift must NOT change the id (same fix as the linking bug)
+    check(criterion_id("NCT1", "Adequate renal function") == criterion_id("NCT1", "  Adequate  renal function.  "),
+          "criterion_id is stable under whitespace/punctuation drift in the source text")
 
     # trial-level STOP: undecided criteria on a hard-FAIL trial stop being questions; the
     # criterion's own uncertainty_type (the cause) is preserved; clean trials are untouched.

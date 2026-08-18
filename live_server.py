@@ -35,8 +35,15 @@ from pipeline import (
     effect_of,
     TRIALS_PER_PATIENT,
 )
-from action_policy import enrich_questions, apply_trial_level_actions
+from action_policy import (
+    enrich_questions,
+    apply_trial_level_actions,
+    trial_is_blocked,
+    normalize_criterion_text,
+    criterion_id,
+)
 from build_trial_intent import classify_trial_intent
+from patient_need import classify_patient_need
 import ranking
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -47,6 +54,11 @@ PORT = 8765
 # ---------------------------------------------------------------------------
 with open(os.path.join(HERE, "patients.json")) as f:
     PATIENTS = json.load(f)
+try:  # extra demo patients (gen_extra.py)
+    with open(os.path.join(HERE, "patients_extra.json")) as f:
+        PATIENTS = PATIENTS + json.load(f)
+except FileNotFoundError:
+    pass
 PATIENTS_BY_ID = {p["patient_id"]: p for p in PATIENTS}
 
 # The 40 stress-test patients (5 base cases x 7 single-defect variants, 지우's set) are
@@ -76,6 +88,11 @@ except FileNotFoundError:
 
 with open(os.path.join(HERE, "traces.json")) as f:
     TRACES = json.load(f)
+try:  # extra demo patients (gen_extra.py) -- same shape, merged; enrichments below apply to all
+    with open(os.path.join(HERE, "traces_extra.json")) as f:
+        TRACES.extend(json.load(f))
+except (FileNotFoundError, json.JSONDecodeError):
+    pass  # a gen_extra.py run may be mid-write; serve the canonical set rather than crash
 TRACES_BY_ID = {t["patient_id"]: t for t in TRACES}
 
 # Answer options for the frozen questions live in a sidecar (traces.json must not be
@@ -96,6 +113,12 @@ except FileNotFoundError:
 try:
     with open(os.path.join(HERE, "trial_intent.json"), encoding="utf-8") as f:
         _TRIAL_INTENT = json.load(f)
+    try:
+        with open(os.path.join(HERE, "trial_intent_extra.json"), encoding="utf-8") as f:
+            for _k, _v in json.load(f).items():
+                _TRIAL_INTENT.setdefault(_k, _v)
+    except FileNotFoundError:
+        pass
     for _t in TRACES:
         for _tr in _t.get("trials", []):
             _intent = _TRIAL_INTENT.get(_tr["nct_id"])
@@ -109,6 +132,12 @@ except FileNotFoundError:
 try:
     with open(os.path.join(HERE, "coverage_map.json"), encoding="utf-8") as f:
         _RAW_COUNT = json.load(f)
+    try:
+        with open(os.path.join(HERE, "coverage_map_extra.json"), encoding="utf-8") as f:
+            for _k, _v in json.load(f).items():
+                _RAW_COUNT.setdefault(_k, _v)
+    except FileNotFoundError:
+        pass
     for _t in TRACES:
         for _tr in _t.get("trials", []):
             _raw_n = _RAW_COUNT.get(_tr["nct_id"])
@@ -117,13 +146,26 @@ try:
 except FileNotFoundError:
     pass
 
+# Stable criterion_id (added for the question-criterion linking fix): sha1(nct_id + normalized
+# text)[:10], attached here IN MEMORY only -- traces.json on disk never carries it. Lets a
+# client-round-tripped criterion be matched back to the exact one served, independent of any
+# text re-typing, once the UI starts using it instead of raw text for cross-checks.
+for _t in TRACES:
+    for _tr in _t.get("trials", []):
+        for _c in _tr.get("criteria", []):
+            _c["criterion_id"] = criterion_id(_tr["nct_id"], _c.get("text", ""))
+
 # Recommendation priority + trial-level STOP for the frozen traces, identical to api/trace.py:
 # re-rank IN MEMORY (traces.json untouched) with ranking.rank_trials, and mark undecided criteria
 # on already-INELIGIBLE trials STOP instead of ASK.
 for _t in TRACES:
     apply_trial_level_actions(_t.get("trials", []))
     _t["frozen_rank_order"] = [x["nct_id"] for x in sorted(_t.get("trials", []), key=lambda x: x.get("rank", 99))]
-    ranking.rank_trials(_t.get("trials", []), trust_attached=False)
+    # the patient's need (deterministic keyword rules, no LLM) drives the help group of the
+    # three-question sort and is attached for the UI -- same block as api/trace.py.
+    _need = classify_patient_need(_t.get("patient_text", ""))
+    _t["patient_need"] = _need
+    ranking.rank_trials(_t.get("trials", []), trust_attached=False, patient_need=_need)
     _t["ranking"] = {"version": ranking.RANKING_VERSION, "rule_ko": ranking.RANKING_RULE_KO,
                      "hard_exclusion_holds": ranking.hard_exclusion_holds(_t.get("trials", []))}
 
@@ -188,7 +230,7 @@ SESSIONS_LOCK = threading.Lock()
 # with "session not found" and no way back. Completed sessions are mirrored to disk and
 # reloaded at startup: a restart (or a crash) no longer costs a finished run.
 SESSION_STORE = os.path.join(HERE, "cache", "sessions")
-_SESSION_PERSIST_KEYS = ("id", "mode", "patient", "stage", "error", "extraction",
+_SESSION_PERSIST_KEYS = ("id", "mode", "patient", "patient_need", "stage", "error", "extraction",
                          "trials_out", "gaps", "questions", "extended_record",
                          "answer_rounds", "created")
 
@@ -280,6 +322,10 @@ def _ranking(trials_out):
 # ---------------------------------------------------------------------------
 def build_session_precomputed(session, trace):
     try:
+        # need was classified at load time and attached to the trace (same value the module-
+        # level re-rank used); recompute only if a trace somehow predates that block.
+        session["patient_need"] = trace.get("patient_need") or classify_patient_need(
+            trace.get("patient_text", ""))
         session["stage"] = "extract"
         session["extraction"] = trace["extraction"]
         time.sleep(0.35)
@@ -313,6 +359,11 @@ def build_session_live(session):
         session["stage"] = "extract"
         fields, dropped = extract_patient(patient)
         session["extraction"] = fields
+        # Need card immediately (deterministic, no LLM): on the live path the UI otherwise
+        # waits ~8 LLM calls before the anchor of the whole screen appears. recommend() will
+        # recompute the same value later (same pure function) -- no divergence possible.
+        session["patient_need"] = classify_patient_need(patient["text"])
+        persist_session(session)
 
         # A stress patient is scored against ITS OWN trials (the ones the human answer key
         # was written against), not whatever the keyword picker finds in the demo pool.
@@ -330,7 +381,7 @@ def build_session_live(session):
             session["stage"] = "parse"
             criteria = parse_criteria(t)
             session["stage"] = "match"
-            matched = match_trial(patient, fields, criteria)
+            matched = match_trial(patient, fields, criteria, nct_id=t["nct_id"])
             for c in matched:
                 all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
                                            "verdict": c["verdict"], "action": c.get("action"),
@@ -362,7 +413,8 @@ def build_session_live(session):
         session["stage"] = "recommend"
         # trust_attached=True: the trial_intent on these dicts was classified server-side above
         # (classify_trial_intent), so ranking may use it for trials outside the sidecar.
-        recs = recommend(patient, trials_out, trust_attached=True)
+        recs, need = recommend(patient, trials_out, trust_attached=True)
+        session["patient_need"] = need
         apply_recommendation(trials_out, recs)
         apply_trial_level_actions(trials_out)
 
@@ -393,6 +445,18 @@ def ensure_gaps(session):
 
 
 def find_affected(session, question_text):
+    """Which still-undecided criteria does this answer bear on? Two link rungs, in order:
+    (1) the question's own field -> that gap's related_criteria; (2) no field match ->
+    token overlap between the question and any gap's field/why_needed -> that gap's
+    related_criteria. Comparison is normalized (action_policy.normalize_criterion_text) so a
+    stray whitespace/punctuation difference between a gap's related_criteria (LLM-retyped)
+    and the real criterion text can no longer break the link (지우's DAS28 case).
+
+    If NEITHER rung finds a link, target_texts stays empty and this returns [] -- it must
+    NOT fall through to "every open criterion" (the bug this replaces: an empty target set
+    used to compare falsy, so nothing was ever filtered and every undecided criterion on
+    every trial came back "affected", silently re-evaluating the whole trace and spending
+    the metered key on a single answer)."""
     trials_out = session["trials_out"]
     gaps = ensure_gaps(session)
     gaps_by_field = {g["field"]: g for g in gaps}
@@ -413,13 +477,22 @@ def find_affected(session, question_text):
             gtok = _tokens(g["field"] + " " + g.get("why_needed", ""))
             if qtok & gtok:
                 target_texts.update(g.get("related_criteria", []))
+    target_norm = {normalize_criterion_text(x) for x in target_texts}
+    if not target_norm:
+        # no link at all on either rung: correctly resolve to NOTHING, not everything
+        return []
 
     affected = []
     for t_idx, t in enumerate(trials_out):
+        # trial-level STOP: a trial that already carries a hard FAIL is out; re-evaluating
+        # its other criteria cannot change anything and only spends the metered key (same
+        # gating action_policy._affected_criteria and api/answer.find_affected already do).
+        if trial_is_blocked(t):
+            continue
         for c_idx, c in enumerate(t["criteria"]):
             if c["verdict"] not in ("UNKNOWN", "UNCERTAIN"):
                 continue
-            if target_texts and c["text"] not in target_texts:
+            if normalize_criterion_text(c["text"]) not in target_norm:
                 continue
             affected.append({
                 "nct_id": t["nct_id"], "trial_idx": t_idx, "crit_idx": c_idx,
@@ -499,9 +572,16 @@ def handle_answers_batch(session, items):
                     verdict_changes.append({"nct_id": r["nct_id"], "criterion": r["text"],
                                              "before": r["before_verdict"],
                                              "after": r["after_verdict"]})
-            recs = recommend(session["patient"], session["trials_out"], trust_attached=True)
+            recs, session["patient_need"] = recommend(session["patient"], session["trials_out"],
+                                                      trust_attached=True)
             apply_recommendation(session["trials_out"], recs)
             apply_trial_level_actions(session["trials_out"])
+            # affects_trials/affects_criteria/may_change_rank are a pure function of the
+            # current trial state (action_policy.priority_numbers); refresh them here so the
+            # cards' numbers and sort order reflect what THIS batch just resolved, not what
+            # was true before it -- same recompute api/answer.py does per (stateless) request.
+            enrich_questions(session.get("questions", []), session.get("gaps") or [],
+                             session["trials_out"])
 
         rank_changes = []
         for t in session["trials_out"]:
@@ -520,13 +600,20 @@ def handle_answers_batch(session, items):
             "verdict_changes": verdict_changes, "rank_changes": rank_changes, "_before": before,
         })
         persist_session(session)
-        return {
+        out = {
             "round": round_n, "applied": applied,
             "verdict_changes": verdict_changes, "rank_changes": rank_changes,
             "affected": [{"nct_id": a["nct_id"], "text": a["text"]} for a in affected_all],
             "updated_trials": session["trials_out"],
             "recommendation": _ranking(session["trials_out"]),
+            # refreshed priority numbers (stale until affected_all ran the recompute above,
+            # unchanged and still correct when nothing was affected) -- lets the client render
+            # the current dock straight from this response instead of a second round trip.
+            "questions": session.get("questions", []),
         }
+        if not affected_all:  # same plain note the single-answer path returns
+            out["note"] = "이 답변과 연결되는 미확정 기준이 없습니다."
+        return out
 
 
 def _snapshot(session):
@@ -553,6 +640,12 @@ def revert_last_round(session):
         session["trials_out"] = copy.deepcopy(snap["trials_out"])
         session["extended_record"] = snap["extended_record"]
         session["gaps"] = copy.deepcopy(snap["gaps"])
+        # the round being undone last refreshed the priority numbers for its own (post-round)
+        # state; now that trials_out/gaps are rolled back, those numbers must roll back too --
+        # otherwise a reverted answer's card would show numbers from a round that no longer
+        # happened.
+        enrich_questions(session.get("questions", []), session.get("gaps") or [],
+                         session["trials_out"])
         persist_session(session)
         # the exact questions this round answered, so the client un-greys ONLY these cards
         # rather than re-opening every prior committed round (review #3).
@@ -565,6 +658,7 @@ def revert_last_round(session):
             "updated_trials": session["trials_out"],
             "recommendation": _ranking(session["trials_out"]),
             "rounds_left": len(rounds),
+            "questions": session.get("questions", []),
         }
 
 
@@ -587,7 +681,12 @@ def handle_answer(session, question_text, answer_text):
                 "updated_trials": session["trials_out"],
                 "recommendation": _ranking(session["trials_out"]),
                 "round": round_n,
-                "note": "이 답변으로 재평가할 미확정 기준이 없습니다.",
+                # true whether nothing is left open, OR open criteria exist but none link to
+                # this answer (find_affected found no link) -- same wording as api/answer.py.
+                "note": "이 답변과 연결되는 미확정 기준이 없습니다.",
+                # nothing changed, so the existing numbers are still correct -- served anyway
+                # so the client can read from this response instead of a stale local cache.
+                "questions": session.get("questions", []),
             }
 
         rematched = rematch_affected_criteria(session["patient"], session["extended_record"], affected)
@@ -605,9 +704,14 @@ def handle_answer(session, question_text, answer_text):
                     "before": r["before_verdict"], "after": r["after_verdict"],
                 })
 
-        recs = recommend(session["patient"], session["trials_out"], trust_attached=True)
+        recs, session["patient_need"] = recommend(session["patient"], session["trials_out"],
+                                                  trust_attached=True)
         apply_recommendation(session["trials_out"], recs)
         apply_trial_level_actions(session["trials_out"])
+        # same refresh as the batch path: this answer resolved criteria, so the questions
+        # dock's numbers and sort order must reflect the new state, not the pre-answer one.
+        enrich_questions(session.get("questions", []), session.get("gaps") or [],
+                         session["trials_out"])
 
         rank_changes = []
         for t in session["trials_out"]:
@@ -631,6 +735,7 @@ def handle_answer(session, question_text, answer_text):
             "updated_trials": session["trials_out"],
             "recommendation": _ranking(session["trials_out"]),
             "round": round_n,
+            "questions": session.get("questions", []),
         }
 
 
@@ -668,6 +773,7 @@ def _session_snapshot_locked(session):
         "progress": {"trials_done": session.get("trials_done", 0), "trials_total": session.get("trials_total", 0)},
         "result": {
             "patient": {"patient_id": session["patient"]["patient_id"], "text": session["patient"]["text"]},
+            "patient_need": session.get("patient_need"),
             "extraction": session.get("extraction", []),
             "trials": session.get("trials_out", []),
             "questions": session.get("questions", []),

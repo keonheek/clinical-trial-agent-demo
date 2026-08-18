@@ -40,8 +40,10 @@ from action_policy import (
     enrich_questions,
     is_question_worthy,
     UNCERTAINTY_TYPES,
+    criterion_id,
 )
 from evidence import assess_evidence
+from patient_need import classify_patient_need
 import ranking
 
 _BACKEND = os.environ.get("LLM_BACKEND", "anthropic")
@@ -357,7 +359,12 @@ Respond with ONLY a JSON object, no markdown fences, no commentary, in this exac
 Return exactly one match object per criterion given, in any order, using the given index numbers."""
 
 
-def match_trial(patient, fields, criteria):
+def match_trial(patient, fields, criteria, nct_id=None):
+    """nct_id is optional and used ONLY to stamp a stable criterion_id on each returned
+    criterion dict (added for the question-criterion linking fix) -- never sent to the model,
+    never required. Callers that already know the trial's nct_id (live_server.py,
+    run_patient's generation loop) pass it; a caller that omits it (older code, stress_eval.py)
+    still gets a normal criterion dict, just without criterion_id."""
     field_lines = "\n".join(f"- {f['name']}: {f['value']}" for f in fields)
     criteria_lines = "\n".join(
         f"{i+1}. [{c['type']}] {c['text']}" for i, c in enumerate(criteria)
@@ -414,6 +421,8 @@ Evaluate each numbered criterion per your instructions."""
             "evidence": m["evidence"],
             "reasoning": m["reasoning"],
         })
+        if nct_id:
+            merged[-1]["criterion_id"] = criterion_id(nct_id, c["text"])
     return merged
 
 
@@ -602,12 +611,17 @@ def apply_recommendation(trials, recs):
 
 
 def recommend(patient, trials_with_criteria, trust_attached=False):
+    """Returns (by_id, patient_need): the per-trial decision dict plus the classified patient
+    need, so every caller can attach the need to its served payload."""
     # Layer 1: decide + rank in code. Eligibility is a hierarchy (decide_eligibility); the
-    # priority order is ranking.rank_trials -- eligibility class first, then blocking count,
-    # then 임상적 적합성 (중재 목적, Phase 부담), then coverage / unresolved ratio. Deterministic,
+    # priority order is ranking.rank_trials -- the locked three-question tree: gate (hard
+    # exclusion sinks), help (patient_need x trial_intent match, then Phase 부담), sure
+    # (ELIGIBLE before UNCERTAIN, coverage, unresolved). The patient's need is classified ONCE
+    # here (deterministic keyword rules, patient_need.py) and passed down. Deterministic,
     # explainable (rank_reason), never a model opinion. trust_attached=True lets a server-side
     # caller (live_server) vouch for a trial_intent it classified itself for trials outside the
     # sidecar; api/answer.py must leave it False so a client body cannot rig the sort.
+    need = classify_patient_need(patient.get("text", ""))
     decided = []
     for t in trials_with_criteria:
         eligibility, fails, reviews = decide_eligibility(t["criteria"])
@@ -616,7 +630,7 @@ def recommend(patient, trials_with_criteria, trust_attached=False):
             "criteria": t["criteria"], "trial_intent": t.get("trial_intent"),
             "eligibility": eligibility, "fails": fails, "reviews": reviews,
         })
-    ranking.rank_trials(decided, trust_attached=trust_attached)
+    ranking.rank_trials(decided, trust_attached=trust_attached, patient_need=need)
 
     # Layer 2: the model only narrates the decision it was handed.
     trial_blocks = []
@@ -661,7 +675,7 @@ Write one rationale per trial per your instructions."""
             "ranking_version": d.get("ranking_version"),
             "trial_intent": d.get("trial_intent"),
         }
-    return by_id
+    return by_id, need
 
 
 # ---------------------------------------------------------------------------
@@ -868,7 +882,7 @@ def run_reeval(patient, gaps, questions, trials_out):
 
     print(f"    -> {len(verdict_changes)} verdict change(s)")
     print("  [reeval] re-ranking with updated criteria...")
-    recs = recommend(patient, updated_trials)
+    recs, _need = recommend(patient, updated_trials)
     final_ranking = []
     for t in updated_trials:
         r = recs.get(t["nct_id"], {"eligibility": t["eligibility"], "rank": t["rank"], "rationale": t["rationale"]})
@@ -907,7 +921,7 @@ def run_patient(patient, trials_raw_for_patient):
         print(f"    -> {len(criteria)} criteria parsed")
 
         print(f"  [matcher] {t['nct_id']} vs patient fields...")
-        matched = match_trial(patient, fields, criteria)
+        matched = match_trial(patient, fields, criteria, nct_id=t["nct_id"])
 
         for c in matched:
             all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
@@ -935,7 +949,7 @@ def run_patient(patient, trials_raw_for_patient):
     print(f"    -> {len(questions)} question(s) generated")
 
     print(f"  [recommender] ranking {len(trials_out)} trials...")
-    recs = recommend(patient, trials_out)
+    recs, patient_need = recommend(patient, trials_out)
     apply_recommendation(trials_out, recs)
 
     # attach the question-priority numbers 정원's cards show (pure, no LLM), now that
@@ -947,6 +961,7 @@ def run_patient(patient, trials_raw_for_patient):
     return {
         "patient_id": pid,
         "patient_text": patient["text"],
+        "patient_need": patient_need,
         "extraction": fields,
         "trials": trials_out,
         "gaps": gaps,

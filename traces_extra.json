@@ -1,0 +1,4958 @@
+[
+ {
+  "patient_id": "E001",
+  "patient_text": "A 41-year-old woman with severe asthma remains symptomatic despite high-dose inhaled corticosteroids and a long-acting beta-agonist. She reports nighttime awakenings three times a week, two courses of oral prednisone in the past six months, and an emergency visit last month. Blood eosinophil count is 520 cells/uL. She has never smoked.",
+  "patient_need": {
+   "need": "treatment",
+   "need_ko": "치료",
+   "confidence": "high",
+   "reasons": [
+    "현재 진행 중인 증상을 호소하고 있고 이미 받고 있는 치료에 대한 언급이 없어, 개입(치료)이 필요한 상태로 판단 (근거 문구: 'remains symptomatic')"
+   ]
+  },
+  "extraction": [
+   {
+    "name": "age",
+    "value": "41",
+    "evidence_quote": "41-year-old"
+   },
+   {
+    "name": "sex",
+    "value": "woman",
+    "evidence_quote": "41-year-old woman"
+   },
+   {
+    "name": "diagnosis",
+    "value": "severe asthma",
+    "evidence_quote": "severe asthma"
+   },
+   {
+    "name": "current treatment",
+    "value": "high-dose inhaled corticosteroids and a long-acting beta-agonist",
+    "evidence_quote": "high-dose inhaled corticosteroids and a long-acting beta-agonist"
+   },
+   {
+    "name": "symptom",
+    "value": "nighttime awakenings three times a week",
+    "evidence_quote": "nighttime awakenings three times a week"
+   },
+   {
+    "name": "history",
+    "value": "two courses of oral prednisone in the past six months",
+    "evidence_quote": "two courses of oral prednisone in the past six months"
+   },
+   {
+    "name": "history",
+    "value": "an emergency visit last month",
+    "evidence_quote": "an emergency visit last month"
+   },
+   {
+    "name": "lab finding",
+    "value": "520 cells/uL",
+    "evidence_quote": "Blood eosinophil count is 520 cells/uL"
+   },
+   {
+    "name": "smoking history",
+    "value": "never smoked",
+    "evidence_quote": "She has never smoked."
+   }
+  ],
+  "trials": [
+   {
+    "nct_id": "NCT04565483",
+    "title": "Predictive Signature of Benralizumab Response",
+    "phase": "PHASE4",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Patients between 18 and 75 years old.",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "41-year-old woman",
+      "reasoning": "Age 41 falls within 18-75 range.",
+      "criterion_id": "d94472ab22"
+     },
+     {
+      "text": "Patients diagnosed with severe asthma (Chung and al, Eur Respir J 2014), requiring high doses of ICS (>1000 microgram per day of Beclomethasone or equivalent) associated with LABA and/or systemic corticosteroids to be controlled over one year, and/or uncontrolled asthma despite the later medications, and/or a controlled asthma worsening after decreasing medications",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "remains symptomatic despite high-dose inhaled corticosteroids and a long-acting beta-agonist",
+      "reasoning": "Uncontrolled severe asthma on high-dose ICS+LABA matches definition.",
+      "criterion_id": "0aa6134bf7"
+     },
+     {
+      "text": "Documented historical reversibility of FEV1 ≥12% and FEV1 gain ≥ 200 milliliter",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No spirometry reversibility data provided.",
+      "criterion_id": "f5fde01fa4"
+     },
+     {
+      "text": "ACQ-7 score ≥ 1,5 at M0.",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "ACQ-7 score not reported.",
+      "criterion_id": "a5da14bed5"
+     },
+     {
+      "text": "≥ 3 exacerbations in the 12 months prior to screening visit M-1.",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "AMBIGUOUS",
+      "action": "PROTOCOL_REVIEW",
+      "evidence": "two courses of oral prednisone in the past six months, and an emergency visit last month",
+      "reasoning": "Events may total ≥3 but overlap/exact 12-month count unclear.",
+      "criterion_id": "9f8c3adc88"
+     },
+     {
+      "text": "Eosinophil blood count ≥ 0,3 G/L at inclusion visit or in the 12 months prior to the inclusion visit, OR if eosinophil blood count is ≥ 0,15 G/L and < 0,3 G/L, an eosinophilic phenotype defined by FeNO > 25 ppm or sputum eosinophils ≥ 3%",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Blood eosinophil count is 520 cells/uL",
+      "reasoning": "520 cells/uL = 0.52 G/L exceeds 0.3 G/L threshold.",
+      "criterion_id": "b647cfdb55"
+     },
+     {
+      "text": "Patients who provide written informed consent prior to participation in the study",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "Consent status not mentioned.",
+      "criterion_id": "cbbbc1b9d0"
+     },
+     {
+      "text": "Patients diagnosed with difficult-to-treat asthma and/or with uncontrolled asthma differential diagnosis according to the judgment of the investigator",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CLINICAL_JUDGMENT",
+      "action": "ESCALATE",
+      "evidence": null,
+      "reasoning": "Requires investigator judgment on differential diagnosis.",
+      "criterion_id": "e6d3a20807"
+     },
+     {
+      "text": "Non-adherent patients to inhaled treatment (ICS + LABA).",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "Adherence to inhaled treatment not addressed.",
+      "criterion_id": "0002347225"
+     },
+     {
+      "text": "Active smokers or former smokers exceeding 20 packs year.",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "She has never smoked",
+      "reasoning": "Never smoked, so not an active/former heavy smoker.",
+      "criterion_id": "ef7d5af29f"
+     },
+     {
+      "text": "Exacerbation at inclusion visit M0.",
+      "type": "exclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "AMBIGUOUS",
+      "action": "PROTOCOL_REVIEW",
+      "evidence": "an emergency visit last month",
+      "reasoning": "Unclear if this ER visit coincides with the inclusion visit M0.",
+      "criterion_id": "27fa6b681b"
+     },
+     {
+      "text": "Active malignancy or malignancy in remission over less than 5 years.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No malignancy history provided.",
+      "criterion_id": "a0ba7c1e88"
+     },
+     {
+      "text": "Active parasitic infection or parasitic infection in the past 24 weeks.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No parasitic infection history given.",
+      "criterion_id": "db4db87906"
+     },
+     {
+      "text": "Hypersensitivity to Benralizumab or to any of the excipients of Fasenra® (histidine, histidine hydrochloride monohydrate, trehalose dihydrate, polysorbate 20)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No hypersensitivity information provided.",
+      "criterion_id": "c8dc52c12f"
+     },
+     {
+      "text": "Patients requiring other immunosuppressive and immunomodulator drugs",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of other immunosuppressive drug use.",
+      "criterion_id": "79fe2c8d62"
+     },
+     {
+      "text": "Patients requiring other biotherapy than Benralizumab that affects the immune system",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of other biotherapy use.",
+      "criterion_id": "a2c9fcc40e"
+     },
+     {
+      "text": "SARS-COV2 infection",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No SARS-CoV2 status mentioned.",
+      "criterion_id": "2c7f66d881"
+     },
+     {
+      "text": "Pregnancy, lactation, or patients with childbearing potential refusing efficient contraceptive method.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No pregnancy or contraception information given.",
+      "criterion_id": "c32e42d60a"
+     },
+     {
+      "text": "Patients under psychiatric condition altering their comprehension and their ability to give informed consent.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No psychiatric condition data provided.",
+      "criterion_id": "e122486382"
+     },
+     {
+      "text": "Patients already enrolled in a clinical interventional research.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No info on concurrent trial enrollment.",
+      "criterion_id": "c65b36438e"
+     },
+     {
+      "text": "Patients not affiliated to a health insurance plan",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "Health insurance status not mentioned.",
+      "criterion_id": "2eeb0ce986"
+     },
+     {
+      "text": "Patients under guardianship, curators or safeguard of justice",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No guardianship/legal status information provided.",
+      "criterion_id": "1c8e580b3e"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 1,
+    "rationale": "Matches severe eosinophilic asthma needing add-on therapy, but exacerbation history and reversibility/ACQ data unconfirmed to verify eligibility.",
+    "rank_reason": "참여: 미확정 · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 4) · 확실: 미해결 18/22, 원문 79%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "PHASE4",
+      "burden": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.79,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "18/22",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT06862206",
+    "title": "This is a Non-interventional, Study to Assess Demographic Characteristics and Patient Reported Outcomes in China Patients With SEA Treated With Benralizumab",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "low"
+    },
+    "criteria": [
+     {
+      "text": "Patients must be 12 years old (inclusive) at the time of signing the informed consent",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "41-year-old woman",
+      "reasoning": "Age 41 exceeds the 12-year minimum requirement.",
+      "criterion_id": "6b6bea5866"
+     },
+     {
+      "text": "Patients with severe eosinophilic asthma prescribed with benralizumab at the discretion of the clinician",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of benralizumab prescription in vignette.",
+      "criterion_id": "cde0f557b3"
+     },
+     {
+      "text": "Blood EOS≥150/ul in the 3 months prior to or EOS≥300/ul in the 1 year prior to the time of signing the informed consent",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Blood eosinophil count is 520 cells/uL",
+      "reasoning": "Eosinophil count 520 exceeds 300 threshold.",
+      "criterion_id": "2cc6fdfd3d"
+     },
+     {
+      "text": "Participating patients and/or their legally authorized representative must provide signed and dated written informed consent form prior to any study specific procedures",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about informed consent provided.",
+      "criterion_id": "745b2d99cb"
+     },
+     {
+      "text": "Patients currently participating in any other clinical trial",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of other clinical trial participation.",
+      "criterion_id": "20bd547a65"
+     },
+     {
+      "text": "Known history of allergy or reaction to any component of the study treatment formulation",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No allergy history to study treatment mentioned.",
+      "criterion_id": "db7cb2cb84"
+     },
+     {
+      "text": "Malignancy of any kind",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of malignancy history in vignette.",
+      "criterion_id": "bfdf12dc71"
+     },
+     {
+      "text": "Patients with prior or ongoing treatment with benralizumab",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of prior benralizumab treatment in vignette.",
+      "criterion_id": "3e1a94c0a9"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 2,
+    "rationale": "Observational benralizumab study fits clinical profile, but consent status and clinician prescription decision remain unverified.",
+    "rank_reason": "참여: 미확정 · 도움: 치료 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 6/8, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "참고용",
+      "score": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "low",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "6/8",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT07214753",
+    "title": "A Real-life Observational Study in Severe Eosinophilic Asthma Adult Participant Treated With Benralizumab in Italy",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Adults (≥ 18 years old) diagnosed with severe uncontrolled eosinophilic asthma",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "severe asthma remains symptomatic despite high-dose inhaled corticosteroids and a long-acting beta-agonist... Blood eosinophil count is 520 cells/uL",
+      "reasoning": "Severe, uncontrolled (exacerbations, nighttime symptoms) asthma with elevated eosinophils confirms eosinophilic phenotype.",
+      "criterion_id": "6373bf9318"
+     },
+     {
+      "text": "Benralizumab has been prescribed according to the approved label and local reimbursement criteria",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of benralizumab prescription or reimbursement status.",
+      "criterion_id": "e5833c0d60"
+     },
+     {
+      "text": "Provision of signed Informed Consent Form (ICF) prior to any study-related activities",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about informed consent provided.",
+      "criterion_id": "3105ea28fd"
+     },
+     {
+      "text": "Benralizumab has been initiated within 7 days prior to study enrollment or is planned to be initiated within 7 days after enrollment (in the latter case, provided that the decision to prescribe benralizumab is made prior to the decision to enroll the patient in the study)",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No data on timing of benralizumab initiation relative to enrollment.",
+      "criterion_id": "6738cf78fa"
+     },
+     {
+      "text": "Benralizumab treatment within the 12 months prior to study enrollment and up to 8 days before enrollment",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of prior benralizumab treatment history.",
+      "criterion_id": "80cc3a87f5"
+     },
+     {
+      "text": "Previous participation (in the 12 months before enrollment), current participation or plan to participate within the follow up period to any other clinical trial",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about other clinical trial participation.",
+      "criterion_id": "83da57bf64"
+     },
+     {
+      "text": "Contraindication to benralizumab as per current Summary of Product Characteristics (SmPC)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No data on contraindications to benralizumab.",
+      "criterion_id": "abda70af16"
+     },
+     {
+      "text": "Pregnant or lactating women",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "Pregnancy or lactation status not mentioned.",
+      "criterion_id": "b5958395b3"
+     },
+     {
+      "text": "Patients with any clinical condition that may interfere with the subject's ability to cooperate and comply with the study procedures based on the Investigator's judgement",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CLINICAL_JUDGMENT",
+      "action": "ESCALATE",
+      "evidence": null,
+      "reasoning": "Requires investigator's subjective judgement, not determinable from record.",
+      "criterion_id": "951776287c"
+     },
+     {
+      "text": "Previous or concomitant use of omalizumab, reslizumab, dupilumab, tezepelumab or mepolizumab without washout period as per clinical practice",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of prior biologic use such as omalizumab or mepolizumab.",
+      "criterion_id": "e982688381"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 3,
+    "rationale": "Observational real-life study unrelated to treatment decision; benralizumab initiation timing and consent status not yet confirmed.",
+    "rank_reason": "참여: 미확정 · 도움: 치료 필요와 무관 (관찰 연구 시험, Phase NA) · 확실: 미해결 9/10, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "참고용",
+      "score": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "high",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "9/10",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT07323654",
+    "title": "A Study of KT-621 Administered Orally to Adult Participants With Moderate to Severe Eosinophilic Asthma",
+    "phase": "PHASE2",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Must be 18 years old (or the legal age of consent in the jurisdiction in which the study is taking place) to 75 years of age, inclusive, at the time of signing the ICF.",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "41-year-old woman",
+      "reasoning": "Age 41 is within 18-75 range.",
+      "criterion_id": "c4251b94c0"
+     },
+     {
+      "text": "Must have a physician diagnosis of asthma for at least 1 year prior to the Screening visit.",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of duration since asthma diagnosis.",
+      "criterion_id": "adfb339630"
+     },
+     {
+      "text": "Must be on a stable regimen of medium- to high-dose inhaled corticosteroid (ICS), in combination with a long-acting β2-agonist (LABA), with no change in dose or frequency for at least 4 weeks prior to Screening and between Screening and Baseline visits.",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": "high-dose inhaled corticosteroids and a long-acting beta-agonist",
+      "reasoning": "Current regimen described but no info on stability duration (4 weeks).",
+      "criterion_id": "3ea38c966d"
+     },
+     {
+      "text": "Must have a pre-bronchodilator FEV1 40 to 80% of predicted normal at the Screening and Baseline visits, prior to randomization.",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No FEV1 percent predicted value provided.",
+      "criterion_id": "42cda25e5c"
+     },
+     {
+      "text": "Must have an ACQ-5 score ≥ 1.5 at the Screening and Baseline visits, prior to randomization.",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No ACQ-5 score reported.",
+      "criterion_id": "baf9333150"
+     },
+     {
+      "text": "Must have a FeNO level of ≥ 25 ppb at the Screening and Baseline visits.",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No FeNO level given.",
+      "criterion_id": "b4929980bb"
+     },
+     {
+      "text": "Must have demonstrated evidence of reversible airway obstruction by post-bronchodilator (albuterol/salbutamol) reversibility of FEV1 ≥12% and ≥200 mL at Screening.",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No bronchodilator reversibility data provided.",
+      "criterion_id": "8b55fadb9d"
+     },
+     {
+      "text": "Must have an absolute blood eosinophil count ≥ 0.30 × 10^9/L at Screening.",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Blood eosinophil count is 520 cells/uL",
+      "reasoning": "520 cells/uL = 0.52x10^9/L, exceeds 0.30x10^9/L threshold.",
+      "criterion_id": "139cf4d877"
+     },
+     {
+      "text": "Must have a documented history of at least 1 asthma exacerbation requiring systemic corticosteroids and/or hospitalization or emergency/urgent medical care visit for acute asthma worsening within the past 52 weeks prior to Screening.",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "two courses of oral prednisone in the past six months, an emergency visit last month",
+      "reasoning": "Documented exacerbations with systemic steroids and ER visit within past year.",
+      "criterion_id": "5a86c47687"
+     },
+     {
+      "text": "Must not have any clinically significant pulmonary disease other than asthma.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of other pulmonary diseases.",
+      "criterion_id": "f6b6a7e2d6"
+     },
+     {
+      "text": "Must not have had an asthma exacerbation requiring systemic corticosteroids and/or hospitalization or emergency/urgent medical care visit for acute asthma worsening from 4 weeks prior to Screening through Baseline visit.",
+      "type": "exclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "AMBIGUOUS",
+      "action": "PROTOCOL_REVIEW",
+      "evidence": "an emergency visit last month",
+      "reasoning": "Timing of ER visit relative to screening/baseline window is unclear.",
+      "criterion_id": "6c2cb7d61d"
+     },
+     {
+      "text": "Must not be pregnant or breastfeeding, or a woman planning to become pregnant or breastfeed during the study.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on pregnancy or breastfeeding status.",
+      "criterion_id": "0557c19c49"
+     },
+     {
+      "text": "Must not have been dosed with any investigational drug or device in a clinical study within 8 weeks or 5 half-lives (whichever is longer) of KT-621 administration.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No data on prior investigational drug exposure.",
+      "criterion_id": "5367f8c6a2"
+     },
+     {
+      "text": "Must not be a current smoker of nicotine/tobacco or non-nicotine products, have a smoking history of ≥ 10 pack years, or use vaping/e-cigarette products (unless former smoker with <10 pack years or vaping cessation for at least 26 weeks prior to Screening).",
+      "type": "exclusion",
+      "verdict": "MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "She has never smoked.",
+      "reasoning": "Never smoked, satisfies non-smoking exclusion criterion.",
+      "criterion_id": "47a7d5bdbb"
+     },
+     {
+      "text": "Must not have a known sensitivity to any of the components of KT-621.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about drug component sensitivity.",
+      "criterion_id": "53aff4edf0"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 4,
+    "rationale": "Excluded: patient verdict indicates smoking/vaping exclusion criterion is met, disqualifying her despite fitting eosinophilic asthma profile.",
+    "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 2) · 확실: 미해결 11/15, 원문 71%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 1,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "PHASE2",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.71,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "11/15",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   }
+  ],
+  "gaps": [
+   {
+    "field": "Prior/exclusionary medication history",
+    "why_needed": "Need details on biologics, immunosuppressants, or benralizumab timing/use",
+    "related_criteria": [
+     "Benralizumab has been prescribed according to the approved label and local reimbursement criteria",
+     "Benralizumab has been initiated within 7 days prior to study enrollment or is planned to be initiated within 7 days after enrollment",
+     "Benralizumab treatment within the 12 months prior to study enrollment and up to 8 days before enrollment",
+     "Previous or concomitant use of omalizumab, reslizumab, dupilumab, tezepelumab or mepolizumab without washout period as per clinical practice",
+     "Patients requiring other immunosuppressive and immunomodulator drugs",
+     "Patients requiring other biotherapy than Benralizumab that affects the immune system",
+     "Patients with prior or ongoing treatment with benralizumab",
+     "Patients with severe eosinophilic asthma prescribed with benralizumab at the discretion of the clinician"
+    ]
+   },
+   {
+    "field": "Consent capacity and administrative status",
+    "why_needed": "Need consent documentation, legal/psychiatric status, insurance affiliation",
+    "related_criteria": [
+     "Patients who provide written informed consent prior to participation in the study",
+     "Provision of signed Informed Consent Form (ICF) prior to any study-related activities",
+     "Participating patients and/or their legally authorized representative must provide signed and dated written informed consent form prior to any study specific procedures",
+     "Patients under psychiatric condition altering their comprehension and their ability to give informed consent.",
+     "Patients under guardianship, curators or safeguard of justice",
+     "Patients not affiliated to a health insurance plan"
+    ]
+   },
+   {
+    "field": "Other trial participation",
+    "why_needed": "Concurrent or recent enrollment in other studies affects eligibility",
+    "related_criteria": [
+     "Patients already enrolled in a clinical interventional research.",
+     "Previous participation (in the 12 months before enrollment), current participation or plan to participate within the follow up period to any other clinical trial",
+     "Patients currently participating in any other clinical trial"
+    ]
+   },
+   {
+    "field": "Asthma diagnostic and control detail",
+    "why_needed": "Need spirometry reversibility data, ACQ-7 score, adherence, and exacerbation timing",
+    "related_criteria": [
+     "Documented historical reversibility of FEV1 ≥12% and FEV1 gain ≥ 200 milliliter",
+     "ACQ-7 score ≥ 1,5 at M0.",
+     "≥ 3 exacerbations in the 12 months prior to screening visit M-1.",
+     "Exacerbation at inclusion visit M0.",
+     "Non-adherent patients to inhaled treatment (ICS + LABA).",
+     "Patients diagnosed with difficult-to-treat asthma and/or with uncontrolled asthma differential diagnosis according to the judgment of the investigator"
+    ]
+   },
+   {
+    "field": "Comorbidities and infection history",
+    "why_needed": "Need malignancy, parasitic infection, COVID-19, and other clinical condition history",
+    "related_criteria": [
+     "Active malignancy or malignancy in remission over less than 5 years.",
+     "Malignancy of any kind",
+     "Active parasitic infection or parasitic infection in the past 24 weeks.",
+     "SARS-COV2 infection",
+     "Patients with any clinical condition that may interfere with the subject's ability to cooperate and comply with the study procedures based on the Investigator's judgement"
+    ]
+   },
+   {
+    "field": "Reproductive status and drug hypersensitivity",
+    "why_needed": "Need pregnancy/lactation/contraception status and known drug allergy history",
+    "related_criteria": [
+     "Pregnancy, lactation, or patients with childbearing potential refusing efficient contraceptive method.",
+     "Pregnant or lactating women",
+     "Hypersensitivity to Benralizumab or to any of the excipients of Fasenra® (histidine, histidine hydrochloride monohydrate, trehalose dihydrate, polysorbate 20)",
+     "Contraindication to benralizumab as per current Summary of Product Characteristics (SmPC)",
+     "Known history of allergy or reaction to any component of the study treatment formulation"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "Prior/exclusionary medication history",
+    "question": "생물학적 제제(오말리주맙, 메폴리주맙, 벤랄리주맙 등) 또는 면역억제제 사용 이력과 최근 사용 시점이 있습니까?",
+    "why": "생물학적 제제 사용 여부와 시점이 다수 시험의 포함/제외 기준에 영향",
+    "options": [
+     "오말리주맙 투여 이력 있음",
+     "메폴리주맙/벤랄리주맙 등 항IL-5 제제 투여 이력 있음",
+     "전신 면역억제제 투여 중",
+     "생물학적 제제 사용 이력 해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 7,
+    "affects_trials": 3,
+    "may_change_rank": true
+   },
+   {
+    "field": "Reproductive status and drug hypersensitivity",
+    "question": "임신/수유 여부, 피임 방법 사용 여부, 알려진 약물 알레르기 병력이 있습니까?",
+    "why": "임신 가능성과 약물 과민반응은 안전성 관련 배제 기준에 직접 영향",
+    "options": [
+     "현재 임신 또는 수유 중",
+     "효과적인 피임법 사용 중",
+     "생물학적 제제 관련 약물 알레르기 이력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 5,
+    "affects_trials": 3,
+    "may_change_rank": true
+   },
+   {
+    "field": "Asthma diagnostic and control detail",
+    "question": "폐활량 가역성 검사 결과, ACQ-7 점수, 흡입기 순응도, 최근 악화 시점에 대한 기록이 있습니까?",
+    "why": "천식 중증도 및 조절 상태 확인은 다수 시험 적격성 판단에 필수",
+    "options": [
+     "기관지확장제 가역성 양성 확인됨",
+     "ACQ-7 점수 기록 있음(조절 불량)",
+     "흡입기 순응도 양호로 확인됨",
+     "최근 3개월 내 악화 없음",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 6,
+    "affects_trials": 1,
+    "may_change_rank": true
+   }
+  ],
+  "reeval": {
+   "extended_record": "The patient has never received biologic therapy (omalizumab, mepolizumab, benralizumab) or systemic immunosuppressants; she is biologic-naive. She is not pregnant or breastfeeding, uses a copper IUD for contraception, and reports a known drug allergy to penicillin (rash). Spirometry performed two weeks ago showed FEV1 62% predicted with post-bronchodilator improvement of 15% and 240 mL, consistent with reversible airflow obstruction. Her ACQ-7 score was 3.1, indicating poorly controlled asthma. Inhaler adherence was assessed via pharmacy refill data and patient diary, showing approximately 80% adherence to her ICS-LABA regimen over the past three months. Her most recent exacerbation requiring an emergency department visit occurred five weeks ago, treated with a burst of oral prednisone 40 mg daily for five days.",
+   "answers": [
+    {
+     "question": "생물학적 제제(오말리주맙, 메폴리주맙, 벤랄리주맙 등) 또는 면역억제제 사용 이력과 최근 사용 시점이 있습니까?",
+     "answer": "No prior biologic or immunosuppressant use; biologic-naive.",
+     "evidence_quote": "The patient has never received biologic therapy (omalizumab, mepolizumab, benralizumab) or systemic immunosuppressants; she is biologic-naive."
+    },
+    {
+     "question": "임신/수유 여부, 피임 방법 사용 여부, 알려진 약물 알레르기 병력이 있습니까?",
+     "answer": "Not pregnant or breastfeeding, uses copper IUD, has penicillin allergy (rash).",
+     "evidence_quote": "She is not pregnant or breastfeeding, uses a copper IUD for contraception, and reports a known drug allergy to penicillin (rash)."
+    },
+    {
+     "question": "폐활량 가역성 검사 결과, ACQ-7 점수, 흡입기 순응도, 최근 악화 시점에 대한 기록이 있습니까?",
+     "answer": "FEV1 62% predicted with 15%/240 mL reversibility, ACQ-7 3.1, ~80% adherence, last exacerbation 5 weeks ago with prednisone burst.",
+     "evidence_quote": "Spirometry performed two weeks ago showed FEV1 62% predicted with post-bronchodilator improvement of 15% and 240 mL, consistent with reversible airflow obstruction."
+    }
+   ],
+   "verdict_changes": [
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "Documented historical reversibility of FEV1 ≥12% and FEV1 gain ≥ 200 milliliter",
+     "before": "UNKNOWN",
+     "after": "MET"
+    },
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "ACQ-7 score ≥ 1,5 at M0.",
+     "before": "UNKNOWN",
+     "after": "MET"
+    },
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "Non-adherent patients to inhaled treatment (ICS + LABA).",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    },
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "Exacerbation at inclusion visit M0.",
+     "before": "UNCERTAIN",
+     "after": "UNKNOWN"
+    },
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "Hypersensitivity to Benralizumab or to any of the excipients of Fasenra® (histidine, histidine hydrochloride monohydrate, trehalose dihydrate, polysorbate 20)",
+     "before": "UNKNOWN",
+     "after": "UNCERTAIN"
+    },
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "Patients requiring other immunosuppressive and immunomodulator drugs",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    },
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "Patients requiring other biotherapy than Benralizumab that affects the immune system",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    },
+    {
+     "nct_id": "NCT04565483",
+     "criterion": "Pregnancy, lactation, or patients with childbearing potential refusing efficient contraceptive method.",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    },
+    {
+     "nct_id": "NCT06862206",
+     "criterion": "Known history of allergy or reaction to any component of the study treatment formulation",
+     "before": "UNKNOWN",
+     "after": "UNCERTAIN"
+    },
+    {
+     "nct_id": "NCT06862206",
+     "criterion": "Patients with prior or ongoing treatment with benralizumab",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    },
+    {
+     "nct_id": "NCT07214753",
+     "criterion": "Benralizumab treatment within the 12 months prior to study enrollment and up to 8 days before enrollment",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    },
+    {
+     "nct_id": "NCT07214753",
+     "criterion": "Pregnant or lactating women",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    },
+    {
+     "nct_id": "NCT07214753",
+     "criterion": "Previous or concomitant use of omalizumab, reslizumab, dupilumab, tezepelumab or mepolizumab without washout period as per clinical practice",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    }
+   ],
+   "final_ranking": [
+    {
+     "nct_id": "NCT04565483",
+     "rank": 1,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Matches severe eosinophilic asthma needing add-on therapy, but exacerbation count and consent/diagnosis criteria remain unconfirmed.",
+     "rank_reason": "참여: 미확정 · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 4) · 확실: 미해결 12/22, 원문 79%"
+    },
+    {
+     "nct_id": "NCT07214753",
+     "rank": 2,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Observational benralizumab study; eligibility unclear since prescription status, consent, and initiation timing are unverified.",
+     "rank_reason": "참여: 미확정 · 도움: 치료 필요와 무관 (관찰 연구 시험, Phase NA) · 확실: 미해결 6/10, 원문 전체(추정)"
+    },
+    {
+     "nct_id": "NCT06862206",
+     "rank": 3,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Possible fit for severe eosinophilic asthma on benralizumab, but prescription status and consent details are unconfirmed.",
+     "rank_reason": "참여: 미확정 · 도움: 치료 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 5/8, 원문 전체(추정)"
+    },
+    {
+     "nct_id": "NCT07323654",
+     "rank": 4,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Excluded: patient meets the disqualifying smoking/tobacco-use exclusion criterion despite otherwise fitting eosinophilic asthma profile.",
+     "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 2) · 확실: 미해결 11/15, 원문 71%"
+    }
+   ]
+  },
+  "generated_at": "2026-07-08"
+ },
+ {
+  "patient_id": "E002",
+  "patient_text": "A 52-year-old man is found to have a 2.1 cm thyroid nodule on neck ultrasound performed for unrelated reasons. The nodule is hypoechoic with irregular margins and microcalcifications. TSH is normal. No biopsy has been performed yet. He has no hoarseness, dysphagia, or family history of thyroid cancer.",
+  "patient_need": {
+   "need": "diagnosis",
+   "need_ko": "진단 확정",
+   "confidence": "high",
+   "reasons": [
+    "확진(조직 검사 등)으로 확인된 근거 없이 의심 소견이나 영상 소견만 있어, 다음 단계로 넘어가기 전에 진단을 확정하는 것이 우선 필요한 상태로 판단 (근거 문구: 'found to have a')"
+   ]
+  },
+  "extraction": [
+   {
+    "name": "age",
+    "value": "52",
+    "evidence_quote": "52-year-old"
+   },
+   {
+    "name": "sex",
+    "value": "male",
+    "evidence_quote": "man"
+   },
+   {
+    "name": "thyroid nodule size",
+    "value": "2.1 cm",
+    "evidence_quote": "2.1 cm thyroid nodule"
+   },
+   {
+    "name": "imaging finding - echogenicity",
+    "value": "hypoechoic",
+    "evidence_quote": "hypoechoic with irregular margins"
+   },
+   {
+    "name": "imaging finding - margins",
+    "value": "irregular margins",
+    "evidence_quote": "irregular margins"
+   },
+   {
+    "name": "imaging finding - calcifications",
+    "value": "microcalcifications",
+    "evidence_quote": "microcalcifications"
+   },
+   {
+    "name": "TSH",
+    "value": "normal",
+    "evidence_quote": "TSH is normal"
+   },
+   {
+    "name": "biopsy status",
+    "value": "not performed",
+    "evidence_quote": "No biopsy has been performed yet"
+   },
+   {
+    "name": "symptoms",
+    "value": "no hoarseness or dysphagia",
+    "evidence_quote": "He has no hoarseness, dysphagia"
+   },
+   {
+    "name": "family history",
+    "value": "no family history of thyroid cancer",
+    "evidence_quote": "family history of thyroid cancer"
+   }
+  ],
+  "trials": [
+   {
+    "nct_id": "NCT00001160",
+    "title": "Studies on Tumors of the Thyroid",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "low"
+    },
+    "criteria": [
+     {
+      "text": "Male or female, adults or children >= 6 months+",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "52-year-old man",
+      "reasoning": "Patient is a 52-year-old adult male.",
+      "criterion_id": "37713f0db8"
+     },
+     {
+      "text": "Patients with known or suspected thyroid nodules and/or thyroid cancer",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "INSUFFICIENT_EVIDENCE",
+      "action": "VERIFY",
+      "evidence": "2.1 cm thyroid nodule ... hypoechoic with irregular margins and microcalcifications",
+      "reasoning": "Suspicious thyroid nodule found on ultrasound, no biopsy yet.",
+      "criterion_id": "82592155e9"
+     },
+     {
+      "text": "At risk family members of patients who have a genetic susceptibility to developing thyroid cancer",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "NOT_APPLICABLE",
+      "action": "IGNORE",
+      "evidence": null,
+      "reasoning": "No mention of being an at-risk family member of a genetically susceptible patient.",
+      "criterion_id": "0f14648298"
+     },
+     {
+      "text": "Serious underlying medical conditions that restrict diagnostic testing or therapy such as renal failure",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on renal failure or other serious medical conditions.",
+      "criterion_id": "0673610775"
+     },
+     {
+      "text": "Congestive cardiac failure",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of congestive cardiac failure.",
+      "criterion_id": "8cd2539b40"
+     },
+     {
+      "text": "Active coexisting non-thyroid carcinoma requiring intervention before thyroid cancer is addressed",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about other active cancers.",
+      "criterion_id": "a1de7247e4"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 1,
+    "rationale": "Has suspicious thyroid nodule fitting general study focus, but trial purpose and undisclosed exclusions leave eligibility unconfirmed.",
+    "rank_reason": "참여: 미확정 · 도움: 진단 확정 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 5/6, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "진단 확정",
+      "need": "diagnosis",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "참고용",
+      "score": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "low",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.5,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "5/6",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT06984991",
+    "title": "Factors Influencing Inadequacy in Rapid Onsite Evaluation of Ultrasound Guided Fine Needle Aspiration (FNA) Samples of Thyroid Nodules",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "low"
+    },
+    "criteria": [
+     {
+      "text": "Patients referred for FNA of thyroid nodules (TIRAD-3, 4 and 5 nodules)",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CALCULABLE",
+      "action": "CALCULATE",
+      "evidence": "hypoechoic with irregular margins and microcalcifications",
+      "reasoning": "Features suggest high suspicion (TIRADS 4-5) but no explicit TIRADS score assigned.",
+      "criterion_id": "7f8f91fac0"
+     },
+     {
+      "text": "History of thyroid ablation before FNA",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about prior thyroid ablation is provided.",
+      "criterion_id": "a390f11c6a"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 2,
+    "rationale": "Nodule warrants FNA per TIRADS features, but referral status and ablation history not yet documented, leaving eligibility uncertain.",
+    "rank_reason": "참여: 미확정 · 도움: 진단 확정 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 2/2, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "진단 확정",
+      "need": "diagnosis",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "참고용",
+      "score": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "low",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "2/2",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT03676647",
+    "title": "Diagnostic DNA Methylation Signature in Diagnosing Thyroid Cancer After Fine-Needle Aspiration in Patients With Thyroid Nodules",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "All patients undergoing FNA for thyroid nodule diagnosis",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "No biopsy has been performed yet.",
+      "reasoning": "FNA has not been performed on this patient.",
+      "criterion_id": "efbba2a139"
+     },
+     {
+      "text": "Any race and ethnicity are eligible for the study",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No race or ethnicity information provided in vignette.",
+      "criterion_id": "151216982d"
+     },
+     {
+      "text": "Patient should have thyroid nodule(s) with indeterminate diagnosis after FNA (Bethesda category of indeterminate FNA [III-V])",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "INSUFFICIENT_EVIDENCE",
+      "action": "VERIFY",
+      "evidence": "No biopsy has been performed yet.",
+      "reasoning": "No FNA performed, so no Bethesda category exists.",
+      "criterion_id": "0ad6eda7c5"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 3,
+    "rationale": "Excluded: no FNA has been performed yet, so indeterminate Bethesda category required for enrollment cannot be established.",
+    "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 진단 확정 필요와 부합 (관찰 연구 시험, Phase NA) · 확실: 미해결 2/3, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 1,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "진단 확정",
+      "need": "diagnosis",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "high",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "2/3",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT05726981",
+    "title": "Ultrasound and Cytological Evaluation 3 Years After Radiofrequency Thermal Ablation of Benign Thyroid Nodules : a Prospective Exploratory Cohort of 180 Nodules",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "low"
+    },
+    "criteria": [
+     {
+      "text": "Patients > 18 years old",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "52-year-old man",
+      "reasoning": "Patient is 52, over 18.",
+      "criterion_id": "51bd2e8f7e"
+     },
+     {
+      "text": "Carrier of a benign thyroid nodule that has undergone radiofrequency thermoablation 36 months previously ± 12 months +/- 1 month, whether the nodule is stable, progressing or decreasing in volume during the screening period and/or on the day of inclusion",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "No biopsy has been performed yet",
+      "reasoning": "Nodule not confirmed benign, no prior ablation history.",
+      "criterion_id": "962143c77d"
+     },
+     {
+      "text": "Obtaining written informed consent",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of consent process.",
+      "criterion_id": "ae1f887b30"
+     },
+     {
+      "text": "Affiliation to a social security system (excluding AME)",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on social security affiliation.",
+      "criterion_id": "72d84e3cd2"
+     },
+     {
+      "text": "Pregnant or breastfeeding women",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "52-year-old man",
+      "reasoning": "Male patient cannot be pregnant or breastfeeding.",
+      "criterion_id": "0cc29d1eb5"
+     },
+     {
+      "text": "Previous alcohol use",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of alcohol use history.",
+      "criterion_id": "c294436456"
+     },
+     {
+      "text": "Patients on anti-vitamin K anticoagulants",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of anticoagulant use.",
+      "criterion_id": "4cc4fab234"
+     },
+     {
+      "text": "Patients on direct oral anticoagulants",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of anticoagulant use.",
+      "criterion_id": "409b1021a8"
+     },
+     {
+      "text": "Persons deprived of liberty by judicial or administrative decision",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on legal/judicial status.",
+      "criterion_id": "fed0cded49"
+     },
+     {
+      "text": "Persons under forced psychiatric care",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on psychiatric care status.",
+      "criterion_id": "665fe92e34"
+     },
+     {
+      "text": "Persons of full age who are under legal protection (guardianship or curatorship)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on guardianship/curatorship status.",
+      "criterion_id": "2d8c109292"
+     },
+     {
+      "text": "Persons unable to express their consent",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on capacity to consent.",
+      "criterion_id": "60a05534ef"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 4,
+    "rationale": "Excluded: nodule has not undergone radiofrequency ablation, a mandatory inclusion criterion for this post-ablation follow-up study.",
+    "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 진단 확정 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 9/12, 원문 86%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 1,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "진단 확정",
+      "need": "diagnosis",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "참고용",
+      "score": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "low",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.86,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "9/12",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   }
+  ],
+  "gaps": [
+   {
+    "field": "biopsy/FNA and histology status",
+    "why_needed": "Determines if nodule qualifies for FNA-based trial or has known cancer diagnosis",
+    "related_criteria": [
+     "Patients with known or suspected thyroid nodules and/or thyroid cancer",
+     "Patients referred for FNA of thyroid nodules (TIRAD-3, 4 and 5 nodules)"
+    ]
+   },
+   {
+    "field": "comorbidities (renal, cardiac)",
+    "why_needed": "Needed to assess exclusion for serious underlying medical conditions",
+    "related_criteria": [
+     "Serious underlying medical conditions that restrict diagnostic testing or therapy such as renal failure",
+     "Congestive cardiac failure"
+    ]
+   },
+   {
+    "field": "other cancer history",
+    "why_needed": "Needed to check for active non-thyroid malignancy requiring prior treatment",
+    "related_criteria": [
+     "Active coexisting non-thyroid carcinoma requiring intervention before thyroid cancer is addressed"
+    ]
+   },
+   {
+    "field": "prior thyroid ablation history",
+    "why_needed": "Needed to confirm eligibility for FNA trial",
+    "related_criteria": [
+     "History of thyroid ablation before FNA"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "biopsy/FNA and histology status",
+    "question": "결절에 대해 세침흡인검사(FNA)가 시행되었으며, 병리 결과는 어떻게 되나요?",
+    "why": "FNA 시행 여부와 조직학적 결과가 시험 적격성을 직접 결정함",
+    "options": [
+     "FNA 시행, 양성 소견",
+     "FNA 시행, 악성/갑상선암 진단",
+     "FNA 시행, 미결정(비진단적/불확실)",
+     "FNA 미시행",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 2,
+    "affects_trials": 2,
+    "may_change_rank": true
+   },
+   {
+    "field": "prior thyroid ablation history",
+    "question": "이전에 갑상선 결절에 대한 열/고주파 소작술 등 국소 치료를 받은 적이 있나요?",
+    "why": "이전 갑상선 소작술 이력은 FNA 시험 적격성에 영향을 줌",
+    "options": [
+     "고주파 소작술(RFA) 시행 이력 있음",
+     "에탄올 소작술 시행 이력 있음",
+     "기타 국소치료 시행 이력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 1,
+    "affects_trials": 1,
+    "may_change_rank": true
+   },
+   {
+    "field": "comorbidities and other cancer history",
+    "question": "환자에게 심각한 신장/심장 질환이나 현재 치료 중인 다른 암(갑상선 외)이 있나요?",
+    "why": "중증 동반질환 및 활동성 타장기암은 여러 시험의 배제 기준임",
+    "options": [
+     "중등도 이상 신부전 있음",
+     "심부전/중증 심질환 있음",
+     "현재 치료 중인 타장기 활동성 악성종양 있음",
+     "모두 정상 범위",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 0,
+    "affects_trials": 0,
+    "may_change_rank": false
+   }
+  ],
+  "reeval": {
+   "extended_record": "Following the initial ultrasound, the patient underwent fine-needle aspiration (FNA) biopsy of the 2.1 cm left thyroid nodule on 2024-03-15, guided by ultrasound given its suspicious features. Cytology was reported as Bethesda Category V (suspicious for malignancy), with clusters of atypical follicular cells showing nuclear grooves and enlarged nuclei. He has never undergone any prior local treatment for thyroid nodules, including radiofrequency or laser ablation, or thyroid surgery. His renal function is normal, with creatinine 0.9 mg/dL and eGFR 92 mL/min/1.73m². He has no history of heart failure, arrhythmia, or coronary disease, and denies any current or past diagnosis of malignancy other than the thyroid nodule under evaluation. He is otherwise active and asymptomatic.",
+   "answers": [
+    {
+     "question": "결절에 대해 세침흡인검사(FNA)가 시행되었으며, 병리 결과는 어떻게 되나요?",
+     "answer": "FNA was performed and cytology showed Bethesda Category V, suspicious for malignancy.",
+     "evidence_quote": "Cytology was reported as Bethesda Category V (suspicious for malignancy), with clusters of atypical follicular cells showing nuclear grooves and enlarged nuclei."
+    },
+    {
+     "question": "이전에 갑상선 결절에 대한 열/고주파 소작술 등 국소 치료를 받은 적이 있나요?",
+     "answer": "No prior local treatment such as radiofrequency or laser ablation has been performed.",
+     "evidence_quote": "He has never undergone any prior local treatment for thyroid nodules, including radiofrequency or laser ablation, or thyroid surgery."
+    },
+    {
+     "question": "환자에게 심각한 신장/심장 질환이나 현재 치료 중인 다른 암(갑상선 외)이 있나요?",
+     "answer": "No significant renal or cardiac disease and no other current malignancy; renal function is normal.",
+     "evidence_quote": "His renal function is normal, with creatinine 0.9 mg/dL and eGFR 92 mL/min/1.73m²."
+    }
+   ],
+   "verdict_changes": [
+    {
+     "nct_id": "NCT06984991",
+     "criterion": "Patients referred for FNA of thyroid nodules (TIRAD-3, 4 and 5 nodules)",
+     "before": "UNCERTAIN",
+     "after": "MET"
+    },
+    {
+     "nct_id": "NCT06984991",
+     "criterion": "History of thyroid ablation before FNA",
+     "before": "UNKNOWN",
+     "after": "NOT_MET"
+    }
+   ],
+   "final_ranking": [
+    {
+     "nct_id": "NCT06984991",
+     "rank": 1,
+     "eligibility": "ELIGIBLE",
+     "rationale": "Eligible: suspicious nodule needs FNA; study evaluates FNA sample adequacy, directly applicable and unaffected by exclusions.",
+     "rank_reason": "참여: 적격 · 도움: 진단 확정 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 0/2, 원문 전체(추정)"
+    },
+    {
+     "nct_id": "NCT00001160",
+     "rank": 2,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Uncertain: general thyroid nodule study, but family history/genetic risk and comorbidity status not documented to confirm eligibility.",
+     "rank_reason": "참여: 미확정 · 도움: 진단 확정 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 5/6, 원문 전체(추정)"
+    },
+    {
+     "nct_id": "NCT03676647",
+     "rank": 3,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Ineligible: requires indeterminate FNA cytology (Bethesda III-V); patient has not yet had FNA performed.",
+     "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 진단 확정 필요와 부합 (관찰 연구 시험, Phase NA) · 확실: 미해결 2/3, 원문 전체(추정)"
+    },
+    {
+     "nct_id": "NCT05726981",
+     "rank": 4,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Ineligible: study requires prior radiofrequency ablation of a benign nodule 36 months earlier, which this patient has not had.",
+     "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 진단 확정 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 9/12, 원문 86%"
+    }
+   ]
+  },
+  "generated_at": "2026-07-08"
+ },
+ {
+  "patient_id": "E003",
+  "patient_text": "A 58-year-old woman with type 2 diabetes diagnosed eight years ago is stable on metformin with an HbA1c of 6.8%. She monitors glucose at home, walks daily, and has no retinopathy or nephropathy on last year's screening. She is interested in contributing to long-term research on diabetes outcomes.",
+  "patient_need": {
+   "need": "monitoring",
+   "need_ko": "관리",
+   "confidence": "high",
+   "reasons": [
+    "이미 알려진 상태를 지속적으로 지켜보는 문구가 있어 새로운 개입보다 관리·추적이 필요한 상태로 판단 (근거 문구: 'is stable')"
+   ]
+  },
+  "extraction": [
+   {
+    "name": "age",
+    "value": "58",
+    "evidence_quote": "58-year-old"
+   },
+   {
+    "name": "sex",
+    "value": "female",
+    "evidence_quote": "woman"
+   },
+   {
+    "name": "diagnosis",
+    "value": "type 2 diabetes",
+    "evidence_quote": "type 2 diabetes diagnosed eight years ago"
+   },
+   {
+    "name": "medication",
+    "value": "metformin",
+    "evidence_quote": "stable on metformin"
+   },
+   {
+    "name": "lab finding",
+    "value": "HbA1c 6.8%",
+    "evidence_quote": "HbA1c of 6.8%"
+   },
+   {
+    "name": "lifestyle/history",
+    "value": "monitors glucose at home, walks daily",
+    "evidence_quote": "monitors glucose at home, walks daily"
+   },
+   {
+    "name": "exam/screening finding",
+    "value": "no retinopathy or nephropathy",
+    "evidence_quote": "no retinopathy or nephropathy on last year's screening"
+   },
+   {
+    "name": "patient interest",
+    "value": "interested in contributing to long-term research on diabetes outcomes",
+    "evidence_quote": "interested in contributing to long-term research on diabetes outcomes"
+   }
+  ],
+  "trials": [
+   {
+    "nct_id": "NCT06487130",
+    "title": "Virtual perI-/Menopause Registry of AusTrALia",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Australian resident",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No residency information provided in vignette.",
+      "criterion_id": "ab47343bf4"
+     },
+     {
+      "text": "Over 18 years of age",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "58-year-old woman",
+      "reasoning": "Patient is 58 years old, over 18.",
+      "criterion_id": "b049f55907"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 1,
+    "rationale": "Menopause-registry could fit her diabetes-outcomes interest, but Australian residency status is unknown, leaving eligibility unresolved.",
+    "rank_reason": "참여: 미확정 · 도움: 관리 필요와 부합 (관찰 연구 시험, Phase NA) · 확실: 미해결 1/2, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "관리",
+      "need": "monitoring",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "high",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "1/2",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT03549754",
+    "title": "iCaReMe Global Registry: Multinational Real-world Evidence in Cardiorenal and Metabolic Diseases",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Being 18 years or older",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "58-year-old woman",
+      "reasoning": "Patient is 58, older than 18.",
+      "criterion_id": "11045fbea1"
+     },
+     {
+      "text": "Having type 2 diabetes, Hypertension, Heart Failure and/or chronic kidney disease",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "type 2 diabetes diagnosed eight years ago",
+      "reasoning": "Patient has type 2 diabetes, satisfying this inclusion.",
+      "criterion_id": "c102bace90"
+     },
+     {
+      "text": "Providing written informed consent to participate in the registry",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of informed consent being given.",
+      "criterion_id": "3c6fac3a88"
+     },
+     {
+      "text": "Having a life-threatening co-morbidity with life expectancy below 1 year",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about life-threatening comorbidities or prognosis.",
+      "criterion_id": "da180fe881"
+     },
+     {
+      "text": "Participating in an interventional trial requiring informed consent",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of participation in any interventional trial.",
+      "criterion_id": "af22f5d406"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 2,
+    "rationale": "Cardiorenal-metabolic registry aligns with her stable T2DM interest in research, but consent status and comorbidity/trial-participation details unconfirmed.",
+    "rank_reason": "참여: 미확정 · 도움: 관리 필요와 부합 (관찰 연구 시험, Phase NA) · 확실: 미해결 3/5, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "관리",
+      "need": "monitoring",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "high",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "3/5",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT05770687",
+    "title": "SGLT2 Inhibitors on Clinical Outcomes and Left Ventricular Remodeling in Type 2 Diabetic Patients with Acute Myocardial Infarction, a Prospective, Multi-center Registry Study",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Acute myocardial infarction who were treated with percutaneous coronary intervention",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of MI or PCI treatment.",
+      "criterion_id": "0e252d1a57"
+     },
+     {
+      "text": "Type 2 diabetes mellitus",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "type 2 diabetes diagnosed eight years ago",
+      "reasoning": "Explicitly stated T2DM diagnosis.",
+      "criterion_id": "a1da1ecf62"
+     },
+     {
+      "text": "Started SGLT2 inhibitors <1 month before/after PCI",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of SGLT2 inhibitor use or timing.",
+      "criterion_id": "d7cb15cd90"
+     },
+     {
+      "text": "Type 1 diabetes mellitus",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "type 2 diabetes diagnosed eight years ago",
+      "reasoning": "Patient has type 2, not type 1 diabetes.",
+      "criterion_id": "f75efdb353"
+     },
+     {
+      "text": "Insulin users",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "stable on metformin",
+      "reasoning": "Only metformin mentioned, no insulin use.",
+      "criterion_id": "159dda9e58"
+     },
+     {
+      "text": "GLP-1 analogue users",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of GLP-1 analogue use.",
+      "criterion_id": "181c43ba65"
+     },
+     {
+      "text": "Previous users of SGLT2 inhibitors",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of prior SGLT2 inhibitor use.",
+      "criterion_id": "a1bfafbd82"
+     },
+     {
+      "text": "Pregnancy",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of pregnancy status.",
+      "criterion_id": "e417fe19b3"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 3,
+    "rationale": "She has T2DM but no documented acute MI, PCI, or SGLT2/GLP-1 use, so key inclusion/exclusion criteria remain unverified.",
+    "rank_reason": "참여: 미확정 · 도움: 관리 필요와 부합 (관찰 연구 시험, Phase NA) · 확실: 미해결 5/8, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "관리",
+      "need": "monitoring",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "high",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.14,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "5/8",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT06305208",
+    "title": "A UK Registry for Metabolic and Bariatric Endoscopic Interventions",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "observational",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Any patient undergoing a primary or revisional bariatric or metabolic endoscopic procedure",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of any bariatric or metabolic endoscopic procedure.",
+      "criterion_id": "70b57ee2e9"
+     },
+     {
+      "text": "Age ≥ 18 years old",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "58-year-old woman",
+      "reasoning": "Patient age 58 exceeds 18.",
+      "criterion_id": "1294d52acd"
+     },
+     {
+      "text": "Able to give written informed consent",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about consent capacity provided.",
+      "criterion_id": "be08b92e60"
+     },
+     {
+      "text": "Any bariatric or metabolic endoscopic procedure performed outside the UK",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No procedure or location mentioned.",
+      "criterion_id": "a2fb95e8a7"
+     },
+     {
+      "text": "Any bariatric or metabolic endoscopic procedure not currently listed within the registry protocol or agreed by the steering committee",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No procedure mentioned, cannot assess registry listing.",
+      "criterion_id": "cc74efef83"
+     },
+     {
+      "text": "Unable to provide written informed consent",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about consent capacity provided.",
+      "criterion_id": "26036d7084"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 4,
+    "rationale": "No evidence she underwent a bariatric/metabolic endoscopic procedure or is UK-based, leaving core eligibility criteria unresolved.",
+    "rank_reason": "참여: 미확정 · 도움: 관리 필요와 부합 (관찰 연구 시험, Phase NA) · 확실: 미해결 5/6, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "관리",
+      "need": "monitoring",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "observational",
+      "confidence": "high",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "5/6",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   }
+  ],
+  "gaps": [
+   {
+    "field": "Consent capacity/willingness",
+    "why_needed": "Determines eligibility for registries requiring written informed consent",
+    "related_criteria": [
+     "[NCT03549754] Providing written informed consent to participate in the registry",
+     "[NCT06305208] Able to give written informed consent",
+     "[NCT06305208] Unable to provide written informed consent"
+    ]
+   },
+   {
+    "field": "Cardiac history and PCI status",
+    "why_needed": "Needed to assess MI/PCI-related eligibility and medication timing",
+    "related_criteria": [
+     "[NCT05770687] Acute myocardial infarction who were treated with percutaneous coronary intervention",
+     "[NCT05770687] Started SGLT2 inhibitors <1 month before/after PCI"
+    ]
+   },
+   {
+    "field": "Diabetes medication history (SGLT2i/GLP-1)",
+    "why_needed": "Needed to determine drug exposure exclusions",
+    "related_criteria": [
+     "[NCT05770687] GLP-1 analogue users",
+     "[NCT05770687] Previous users of SGLT2 inhibitors"
+    ]
+   },
+   {
+    "field": "Life expectancy/comorbidity status",
+    "why_needed": "Needed to check life-threatening comorbidity exclusion",
+    "related_criteria": [
+     "[NCT03549754] Having a life-threatening co-morbidity with life expectancy below 1 year"
+    ]
+   },
+   {
+    "field": "Concurrent trial participation",
+    "why_needed": "Determines conflict with other interventional trial enrollment",
+    "related_criteria": [
+     "[NCT03549754] Participating in an interventional trial requiring informed consent"
+    ]
+   },
+   {
+    "field": "Pregnancy status",
+    "why_needed": "Needed to confirm exclusion criterion applicability",
+    "related_criteria": [
+     "[NCT05770687] Pregnancy"
+    ]
+   },
+   {
+    "field": "Residency and procedure location/type",
+    "why_needed": "Needed to confirm geographic and procedural eligibility",
+    "related_criteria": [
+     "[NCT06487130] Australian resident",
+     "[NCT06305208] Any patient undergoing a primary or revisional bariatric or metabolic endoscopic procedure",
+     "[NCT06305208] Any bariatric or metabolic endoscopic procedure performed outside the UK",
+     "[NCT06305208] Any bariatric or metabolic endoscopic procedure not currently listed within the registry protocol or agreed by the steering committee"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "diabetes medication history / cardiac history",
+    "question": "메트포르민 외에 SGLT2 억제제나 GLP-1 작용제를 복용한 적이 있으며, 심근경색이나 관상동맥중재술(PCI) 병력이 있습니까?",
+    "why": "약물 노출 및 심장 병력은 여러 시험의 배제 기준에 영향을 미침",
+    "options": [
+     "SGLT2 억제제 복용 이력 있음",
+     "GLP-1 작용제 복용 이력 있음",
+     "심근경색/PCI 병력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 0,
+    "affects_trials": 0,
+    "may_change_rank": false
+   },
+   {
+    "field": "consent capacity / concurrent trial participation / residency",
+    "question": "환자가 서면 동의가 가능하고, 다른 중재 임상시험에 참여 중이지 않으며, 시험 시행 기관 인근에 거주하고 있습니까?",
+    "why": "동의 능력, 동시 참여, 거주지는 여러 등록 기준에 동시 영향",
+    "options": [
+     "동의 능력 있음",
+     "타 중재시험 참여 중",
+     "시행기관 인근 거주",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 0,
+    "affects_trials": 0,
+    "may_change_rank": false
+   },
+   {
+    "field": "life expectancy/comorbidity / pregnancy status",
+    "question": "생명을 위협하는 동반질환이 있거나 임신 가능성이 있습니까?",
+    "why": "동반질환 및 임신 여부는 배제 기준 확인에 필요",
+    "options": [
+     "생명 위협 동반질환 있음",
+     "임신 가능성 있음",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 0,
+    "affects_trials": 0,
+    "may_change_rank": false
+   }
+  ],
+  "reeval": {
+   "extended_record": "At her long-term follow-up visit, the patient reports she has never taken an SGLT2 inhibitor or GLP-1 agonist, remaining on metformin 1000mg twice daily alone. She denies any history of myocardial infarction, coronary artery disease, or percutaneous coronary intervention; her most recent ECG and lipid panel were unremarkable, with LDL 92 mg/dL. She is fully capable of providing written informed consent, is not currently enrolled in any other interventional clinical trial, and lives approximately 15 minutes from the study site, facilitating regular visits. She has no life-threatening comorbidities such as active malignancy, end-stage organ failure, or severe heart failure. She underwent a bilateral tubal ligation ten years ago and is postmenopausal for three years, confirming no possibility of pregnancy. She expresses enthusiasm about contributing to long-term diabetes outcomes research.",
+   "answers": [
+    {
+     "question": "메트포르민 외에 SGLT2 억제제나 GLP-1 작용제를 복용한 적이 있으며, 심근경색이나 관상동맥중재술(PCI) 병력이 있습니까?",
+     "answer": "No prior SGLT2 inhibitor or GLP-1 agonist use, and no history of MI or PCI.",
+     "evidence_quote": "she has never taken an SGLT2 inhibitor or GLP-1 agonist, remaining on metformin 1000mg twice daily alone. She denies any history of myocardial infarction, coronary artery disease, or percutaneous coronary intervention"
+    },
+    {
+     "question": "환자가 서면 동의가 가능하고, 다른 중재 임상시험에 참여 중이지 않으며, 시험 시행 기관 인근에 거주하고 있습니까?",
+     "answer": "Yes, she can provide written consent, is not in another trial, and lives near the study site.",
+     "evidence_quote": "She is fully capable of providing written informed consent, is not currently enrolled in any other interventional clinical trial, and lives approximately 15 minutes from the study site"
+    },
+    {
+     "question": "생명을 위협하는 동반질환이 있거나 임신 가능성이 있습니까?",
+     "answer": "No life-threatening comorbidities and no possibility of pregnancy due to tubal ligation and postmenopausal status.",
+     "evidence_quote": "She has no life-threatening comorbidities such as active malignancy, end-stage organ failure, or severe heart failure. She underwent a bilateral tubal ligation ten years ago and is postmenopausal for three years, confirming no possibility of pregnancy."
+    }
+   ],
+   "verdict_changes": [],
+   "final_ranking": [
+    {
+     "nct_id": "NCT06487130",
+     "rank": 1,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Menopause-registry could fit her diabetes-outcomes interest, but Australian residency status is unknown, leaving eligibility unresolved."
+    },
+    {
+     "nct_id": "NCT03549754",
+     "rank": 2,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Cardiorenal-metabolic registry aligns with her stable T2DM interest in research, but consent status and comorbidity/trial-participation details unconfirmed."
+    },
+    {
+     "nct_id": "NCT05770687",
+     "rank": 3,
+     "eligibility": "UNCERTAIN",
+     "rationale": "She has T2DM but no documented acute MI, PCI, or SGLT2/GLP-1 use, so key inclusion/exclusion criteria remain unverified."
+    },
+    {
+     "nct_id": "NCT06305208",
+     "rank": 4,
+     "eligibility": "UNCERTAIN",
+     "rationale": "No evidence she underwent a bariatric/metabolic endoscopic procedure or is UK-based, leaving core eligibility criteria unresolved."
+    }
+   ]
+  },
+  "generated_at": "2026-07-08"
+ },
+ {
+  "patient_id": "E004",
+  "patient_text": "A 67-year-old man with metastatic pancreatic adenocarcinoma is progressing after two lines of chemotherapy. ECOG performance status is 2. His main problems now are persistent abdominal pain requiring increasing opioid doses, poor appetite, and weight loss. He and his family wish to focus on comfort and quality of life.",
+  "patient_need": {
+   "need": "comfort",
+   "need_ko": "지지",
+   "confidence": "high",
+   "reasons": [
+    "완화·증상 완화 목적의 표현이 있어 치료 목적이 아닌 편안함 지원이 필요한 상태로 판단 (근거 문구: 'focus on comfort')"
+   ]
+  },
+  "extraction": [
+   {
+    "name": "age",
+    "value": "67",
+    "evidence_quote": "67-year-old"
+   },
+   {
+    "name": "sex",
+    "value": "male",
+    "evidence_quote": "man"
+   },
+   {
+    "name": "diagnosis",
+    "value": "metastatic pancreatic adenocarcinoma",
+    "evidence_quote": "metastatic pancreatic adenocarcinoma"
+   },
+   {
+    "name": "disease status",
+    "value": "progressing after two lines of chemotherapy",
+    "evidence_quote": "progressing after two lines of chemotherapy"
+   },
+   {
+    "name": "performance status",
+    "value": "ECOG 2",
+    "evidence_quote": "ECOG performance status is 2"
+   },
+   {
+    "name": "symptom",
+    "value": "persistent abdominal pain requiring increasing opioid doses",
+    "evidence_quote": "persistent abdominal pain requiring increasing opioid doses"
+   },
+   {
+    "name": "symptom",
+    "value": "poor appetite",
+    "evidence_quote": "poor appetite"
+   },
+   {
+    "name": "symptom",
+    "value": "weight loss",
+    "evidence_quote": "weight loss"
+   },
+   {
+    "name": "goals of care",
+    "value": "focus on comfort and quality of life",
+    "evidence_quote": "wish to focus on comfort and quality of life"
+   }
+  ],
+  "trials": [
+   {
+    "nct_id": "NCT06328751",
+    "title": "Meditation With Virtual Reality for Cancer Pain Relief in the Pain Therapy and Palliative Care Service",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "supportive",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Be followed up at the Pain Therapy and Palliative Care Service (STDCP) to control symptoms resulting from any type of cancer at any stage",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of follow-up at a Pain Therapy/Palliative Care Service.",
+      "criterion_id": "f85fc17e33"
+     },
+     {
+      "text": "Have a diagnosis of chronic pain, recorded in the medical records",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "INSUFFICIENT_EVIDENCE",
+      "action": "VERIFY",
+      "evidence": null,
+      "reasoning": "Persistent pain noted but no formal 'chronic pain' diagnosis recorded.",
+      "criterion_id": "440184c7fa"
+     },
+     {
+      "text": "Be between 18 and 75 years old on the date of the first collection",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "67-year-old man",
+      "reasoning": "Age 67 falls within 18-75 range.",
+      "criterion_id": "f40b204f2f"
+     },
+     {
+      "text": "Be able to understand Portuguese (read and write)",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about language ability.",
+      "criterion_id": "6f43e8a290"
+     },
+     {
+      "text": "Have normal vision and hearing",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about vision or hearing status.",
+      "criterion_id": "eff2134f64"
+     },
+     {
+      "text": "Have a cell phone with an Android system",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about phone or Android device ownership.",
+      "criterion_id": "fc41e13080"
+     },
+     {
+      "text": "Be able to make head movements and have sufficient motor control to make body movements",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No details on motor control or head movement capability.",
+      "criterion_id": "021933ff06"
+     },
+     {
+      "text": "Agree to take part in the study and sign the Informed Consent Form (ICF)",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of consent process or agreement.",
+      "criterion_id": "826c19e58a"
+     },
+     {
+      "text": "Indigenous patients (due to cultural and linguistic peculiarities and special legislation)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about indigenous status.",
+      "criterion_id": "917c013b17"
+     },
+     {
+      "text": "Patients with records of serious psychiatric illnesses (DSM-5: schizophrenia, schizotypal disorders, delusional disorders, borderline and dementias)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No psychiatric history reported.",
+      "criterion_id": "39c1ccf1a4"
+     },
+     {
+      "text": "Impairment of the ability to understand or communicate based on the researcher's assessment",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CLINICAL_JUDGMENT",
+      "action": "ESCALATE",
+      "evidence": null,
+      "reasoning": "Requires researcher's assessment of comprehension/communication, not documented.",
+      "criterion_id": "4a99bbe430"
+     },
+     {
+      "text": "Report of discomfort with the use of Immersive Virtual Reality; progression of disease limiting regular outpatient visits; or patients with brain tumors, brain metastases or a previous history of seizures",
+      "type": "exclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "AMBIGUOUS",
+      "action": "PROTOCOL_REVIEW",
+      "evidence": "progressing after two lines of chemotherapy",
+      "reasoning": "Disease progression noted but no clear statement on VR discomfort, visit limits, or brain disease.",
+      "criterion_id": "1cec7bc35e"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 1,
+    "rationale": "Pain/palliative focus fits his needs, but language ability and chronic pain documentation status remain unconfirmed.",
+    "rank_reason": "참여: 미확정 · 도움: 지지 필요와 부합 (지지·완화 시험, Phase NA) · 확실: 미해결 11/12, 원문 86%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "지지",
+      "need": "comfort",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "supportive",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.86,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "11/12",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT06040801",
+    "title": "Effect of Geriatric Intervention in Frail Patients with Gastric, Biliary, and Pancreatic Cancer Receiving Palliative Chemotherapy",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "low"
+    },
+    "criteria": [
+     {
+      "text": "Patients aged sixty-five or older with metastatic or unresectable gastric, biliary, and pancreatic cancer",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "67-year-old man with metastatic pancreatic adenocarcinoma",
+      "reasoning": "Age 67 and metastatic pancreatic cancer matches inclusion criterion.",
+      "criterion_id": "01448f5df4"
+     },
+     {
+      "text": "The patient must sign the informed consent form",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of informed consent status.",
+      "criterion_id": "730099408b"
+     },
+     {
+      "text": "Estimated survival period of more than 3 months",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CLINICAL_JUDGMENT",
+      "action": "ESCALATE",
+      "evidence": null,
+      "reasoning": "No explicit survival estimate; requires clinical judgment given ECOG 2 and progression.",
+      "criterion_id": "94558f48cc"
+     },
+     {
+      "text": "Conscious and able to communicate verbally or in writing, and willing to cooperate with invasive procedures",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on consciousness or willingness for invasive procedures.",
+      "criterion_id": "41b7a1810c"
+     },
+     {
+      "text": "Patients with cognitive impairment or unable to cooperate with the interventional procedures as determined by the clinical physician",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of cognitive impairment or inability to cooperate.",
+      "criterion_id": "1bc1c87889"
+     },
+     {
+      "text": "Patients receiving concurrent other anticancer treatments (radiation or surgery)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No data on concurrent anticancer treatments.",
+      "criterion_id": "d0ac3eaf6b"
+     },
+     {
+      "text": "Patients with multiple types of cancer requiring simultaneous treatment",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of other cancer types.",
+      "criterion_id": "d97891610d"
+     },
+     {
+      "text": "Patients who have previously participated in this study during a prior chemotherapy regimen",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about prior study participation.",
+      "criterion_id": "0801b23aee"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 2,
+    "rationale": "Geriatric support trial could help, but consent capacity and 3-month survival estimate are unverified given his decline.",
+    "rank_reason": "참여: 미확정 · 도움: 지지 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 7/8, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "지지",
+      "need": "comfort",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "참고용",
+      "score": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "low",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "7/8",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT07319039",
+    "title": "Breathlessness Patterns in Patients With Cancer, COPD and Heart Failure: an fMRI Feasibility Study",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "supportive",
+     "confidence": "low"
+    },
+    "criteria": [
+     {
+      "text": "Age ≥ 18 years",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "67-year-old man",
+      "reasoning": "Age 67 exceeds 18.",
+      "criterion_id": "79aa62fe67"
+     },
+     {
+      "text": "Followed by the outpatient palliative care clinic of the Geneva University Hospitals, Switzerland (HUG)",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of HUG palliative care clinic follow-up.",
+      "criterion_id": "6e1e1e7fcf"
+     },
+     {
+      "text": "Breathlessness at rest > 2 and < 8 on the NRS (numeric rating scale 0 to 10)",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No breathlessness NRS score given; patient has abdominal pain, not dyspnea.",
+      "criterion_id": "a6fad930a4"
+     },
+     {
+      "text": "Persistent breathlessness (persistent dyspnea for > 3 weeks despite adequate and maximal medication according to the pathology)",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "persistent abdominal pain requiring increasing opioid doses, poor appetite, and weight loss",
+      "reasoning": "No dyspnea mentioned; main symptoms are pain, anorexia, weight loss.",
+      "criterion_id": "1cb05bf7a4"
+     },
+     {
+      "text": "In a stable clinical condition, i.e., without an episode of acute cardiac, respiratory, and/or neurological failure leading to hospitalization in the previous 4 weeks",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No info on recent hospitalizations for organ failure.",
+      "criterion_id": "692b868af8"
+     },
+     {
+      "text": "Diagnosis of either HF stage NYHA III-IV, or COPD with dyspnea on the modified MRC scale grade 3-4, or oncological disease with primary or secondary pulmonary involvement",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "AMBIGUOUS",
+      "action": "PROTOCOL_REVIEW",
+      "evidence": "metastatic pancreatic adenocarcinoma",
+      "reasoning": "Oncological disease present but no mention of pulmonary involvement.",
+      "criterion_id": "309bd7442b"
+     },
+     {
+      "text": "Breathlessness at rest ≥ 8 on the NRS (numeric rating scale 0 to 10)",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "persistent abdominal pain requiring increasing opioid doses",
+      "reasoning": "Pain is abdominal, not breathlessness; no NRS breathlessness score given.",
+      "criterion_id": "b13411833c"
+     },
+     {
+      "text": "Contraindication to fMRI",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on fMRI contraindications.",
+      "criterion_id": "e1a8073512"
+     },
+     {
+      "text": "Inability to lie flat (supine position)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about ability to lie flat.",
+      "criterion_id": "6ec70267c2"
+     },
+     {
+      "text": "Diagnosed psychiatric illness (severe depression, severe anxiety, psychosis, other) or antipsychotic treatment deemed a contraindication for fMRI based on physician judgement",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No psychiatric history or antipsychotic treatment mentioned.",
+      "criterion_id": "dff68fec0d"
+     },
+     {
+      "text": "Neurological disorders according to neurological assessment, including diagnosed dementia, brain pathology (tumor, stroke, Parkinson's disease, etc.), or epilepsy",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No neurological assessment or disorder mentioned.",
+      "criterion_id": "1dd17a5e15"
+     },
+     {
+      "text": "Presence of claustrophobia, acrophobia, photophobia, severe hearing loss, and/or severe visual deficit, or contraindication to IVR (migraines, photosensitive epilepsy, vertigo)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of claustrophobia, hearing/visual deficits, or migraines.",
+      "criterion_id": "0b2a584fb8"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 3,
+    "rationale": "Excluded: no documented persistent dyspnea >3 weeks meeting inclusion criteria; breathlessness not established as primary symptom.",
+    "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 지지 필요인데 시험 목적 미확인 (Phase NA) · 확실: 미해결 9/12, 원문 52%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 1,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "지지",
+      "need": "comfort",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "참고용",
+      "score": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "supportive",
+      "confidence": "low",
+      "demoted": true,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.52,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "9/12",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT07009886",
+    "title": "Development of an Educational Patient Decision Aid (Treatments in Advanced Cancer - Decision Aid, TA-DA) to Promote Shared Decision Making for Third-line or Beyond Palliative Systemic Therapy",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "supportive",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Clinicians: MD Anderson medical oncologists and APPs who provide care to patients with advanced cancer",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "67-year-old man with metastatic pancreatic adenocarcinoma",
+      "reasoning": "Patient is a patient, not an MD Anderson clinician.",
+      "criterion_id": "c22eaf9206"
+     },
+     {
+      "text": "Patients: Age 18 or over",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "67-year-old man",
+      "reasoning": "Age 67 exceeds 18.",
+      "criterion_id": "4c19f226dd"
+     },
+     {
+      "text": "Patients: Diagnosis of advanced cancer (i.e., metastatic, relapsed, and/or incurable disease as defined by the treating oncologist) who has received at least 2 lines of palliative systemic therapy",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "metastatic pancreatic adenocarcinoma... progressing after two lines of chemotherapy",
+      "reasoning": "Metastatic disease with 2 prior lines of systemic therapy.",
+      "criterion_id": "3f106a39ae"
+     },
+     {
+      "text": "Patients: Patient-rated ECOG performance status of 1-3 for Part I/II and 2-3 for Part III",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "ECOG performance status is 2",
+      "reasoning": "ECOG 2 falls within 1-3 and 2-3 ranges.",
+      "criterion_id": "09965ce2f0"
+     },
+     {
+      "text": "Patients: Able to make treatment decisions based on the clinical judgement of the oncology team",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CLINICAL_JUDGMENT",
+      "action": "ESCALATE",
+      "evidence": null,
+      "reasoning": "Decision-making capacity requires clinical team judgment, not stated.",
+      "criterion_id": "1feb20d4e0"
+     },
+     {
+      "text": "Patients: English speaking",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on patient's spoken language.",
+      "criterion_id": "e43b69498e"
+     },
+     {
+      "text": "Patients: has started, is receiving, and/or has completed second-line palliative systemic therapy or beyond",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "progressing after two lines of chemotherapy",
+      "reasoning": "Completed at least second-line systemic therapy.",
+      "criterion_id": "109be3dd9f"
+     },
+     {
+      "text": "Caregivers: Age 18 or older",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "67-year-old man with metastatic pancreatic adenocarcinoma",
+      "reasoning": "Patient is the subject, not a caregiver.",
+      "criterion_id": "4ffb4230e2"
+     },
+     {
+      "text": "Caregivers: Currently a primary caregiver to a patient who satisfies the patient eligibility criteria, defined as someone who provides physical, emotional, decisional and/or logistical assistance to the patient regularly, can be a family member, friend, or other individual in a close relationship, and must be identified by the patient and self-identify as the primary caregiver",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "He and his family wish to focus on comfort",
+      "reasoning": "Patient is not a caregiver to himself.",
+      "criterion_id": "36175c0b01"
+     },
+     {
+      "text": "Caregivers: Able to provide informed consent and participate in the study",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Patient described, not caregiver",
+      "reasoning": "Criterion applies to caregivers, not this patient.",
+      "criterion_id": "2b561e0a09"
+     },
+     {
+      "text": "Caregivers: English speaking",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Patient described, not caregiver",
+      "reasoning": "Criterion applies to caregivers, not this patient.",
+      "criterion_id": "d1e2edb09f"
+     },
+     {
+      "text": "Diagnosis of cognitive impairment or dementia requiring a surrogate decision maker as determined by the clinical team (Part I/II/III)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of cognitive impairment or dementia in vignette.",
+      "criterion_id": "9b471839bb"
+     },
+     {
+      "text": "Participants in Part I and II are excluded from Part III",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on prior study part participation.",
+      "criterion_id": "4eb17a6d84"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 4,
+    "rationale": "Excluded: trial targets clinicians/caregivers with defined roles, not applicable to this patient as a treatment-decision subject.",
+    "rank_reason": "참여: 부적격 (차단 기준 5건) · 도움: 지지 필요와 부합 (지지·완화 시험, Phase NA) · 확실: 미해결 4/13, 원문 72%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 5,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "지지",
+      "need": "comfort",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "supportive",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.72,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "4/13",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   }
+  ],
+  "gaps": [
+   {
+    "field": "Cognitive/communication/sensory function",
+    "why_needed": "Determines ability to consent, use VR device, and cooperate with procedures",
+    "related_criteria": [
+     "Have normal vision and hearing",
+     "Be able to understand Portuguese (read and write)",
+     "Be able to make head movements and have sufficient motor control to make body movements",
+     "Impairment of the ability to understand or communicate based on the researcher's assessment",
+     "Conscious and able to communicate verbally or in writing, and willing to cooperate with invasive procedures",
+     "Patients with cognitive impairment or unable to cooperate with the interventional procedures as determined by the clinical physician"
+    ]
+   },
+   {
+    "field": "Psychiatric history",
+    "why_needed": "Serious psychiatric diagnoses may exclude patient per DSM-5 criteria",
+    "related_criteria": [
+     "Patients with records of serious psychiatric illnesses (DSM-5: schizophrenia, schizotypal disorders, delusional disorders, borderline and dementias)"
+    ]
+   },
+   {
+    "field": "Prognosis/estimated survival",
+    "why_needed": "Need survival estimate to confirm eligibility (>3 months) and disease progression status",
+    "related_criteria": [
+     "Estimated survival period of more than 3 months",
+     "progression of disease limiting regular outpatient visits"
+    ]
+   },
+   {
+    "field": "Chronic pain diagnosis and prior VR exposure/comfort",
+    "why_needed": "Need documented chronic pain diagnosis and tolerance for immersive VR",
+    "related_criteria": [
+     "Have a diagnosis of chronic pain, recorded in the medical records",
+     "Report of discomfort with the use of Immersive Virtual Reality",
+     "patients with brain tumors, brain metastases or a previous history of seizures"
+    ]
+   },
+   {
+    "field": "Consent and administrative status",
+    "why_needed": "Need confirmation of informed consent, willingness, and study logistics",
+    "related_criteria": [
+     "Agree to take part in the study and sign the Informed Consent Form (ICF)",
+     "The patient must sign the informed consent form",
+     "Be followed up at the Pain Therapy and Palliative Care Service (STDCP) to control symptoms resulting from any type of cancer at any stage",
+     "Have a cell phone with an Android system"
+    ]
+   },
+   {
+    "field": "Cancer treatment/history details",
+    "why_needed": "Concurrent therapies, other malignancies, or prior study participation affect eligibility",
+    "related_criteria": [
+     "Patients receiving concurrent other anticancer treatments (radiation or surgery)",
+     "Patients with multiple types of cancer requiring simultaneous treatment",
+     "Patients who have previously participated in this study during a prior chemotherapy regimen",
+     "Indigenous patients (due to cultural and linguistic peculiarities and special legislation)"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "Cognitive/communication/sensory function",
+    "question": "환자의 인지 기능, 의사소통 능력, 시청각 상태는 어떠하며 VR 기기 사용 및 절차 협조가 가능한가요?",
+    "why": "인지·감각 상태가 동의 능력, VR 사용, 절차 협조 여부를 결정하며 6개 기준에 영향",
+    "options": [
+     "지시 이행 및 대화 가능",
+     "시력/청력 정상으로 VR 기기 사용 가능",
+     "경미한 인지저하 있으나 협조 가능",
+     "중증 인지장애/섬망으로 협조 불가",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 6,
+    "affects_trials": 2,
+    "may_change_rank": true
+   },
+   {
+    "field": "Prognosis/estimated survival and psychiatric history",
+    "question": "임상적으로 추정되는 생존기간(3개월 이상 여부)과 정신과적 병력(DSM-5 진단)이 확인되나요?",
+    "why": "생존 예후와 정신과 병력은 적격성 및 배제기준 확인에 필수적",
+    "options": [
+     "예상 생존기간 3개월 이상으로 평가됨",
+     "예상 생존기간 3개월 미만으로 평가됨",
+     "주요 정신과 질환(우울증/조현병 등) 진단 있음",
+     "해당 사항 없음",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 2,
+    "affects_trials": 2,
+    "may_change_rank": true
+   },
+   {
+    "field": "Chronic pain diagnosis and prior VR exposure/comfort",
+    "question": "만성 통증에 대한 명확한 진단이 있고, 이전에 VR 기기를 사용해본 경험이나 불편감이 있었나요?",
+    "why": "VR 기반 중재 적격성 확인을 위해 통증 진단과 VR 내구성 필요",
+    "options": [
+     "암성 통증으로 명확히 진단됨",
+     "VR 기기 사용 경험 있고 불편감 없음",
+     "밀폐공간·현기증 등 VR 사용 시 불편감 있음",
+     "VR 사용 경험 전혀 없음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 1,
+    "affects_trials": 1,
+    "may_change_rank": true
+   }
+  ],
+  "reeval": {
+   "extended_record": "",
+   "answers": [],
+   "verdict_changes": [],
+   "final_ranking": [
+    {
+     "nct_id": "NCT06328751",
+     "rank": 1,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Pain/palliative focus fits his needs, but language ability and chronic pain documentation status remain unconfirmed."
+    },
+    {
+     "nct_id": "NCT06040801",
+     "rank": 2,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Geriatric support trial could help, but consent capacity and 3-month survival estimate are unverified given his decline."
+    },
+    {
+     "nct_id": "NCT07319039",
+     "rank": 3,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Excluded: no documented persistent dyspnea >3 weeks meeting inclusion criteria; breathlessness not established as primary symptom."
+    },
+    {
+     "nct_id": "NCT07009886",
+     "rank": 4,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Excluded: trial targets clinicians/caregivers with defined roles, not applicable to this patient as a treatment-decision subject."
+    }
+   ]
+  },
+  "generated_at": "2026-07-08"
+ },
+ {
+  "patient_id": "E005",
+  "patient_text": "A 29-year-old man with ulcerative colitis has a moderate-to-severe flare despite optimized mesalamine: six bloody stools daily, urgency, and fecal calprotectin of 1800 ug/g. Colonoscopy shows Mayo 2 endoscopic activity extending to the splenic flexure. He is steroid-free and has not yet received a biologic.",
+  "patient_need": {
+   "need": "treatment",
+   "need_ko": "치료",
+   "confidence": "high",
+   "reasons": [
+    "현재 진행 중인 증상을 호소하고 있고 이미 받고 있는 치료에 대한 언급이 없어, 개입(치료)이 필요한 상태로 판단 (근거 문구: 'flare')"
+   ]
+  },
+  "extraction": [
+   {
+    "name": "age",
+    "value": "29",
+    "evidence_quote": "29-year-old"
+   },
+   {
+    "name": "sex",
+    "value": "male",
+    "evidence_quote": "man"
+   },
+   {
+    "name": "diagnosis",
+    "value": "ulcerative colitis",
+    "evidence_quote": "ulcerative colitis"
+   },
+   {
+    "name": "disease severity",
+    "value": "moderate-to-severe flare",
+    "evidence_quote": "moderate-to-severe flare"
+   },
+   {
+    "name": "symptom",
+    "value": "six bloody stools daily",
+    "evidence_quote": "six bloody stools daily"
+   },
+   {
+    "name": "symptom",
+    "value": "urgency",
+    "evidence_quote": "urgency"
+   },
+   {
+    "name": "lab finding",
+    "value": "fecal calprotectin of 1800 ug/g",
+    "evidence_quote": "fecal calprotectin of 1800 ug/g"
+   },
+   {
+    "name": "imaging/endoscopy finding",
+    "value": "Mayo 2 endoscopic activity extending to the splenic flexure",
+    "evidence_quote": "Colonoscopy shows Mayo 2 endoscopic activity extending to the splenic flexure"
+   },
+   {
+    "name": "treatment history",
+    "value": "optimized mesalamine, steroid-free, no prior biologic",
+    "evidence_quote": "despite optimized mesalamine"
+   },
+   {
+    "name": "treatment history",
+    "value": "has not yet received a biologic",
+    "evidence_quote": "has not yet received a biologic"
+   }
+  ],
+  "trials": [
+   {
+    "nct_id": "NCT07184996",
+    "title": "An Induction Study to Investigate the Efficacy and Safety of Duvakitug in Participants With Moderately to Severely Active Ulcerative Colitis",
+    "phase": "PHASE3",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Participants aged ≥18 and ≤80 years of age at Screening (where permitted locally, participants 16 to <18 years of age who meet the definition of Tanner Stage 5 for development)",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "29-year-old man",
+      "reasoning": "Age 29 is within 18-80 range.",
+      "criterion_id": "b5df637af4"
+     },
+     {
+      "text": "Confirmed diagnosis of moderately to severely active UC for at least 3 months prior to Baseline",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "Diagnosis severity confirmed but duration of disease not specified.",
+      "criterion_id": "ea868bbe90"
+     },
+     {
+      "text": "Demonstrated inadequate response, have shown loss of response or intolerance to conventional therapies or advanced therapies",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "moderate-to-severe flare despite optimized mesalamine",
+      "reasoning": "Flare persists despite optimized conventional therapy, indicating inadequate response.",
+      "criterion_id": "5f6804a2ed"
+     },
+     {
+      "text": "Participants with Crohn's Disease (CD), indeterminate colitis",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "ulcerative colitis",
+      "reasoning": "Diagnosis is UC, not CD or indeterminate colitis.",
+      "criterion_id": "c53b843abb"
+     },
+     {
+      "text": "Current diagnosis of Ulcerative Proctitis",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Mayo 2 endoscopic activity extending to the splenic flexure",
+      "reasoning": "Disease extends beyond rectum, not isolated proctitis.",
+      "criterion_id": "11e5ddc04f"
+     },
+     {
+      "text": "Participants with surgical bowel resection within the past 3 months prior to Baseline, or a history of >3 bowel resections",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of prior bowel surgery or resections.",
+      "criterion_id": "34bfca3820"
+     },
+     {
+      "text": "Prior or current high-grade gastrointestinal (GI) dysplasia",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on GI dysplasia history.",
+      "criterion_id": "139f8fd4ab"
+     },
+     {
+      "text": "Participants on treatment with but not on stable doses of conventional therapies prior to baseline",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "optimized mesalamine",
+      "reasoning": "Mesalamine described as optimized, implying stable dosing.",
+      "criterion_id": "ed529ebc89"
+     },
+     {
+      "text": "Participants with prohibited medications or therapies prior to baseline",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of other medications or prohibited therapies.",
+      "criterion_id": "49a66c3025"
+     },
+     {
+      "text": "Participants with previous exposure to anti-TL1A investigational therapy",
+      "type": "exclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "INSUFFICIENT_EVIDENCE",
+      "action": "VERIFY",
+      "evidence": "has not yet received a biologic",
+      "reasoning": "No prior biologic/investigational therapy exposure reported, including anti-TL1A.",
+      "criterion_id": "f6ae51a965"
+     }
+    ],
+    "eligibility": "UNCERTAIN",
+    "rank": 1,
+    "rationale": "Matches biologic-naive moderate-severe UC needing treatment; duration of diagnosis and prior surgery/dysplasia status unconfirmed.",
+    "rank_reason": "참여: 미확정 · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 3) · 확실: 미해결 5/10, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "UNCERTAIN",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "PHASE3",
+      "burden": 1,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "5/10",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT07261826",
+    "title": "Real-World Study on Fecal Microbiota Transplantation: Long-Term Effectiveness and Safety Statistics",
+    "phase": "NA",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Diagnosed with one of the target diseases.",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "diagnosis: ulcerative colitis",
+      "reasoning": "Patient has confirmed ulcerative colitis diagnosis.",
+      "criterion_id": "816ddb1206"
+     },
+     {
+      "text": "Age ≥ 3 years.",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "age: 29",
+      "reasoning": "29 years old, exceeds age 3 minimum.",
+      "criterion_id": "3c9dfaed9d"
+     },
+     {
+      "text": "Have received at least one Fecal Microbiota Transplantation (FMT) treatment.",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "has not yet received a biologic",
+      "reasoning": "No mention of FMT; has not received biologic, no FMT history noted.",
+      "criterion_id": "336bc3aff1"
+     },
+     {
+      "text": "Availability of complete baseline and follow-up data for analysis.",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about completeness of baseline/follow-up data.",
+      "criterion_id": "b53a750f19"
+     },
+     {
+      "text": "Provide signed informed consent (for the prospective cohort) OR consent for the use of clinical data (for the retrospective cohort).",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of consent status.",
+      "criterion_id": "05d483efc9"
+     },
+     {
+      "text": "Clinical data is severely missing, making efficacy assessment impossible.",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about missing clinical data.",
+      "criterion_id": "d03d7b7f7f"
+     },
+     {
+      "text": "Presence of severe complications that may jeopardize safety or confound the study results.",
+      "type": "exclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CLINICAL_JUDGMENT",
+      "action": "ESCALATE",
+      "evidence": "Mayo 2 endoscopic activity extending to the splenic flexure",
+      "reasoning": "Severity present but no explicit severe complication noted; requires clinical judgment.",
+      "criterion_id": "d0917f345e"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 2,
+    "rationale": "Excluded: study requires prior fecal microbiota transplantation, which this patient has not received.",
+    "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase NA) · 확실: 미해결 4/7, 원문 전체(추정)",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 1,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "NA",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 1.0,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "4/7",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT06636656",
+    "title": "A Study to Test Whether BI 3032950 Helps People With Ulcerative Colitis",
+    "phase": "PHASE2",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Female and male participants aged 18 to 80 years (inclusive) at the time of informed consent",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "A 29-year-old man",
+      "reasoning": "Age 29, male, within 18-80 range.",
+      "criterion_id": "7b4702a78e"
+     },
+     {
+      "text": "Diagnosis of ulcerative colitis (UC) ≥3 months prior to screening by clinical and endoscopic evidence corroborated by a histopathology report",
+      "type": "inclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No histopathology or duration since diagnosis mentioned.",
+      "criterion_id": "0602d66c96"
+     },
+     {
+      "text": "Inadequate response, loss of response, or intolerance to treatment with biologic/targeted therapy or termination of treatment with biologic/targeted therapy for any other reason",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "has not yet received a biologic",
+      "reasoning": "No biologic exposure, so no inadequate response possible.",
+      "criterion_id": "bc3317c959"
+     },
+     {
+      "text": "Female participants of childbearing potential must be ready and able to use highly effective methods of birth control and male participants are required to use condoms",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of contraception use or plans.",
+      "criterion_id": "c133071094"
+     },
+     {
+      "text": "Diagnosis of indeterminate colitis, ischemic colitis, radiation colitis, diverticular disease associated with colitis, microscopic colitis, or Crohn's disease (CD)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on alternative colitis diagnoses being ruled out.",
+      "criterion_id": "f873658773"
+     },
+     {
+      "text": "Findings suggestive of CD (e.g. fistulae, granulomas on biopsy)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of fistulae or granulomas on biopsy.",
+      "criterion_id": "4457fa982f"
+     },
+     {
+      "text": "Evidence of colonic moderate/severe mucosal dysplasia or colonic adenomas, unless properly removed",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of dysplasia or adenomas.",
+      "criterion_id": "af87a29040"
+     },
+     {
+      "text": "Gastrointestinal neoplasia, primary sclerosing cholangitis, or known colonic stricture",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of neoplasia, PSC, or stricture.",
+      "criterion_id": "4d7b75b7d4"
+     },
+     {
+      "text": "Evidence of fulminant colitis or toxic megacolon at screening",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Mayo 2 endoscopic activity extending to the splenic flexure",
+      "reasoning": "Mayo 2 activity is moderate, not fulminant colitis or toxic megacolon.",
+      "criterion_id": "eacf7794a8"
+     },
+     {
+      "text": "Current ileal-pouch anal anastomosis, ileostomy, colostomy, or known fixed symptomatic stenosis of the intestine",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of ileostomy, colostomy, or stenosis.",
+      "criterion_id": "8086b708b0"
+     },
+     {
+      "text": "Previous surgery or anticipated surgical intervention for UC (trial participants with previous colonic surgery may be allowed based on investigator's judgement after discussion with the sponsor)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No surgical history or plans mentioned.",
+      "criterion_id": "594c8ff63c"
+     },
+     {
+      "text": "Any current or prior abscesses, unless they have been drained and treated at least 6 weeks prior to first trial drug administration and are not anticipated to require surgery",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of abscess history.",
+      "criterion_id": "241511fd85"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 3,
+    "rationale": "Excluded: requires prior inadequate response or intolerance to biologic therapy; patient is biologic-naive.",
+    "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 2) · 확실: 미해결 9/12, 원문 86%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 1,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "PHASE2",
+      "burden": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.86,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "9/12",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   },
+   {
+    "nct_id": "NCT07258771",
+    "title": "Upadacitinib Combined With Corticosteroids vs Corticosteroid Monotherapy Induction for Inpatients and Outpatients With Acute Severe Ulcerative Colitis",
+    "phase": "PHASE4",
+    "trial_intent": {
+     "intent": "therapeutic",
+     "confidence": "high"
+    },
+    "criteria": [
+     {
+      "text": "Patient ≥ 18 to 75 years of age at the time of consent",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "29-year-old man",
+      "reasoning": "Age 29 is within 18-75 range.",
+      "criterion_id": "cbddc5958d"
+     },
+     {
+      "text": "Diagnosis of ulcerative colitis (verified by a typical clinical history as well as characteristic appearance on endoscopy and histology)",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "Colonoscopy shows Mayo 2 endoscopic activity",
+      "reasoning": "UC diagnosis confirmed by endoscopy and clinical history.",
+      "criterion_id": "1db85c5c9b"
+     },
+     {
+      "text": "Meeting definition of acute severe ulcerative colitis: ≥ 6 bowel movements per day with visible blood in the 7 days prior to Day 0 plus at least one of: fever >37.8C, pulse ≥90 BPM, hemoglobin ≤10.5 g/dL, ESR ≥30 mm/h, CRP ≥3.0 mg/dL, fecal calprotectin >782 mg/kg, or oral corticosteroid use ≥7 days in the month prior at ≥20 mg/day",
+      "type": "inclusion",
+      "verdict": "MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "six bloody stools daily...fecal calprotectin of 1800 ug/g",
+      "reasoning": "Meets acute severe UC criteria via stool frequency and calprotectin >782.",
+      "criterion_id": "8724a8301f"
+     },
+     {
+      "text": "For a person of reproductive/childbearing potential, a negative lab-based (serum/urine) pregnancy test is required",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "29-year-old man",
+      "reasoning": "Male patient, not of reproductive/childbearing potential.",
+      "criterion_id": "b94a945d4c"
+     },
+     {
+      "text": "For a person of reproductive/childbearing potential, intent to use at least one effective method of birth control from study Day 0 through end of blinding or at least 30 days after last dose of upadacitinib or week 48, whichever occurs most recently",
+      "type": "inclusion",
+      "verdict": "NOT_MET",
+      "effect": "FAIL",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "29-year-old man",
+      "reasoning": "Male patient, birth control requirement not applicable.",
+      "criterion_id": "e895cbf8dd"
+     },
+     {
+      "text": "Participants enrolled in the outpatient cohort must be under the care of an outpatient gastroenterologist affiliated with the University of Michigan",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of outpatient cohort or gastroenterologist affiliation.",
+      "criterion_id": "fd98b18cf1"
+     },
+     {
+      "text": "Ability to take oral medication and be willing to adhere to the study intervention regimen",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information on ability/willingness to take oral medication.",
+      "criterion_id": "2e5b72a88a"
+     },
+     {
+      "text": "Willing and able to comply with scheduled visits, treatment plan, laboratory tests, daily bowel movement symptom surveys, and other study procedures",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No data on compliance willingness with study procedures.",
+      "criterion_id": "90308ee1a2"
+     },
+     {
+      "text": "Evidence of a personally signed and dated informed consent document",
+      "type": "inclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of informed consent documentation.",
+      "criterion_id": "7c26b97f6b"
+     },
+     {
+      "text": "On IV corticosteroids for >72 hours immediately prior to enrollment continuously, equivalent to a cumulative dose of 180mg IV Methylprednisolone in the 3 days prior to enrollment",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "steroid-free",
+      "reasoning": "Patient is steroid-free, not on IV corticosteroids.",
+      "criterion_id": "4b3f5e5f8b"
+     },
+     {
+      "text": "Prior exposure to upadacitinib",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "has not yet received a biologic",
+      "reasoning": "No prior biologic exposure, thus no upadacitinib exposure.",
+      "criterion_id": "94a890c35e"
+     },
+     {
+      "text": "History of clinically significant drug or alcohol abuse within the last 6 months prior to Baseline",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No information about substance abuse history.",
+      "criterion_id": "8ac629ea95"
+     },
+     {
+      "text": "History of two or more prior episodes of herpes zoster, or one or more episodes of disseminated herpes zoster",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of herpes zoster history.",
+      "criterion_id": "43a15615b1"
+     },
+     {
+      "text": "Ongoing severe active infection as determined by the study team",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of other active severe infection.",
+      "criterion_id": "6b0cf24c07"
+     },
+     {
+      "text": "Active tuberculosis (TB) or untreated latent TB",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No TB status provided.",
+      "criterion_id": "dd2f90ff4f"
+     },
+     {
+      "text": "Recent (within past 6 months) cerebrovascular accident, myocardial infarction, coronary stenting, or aorto-coronary bypass surgery",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No cardiovascular event history mentioned.",
+      "criterion_id": "4706ad2fab"
+     },
+     {
+      "text": "Known hypersensitivity to methylprednisolone, prednisone, upadacitinib, upadacitinib placebo, or their excipients (including cow's milk hypersensitivity for expected inpatient cohort patients)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No hypersensitivity history given.",
+      "criterion_id": "b4e3bbe660"
+     },
+     {
+      "text": "Currently pregnant or breastfeeding",
+      "type": "exclusion",
+      "verdict": "NOT_MET",
+      "effect": "PASS",
+      "uncertainty_type": null,
+      "action": null,
+      "evidence": "29-year-old man",
+      "reasoning": "Male patient cannot be pregnant or breastfeeding.",
+      "criterion_id": "785f96d71c"
+     },
+     {
+      "text": "Received any live vaccine with replicating potential within 30 days prior to first dose of study drug or expected need for live vaccination during study or within 30 days of completion",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No vaccination history provided.",
+      "criterion_id": "0449df3285"
+     },
+     {
+      "text": "Meets diagnostic criteria for toxic megacolon (dilation of transverse colon >6cm or cecum/right colon >9cm plus signs of systemic toxicity)",
+      "type": "exclusion",
+      "verdict": "UNCERTAIN",
+      "effect": "REVIEW",
+      "uncertainty_type": "INSUFFICIENT_EVIDENCE",
+      "action": "VERIFY",
+      "evidence": "Colonoscopy shows Mayo 2 endoscopic activity extending to the splenic flexure",
+      "reasoning": "No signs of colonic dilation or systemic toxicity reported.",
+      "criterion_id": "be3c382af7"
+     },
+     {
+      "text": "Active Cytomegalovirus (CMV) colitis defined as >5 CMV inclusion bodies per high powered field in any one ulcer at baseline",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No CMV testing or findings mentioned.",
+      "criterion_id": "b27d02eaea"
+     },
+     {
+      "text": "Received any investigational agent or procedure within 30 days or five half-lives prior to baseline, whichever is longer, or enrolled in an interventional study",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No mention of investigational agent exposure.",
+      "criterion_id": "4dde122447"
+     },
+     {
+      "text": "Active malignancy, except non-metastatic basal cell or squamous cell carcinoma of the skin or localized carcinoma in situ of the cervix",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No malignancy history provided.",
+      "criterion_id": "9b51d96f93"
+     },
+     {
+      "text": "History of colectomy (total or subtotal), ileoanal pouch, Kock pouch, or ileostomy, or planning bowel surgery",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No surgical history mentioned.",
+      "criterion_id": "0606774970"
+     },
+     {
+      "text": "Certain laboratory abnormalities suggestive of moderate or severe renal, hematological, or gastrointestinal/liver impairment",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No renal/hematologic/liver labs given besides calprotectin.",
+      "criterion_id": "ed502be536"
+     },
+     {
+      "text": "History of or clinical evidence of liver cirrhosis",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No liver disease history mentioned.",
+      "criterion_id": "31c800ffce"
+     },
+     {
+      "text": "History of inherited or acquired conditions that predispose to hypercoagulability",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No hypercoagulability history provided.",
+      "criterion_id": "a8badf7fcd"
+     },
+     {
+      "text": "Active Hepatitis B Infection (HBsAg positive with detectable HBV DNA not on therapy)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No hepatitis B status given.",
+      "criterion_id": "655aa64594"
+     },
+     {
+      "text": "Active Hepatitis C Infection (HCV RNA detectable in any patient with anti-HCV antibody)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No hepatitis C status given.",
+      "criterion_id": "22c0f58799"
+     },
+     {
+      "text": "Confirmed positive anti-HIV antibody with CD4 counts <350 cells/uL or AIDS-defining opportunistic infection",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No HIV status provided.",
+      "criterion_id": "7de25186d5"
+     },
+     {
+      "text": "Solid organ or bone marrow transplant within 1 year or expected transplant within 6 months of randomization",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No transplant history mentioned.",
+      "criterion_id": "a3bd0efd7c"
+     },
+     {
+      "text": "History of spontaneous GI perforation or significantly increased risk of GI perforation",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No perforation history or risk factors noted.",
+      "criterion_id": "ff2dde0533"
+     },
+     {
+      "text": "Actively receiving strong CYP3A4 inducers or inhibitors prior to first dose or expected to receive during study, including grapefruit and grapefruit juice",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No medication list indicating CYP3A4 inducers/inhibitors.",
+      "criterion_id": "3820250e97"
+     },
+     {
+      "text": "Presence of any condition possibly affecting oral drug absorption (e.g., gastrectomy, clinically significant diabetic gastroenteropathy, certain bariatric surgery)",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "MISSING",
+      "action": "ASK",
+      "evidence": null,
+      "reasoning": "No absorption-affecting conditions mentioned.",
+      "criterion_id": "e6afa348a1"
+     },
+     {
+      "text": "History of a clinically significant medical condition per protocol",
+      "type": "exclusion",
+      "verdict": "UNKNOWN",
+      "effect": "REVIEW",
+      "uncertainty_type": "CLINICAL_JUDGMENT",
+      "action": "ESCALATE",
+      "evidence": null,
+      "reasoning": "Depends on investigator's overall clinical judgment, not specified.",
+      "criterion_id": "231abb3a07"
+     }
+    ],
+    "eligibility": "INELIGIBLE",
+    "rank": 4,
+    "rationale": "Excluded: pregnancy test and contraception requirements not met, likely inapplicable/unmet for this male patient's documentation.",
+    "rank_reason": "참여: 부적격 (차단 기준 2건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 4) · 확실: 미해결 27/35, 원문 97%",
+    "rank_basis": [
+     {
+      "key": "eligibility",
+      "label": "참여",
+      "value": "INELIGIBLE",
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "blocking",
+      "label": "차단 기준",
+      "value": 2,
+      "group": "join",
+      "tier": 0
+     },
+     {
+      "key": "need",
+      "label": "환자 필요",
+      "value": "치료",
+      "need": "treatment",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "help",
+      "label": "",
+      "value": "도움 됨",
+      "score": 2,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "fit",
+      "label": "시험 목적",
+      "value": "therapeutic",
+      "confidence": "high",
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "phase",
+      "label": "Phase",
+      "value": "PHASE4",
+      "burden": 0,
+      "group": "help",
+      "tier": 1
+     },
+     {
+      "key": "coverage",
+      "label": "원문 커버리지",
+      "value": 0.97,
+      "penalty": false,
+      "group": "sure",
+      "tier": 2
+     },
+     {
+      "key": "open",
+      "label": "미해결",
+      "value": "27/35",
+      "group": "sure",
+      "tier": 2
+     }
+    ],
+    "ranking_version": "2026-08-18"
+   }
+  ],
+  "gaps": [
+   {
+    "field": "UC diagnosis duration",
+    "why_needed": "Need to confirm disease duration ≥3 months prior to baseline",
+    "related_criteria": [
+     "Confirmed diagnosis of moderately to severely active UC for at least 3 months prior to Baseline"
+    ]
+   },
+   {
+    "field": "Surgical history",
+    "why_needed": "Need details on prior bowel resections and timing",
+    "related_criteria": [
+     "Participants with surgical bowel resection within the past 3 months prior to Baseline, or a history of >3 bowel resections"
+    ]
+   },
+   {
+    "field": "GI dysplasia history",
+    "why_needed": "Need pathology results/history for high-grade dysplasia",
+    "related_criteria": [
+     "Prior or current high-grade gastrointestinal (GI) dysplasia"
+    ]
+   },
+   {
+    "field": "Concomitant medication history",
+    "why_needed": "Need full medication list to check for prohibited therapies",
+    "related_criteria": [
+     "Participants with prohibited medications or therapies prior to baseline"
+    ]
+   },
+   {
+    "field": "Prior biologic/investigational drug exposure",
+    "why_needed": "Need history of anti-TL1A or other investigational therapy exposure",
+    "related_criteria": [
+     "Participants with previous exposure to anti-TL1A investigational therapy"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "GI dysplasia history/Surgical history",
+    "question": "대장 이형성증(dysplasia) 병리 결과나 이전 장절제술 등 수술 이력이 있습니까?",
+    "why": "이형성증 및 수술력은 시험 배제기준 확인에 필수",
+    "options": [
+     "고도 이형성증(high-grade dysplasia) 병리 확인됨",
+     "저도 이형성증(low-grade dysplasia) 병리 확인됨",
+     "이전 대장 또는 장 절제술 시행함",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 1,
+    "affects_trials": 1,
+    "may_change_rank": true
+   },
+   {
+    "field": "UC diagnosis duration",
+    "question": "궤양성 대장염 진단을 받은 지 얼마나 되었습니까 (3개월 이상 여부)?",
+    "why": "진단 후 3개월 이상 경과 여부는 등록기준 충족에 필요",
+    "options": [
+     "진단 후 3개월 이상 경과함",
+     "진단 후 3개월 미만",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 1,
+    "affects_trials": 1,
+    "may_change_rank": true
+   },
+   {
+    "field": "Concomitant medication history/Prior biologic exposure",
+    "question": "환자의 전체 약물 복용 이력과 생물학적 제제 또는 임상시험용 약물 노출 이력은 어떻게 됩니까?",
+    "why": "생물학적제제 사용여부 및 금지약물 확인은 다수 시험 적격성에 영향",
+    "options": [
+     "생물학적 제제(항TNF, 항인테그린 등) 사용 이력 있음",
+     "항TL1A 또는 임상시험 약물 노출 이력 있음",
+     "면역억제제(아자티오프린 등) 병용 중",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "affects_criteria": 0,
+    "affects_trials": 0,
+    "may_change_rank": false
+   }
+  ],
+  "reeval": {
+   "extended_record": "Patient was diagnosed with ulcerative colitis 3 years ago, confirmed by colonoscopy and biopsy showing chronic active colitis without dysplasia; no history of colorectal dysplasia, polypectomy, or bowel resection surgery. Medication history includes mesalamine 4.8 g/day for the past 18 months, a prior short course of topical mesalamine enemas, and occasional as-needed loperamide for urgency; he has never received corticosteroids, azathioprine, or any biologic or biosimilar agent, and has no prior exposure to investigational drugs or clinical trial medications. Latest surveillance biopsies from colonoscopy 2 weeks ago also showed no dysplastic changes. He denies any prior hospitalization for colitis flares requiring IV steroids.",
+   "answers": [
+    {
+     "question": "대장 이형성증(dysplasia) 병리 결과나 이전 장절제술 등 수술 이력이 있습니까?",
+     "answer": "No dysplasia found on biopsy and no history of bowel resection surgery.",
+     "evidence_quote": "no history of colorectal dysplasia, polypectomy, or bowel resection surgery"
+    },
+    {
+     "question": "궤양성 대장염 진단을 받은 지 얼마나 되었습니까 (3개월 이상 여부)?",
+     "answer": "Diagnosed 3 years ago, well over 3 months.",
+     "evidence_quote": "Patient was diagnosed with ulcerative colitis 3 years ago"
+    },
+    {
+     "question": "환자의 전체 약물 복용 이력과 생물학적 제제 또는 임상시험용 약물 노출 이력은 어떻게 됩니까?",
+     "answer": "Only mesalamine (oral and topical) and occasional loperamide; no prior biologic, steroid, immunomodulator, or investigational drug exposure.",
+     "evidence_quote": "he has never received corticosteroids, azathioprine, or any biologic or biosimilar agent, and has no prior exposure to investigational drugs or clinical trial medications"
+    }
+   ],
+   "verdict_changes": [
+    {
+     "nct_id": "NCT07184996",
+     "criterion": "Confirmed diagnosis of moderately to severely active UC for at least 3 months prior to Baseline",
+     "before": "UNCERTAIN",
+     "after": "MET"
+    }
+   ],
+   "final_ranking": [
+    {
+     "nct_id": "NCT07184996",
+     "rank": 1,
+     "eligibility": "UNCERTAIN",
+     "rationale": "Fits biologic-naive moderate-severe UC induction target; eligibility unresolved pending surgical history, dysplasia, and prior medication details.",
+     "rank_reason": "참여: 미확정 · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 3) · 확실: 미해결 4/10, 원문 전체(추정)"
+    },
+    {
+     "nct_id": "NCT07261826",
+     "rank": 2,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Excluded: study requires prior fecal microbiota transplantation, which this patient has not received.",
+     "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase NA) · 확실: 미해결 4/7, 원문 전체(추정)"
+    },
+    {
+     "nct_id": "NCT06636656",
+     "rank": 3,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Excluded: trial requires prior biologic failure/intolerance, but patient is biologic-naive.",
+     "rank_reason": "참여: 부적격 (차단 기준 1건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 2) · 확실: 미해결 9/12, 원문 86%"
+    },
+    {
+     "nct_id": "NCT07258771",
+     "rank": 4,
+     "eligibility": "INELIGIBLE",
+     "rationale": "Excluded: pregnancy testing and contraception requirements not met/applicable, disqualifying this male patient from inclusion criteria as coded.",
+     "rank_reason": "참여: 부적격 (차단 기준 2건) · 도움: 치료 필요와 부합 (치료 목적 시험, Phase 4) · 확실: 미해결 27/35, 원문 97%"
+    }
+   ]
+  },
+  "generated_at": "2026-07-08"
+ }
+]

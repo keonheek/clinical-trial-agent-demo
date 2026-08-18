@@ -262,6 +262,33 @@
   }
   .vignette .lbl{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink-soft);display:block;margin-bottom:4px;}
 
+  /* patient_need.py, surfaced 08-19: what this patient needs (treatment/diagnosis/monitoring/comfort),
+     the second of the three locked questions (도움이 되는가). Same visual family as .vignette --
+     both are read-only context above the trial list, not a decision the reviewer makes. */
+  .need-card{
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:8px;
+    padding:12px 14px;font-size:0.9rem;margin-bottom:16px;
+  }
+  .need-card .lbl{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink-soft);display:block;margin-bottom:4px;}
+  .need-card .need-value{font-weight:700;color:var(--ink);}
+  /* low-confidence classification: a plain hedge, not a warning color -- this is a
+     keyword-rule guess flagged for human review, not something that failed. */
+  .need-card .need-hedge{color:var(--uncertain);font-weight:600;margin-left:8px;font-size:0.78rem;}
+  .need-card .need-reasons{margin:6px 0 0;padding-left:18px;color:var(--ink-soft);font-size:0.82rem;}
+  .need-card .need-reasons li{margin-bottom:2px;}
+
+  /* The need + help chips (ranking.rank_basis, new keys) on a trial card -- the only two
+     tiers not already shown elsewhere on the card (eligibility/phase/coverage all are).
+     Both chip values are already plain Korean server-side (patient_need.py / action_policy
+     help_label_ko), so nothing is translated client-side here. */
+  .basis-chips{display:flex;flex-wrap:wrap;gap:6px;padding-left:36px;margin:0 0 8px;}
+  .basis-chip{
+    display:inline-block;padding:2px 9px;border-radius:99px;font-size:0.7rem;font-weight:600;
+    border:1px solid var(--line);
+  }
+  .basis-chip.need-chip{background:var(--verdict-bg);color:var(--verdict-ink);border-color:var(--verdict-border);}
+  .basis-chip.help-chip{background:var(--bg);color:var(--ink-soft);}
+
   .badge{
     display:inline-block;padding:2px 8px;border-radius:99px;font-size:0.72rem;font-weight:700;white-space:nowrap;
   }
@@ -572,6 +599,7 @@
     <div class="empty-note" id="emptyNote" data-ko="왼쪽에서 환자를 선택하거나 새 환자 정보를 입력하세요." data-en="Select a patient on the left, or enter a new one.">왼쪽에서 환자를 선택하거나 새 환자 정보를 입력하세요.</div>
 
     <div id="vignetteBox" class="vignette" style="display:none;"></div>
+    <div id="needCard" class="need-card" style="display:none;"></div>
     <div class="legend-bar" id="verdictLegend" style="display:none;">
       <div class="lg-group"><span class="lg-cap">효과(결과):</span>
         <span class="badge badge-PASS">PASS</span><span class="badge badge-FAIL">FAIL</span><span class="badge badge-REVIEW">REVIEW</span>
@@ -852,6 +880,8 @@ function submitBatch(){
     });
     renderTrials(data.updated_trials, true);
     flashAffected(data.affected || []);
+    if (data.questions && data.questions.length) currentQuestionsCache = data.questions;
+    renderQuestions(currentQuestionsCache, data.updated_trials);
     refreshBatchButton();
     poll();
   }).catch(function(err){
@@ -1003,6 +1033,8 @@ function loadPatients(){
   fetch("/api/patients").then(function(r){ return r.json(); }).then(function(list){
     var box = document.getElementById("patientList");
     box.innerHTML = "";
+    var groupCounts = {};
+    list.forEach(function(p){ var g = p.group || "demo"; groupCounts[g] = (groupCounts[g] || 0) + 1; });
     var lastGroup = null;
     list.forEach(function(p){
       var group = p.group || "demo";
@@ -1010,8 +1042,8 @@ function loadPatients(){
         lastGroup = group;
         box.appendChild(el("div", "group-head",
           group === "stress"
-            ? "스트레스 세트 (40) — 실시간 실행"
-            : "데모 환자 (10) — 사전 계산"));
+            ? "스트레스 세트 (" + groupCounts[group] + ") — 실시간 실행"
+            : "데모 환자 (" + groupCounts[group] + ") — 사전 계산"));
       }
       var btn = el("button", "patient-btn" + (group === "stress" ? " stress" : ""));
       btn.innerHTML = '<strong>' + escapeHtml(p.id) + '</strong><span class="snippet">' +
@@ -1079,6 +1111,8 @@ function resetView(){
   lastQuestionsSig = null;
   lastStage = null;
   lastVignetteKey = null;
+  lastNeedKey = null;
+  document.getElementById("needCard").style.display = "none";
   // Without this the previous patient's questions stay on screen while the new patient's
   // pipeline is still running -- the dock would show another case's clarifying questions.
   currentQuestionsCache = [];
@@ -1115,6 +1149,7 @@ function poll(){
     if (data.error && !data.result){ showError(data.error); clearInterval(pollTimer); return; }
     updateAgentMap(data.stage);
     renderVignette(data.result.patient);
+    renderNeed(data.result.patient_need, data.result.patient && data.result.patient.patient_id);
     lastEligibilityPaths = data.result.eligibility_paths || null;
     canRevert = !!data.result.can_revert;
     renderRounds(data.result.answer_rounds || []);
@@ -1173,6 +1208,27 @@ function renderVignette(patient){
   box.innerHTML = '<span class="lbl">' + escapeHtml(patient.patient_id) + '</span>' + escapeHtml(patient.text);
 }
 
+// patient_need.py's {need, need_ko, confidence, reasons} -- the second locked question
+// (도움이 되는가) stated in plain Korean, above the trial list next to the vignette it was
+// read from. confidence "low" gets a plain hedge, never a technical confidence score.
+var lastNeedKey = null;
+function renderNeed(need, patientId){
+  var box = document.getElementById("needCard");
+  if (!box) return;
+  if (!need || !need.need_ko){ box.style.display = "none"; lastNeedKey = null; return; }
+  var key = patientId + "::" + JSON.stringify(need);
+  if (key === lastNeedKey) return;
+  lastNeedKey = key;
+  box.style.display = "block";
+  var hedge = need.confidence === "low"
+    ? '<span class="need-hedge">확신 낮음 — 사람 검토 권장</span>' : "";
+  var reasons = (need.reasons || []).map(function(r){ return "<li>" + escapeHtml(r) + "</li>"; }).join("");
+  box.innerHTML =
+    '<span class="lbl">이 환자에게 필요한 것</span>' +
+    '<span class="need-value">' + escapeHtml(need.need_ko) + '</span>' + hedge +
+    (reasons ? '<ul class="need-reasons">' + reasons + '</ul>' : '');
+}
+
 var lastRenderedTrials = null;
 var lastEligibilityPaths = null;   // {nct_id: path} from /api/session
 var canRevert = false;
@@ -1195,6 +1251,19 @@ function intentChip(t){
   var lowSuffix = t.trial_intent.confidence === "low" ? T("intentLow") : "";
   return '<span class="meta-sep intent-chip intent-' + intent + '" title="' + escapeHtml(tip) + '">' +
     escapeHtml(label + lowSuffix) + '</span>';
+}
+
+function needHelpChips(trial){
+  if (!trial || !Array.isArray(trial.rank_basis)) return "";
+  var chips = trial.rank_basis
+    .filter(function(b){ return b && (b.key === "need" || b.key === "help") && b.value; })
+    .map(function(b){
+      var cls = "basis-chip " + (b.key === "need" ? "need-chip" : "help-chip");
+      var text = b.key === "need" ? ("환자 필요: " + b.value) : b.value;
+      return '<span class="' + cls + '">' + escapeHtml(text) + '</span>';
+    });
+  if (!chips.length) return "";
+  return '<div class="basis-chips">' + chips.join("") + '</div>';
 }
 
 function renderTrials(trials, force){
@@ -1238,6 +1307,8 @@ function renderTrials(trials, force){
     if (t.rank_reason){
       card.appendChild(el("p", "rank-why", "<b>왜 이 순위인가</b> " + escapeHtml(t.rank_reason)));
     }
+    var needHelp = needHelpChips(t);
+    if (needHelp) card.insertAdjacentHTML("beforeend", needHelp);
     if (t.rationale){
       card.appendChild(el("p", "rationale", escapeHtml(t.rationale)));
     }
@@ -1683,6 +1754,7 @@ function submitAnswer(question, answer, card, input, btn){
     renderTrials(data.updated_trials);
     flashAffected(data.affected || []);
     appendChangelog(data.round, data.verdict_changes || [], data.recommendation || [], data.note);
+    if (data.questions && data.questions.length) currentQuestionsCache = data.questions;
     renderQuestions(currentQuestionsCache, data.updated_trials);
     answerInFlight = false;
     setAnswerControlsDisabled(false);

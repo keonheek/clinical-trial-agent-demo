@@ -1,0 +1,27 @@
+[
+  {
+    "patient_id": "E001",
+    "text": "A 41-year-old woman with severe asthma remains symptomatic despite high-dose inhaled corticosteroids and a long-acting beta-agonist. She reports nighttime awakenings three times a week, two courses of oral prednisone in the past six months, and an emergency visit last month. Blood eosinophil count is 520 cells/uL. She has never smoked.",
+    "condition": "severe eosinophilic asthma (uncontrolled)"
+  },
+  {
+    "patient_id": "E002",
+    "text": "A 52-year-old man is found to have a 2.1 cm thyroid nodule on neck ultrasound performed for unrelated reasons. The nodule is hypoechoic with irregular margins and microcalcifications. TSH is normal. No biopsy has been performed yet. He has no hoarseness, dysphagia, or family history of thyroid cancer.",
+    "condition": "thyroid nodule, suspicious ultrasound, no tissue diagnosis yet"
+  },
+  {
+    "patient_id": "E003",
+    "text": "A 58-year-old woman with type 2 diabetes diagnosed eight years ago is stable on metformin with an HbA1c of 6.8%. She monitors glucose at home, walks daily, and has no retinopathy or nephropathy on last year's screening. She is interested in contributing to long-term research on diabetes outcomes.",
+    "condition": "type 2 diabetes, well controlled (long-term follow-up)"
+  },
+  {
+    "patient_id": "E004",
+    "text": "A 67-year-old man with metastatic pancreatic adenocarcinoma is progressing after two lines of chemotherapy. ECOG performance status is 2. His main problems now are persistent abdominal pain requiring increasing opioid doses, poor appetite, and weight loss. He and his family wish to focus on comfort and quality of life.",
+    "condition": "metastatic pancreatic cancer (palliative focus)"
+  },
+  {
+    "patient_id": "E005",
+    "text": "A 29-year-old man with ulcerative colitis has a moderate-to-severe flare despite optimized mesalamine: six bloody stools daily, urgency, and fecal calprotectin of 1800 ug/g. Colonoscopy shows Mayo 2 endoscopic activity extending to the splenic flexure. He is steroid-free and has not yet received a biologic.",
+    "condition": "ulcerative colitis, moderate-to-severe flare (biologic-naive)"
+  }
+]

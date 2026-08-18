@@ -9,6 +9,10 @@ Reuses pipeline.py's rematch_affected_criteria/recommend/effect_of directly (sam
 live_server.py uses locally) -- no matching logic duplicated here. The only new piece is
 find_affected(), a token-overlap heuristic standing in for live_server.py's gap-detector-based
 mapping, so this endpoint makes exactly two LLM calls (rematch, recommend) instead of three.
+When a question's tokens overlap nothing, find_affected returns [] and handle() short-circuits
+before either LLM call -- it must never fall back to resolving every open criterion (that
+silently re-evaluates the whole trace on the metered key; the exact defect this file's
+find_affected used to have, 지우 08-12).
 
 Never raises past do_POST: any failure comes back as HTTP 200 {"error": "..."}.
 """
@@ -34,10 +38,16 @@ anthropic_client.CACHE_DIR = "/tmp/cache"
 
 from pipeline import (rematch_affected_criteria, recommend, apply_recommendation, effect_of,
                       VALID_VERDICTS, classify_action, apply_evidence_sufficiency)
-from action_policy import trial_level_action, trial_is_blocked, enrich_questions
+from action_policy import trial_level_action, trial_is_blocked, enrich_questions, criterion_id, normalize_criterion_text
+from patient_need import classify_patient_need
 
 with open(os.path.join(ROOT, "patients.json"), encoding="utf-8") as f:
     PATIENTS = json.load(f)
+try:  # extra demo patients (gen_extra.py) -- answer rounds work on them too
+    with open(os.path.join(ROOT, "patients_extra.json"), encoding="utf-8") as f:
+        PATIENTS = PATIENTS + json.load(f)
+except FileNotFoundError:
+    pass
 PATIENTS_BY_ID = {p["patient_id"]: p for p in PATIENTS}
 KNOWN_IDS = set(PATIENTS_BY_ID)
 
@@ -47,6 +57,11 @@ KNOWN_IDS = set(PATIENTS_BY_ID)
 # {(nct_id, criterion_text) -> criterion_type}.
 with open(os.path.join(ROOT, "traces.json"), encoding="utf-8") as f:
     _TRACES = json.load(f)
+try:
+    with open(os.path.join(ROOT, "traces_extra.json"), encoding="utf-8") as f:
+        _TRACES = _TRACES + json.load(f)
+except FileNotFoundError:
+    pass
 KNOWN_CRITERIA = {}
 # Server truth per (patient, trial): title/phase (they enter the ranking key) and the FULL
 # criterion-text set. A posted trial must carry exactly that set -- otherwise a client could drop
@@ -138,7 +153,7 @@ STOPWORDS = set(
 
 def _tokens(text):
     return set(
-        w for w in re.findall(r"[a-z0-9%.]+", (text or "").lower())
+        w for w in re.findall(r"[a-z0-9%.]+", normalize_criterion_text(text))
         if w not in STOPWORDS and len(w) > 2
     )
 
@@ -147,8 +162,14 @@ def find_affected(question_text, trials):
     """Which still-unresolved criteria does this answer plausibly bear on? live_server.py
     answers this from an LLM-built gap -> related_criteria map; that map does not exist here
     (traces.json stores questions but not the gaps that produced them), so this does the same
-    job with token overlap between the question and each candidate criterion's text -- the
-    fallback path live_server.py itself falls back to when a question has no mapped gap."""
+    job with token overlap between the question and each candidate criterion's text (both run
+    through action_policy.normalize_criterion_text first) -- the same fallback live_server.py
+    itself falls back to when a question has no mapped gap.
+
+    No overlap at all -> returns [] and the answer resolves nothing. This must NEVER fall back
+    to "resolve every open criterion": that silently re-evaluates the whole trace on one
+    unrelated answer and spends the metered key on criteria the answer never touched
+    (지우's proven bug, same defect class as live_server.find_affected's empty-target case)."""
     qtok = _tokens(question_text)
     affected = []
     for t_idx, t in enumerate(trials):
@@ -165,19 +186,6 @@ def find_affected(question_text, trials):
                     "text": c.get("text", ""), "type": c.get("type", "inclusion"),
                     "before_verdict": c.get("verdict"),
                 })
-    if not affected:
-        # no token overlap at all: still resolve every open criterion rather than silently
-        # dropping the answer on the floor.
-        for t_idx, t in enumerate(trials):
-            if trial_is_blocked(t):
-                continue
-            for c_idx, c in enumerate(t.get("criteria", [])):
-                if c.get("verdict") in ("UNKNOWN", "UNCERTAIN"):
-                    affected.append({
-                        "nct_id": t.get("nct_id"), "trial_idx": t_idx, "crit_idx": c_idx,
-                        "text": c.get("text", ""), "type": c.get("type", "inclusion"),
-                        "before_verdict": c.get("verdict"),
-                    })
     return affected[:MAX_AFFECTED]
 
 
@@ -202,9 +210,16 @@ def handle(body):
 
     # never trust the client for the vignette itself -- only the fixed 10 patients exist here.
     patient = {"patient_id": patient_id, "text": PATIENTS_BY_ID[patient_id]["text"]}
+    # the patient's need, from the server-side vignette (deterministic rules, no LLM) -- the
+    # same classification recommend() applies inside the ranking; attached for the UI.
+    patient_need = classify_patient_need(patient["text"])
 
     trials_copy = [dict(t, criteria=[dict(c) for c in t.get("criteria", [])]) for t in trials]
     _restore_server_fields(patient_id, trials_copy)
+    # ids are server truth, never echoed from the body
+    for t in trials_copy:
+        for c in t.get("criteria", []):
+            c["criterion_id"] = criterion_id(t.get("nct_id"), c.get("text", ""))
     # optional: the client's current question list, so the three priority numbers can be
     # recomputed against the post-answer trials (pure arithmetic, no LLM; text is only tokenized)
     questions_in = body.get("questions")
@@ -218,6 +233,7 @@ def handle(body):
     if not affected:
         return {
             "verdict_changes": [],
+            "patient_need": patient_need,
             "trials": trials_copy,
             "recommendation": [
                 {"nct_id": t.get("nct_id"), "rank": t.get("rank", 99), "eligibility": t.get("eligibility", "UNCERTAIN")}
@@ -225,7 +241,10 @@ def handle(body):
             ],
             "questions": enrich_questions(questions_in, [], trials_copy) if questions_in else None,
             "extended_record": new_record,
-            "note": "이 답변으로 재평가할 미확정 기준이 없습니다.",
+            # true whether there is nothing left open, OR open criteria exist but none of them
+            # relate to this specific answer (find_affected found no overlap) -- same wording
+            # in live_server.py's handle_answer for the identical case.
+            "note": "이 답변과 연결되는 미확정 기준이 없습니다.",
         }
 
     try:
@@ -262,7 +281,9 @@ def handle(body):
     try:
         # trust_attached=False: trial_intent/coverage rode in on the client body -- the sort reads
         # only the server-side sidecars (ranking.resolve_intent), so a crafted POST cannot rig it.
-        recs = recommend(patient, trials_copy, trust_attached=False)
+        # recommend classifies the need itself from the same server-side text (deterministic, so
+        # it always matches the patient_need computed above).
+        recs, patient_need = recommend(patient, trials_copy, trust_attached=False)
     except Exception as e:
         return {"error": f"추천 호출 실패: {e}"}
 
@@ -275,6 +296,7 @@ def handle(body):
 
     return {
         "verdict_changes": verdict_changes,
+        "patient_need": patient_need,
         "trials": trials_copy,
         "recommendation": [
             {"nct_id": t.get("nct_id"), "rank": t.get("rank"), "eligibility": t.get("eligibility")}
