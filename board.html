@@ -9,6 +9,9 @@
   2026-08-19: EN 기본 + KO 토글 (utilbar 세그먼트, localStorage 유지). chrome은 t(key) 사전,
   구조화 서버 데이터(need enum·rank_basis·적격성 코드)는 클라이언트에서 언어 인지 렌더.
   LLM 생성 데이터(기준·근거·질문·선택지·need reasons·rationale)는 원문 그대로 — 기계번역 없음.
+  2026-08-19 (임상 코디네이터 페르소나 워크스루 반영): 네온 LIVE 배지 → 차분한 상태 점(건희 지시),
+  ct.gov 링크 앞에 환자-편익 한 줄(모달+랭킹, 건희 지시), 라운드 결과 표면화, need 근거문 EN 재작성,
+  칩 정리(need 승격·Phase NA 억제·coverage 표현 통일)·복수형/툴팁/토글 카피 정리. 레이아웃 골격은 유지.
 -->
 <!doctype html>
 <html lang="en">
@@ -48,15 +51,10 @@
     border-radius:10px;background:var(--bg);box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
     cursor:pointer;transition:box-shadow .15s;}
   .livestatus:hover{box-shadow:0 2px 4px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.1);}
-  .livebadge{display:flex;align-items:center;gap:6px;background:#0A0F0A;color:#39FF6E;border-radius:8px;
-    padding:4px 9px;font-size:0.66rem;font-weight:700;letter-spacing:.08em;font-family:"IBM Plex Mono",ui-monospace,monospace;}
-  .livedot{width:6px;height:6px;border-radius:50%;background:#39FF6E;flex:0 0 auto;
-    box-shadow:0 0 0 0 rgba(57,255,110,.5);animation:livepulse 1.8s infinite;}
-  @keyframes livepulse{
-    0%{box-shadow:0 0 0 0 rgba(57,255,110,.45);}
-    70%{box-shadow:0 0 0 6px rgba(57,255,110,0);}
-    100%{box-shadow:0 0 0 0 rgba(57,255,110,0);}
-  }
+  /* 상태 점 — 방송 코스프레 없는 진행 상태 표시. 미해결 질문 있음 = uncertain 토큰, 완료 = met 토큰 */
+  .statusdot{width:8px;height:8px;border-radius:50%;background:var(--uncertain);flex:0 0 auto;}
+  .livestatus.done .statusdot{background:var(--met);}
+  .statusgo{font-size:0.8rem;color:var(--ink-soft);}
   .statustext{font-size:0.85rem;font-weight:600;color:var(--ink);transition:color .15s;white-space:nowrap;}
   .livestatus:hover .statustext{color:var(--secondary);}
   @media (max-width:640px){ .statustext{white-space:normal;font-size:0.74rem;} .livestatus{margin-right:12px;} }
@@ -175,6 +173,11 @@
 
   .covlow{color:var(--uncertain);font-weight:600;}
   .pathline{margin-top:10px;font-size:0.78rem;color:var(--ink-soft);line-height:1.5;}
+  /* 환자-편익 한 줄 — ct.gov 링크보다 먼저 읽히는 자리. accent 토큰 재사용 */
+  .benefitline{margin:6px 0 4px;padding:2px 0 2px 10px;border-left:3px solid var(--accent);
+    font-size:0.82rem;font-weight:500;color:var(--ink);line-height:1.5;}
+  .rankrow .rbenefit{font-size:0.74rem;color:var(--ink);margin-top:4px;line-height:1.5;
+    padding-left:8px;border-left:3px solid var(--accent);}
   .modalbody{flex:1 1 auto;overflow-y:auto;padding:10px 30px 30px;}
   @media (max-width:480px){ .modalbody{padding:10px 14px 20px;} }
   .modalfoot{flex:0 0 auto;padding:16px 30px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;}
@@ -249,6 +252,9 @@
   .qitem.answered .qanswer{font-size:0.84rem;color:var(--ink-soft);padding:9px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-top:8px;}
   .optnote{font-size:0.7rem;color:var(--ink-soft);margin:0 0 8px;}
   .sysbubble{background:#EAF1FE;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:0.78rem;line-height:1.6;color:var(--ink);margin-bottom:10px;}
+  .sysbubble-change{display:flex;align-items:baseline;gap:6px;margin-top:6px;font-size:0.74rem;line-height:1.5;overflow-wrap:anywhere;}
+  .linklike{background:none;border:none;color:var(--secondary);cursor:pointer;font-size:0.74rem;padding:0;
+    text-decoration:underline;font-family:inherit;margin-top:6px;display:inline-block;}
   .funote{background:var(--uncertain-bg);color:var(--uncertain);border-radius:10px;padding:10px 14px;font-size:0.78rem;margin-bottom:10px;}
   .roundcomplete{background:var(--met-bg);color:var(--met);border-radius:10px;padding:18px 16px;font-size:0.9rem;font-weight:700;text-align:center;line-height:1.6;}
   .roundcomplete .gorank-btn{display:inline-block;margin-top:12px;background:var(--met);color:#fff;border:none;border-radius:8px;
@@ -271,6 +277,8 @@
   .stalechip button{background:var(--secondary);color:#fff;border:0;border-radius:99px;padding:8px 18px;font-size:0.84rem;font-weight:600;cursor:pointer;}
   .guarantee{display:inline-block;margin-top:8px;background:var(--met-bg);color:var(--met);border-radius:99px;padding:4px 12px;
     font-size:0.72rem;font-weight:700;cursor:help;}
+  .ranknote{max-width:560px;margin:0 auto 12px;font-size:0.78rem;color:var(--ink-soft);line-height:1.5;}
+  .ranknote.obs{background:var(--uncertain-bg);color:var(--uncertain);border-radius:10px;padding:10px 14px;font-weight:600;}
   .rankhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;max-width:560px;margin-left:auto;margin-right:auto;}
   .rankhead .status{font-size:0.8rem;color:var(--ink-soft);}
   .rankhead .status.fresh{color:var(--met);font-weight:700;}
@@ -353,8 +361,9 @@
     <div class="tab" data-v="history">Change History</div>
   </div>
   <div class="livestatus" id="liveStatus">
-    <span class="livebadge"><span class="livedot"></span>LIVE</span>
+    <span class="statusdot" id="statusDot" aria-hidden="true"></span>
     <span class="statustext" id="statusText">Loading</span>
+    <span class="statusgo" aria-hidden="true">→</span>
   </div>
 </div>
 
@@ -420,6 +429,8 @@
     <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
   </div>
   <div class="stalechip" id="staleChip"><button id="staleChipBtn"></button></div>
+  <div class="ranknote" id="rankNeedNote" style="display:none;"></div>
+  <div class="ranknote obs" id="rankObsNote" style="display:none;"></div>
   <div class="ranklist" id="ranklist"></div>
 </div>
 
@@ -439,7 +450,7 @@
   <div class="modal">
     <div class="modalhead">
       <div class="modalhead-top">
-        <div><div class="name" id="modalName"></div><div class="nct" id="modalNct"></div></div>
+        <div><div class="name" id="modalName"></div><div class="benefitline" id="modalBenefit" style="display:none;"></div><div class="nct" id="modalNct"></div></div>
         <button class="modalclose" id="modalClose" aria-label="Close">✕</button>
       </div>
       <div class="verdict-banner" id="verdictBanner">
@@ -498,21 +509,32 @@ var I18N = {
     loadingData: "Loading patient data.", loadingDataFor: "Loading {id}.",
     secPatient: "Patient Record", secBoard: "Trial Matching — trial-level eligibility",
     boardHint: "Click a card to see its criterion-level evidence.",
-    toggleOff: "Card moves locked — switch on to record human-review overrides by drag",
-    toggleOn: "Card moves on — a drag is recorded as a human-review override and never changes the verdict",
+    toggleOff: "Card moves locked — turn on to drag a card where YOU think it belongs (saved as your review note; the system's verdict doesn't change)",
+    toggleOn: "Card moves on — drags are saved as your review notes; verdicts don't change",
     extractionTag: "[Auto-summarized synthetic data from the extraction step — not a real patient record]",
     recordLabel: "Record",
     emptyEligible: "No trial confirmed eligible yet<br>trials move here as questions get resolved",
     emptyCol: "No trials here",
     ovrChip: "Human review move",
     ovrTip: "A reviewer dragged this card here. The decision logic's verdict ({v}) is unchanged.",
-    rankTip: "",
     needLabel: "What this patient needs now",
     hedge: "Low confidence — review advised",
     hedgeTip: "The record's cues are weak, so this classification is low-confidence. A human check is the safe move.",
-    needWhy: "Evidence phrase in the record: “{q}”",
-    needReasonNote: "Full reasoning (Korean, as produced): {r}",
+    needWhy: "Why (from the record): “{q}”",
+    needWhyTreatment: "Why: ongoing symptoms with no current treatment mentioned",
+    needWhyComfort: "Why: the record is about comfort and symptom relief, not cure",
+    needWhyDiagnosis: "Why: a suspicious finding without a confirmed diagnosis yet",
+    needWhyMonitoring: "Why: a stable, known condition in long-term follow-up",
+    needWhyPhrase: " (phrase: “{q}”)",
     needLink: "The ranking's “does it help” question matches this need against each trial's purpose.",
+    statusTip: "Where this case stands — click to go to the next step",
+    benefitObs: "For this patient: this study does not treat — it follows patients like them to improve future care.",
+    benefitCare: "For this patient: does not treat the illness — studies how care is organized and delivered.",
+    benefitTherHelp: "For this patient: tests a treatment aimed at what they need now ({need}).",
+    benefitTherNoHelp: "For this patient: tests a treatment, but not aimed at what they need most now ({need}).",
+    benefitSuppHelp: "For this patient: targets the comfort and symptom relief they are asking for — it does not treat the illness itself.",
+    benefitSuppNoHelp: "For this patient: offers supportive care, which is not their main need now ({need}).",
+    benefitGuess: " (trial purpose is a best guess — check the protocol)",
     bannerLbl: "Trial-level eligibility",
     close: "Close",
     footHint: "Criterion verdicts come from the decision logic · human review notes are recorded by dragging cards on the board",
@@ -522,14 +544,14 @@ var I18N = {
     noEvidence: "No supporting sentence in the patient record",
     qlinkBtn: "View the linked question",
     nctTip: "Open the protocol on ClinicalTrials.gov",
-    verdictTip: "Criterion-level verdict: does this criterion statement apply to the patient ({v})",
-    effectTip: "Eligibility effect, decided by code from the verdict and criterion type: what this verdict does to participation",
-    actionTip: "The diagnosed cause of the uncertainty, and the action the policy chose for it",
+    verdictTip: "How this criterion reads against the patient's record: {v}",
+    effectTip: "What this verdict means for joining the trial — set by fixed rules, not by the AI's judgment",
+    actionTip: "Why this is uncertain, and the next step the system suggests",
     trialLevelSuffix: " (trial-level)",
     causeUnknown: "cause unclassified",
     pathClosed: "Path to enrollment: closed — {n} blocking criteria",
     pathClosedOne: "Path to enrollment: closed — 1 blocking criterion",
-    pathOpen: "Path to enrollment: {b} blocking · {o} to confirm — answering the linked questions can close them",
+    pathOpen: "Path to enrollment: {b} blocking · {o} to confirm — answering the linked questions can settle them",
     pathClear: "Path to enrollment: clear — nothing blocking, nothing left to confirm",
     pillAll: "All", chatHead: "Clarifying Questions",
     roundDone: "✓ Round {n} · applied",
@@ -539,8 +561,10 @@ var I18N = {
     fuBadge: "Follow-up",
     fuBadgeTip: "Generated by the system after reading your earlier answers — it decided one more check was needed.",
     roundResult: "This round applied: {s}",
-    segVerdict: "{n} verdict changes", segRank: "{n} rank/eligibility moves",
-    segFu: "{n} follow-up questions generated",
+    segVerdict: "{n} verdict changes", segVerdictOne: "1 verdict change",
+    segRank: "{n} rank/eligibility moves", segRankOne: "1 rank/eligibility move",
+    segFu: "{n} follow-up questions generated", segFuOne: "1 follow-up question generated",
+    chatFullDetail: "Full detail: Change History",
     allDone: "✓ All clarifying questions resolved — applied to the re-evaluation",
     goRank: "See the updated ranking",
     noPillQuestions: "No waiting questions are linked to this trial — try the All filter.",
@@ -551,6 +575,8 @@ var I18N = {
     prioNone: "Answering changes nothing right now — no open criterion links to this item (low priority)",
     prioLead: "Answering:",
     prioCrit: "re-checks {c} criteria", prioCritTrials: " ({t} trials)",
+    prioCritList: "re-checks {c} criteria in {t} trials ({list})",
+    prioCritListOne: "re-checks {c} criteria in 1 trial ({list})",
     prioTrialsOnly: "feeds {t} trials",
     rankYes: "ranking may change", rankNo: "ranking unchanged",
     optNone: "no direct link to an open criterion",
@@ -580,23 +606,25 @@ var I18N = {
     digestLead: "To resolve: ",
     covLine: "{m} of ~{n} source criteria evaluated",
     covTip: "Estimated from the trial's original eligibility text. Clauses not shown here may exist.",
-    mgJoin: "1 Join",
+    mgJoin: "Join",
     chipJoinTip: "Question 1 — can this patient join? A confirmed blocking criterion sinks the trial to the bottom.",
     guaranteeTip: "“Can they join” is the first sort key, so a trial with a confirmed blocking criterion cannot out-rank any other trial, however good it looks elsewhere.",
     rankStatusInit: "Last updated: initial matching",
     rankStatusRound: "Last updated: round {n} applied",
-    rankStatusStale: "Round {n} awaiting — press Refresh to update this list",
+    rankStatusStale: "Showing the order before round {n}",
     refresh: "↻ Refresh", refreshDone: "✓ Updated",
     eligBadgeTip: "Trial-level eligibility: can this patient join",
     mgHelp: "Help", mgSure: "Sure",
-    chipNeed: "patient need: {v}", chipNeedNone: "patient need not computed",
-    chipNeedTip: "What this patient needs right now, read from the record",
+    rankNeedNote: "Ordered for this patient's need: {need}",
+    rankObsNote: "Note: none of the current matches treats this patient's condition — they observe or track patients to improve future care.",
+    phaseNone: "Phase not stated",
     chipHelpTip: "How the trial's purpose matched this patient's need",
     chipHelp2: "fit: helps", chipHelp1: "fit: partial", chipHelp0: "fit: reference only",
     chipFitTip: "What this trial is trying to do",
     chipGuess: " (guess)",
     chipPhaseTip: "Later phases are better validated — a lighter ask of the patient",
-    chipCoverage: "protocol read {p}", chipCoverageFull: "full (est.)",
+    chipCovCount: "covers {m} of ~{n} criteria",
+    chipCoverage: "covers {p}% of criteria (est.)", chipCoverageFull: "covers all criteria (est.)",
     chipPenalty: " · penalized",
     chipCoverageTip: "Share of the raw protocol conditions this evaluation covered (estimated). Under half draws a penalty.",
     chipBlocking: "blocking {n}",
@@ -608,19 +636,22 @@ var I18N = {
     needMonitoring: "Monitoring", needComfort: "Comfort support",
     reasonJoin: "Join", reasonHelp: "Help", reasonSure: "Sure",
     reasonBlockingN: " ({n} blocking)",
-    reasonNeedNoFit: "{need} needed, trial purpose unclassified ({phase})",
-    reasonHelp2: "matches the {need} need ({fit} trial, {phase})",
-    reasonHelp1: "partly helps the {need} need ({fit} trial, {phase})",
-    reasonHelp0: "unrelated to the {need} need ({fit} trial, {phase})",
+    reasonNeedNoFit: "{need} needed, trial purpose unclassified{phase}",
+    reasonNeedNoFitGuess: "{need} needed, trial purpose unconfirmed — best guess: {fit}{phase}",
+    reasonHelp2: "matches the {need} need ({fit} trial{phase})",
+    reasonHelp1: "partly helps the {need} need ({fit} trial{phase})",
+    reasonHelp0: "unrelated to the {need} need ({fit} trial{phase})",
     reasonNeedLow: ", need classification low-confidence",
-    reasonNoNeedFit: "patient need not computed — ordered by trial purpose ({fit} trial, {phase})",
-    reasonNoNeedNoFit: "patient need not computed, trial purpose unclassified ({phase})",
+    reasonNoNeedFit: "patient need not computed — ordered by trial purpose ({fit} trial{phase})",
+    reasonNoNeedNoFit: "patient need not computed, trial purpose unclassified{phase}",
     reasonOpen: "unresolved {v}",
-    reasonCovFull: "full protocol read (est.)",
-    reasonCov: "protocol read {p}%", reasonCovPen: " (penalized)",
+    reasonCovFull: "all criteria covered (est.)",
+    reasonCov: "covers {p}% of criteria", reasonCovPen: " (penalized)",
     histRound: "Round {n}", histReverted: " (reverted)",
-    histPillAnswers: "<b>{n}</b> answers", histPillVerdict: "<b>{n}</b> verdict changes",
-    histPillRank: "<b>{n}</b> rank/eligibility moves", histPillFu: "<b>{n}</b> follow-up questions",
+    histPillAnswers: "<b>{n}</b> answers", histPillAnswersOne: "<b>1</b> answer",
+    histPillVerdict: "<b>{n}</b> verdict changes", histPillVerdictOne: "<b>1</b> verdict change",
+    histPillRank: "<b>{n}</b> rank/eligibility moves", histPillRankOne: "<b>1</b> rank/eligibility move",
+    histPillFu: "<b>{n}</b> follow-up questions", histPillFuOne: "<b>1</b> follow-up question",
     histMore: "+{n} more",
     causalCrit: "{n} criteria re-checked", causalCritOne: "1 criterion re-checked",
     causalIndirect: "moved by changes to other trials",
@@ -653,21 +684,27 @@ var I18N = {
     loadingData: "환자 데이터를 불러오는 중입니다.", loadingDataFor: "{id} 데이터를 불러오는 중입니다.",
     secPatient: "환자 상세", secBoard: "임상시험 매칭 현황 — 시험 단위 적격성",
     boardHint: "카드를 클릭하면 기준 단위 근거를 볼 수 있습니다.",
-    toggleOff: "카드 이동 잠김 — 토글을 켜면 드래그로 사람 검토 오버라이드 기록",
-    toggleOn: "카드 이동 켜짐 — 드래그는 사람 검토 오버라이드로 기록되며 판정은 바뀌지 않습니다",
+    toggleOff: "카드 이동 잠김 — 켜면 카드를 직접 옮겨 '내 검토 의견'으로 남길 수 있습니다 (판정은 바뀌지 않음)",
+    toggleOn: "카드 이동 켜짐 — 드래그는 검토 의견으로 기록되며 판정은 바뀌지 않습니다",
     extractionTag: "[정보 추출 단계에서 자동 요약된 가상 데이터입니다 — 실제 환자 기록 아님]",
     recordLabel: "기록",
     emptyEligible: "아직 적격 확정된 시험 없음<br>확인 질문이 해소되면 여기로 이동합니다",
     emptyCol: "해당하는 시험 없음",
     ovrChip: "사람 검토 이동",
     ovrTip: "사람이 드래그로 옮긴 표시 위치입니다. 판정 로직의 결과({v})는 바뀌지 않았습니다.",
-    rankTip: "",
     needLabel: "이 환자에게 지금 필요한 것",
     hedge: "확신 낮음 — 검토 권장",
     hedgeTip: "환자 기록의 단서가 약해 분류 확신이 낮습니다. 사람이 한 번 확인하는 것이 안전합니다.",
     needWhy: "왜? {q}",
-    needReasonNote: "",
     needLink: "추천 순위의 “도움이 되는가”는 이 필요와 각 시험의 목적을 맞춰 본 결과입니다.",
+    statusTip: "현재 진행 상태 — 누르면 다음 단계로 이동합니다",
+    benefitObs: "이 환자에게: 치료는 하지 않습니다 — 비슷한 환자를 추적 관찰해 앞으로의 치료를 개선하려는 연구입니다.",
+    benefitCare: "이 환자에게: 병을 치료하지는 않습니다 — 진료 방식과 관리 체계를 연구합니다.",
+    benefitTherHelp: "이 환자에게: 지금 필요한 {need}를 직접 시험하는 연구입니다.",
+    benefitTherNoHelp: "이 환자에게: 치료를 시험하지만, 지금 가장 필요한 것({need})과는 방향이 다릅니다.",
+    benefitSuppHelp: "이 환자에게: 병 자체를 치료하지는 않지만, 지금 원하는 통증·증상 완화를 직접 겨냥한 연구입니다.",
+    benefitSuppNoHelp: "이 환자에게: 지지·완화 중심 연구로, 지금의 주된 필요({need})와는 다릅니다.",
+    benefitGuess: " (시험 목적은 추정입니다 — 원문 확인 필요)",
     bannerLbl: "시험 단위 적격성",
     close: "닫기",
     footHint: "기준 판정은 판정 로직의 결과입니다 · 사람 검토 의견은 보드에서 카드 드래그(오버라이드)로 기록됩니다",
@@ -677,9 +714,9 @@ var I18N = {
     noEvidence: "환자 기록에 근거 문장 없음",
     qlinkBtn: "관련 확인 질문 보기",
     nctTip: "ClinicalTrials.gov 원문 프로토콜 열기",
-    verdictTip: "기준 단위 판정: 기준 문장이 환자에게 해당하는지 ({v})",
-    effectTip: "적격성 효과: 판정과 기준 종류에서 코드가 결정 — 이 판정이 참여 가능 여부에 미치는 영향",
-    actionTip: "불확실성의 원인과, 정책이 고른 다음 행동",
+    verdictTip: "이 기준이 환자 기록에 비추어 어떻게 판정되었는지: {v}",
+    effectTip: "이 판정이 참여 가능 여부에 갖는 의미 — AI 판단이 아니라 고정된 규칙으로 정해집니다",
+    actionTip: "불확실한 이유와, 시스템이 제안하는 다음 단계",
     trialLevelSuffix: " (시험 단위)",
     causeUnknown: "원인 미분류",
     pathClosed: "참여까지 남은 것: 막힘 — 탈락 사유 기준 {n}건",
@@ -694,8 +731,10 @@ var I18N = {
     fuBadge: "추가 질문",
     fuBadgeTip: "앞선 답변을 보고 시스템이 추가로 확인이 필요하다고 판단해 만든 질문입니다.",
     roundResult: "이번 라운드 반영 결과: {s}",
-    segVerdict: "판정 변화 {n}건", segRank: "순위/적격 변동 {n}건",
-    segFu: "추가 질문 {n}개 생성",
+    segVerdict: "판정 변화 {n}건", segVerdictOne: "판정 변화 1건",
+    segRank: "순위/적격 변동 {n}건", segRankOne: "순위/적격 변동 1건",
+    segFu: "추가 질문 {n}개 생성", segFuOne: "추가 질문 1개 생성",
+    chatFullDetail: "전체 내역: 변경 이력",
     allDone: "✓ 모든 확인 질문이 해결되었습니다 — 재평가에 반영됨",
     goRank: "수정된 최종 순위 보기",
     noPillQuestions: "이 시험과 연결된 대기 질문이 없습니다 — 전체 필을 선택해 보세요.",
@@ -706,6 +745,8 @@ var I18N = {
     prioNone: "답해도 바뀌는 것 없음 · 지금 열려 있는 기준과 직접 연결된 항목이 없습니다 (우선순위 낮음)",
     prioLead: "답하면 바뀌는 것:",
     prioCrit: "기준 {c}개 다시 판정", prioCritTrials: " (시험 {t}개)",
+    prioCritList: "시험 {t}개({list})의 기준 {c}개 다시 판정",
+    prioCritListOne: "시험 1개({list})의 기준 {c}개 다시 판정",
     prioTrialsOnly: "시험 {t}개에 반영",
     rankYes: "추천 순위가 바뀔 수 있음", rankNo: "추천 순위는 그대로",
     optNone: "현재 열린 기준과 직접 연결 없음",
@@ -735,23 +776,25 @@ var I18N = {
     digestLead: "남은 확인: ",
     covLine: "원문 조건 추정 {n}개 중 {m}개 평가 반영",
     covTip: "시험 원문 조건 수 추정치 기준. 표시되지 않은 조항이 있을 수 있습니다.",
-    mgJoin: "1 참여",
+    mgJoin: "참여",
     chipJoinTip: "질문 1 — 참여할 수 있는가. 확정된 차단 기준이 있으면 시험은 맨 아래로 내려갑니다.",
     guaranteeTip: "참여할 수 있는가가 정렬의 첫 기준이므로, 탈락 사유가 있는 시험은 아래 어떤 항목이 좋아도 위로 올라올 수 없습니다.",
     rankStatusInit: "마지막 업데이트: 초기 매칭 기준",
     rankStatusRound: "마지막 업데이트: 라운드 {n} 반영",
-    rankStatusStale: "라운드 {n} 반영 대기 — ↻ 최신화를 누르면 목록이 갱신됩니다",
+    rankStatusStale: "라운드 {n} 반영 전 순위를 표시 중",
     refresh: "↻ 최신화", refreshDone: "✓ 반영 완료",
     eligBadgeTip: "시험 단위 적격성: 이 환자가 참여할 수 있는가",
     mgHelp: "도움", mgSure: "확실",
-    chipNeed: "환자 필요 {v}", chipNeedNone: "환자 필요 미산출",
-    chipNeedTip: "환자 기록에서 읽어낸, 지금 이 환자에게 필요한 것",
+    rankNeedNote: "이 환자의 필요({need}) 기준으로 정렬됨",
+    rankObsNote: "참고: 현재 후보 중 이 환자의 질환을 치료하는 시험은 없습니다 — 모두 관찰·추적 연구입니다.",
+    phaseNone: "단계 정보 없음",
     chipHelpTip: "환자에게 필요한 것과 이 시험의 목적을 맞춰 본 결과",
     chipHelp2: "맞춰본 결과 도움 됨", chipHelp1: "맞춰본 결과 부분적", chipHelp0: "맞춰본 결과 참고용",
     chipFitTip: "이 시험이 무엇을 하려는 시험인지",
     chipGuess: " (추정)",
     chipPhaseTip: "후기 단계일수록 개입이 더 검증되어 환자 부담이 작다고 봅니다",
-    chipCoverage: "원문 반영 {p}", chipCoverageFull: "전체(추정)",
+    chipCovCount: "원문 조건 {n}개 중 {m}개 평가",
+    chipCoverage: "원문 조건 {p}% 평가 (추정)", chipCoverageFull: "원문 조건 전체 평가 (추정)",
     chipPenalty: " 감점",
     chipCoverageTip: "시험 원문 조건 중 평가에 반영된 비율 (추정). 절반 미만이면 감점됩니다.",
     chipBlocking: "탈락 사유 {n}건",
@@ -762,8 +805,10 @@ var I18N = {
     needTreatment: "치료", needDiagnosis: "진단 확정",
     needMonitoring: "관리", needComfort: "지지",
     histRound: "라운드 {n}", histReverted: " (되돌려짐)",
-    histPillAnswers: "질문 <b>{n}개</b> 답변", histPillVerdict: "판정 변화 <b>{n}건</b>",
-    histPillRank: "순위/적격 변동 <b>{n}건</b>", histPillFu: "추가 질문 <b>{n}개</b>",
+    histPillAnswers: "질문 <b>{n}개</b> 답변", histPillAnswersOne: "질문 <b>1개</b> 답변",
+    histPillVerdict: "판정 변화 <b>{n}건</b>", histPillVerdictOne: "판정 변화 <b>1건</b>",
+    histPillRank: "순위/적격 변동 <b>{n}건</b>", histPillRankOne: "순위/적격 변동 <b>1건</b>",
+    histPillFu: "추가 질문 <b>{n}개</b>", histPillFuOne: "추가 질문 <b>1개</b>",
     histMore: "외 {n}건",
     causalCrit: "기준 {n}개 다시 판정", causalCritOne: "기준 1개 다시 판정",
     causalIndirect: "다른 시험의 변화로 이동",
@@ -902,10 +947,15 @@ function nctLinkHtml(nct, extraCls){
   }
   return escapeHtml(nct);
 }
+function normPhaseRaw(v){ return String(v == null ? "" : v).toUpperCase().replace(/[\s_]/g, ""); }
+// 관찰·지지 연구는 phase가 없다 — NA를 화면마다 도장 찍지 않는다 (칩/사유 라인 억제, 모달만 "단계 정보 없음")
+function phaseIsNA(v){
+  var p = normPhaseRaw(v);
+  return (!p || p === "NA" || p === "N/A" || p === "NONE" || p === "NULL");
+}
 function phaseLabel(v){
-  var p = String(v == null ? "" : v).toUpperCase().replace(/[\s_]/g, "");
-  if (!p || p === "NA" || p === "N/A" || p === "NONE" || p === "NULL") return "Phase NA";
-  return "Phase " + p.replace(/PHASE/g, "").replace(/EARLY/g, "Early ");
+  if (phaseIsNA(v)) return "Phase NA";
+  return "Phase " + normPhaseRaw(v).replace(/PHASE/g, "").replace(/EARLY/g, "Early ");
 }
 
 // ---------------------------------------------------------------------------
@@ -1009,8 +1059,11 @@ function computeLiveStatus(){
 }
 function renderLiveStatus(){
   var s = computeLiveStatus();
+  var box = document.getElementById("liveStatus");
   document.getElementById("statusText").textContent = s.text;
-  document.getElementById("liveStatus").dataset.tab = s.tab;
+  box.dataset.tab = s.tab;
+  box.classList.toggle("done", pendingQuestions().length === 0);
+  box.title = t("statusTip");
   document.getElementById("qCountBadge").textContent = pendingQuestions().length;
 }
 
@@ -1057,6 +1110,7 @@ function applyStaticI18n(){
       (LANG === "ko" ? '<span class="en">' + colKey + '</span>' : "") +
       ' <span class="count">' + escapeHtml(count) + '</span>';
   });
+  document.getElementById("liveStatus").title = t("statusTip");
   document.getElementById("secPatient").textContent = t("secPatient");
   document.getElementById("secBoard").textContent = t("secBoard");
   document.getElementById("boardHint").textContent = t("boardHint");
@@ -1206,9 +1260,19 @@ function renderNeedStrip(){
   if (reason){
     if (LANG === "en"){
       // reasons[] is authored in Korean by the classifier — never machine-translated.
-      // EN mode surfaces the literal quoted evidence phrase the rule fired on.
+      // EN mode mirrors the classifier's rule templates (patient_need.py) client-side;
+      // the trigger phrase alone ("presents with") reads as debug output, so it is demoted
+      // to a parenthetical after the plain-words why-sentence.
       var qm = reason.match(/'([^']+)'/);
-      if (qm) reasonHtml = '<div class="ns-reason">' + escapeHtml(t("needWhy", {q: qm[1]})) + '</div>';
+      var WHY_KEY = {treatment: "needWhyTreatment", comfort: "needWhyComfort",
+                     diagnosis: "needWhyDiagnosis", monitoring: "needWhyMonitoring"};
+      var whyKey = WHY_KEY[need.need];
+      if (whyKey){
+        reasonHtml = '<div class="ns-reason">' + escapeHtml(t(whyKey) +
+          (qm ? t("needWhyPhrase", {q: qm[1]}) : "")) + '</div>';
+      } else if (qm){
+        reasonHtml = '<div class="ns-reason">' + escapeHtml(t("needWhy", {q: qm[1]})) + '</div>';
+      }
     } else {
       reasonHtml = '<div class="ns-reason">' + escapeHtml(t("needWhy", {q: reason})) + '</div>';
     }
@@ -1378,11 +1442,38 @@ function pathLineText(trial){
   if (pc.open > 0) return t("pathOpen", {b: pc.blocking, o: pc.open});
   return t("pathClear");
 }
+// 환자-편익 한 줄 — ct.gov 링크보다 먼저 읽히는 정직한 문장. 서버 필드로만 조립:
+// trial_intent(intent+confidence, rank_basis fit 폴백) + rank_basis help score + patient_need.
+function benefitLineText(trial){
+  var intent = (trial.trial_intent && trial.trial_intent.intent) ? String(trial.trial_intent.intent) : null;
+  var conf = trial.trial_intent ? trial.trial_intent.confidence : null;
+  var by = basisByKey(trial);
+  if (!intent && by.fit){ intent = by.fit.value; conf = by.fit.confidence; }
+  if (!intent || !FIT_LABEL[intent]) return "";
+  var helpScore = by.help && typeof by.help.score === "number" ? by.help.score : 0;
+  var needTxt = (cur && cur.need) ? needLabel(cur.need) : "";
+  var line;
+  if (intent === "observational"){ line = t("benefitObs"); }
+  else if (intent === "care_delivery"){ line = t("benefitCare"); }
+  else if (intent === "therapeutic"){
+    if (!needTxt) return "";
+    line = helpScore === 2 ? t("benefitTherHelp", {need: needTxt}) : t("benefitTherNoHelp", {need: needTxt});
+  } else if (intent === "supportive"){
+    if (helpScore === 2){ line = t("benefitSuppHelp"); }
+    else { if (!needTxt) return ""; line = t("benefitSuppNoHelp", {need: needTxt}); }
+  } else return "";
+  if (conf === "low") line += t("benefitGuess");
+  return line;
+}
 function openModal(nct){
   var trial = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
   if (!trial) return;
   currentModalNct = nct;
   document.getElementById("modalName").textContent = trial.title || trial.nct_id;
+  var benefitBox = document.getElementById("modalBenefit");
+  var benefit = benefitLineText(trial);
+  benefitBox.textContent = benefit;
+  benefitBox.style.display = benefit ? "block" : "none";
   var covLine = "";
   if (trial.coverage && typeof trial.coverage.parsed === "number" && trial.coverage.raw_estimated > 0){
     var covPct = trial.coverage.parsed / trial.coverage.raw_estimated;
@@ -1390,7 +1481,7 @@ function openModal(nct){
       escapeHtml(t("covLine", {m: trial.coverage.parsed, n: trial.coverage.raw_estimated})) + '</span>';
   }
   document.getElementById("modalNct").innerHTML = nctLinkHtml(trial.nct_id) +
-    (trial.phase ? ' · ' + escapeHtml(phaseLabel(trial.phase)) : "") + covLine;
+    ' · ' + escapeHtml(phaseIsNA(trial.phase) ? t("phaseNone") : phaseLabel(trial.phase)) + covLine;
   var em = eligMeta(trial.eligibility);
   var banner = document.getElementById("verdictBanner");
   banner.className = "verdict-banner " + em.banner;
@@ -1445,6 +1536,7 @@ function goToQuestion(q, nct){
 document.getElementById("modalClose").addEventListener("click", function(){ overlay.classList.remove("open"); });
 document.getElementById("modalCloseBtn").addEventListener("click", function(){ overlay.classList.remove("open"); });
 overlay.addEventListener("click", function(e){ if (e.target === overlay) overlay.classList.remove("open"); });
+document.addEventListener("keydown", function(e){ if (e.key === "Escape") overlay.classList.remove("open"); });
 
 // ---------------------------------------------------------------------------
 // 확인 질문 탭 — 시험 필터 필 + 근거 페인 + 채팅 라운드 + 하단 일괄 반영 바
@@ -1487,7 +1579,7 @@ function renderTrialPills(){
     box.appendChild(pill);
   });
 }
-function questionPriorityLine(q){
+function questionPriorityLine(q, qMatch){
   var hasTrials = typeof q.affects_trials === "number";
   var hasCrit = typeof q.affects_criteria === "number";
   var hasRank = typeof q.may_change_rank === "boolean";
@@ -1497,8 +1589,16 @@ function questionPriorityLine(q){
   }
   var line = escapeHtml(t("prioLead")) + " ";
   if (hasCrit){
-    line += escapeHtml(t("prioCrit", {c: q.affects_criteria}) +
-      (hasTrials ? t("prioCritTrials", {t: q.affects_trials}) : ""));
+    // 서버 숫자와 클라이언트 매퍼의 시험 목록이 일치할 때만 NCT 목록을 접어 넣는다 —
+    // 같은 사실을 두 줄로 반복하던 카드(문항 임팩트 줄 + opt-tag 줄)를 한 줄로 병합.
+    var listOk = qMatch && qMatch.ncts.length && hasTrials && qMatch.ncts.length === q.affects_trials;
+    if (listOk){
+      line += escapeHtml(t(q.affects_trials === 1 ? "prioCritListOne" : "prioCritList",
+        {c: q.affects_criteria, t: q.affects_trials, list: qMatch.ncts.map(shortNct).join(", ")}));
+    } else {
+      line += escapeHtml(t("prioCrit", {c: q.affects_criteria}) +
+        (hasTrials ? t("prioCritTrials", {t: q.affects_trials}) : ""));
+    }
   } else if (hasTrials){
     line += escapeHtml(t("prioTrialsOnly", {t: q.affects_trials}));
   }
@@ -1544,27 +1644,29 @@ function buildPendingCard(q, openList){
   var fuBadge = q.followup
     ? '<span class="fu-badge" title="' + escapeHtml(t("fuBadgeTip")) + '">' + escapeHtml(t("fuBadge")) + '</span>'
     : "";
+  var qTok = questionTokens(q);
+  var qMatch = matchOpenCriteria(qTok, openList);
   card.innerHTML =
     (q.field ? '<div class="qfield" title="' + escapeHtml(q.field) + '">' + escapeHtml(prettifyName(q.field)) + '</div>' : "") +
     '<div class="qtext">' + escapeHtml(q.question) + fuBadge + '</div>' +
     (q.why ? '<div class="qwhy">' + escapeHtml(q.why) + '</div>' : "") +
-    questionPriorityLine(q);
-  var qTok = questionTokens(q);
-  var qMatch = matchOpenCriteria(qTok, openList);
-  // single question-level line: which trials this question's answer feeds (client mapper).
-  // Suppressed when the server says the question DOES affect criteria but the mapper finds
-  // nothing (Korean-question/English-criterion token gap) -- never contradict the server line.
-  var serverSaysLinked = typeof q.affects_criteria === "number" && q.affects_criteria > 0;
-  if (qMatch.ncts.length){
-    var qml = el("div", "opt-tag");
-    qml.textContent = qMatch.ncts.length === 1
-      ? t("optUsedOne", {nct: qMatch.ncts[0], c: qMatch.count})
-      : t("optUsedMany", {n: qMatch.ncts.length, list: qMatch.ncts.map(shortNct).join(", "), c: qMatch.count});
-    card.appendChild(qml);
-  } else if (!serverSaysLinked){
-    var qml0 = el("div", "opt-tag none");
-    qml0.textContent = t("optNone");
-    card.appendChild(qml0);
+    questionPriorityLine(q, qMatch);
+  // The server-numbered priority line above already says what answering re-checks (with the
+  // NCT list folded in when the mapper agrees). A second, standalone mapper line under it was
+  // the same sentence twice — render it ONLY when the server sent no numbers at all.
+  var serverHasNumbers = typeof q.affects_criteria === "number" || typeof q.affects_trials === "number";
+  if (!serverHasNumbers){
+    if (qMatch.ncts.length){
+      var qml = el("div", "opt-tag");
+      qml.textContent = qMatch.ncts.length === 1
+        ? t("optUsedOne", {nct: qMatch.ncts[0], c: qMatch.count})
+        : t("optUsedMany", {n: qMatch.ncts.length, list: qMatch.ncts.map(shortNct).join(", "), c: qMatch.count});
+      card.appendChild(qml);
+    } else {
+      var qml0 = el("div", "opt-tag none");
+      qml0.textContent = t("optNone");
+      card.appendChild(qml0);
+    }
   }
   if (Array.isArray(q.options) && q.options.length){
     var optWrap = el("div", "opt-list");
@@ -1607,6 +1709,8 @@ function selectQuestion(qText){
   });
   renderEvidence();
 }
+function segTxt(key, n){ return n === 1 ? t(key + "One") : t(key, {n: n}); }
+var scrollToLastRound = false; // set by applyAnswerResponse: the round result must be ON screen
 function renderChat(){
   var box = document.getElementById("chatscroll");
   box.innerHTML = "";
@@ -1622,11 +1726,41 @@ function renderChat(){
         '<div class="qanswer">' + escapeHtml(pair.answer) + '</div>';
       block.appendChild(item);
     });
-    var seg = [t("segVerdict", {n: (r.verdictChanges || []).length}),
-               t("segRank", {n: (r.rankChanges || []).length})];
-    if (r.followupCount) seg.push(t("segFu", {n: r.followupCount}));
+    var vc = r.verdictChanges || [], rc = r.rankChanges || [];
+    var seg = [segTxt("segVerdict", vc.length), segTxt("segRank", rc.length)];
+    if (r.followupCount) seg.push(segTxt("segFu", r.followupCount));
+    // 라운드 결과는 숫자만이 아니라 사실로: 어떤 기준이 어떻게 뒤집혔고 어떤 시험이 움직였는지
+    var detail = "";
+    vc.slice(0, 3).forEach(function(c){
+      detail += '<div class="sysbubble-change"><span class="delta-chip">' + escapeHtml(c.before) +
+        " → " + escapeHtml(c.after) + '</span><span>' + escapeHtml(truncateText(c.criterion, 60)) + '</span></div>';
+    });
+    if (vc.length > 3) detail += '<div class="sysbubble-change">' + escapeHtml(t("histMore", {n: vc.length - 3})) + '</div>';
+    rc.forEach(function(c){
+      var segs = [];
+      if (c.rank_before && c.rank_after && c.rank_before !== c.rank_after){
+        segs.push(rankNum(c.rank_before) + " → " + rankNum(c.rank_after));
+      }
+      if (c.eligibility_before !== c.eligibility_after){
+        segs.push(eligLabel(c.eligibility_before) + " → " + eligLabel(c.eligibility_after));
+      }
+      if (!segs.length) return;
+      detail += '<div class="sysbubble-change"><span><b>' + escapeHtml(c.title || c.nct_id) + '</b>: ' +
+        escapeHtml(segs.join(" · ")) + '</span></div>';
+    });
+    if (vc.length || rc.length){
+      detail += '<div><button type="button" class="linklike sysbubble-link">' +
+        escapeHtml(t("chatFullDetail")) + '</button></div>';
+    }
     var sys = el("div", "sysbubble", escapeHtml(t("roundResult", {s: seg.join(" · ")})) +
-      (r.note ? "<br>" + escapeHtml(r.note) : ""));
+      (r.note ? "<br>" + escapeHtml(r.note) : "") + detail);
+    var detailLink = sys.querySelector(".sysbubble-link");
+    if (detailLink){
+      detailLink.addEventListener("click", function(){
+        var tabEl = document.querySelector('.tab[data-v="history"]');
+        if (tabEl) tabEl.click();
+      });
+    }
     block.appendChild(sys);
     box.appendChild(block);
   });
@@ -1678,7 +1812,21 @@ function renderChat(){
   });
   document.getElementById("chatHead").textContent =
     t("chatHead") + (selectedPill === "ALL" ? "" : " — " + selectedPill);
-  box.scrollTop = box.scrollHeight;
+  if (scrollToLastRound){
+    // 라운드 직후: 제일 중요한 순간(내 답이 무엇을 바꿨나)이 화면 밖으로 밀리지 않게
+    // 방금 끝난 라운드 블록 상단으로 스크롤. 그 외에는 기존처럼 맨 아래(대기 질문)로.
+    scrollToLastRound = false;
+    var doneBlocks = box.querySelectorAll(".roundblock.done");
+    var lastDone = doneBlocks.length ? doneBlocks[doneBlocks.length - 1] : null;
+    if (lastDone){
+      box.scrollTop = Math.max(0,
+        lastDone.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop);
+    } else {
+      box.scrollTop = box.scrollHeight;
+    }
+  } else {
+    box.scrollTop = box.scrollHeight;
+  }
   updateBatchBar();
 }
 function renderEvidence(){
@@ -1895,6 +2043,7 @@ function applyAnswerResponse(pending, data){
   renderRankStatusText();
   var saved = captureSelections();
   renderKanban();
+  scrollToLastRound = true; // 라운드 결과 버블이 보이는 위치로
   renderChatAll();
   restoreSelections(saved);
   renderHistory();
@@ -1931,7 +2080,11 @@ function rankReasonText(trial){
   if (!by.eligibility) return "";
   var join = eligMeta(by.eligibility.value).en;
   if (by.blocking && by.blocking.value) join += t("reasonBlockingN", {n: by.blocking.value});
-  var phase = phaseLabel(by.phase ? by.phase.value : trial.phase);
+  // Phase NA는 정보가 아니라 소음 — 알려진 단계일 때만 괄호에 싣는다
+  var phaseRaw = by.phase ? by.phase.value : trial.phase;
+  var hasPhase = !phaseIsNA(phaseRaw);
+  var phaseIn = hasPhase ? ", " + phaseLabel(phaseRaw) : "";   // "( ... , Phase 3)" 꼴 내부용
+  var phaseOut = hasPhase ? " (" + phaseLabel(phaseRaw) + ")" : ""; // 문장 끝 괄호용
   var fitB = by.fit;
   var fitKnown = fitB && fitB.confidence === "high" && FIT_LABEL[fitB.value] ? fitB.value : null;
   var needName = by.need ? by.need.need : null;
@@ -1939,17 +2092,21 @@ function rankReasonText(trial){
   if (needName){
     var needEn = needLabelByName(needName).toLowerCase();
     if (!fitKnown){
-      help = t("reasonNeedNoFit", {need: needLabelByName(needName), phase: phase});
+      // 문장과 칩이 서로 딴소리하지 않게: 칩이 추정치를 보여주면 문장도 같은 추정치를 말한다
+      var guessFit = fitB && FIT_LABEL[fitB.value] ? fitLabel(fitB.value) : null;
+      help = guessFit
+        ? t("reasonNeedNoFitGuess", {need: needLabelByName(needName), fit: guessFit, phase: phaseOut})
+        : t("reasonNeedNoFit", {need: needLabelByName(needName), phase: phaseOut});
     } else {
       var score = by.help ? by.help.score : 0;
-      var vars = {need: needEn, fit: fitLabel(fitKnown), phase: phase};
+      var vars = {need: needEn, fit: fitLabel(fitKnown), phase: phaseIn};
       help = score === 2 ? t("reasonHelp2", vars) : score === 1 ? t("reasonHelp1", vars) : t("reasonHelp0", vars);
     }
     if (by.need.confidence === "low") help += t("reasonNeedLow");
   } else {
     help = fitKnown
-      ? t("reasonNoNeedFit", {fit: fitLabel(fitKnown), phase: phase})
-      : t("reasonNoNeedNoFit", {phase: phase});
+      ? t("reasonNoNeedFit", {fit: fitLabel(fitKnown), phase: phaseIn})
+      : t("reasonNoNeedNoFit", {phase: phaseOut});
   }
   var sure = by.open ? t("reasonOpen", {v: by.open.value}) : "";
   if (by.coverage && typeof by.coverage.value === "number"){
@@ -1989,20 +2146,23 @@ function miniChipsHtml(trial){
   join.push({text: (LANG === "en" ? em0.en : em0.ko), title: t("chipJoinTip")});
   trial.rank_basis.forEach(function(b){
     if (!b || !b.key) return;
-    if (b.key === "need"){
-      help.push({text: b.need ? t("chipNeed", {v: needLabelByName(b.need)}) : t("chipNeedNone"),
-                 title: t("chipNeedTip")});
-    } else if (b.key === "help"){
+    // need 칩은 환자 단위 사실 — 행마다 도장 찍지 않고 목록 위 한 줄(rankNeedNote)로 승격
+    if (b.key === "help"){
       var hk = b.score === 2 ? "chipHelp2" : b.score === 1 ? "chipHelp1" : "chipHelp0";
       help.push({text: t(hk), title: t("chipHelpTip")});
     } else if (b.key === "fit"){
       help.push({text: fitLabel(b.value) + (b.confidence === "low" ? t("chipGuess") : ""),
                  title: t("chipFitTip")});
     } else if (b.key === "phase"){
-      help.push({text: phaseLabel(b.value), title: t("chipPhaseTip")});
+      if (!phaseIsNA(b.value)) help.push({text: phaseLabel(b.value), title: t("chipPhaseTip")});
     } else if (b.key === "coverage" && typeof b.value === "number"){
-      sure.push({text: t("chipCoverage", {p: b.value >= 1 ? t("chipCoverageFull") : Math.round(b.value * 100) + "%"}) +
-                 (b.penalty ? t("chipPenalty") : ""),
+      var covTxt;
+      if (trial.coverage && typeof trial.coverage.parsed === "number" && trial.coverage.raw_estimated > 0){
+        covTxt = t("chipCovCount", {m: trial.coverage.parsed, n: trial.coverage.raw_estimated});
+      } else {
+        covTxt = b.value >= 1 ? t("chipCoverageFull") : t("chipCoverage", {p: Math.round(b.value * 100)});
+      }
+      sure.push({text: covTxt + (b.penalty ? t("chipPenalty") : ""),
                  warn: !!b.penalty, title: t("chipCoverageTip")});
     } else if (b.key === "blocking" && b.value){
       join.push({text: t("chipBlocking", {n: b.value}), warn: true, title: t("chipBlockingTip")});
@@ -2019,11 +2179,41 @@ function miniChipsHtml(trial){
   var html = chips(t("mgJoin"), join) + chips(t("mgHelp"), help) + chips(t("mgSure"), sure);
   return html ? '<div class="minichips">' + html + '</div>' : "";
 }
+// 시트 단위 진실 (S001류): 살아남은 후보 전원이 치료하지 않는 연구(관찰/의료전달, help 0)면
+// 행마다 흩어진 고백을 목록 위 한 줄로 모아 말한다 — PI에게 넘기기 전에 알아야 할 문장.
+function allMatchesNonTreating(){
+  var alive = (cur.trials || []).filter(function(tr){ return tr.eligibility !== "INELIGIBLE"; });
+  if (!alive.length) return false;
+  return alive.every(function(tr){
+    var by = basisByKey(tr);
+    var helpScore = by.help && typeof by.help.score === "number" ? by.help.score : null;
+    var fitVal = by.fit ? by.fit.value : (tr.trial_intent ? tr.trial_intent.intent : null);
+    return helpScore === 0 && (fitVal === "observational" || fitVal === "care_delivery");
+  });
+}
+function renderRankNotes(){
+  var needNote = document.getElementById("rankNeedNote");
+  var needTxt = (cur && cur.need) ? needLabel(cur.need) : "";
+  if (needTxt){
+    needNote.textContent = t("rankNeedNote", {need: needTxt});
+    needNote.style.display = "block";
+  } else {
+    needNote.style.display = "none";
+  }
+  var obsNote = document.getElementById("rankObsNote");
+  if (allMatchesNonTreating()){
+    obsNote.textContent = t("rankObsNote");
+    obsNote.style.display = "block";
+  } else {
+    obsNote.style.display = "none";
+  }
+}
 function renderRanking(withDeltas){
   var list = document.getElementById("ranklist");
   var sorted = (cur.trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); });
   var prevOrder = rankView.order;
   list.innerHTML = "";
+  renderRankNotes();
   sorted.forEach(function(trial, i){
     var d = 0;
     if (withDeltas && prevOrder.length){
@@ -2037,10 +2227,11 @@ function renderRanking(withDeltas){
     var em = eligMeta(trial.eligibility);
     var row = el("div", "rankrow" + (changed ? " flash" : ""));
     row.dataset.nct = trial.nct_id;
-    var reasonLine = rankReasonText(trial);
+    var benefit = benefitLineText(trial); // ct.gov 링크보다 먼저: 이 시험이 이 환자에게 뭘 해주나
     row.innerHTML =
       '<div class="rnum">' + (trial.rank || i + 1) + '</div>' +
       '<div class="rinfo"><div class="rname">' + escapeHtml(trial.title || trial.nct_id) + '</div>' +
+      (benefit ? '<div class="rbenefit">' + escapeHtml(benefit) + '</div>' : "") +
       '<div class="rnct">' + nctLinkHtml(trial.nct_id) + '</div>' +
       miniChipsHtml(trial) + '</div>' +
       '<div class="rside"><span class="badge ' + em.badge + '" title="' + escapeHtml(t("eligBadgeTip")) + '">' +
@@ -2132,10 +2323,10 @@ function renderHistory(){
       var html = '<div class="histtop"><span class="histround">' + escapeHtml(t("histRound", {n: e.n})) +
         (e.reverted ? escapeHtml(t("histReverted")) : "") + '</span><span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
         '<div class="histstats">' +
-        '<span class="histpill">' + t("histPillAnswers", {n: (e.qa || []).length}) + '</span>' +
-        '<span class="histpill">' + t("histPillVerdict", {n: vc.length}) + '</span>' +
-        '<span class="histpill">' + t("histPillRank", {n: rc.length}) + '</span>' +
-        (e.followupCount ? '<span class="histpill">' + t("histPillFu", {n: e.followupCount}) + '</span>' : "") +
+        '<span class="histpill">' + segTxt("histPillAnswers", (e.qa || []).length) + '</span>' +
+        '<span class="histpill">' + segTxt("histPillVerdict", vc.length) + '</span>' +
+        '<span class="histpill">' + segTxt("histPillRank", rc.length) + '</span>' +
+        (e.followupCount ? '<span class="histpill">' + segTxt("histPillFu", e.followupCount) + '</span>' : "") +
         '</div>' +
         causalLinesHtml(e);
       (e.qa || []).forEach(function(pair){
