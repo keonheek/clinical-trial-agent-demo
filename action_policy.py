@@ -245,7 +245,10 @@ def _affected_criteria(question, gaps_by_field, trials):
     # normalized once up front (지우's DAS28 case: a re-typed related_criteria entry that
     # differs from the real criterion text only by whitespace/trailing punctuation must
     # still link) -- see action_policy.normalize_criterion_text.
-    target_norm = {normalize_criterion_text(x) for x in target_texts}
+    # Some generators prefix related_criteria entries with the trial id ("[NCT03549754] text")
+    # while served criterion texts carry no prefix -- strip it before normalizing, or every
+    # E003-class question reports "answering changes nothing" (verifier-caught 08-19).
+    target_norm = {normalize_criterion_text(_re.sub(r"^\[NCT\d+\]\s*", "", x)) for x in target_texts}
 
     pairs = []
     for t in trials:

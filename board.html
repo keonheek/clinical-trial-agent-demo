@@ -6,9 +6,12 @@
     보드 칼럼에는 쓰지 않는다 (7월 극성 버그 클래스 — 모달 안 기준 칩에서만 사용).
   - 카드 드래그는 "사람 검토 오버라이드"(표시 전용)로 기록되고 판정을 바꾸지 않는다.
   live-v2.html과 ui-concepts/g-board.html은 읽기 전용 참조 — 수정 금지.
+  2026-08-19: EN 기본 + KO 토글 (utilbar 세그먼트, localStorage 유지). chrome은 t(key) 사전,
+  구조화 서버 데이터(need enum·rank_basis·적격성 코드)는 클라이언트에서 언어 인지 렌더.
+  LLM 생성 데이터(기준·근거·질문·선택지·need reasons·rationale)는 원문 그대로 — 기계번역 없음.
 -->
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,9 +35,13 @@
   .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,"Apple SD Gothic Neo",monospace;}
   a{color:var(--secondary);}
 
-  .utilbar{background:var(--primary);color:#fff;padding:10px 24px;display:flex;align-items:center;font-size:0.8rem;}
+  .utilbar{background:var(--primary);color:#fff;padding:10px 24px;display:flex;align-items:center;font-size:0.8rem;flex-wrap:wrap;row-gap:6px;}
   .utilbar .name{font-weight:700;}
-  .utilbar .eventtag{margin-left:auto;font-size:0.6rem;font-weight:500;letter-spacing:.03em;color:rgba(255,255,255,.65);
+  .utilbar .langseg{margin-left:auto;display:flex;background:rgba(255,255,255,.16);border-radius:8px;padding:2px;flex:0 0 auto;}
+  .utilbar .langseg button{border:none;background:none;color:rgba(255,255,255,.75);font-family:inherit;font-size:0.7rem;
+    font-weight:700;letter-spacing:.05em;padding:3px 10px;border-radius:6px;cursor:pointer;}
+  .utilbar .langseg button.on{background:#fff;color:var(--primary);}
+  .utilbar .eventtag{margin-left:14px;font-size:0.6rem;font-weight:500;letter-spacing:.03em;color:rgba(255,255,255,.65);
     text-align:right;line-height:1.35;max-width:150px;}
 
   .livestatus{flex:0 0 auto;display:flex;align-items:center;gap:10px;margin:12px 24px 12px auto;padding:7px 14px 7px 10px;
@@ -90,6 +97,7 @@
     display:flex;align-items:center;gap:8px;}
   .sectionlabel::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--secondary);}
   .boardhead{display:flex;justify-content:flex-end;margin-bottom:6px;}
+  .boardhint{font-size:0.74rem;color:var(--ink-soft);margin:-6px 0 10px;}
 
   .edittoggle{display:flex;align-items:center;gap:10px;font-size:0.84rem;color:var(--ink-soft);}
   .switch{position:relative;width:44px;height:24px;flex:0 0 auto;}
@@ -137,8 +145,8 @@
   .kcard .rankchip{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.66rem;font-weight:700;background:#fff;
     border:1px solid var(--border);border-radius:99px;padding:1px 8px;color:var(--ink);}
   .kcard .ovr{font-size:0.64rem;font-weight:700;color:var(--accent);background:#F1EAFE;border-radius:99px;padding:2px 8px;}
-  .kcard .reason{font-size:0.72rem;color:var(--ink-soft);margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .kcard .hint{font-size:0.68rem;color:var(--secondary);margin-top:8px;}
+  .carddigest{font-size:0.68rem;color:var(--uncertain);margin-top:5px;}
+  .kcard .reason{font-size:0.72rem;color:var(--ink-soft);margin-top:6px;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.45;}
   /* 3칼럼 컬러 = 정원의 met/uncertain/notmet 토큰 재사용 */
   .col-ELIGIBLE h3{background:var(--met-mid);color:#fff;}
   .col-UNCERTAIN h3{background:var(--uncertain-mid);color:#fff;}
@@ -165,6 +173,8 @@
   .verdict-met{background:var(--met-bg);color:var(--met);} .verdict-notmet{background:var(--notmet-bg);color:var(--notmet);}
   .verdict-uncertain{background:var(--uncertain-bg);color:var(--uncertain);} .verdict-unknown{background:var(--unknown-bg);color:var(--unknown);}
 
+  .covlow{color:var(--uncertain);font-weight:600;}
+  .pathline{margin-top:10px;font-size:0.78rem;color:var(--ink-soft);line-height:1.5;}
   .modalbody{flex:1 1 auto;overflow-y:auto;padding:10px 30px 30px;}
   @media (max-width:480px){ .modalbody{padding:10px 14px 20px;} }
   .modalfoot{flex:0 0 auto;padding:16px 30px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;}
@@ -237,6 +247,7 @@
   .opt-tag.none{color:var(--ink-soft);}
   .qinput{width:100%;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.86rem;padding:10px;margin-top:8px;background:#fff;}
   .qitem.answered .qanswer{font-size:0.84rem;color:var(--ink-soft);padding:9px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-top:8px;}
+  .optnote{font-size:0.7rem;color:var(--ink-soft);margin:0 0 8px;}
   .sysbubble{background:#EAF1FE;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:0.78rem;line-height:1.6;color:var(--ink);margin-bottom:10px;}
   .funote{background:var(--uncertain-bg);color:var(--uncertain);border-radius:10px;padding:10px 14px;font-size:0.78rem;margin-bottom:10px;}
   .roundcomplete{background:var(--met-bg);color:var(--met);border-radius:10px;padding:18px 16px;font-size:0.9rem;font-weight:700;text-align:center;line-height:1.6;}
@@ -254,6 +265,10 @@
   .rulebox .rule{font-size:0.78rem;color:var(--ink-soft);margin:3px 0;line-height:1.55;}
   .rulebox .rule b{color:var(--ink);}
   .rulebox .ver{font-size:0.7rem;color:var(--ink-soft);}
+  .ranklist.stale{opacity:.45;}
+  .stalechip{display:none;margin:0 auto 14px;text-align:center;}
+  .stalechip.show{display:block;}
+  .stalechip button{background:var(--secondary);color:#fff;border:0;border-radius:99px;padding:8px 18px;font-size:0.84rem;font-weight:600;cursor:pointer;}
   .guarantee{display:inline-block;margin-top:8px;background:var(--met-bg);color:var(--met);border-radius:99px;padding:4px 12px;
     font-size:0.72rem;font-weight:700;cursor:help;}
   .rankhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;max-width:560px;margin-left:auto;margin-right:auto;}
@@ -300,6 +315,8 @@
   .hist-change{font-size:0.76rem;color:var(--ink-soft);margin:4px 0;line-height:1.5;overflow-wrap:anywhere;}
   .delta-chip{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.68rem;background:#fff;border:1px solid var(--border);
     border-radius:6px;padding:1px 6px;margin-right:6px;white-space:nowrap;}
+  .hist-causal{font-size:0.76rem;color:var(--ink-soft);margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere;}
+  .hist-causal b{color:var(--ink);}
   .hist-more{font-size:0.72rem;color:var(--ink-soft);margin:4px 0;}
   .revert-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:7px 16px;cursor:pointer;color:var(--ink);font-size:0.8rem;font-weight:600;}
   .revert-btn:hover:not(:disabled){border-color:var(--secondary);color:var(--secondary);}
@@ -317,31 +334,35 @@
 <body>
 <div class="utilbar">
   <span class="name">Interactive Clinical Trial Recommendation</span>
+  <div class="langseg" id="langSeg" role="group" aria-label="Language">
+    <button type="button" data-lang="en" class="on">EN</button>
+    <button type="button" data-lang="ko">KO</button>
+  </div>
   <span class="eventtag">2026 SKKU HEALTHCARE<br>AGENTIC CHALLENGE</span>
 </div>
 
 <div class="tabbarouter">
   <div class="patient-dropdown" id="patientDropdown">
-    <button class="pdbtn" id="pdBtn">환자 불러오는 중 <span class="chev">▾</span></button>
+    <button class="pdbtn" id="pdBtn">Loading patients <span class="chev">▾</span></button>
     <div class="pdmenu" id="pdMenu"></div>
   </div>
   <div class="tabbar" id="tabbar">
-    <div class="tab active" data-v="board">환자 &amp; 임상시험 보드</div>
-    <div class="tab" data-v="chat">확인 질문 <span class="tabbadge" id="qCountBadge">0</span></div>
-    <div class="tab" data-v="ranking">최종 순위 추천</div>
-    <div class="tab" data-v="history">변경 이력</div>
+    <div class="tab active" data-v="board">Patient &amp; Trial Board</div>
+    <div class="tab" data-v="chat">Clarifying Questions <span class="tabbadge" id="qCountBadge">0</span></div>
+    <div class="tab" data-v="ranking">Final Ranking</div>
+    <div class="tab" data-v="history">Change History</div>
   </div>
   <div class="livestatus" id="liveStatus">
     <span class="livebadge"><span class="livedot"></span>LIVE</span>
-    <span class="statustext" id="statusText">불러오는 중</span>
+    <span class="statustext" id="statusText">Loading</span>
   </div>
 </div>
 
 <!-- ===== TAB 1: 환자 상세 + 적격성 보드 ===== -->
 <div class="view active" id="v-board">
-  <div class="loadnote" id="boardLoadNote">환자 데이터를 불러오는 중입니다.</div>
+  <div class="loadnote" id="boardLoadNote">Loading patient data.</div>
   <div id="boardContent" style="display:none;">
-    <div class="sectionlabel">환자 상세</div>
+    <div class="sectionlabel" id="secPatient">Patient Record</div>
     <div class="pdetail" id="pdetail"></div>
 
     <div class="needstrip" id="needstrip" style="display:none;"></div>
@@ -352,22 +373,23 @@
           <input type="checkbox" id="dragEnable">
           <span class="slider"></span>
         </span>
-        <span id="toggleLabel">카드 이동 잠김 — 토글을 켜면 드래그로 사람 검토 오버라이드 기록</span>
+        <span id="toggleLabel">Card moves locked — switch on to record human-review overrides by drag</span>
       </label>
     </div>
 
-    <div class="sectionlabel">임상시험 매칭 현황 — 시험 단위 적격성</div>
+    <div class="sectionlabel" id="secBoard">Trial Matching — trial-level eligibility</div>
+    <div class="boardhint" id="boardHint">Click a card to see its criterion-level evidence.</div>
     <div class="board" id="board">
       <div class="col col-ELIGIBLE" data-col="ELIGIBLE">
-        <h3 title="모든 기준이 해소되어 참여할 수 있다고 판정된 시험">적격<span class="en">ELIGIBLE</span> <span class="count">0</span></h3>
+        <h3 title="Trials where every criterion is resolved and the patient can join">Eligible <span class="count">0</span></h3>
         <div class="cards" data-cards="ELIGIBLE"></div>
       </div>
       <div class="col col-UNCERTAIN" data-col="UNCERTAIN">
-        <h3 title="아직 확인이 필요한 기준이 남아 참여 여부가 정해지지 않은 시험">미확정<span class="en">UNCERTAIN</span> <span class="count">0</span></h3>
+        <h3 title="Trials with criteria still to confirm — participation not yet decided">Uncertain <span class="count">0</span></h3>
         <div class="cards" data-cards="UNCERTAIN"></div>
       </div>
       <div class="col col-INELIGIBLE" data-col="INELIGIBLE">
-        <h3 title="참여를 막는 기준이 확정되어 탈락한 시험">부적격<span class="en">INELIGIBLE</span> <span class="count">0</span></h3>
+        <h3 title="Trials ruled out by a confirmed blocking criterion">Excluded <span class="count">0</span></h3>
         <div class="cards" data-cards="INELIGIBLE"></div>
       </div>
     </div>
@@ -380,11 +402,11 @@
   <div class="splitwrap">
     <div class="evidencepane" id="evidencepane"></div>
     <div class="chatpane">
-      <div class="chathead" id="chatHead">확인 질문</div>
+      <div class="chathead" id="chatHead">Clarifying Questions</div>
       <div class="chatscroll" id="chatscroll"></div>
       <div class="chatbar" id="chatbar">
-        <span class="bb-note" id="batchNote">고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.</span>
-        <button class="submit-btn" id="batchBtn" disabled>선택한 답변 모두 반영 (질문 0개)</button>
+        <span class="bb-note" id="batchNote">Checked answers are applied in one batch — re-evaluation runs once.</span>
+        <button class="submit-btn" id="batchBtn" disabled>Apply selected answers (0 questions)</button>
       </div>
     </div>
   </div>
@@ -394,9 +416,10 @@
 <div class="view" id="v-ranking">
   <div class="rulebox" id="rulebox"></div>
   <div class="rankhead">
-    <div class="status" id="rankStatus">마지막 업데이트: 초기 매칭 기준</div>
-    <button class="refresh-btn" id="refreshBtn">↻ 최신화</button>
+    <div class="status" id="rankStatus">Last updated: initial matching</div>
+    <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
   </div>
+  <div class="stalechip" id="staleChip"><button id="staleChipBtn"></button></div>
   <div class="ranklist" id="ranklist"></div>
 </div>
 
@@ -405,9 +428,8 @@
   <div class="historywrap" id="historyWrap">
     <div id="dynamicHistory"></div>
     <div class="histitem past" id="round0Item">
-      <div class="histtop"><span class="histround">라운드 0 · 초기 매칭</span><span class="histtime" id="round0Time"></span></div>
-      <div class="histstats"><span class="histpill" id="round0Pill">초기 매칭 생성</span></div>
-      <button class="revert-btn" disabled>—</button>
+      <div class="histtop"><span class="histround" id="round0Label">Round 0 · initial matching</span><span class="histtime" id="round0Time"></span></div>
+      <div class="histstats"><span class="histpill" id="round0Pill">Initial matching</span></div>
     </div>
   </div>
 </div>
@@ -418,27 +440,28 @@
     <div class="modalhead">
       <div class="modalhead-top">
         <div><div class="name" id="modalName"></div><div class="nct" id="modalNct"></div></div>
-        <button class="modalclose" id="modalClose" aria-label="닫기">✕</button>
+        <button class="modalclose" id="modalClose" aria-label="Close">✕</button>
       </div>
       <div class="verdict-banner" id="verdictBanner">
-        <span><span class="lbl">시험 단위 적격성</span><br><span id="verdictText"></span></span>
+        <span><span class="lbl" id="bannerLbl">Trial-level eligibility</span><br><span id="verdictText"></span></span>
         <span class="sub" id="verdictSummary"></span>
       </div>
+      <div class="pathline" id="pathLine"></div>
     </div>
     <div class="modalbody" id="modalBody"></div>
     <div class="modalfoot">
-      <span class="hint">기준 판정은 판정 로직의 결과입니다 · 사람 검토 의견은 보드에서 카드 드래그(오버라이드)로 기록됩니다</span>
-      <button class="save-btn" id="modalCloseBtn">닫기</button>
+      <span class="hint" id="modalFootHint">Criterion verdicts come from the decision logic · human review notes are recorded by dragging cards on the board</span>
+      <button class="save-btn" id="modalCloseBtn">Close</button>
     </div>
   </div>
 </div>
 
-<footer class="disclaimer">
-  본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 판정 로직 호출로 영향받는 기준만 재평가됩니다. 이 데모는 목록의 사전 등록된 환자만 지원합니다.
-  <span class="compliance">데이터 출처 ClinicalTrials.gov API v2 (미국 NLM/NIH, 공공저작물) · 환자 = 대회 제공 합성 vignette · LLM 백엔드 = Anthropic (대회 지원 크레딧)</span>
+<footer class="disclaimer" id="footerBox">
+  These results are for reference, not medical advice. When you submit an answer, a real decision-logic call re-evaluates only the criteria linked to it. This demo supports the pre-registered patients in the list only.
+  <span class="compliance">Data source: ClinicalTrials.gov API v2 (US NLM/NIH, public domain) · Patients are synthetic vignettes provided by the challenge · LLM backend: Anthropic (challenge-sponsored credits)</span>
   <span class="doclinks">
-    <a href="/agent_orchestration.html" target="_blank" rel="noopener">에이전트 구성도</a>
-    <a href="/criteria_map.html" target="_blank" rel="noopener">기준 게이트맵</a>
+    <a href="/agent_orchestration.html" target="_blank" rel="noopener">Agent architecture</a>
+    <a href="/criteria_map.html" target="_blank" rel="noopener">Criteria gate map</a>
   </span>
 </footer>
 
@@ -449,39 +472,392 @@
 // 어휘 (극성 규칙): 시험 단위 = 적격성(적격/미확정/부적격), 기준 단위 = MET/NOT_MET/UNCERTAIN/UNKNOWN.
 // 두 어휘를 섞지 않는다 — 보드 칼럼·랭킹 배지는 항상 시험 단위, 모달/근거 칩은 항상 기준 단위.
 // ---------------------------------------------------------------------------
+// i18n layer: EN is the default UI language, KO via the utilbar segmented toggle.
+// UI chrome is dictionary-driven (t(key)); structured server data renders language-aware
+// client-side (need enum, rank_basis, elig codes). LLM-authored data (criteria text, evidence,
+// question text, options, need reasons, rationale) is never machine-translated — shown as
+// produced and labeled where the language differs from the UI.
+// ---------------------------------------------------------------------------
+var LANG = (function(){
+  try { return localStorage.getItem("board_lang") === "ko" ? "ko" : "en"; }
+  catch(e){ return "en"; }
+})();
+
+var I18N = {
+  en: {
+    tabBoard: "Patient & Trial Board", tabChat: "Clarifying Questions",
+    tabRank: "Final Ranking", tabHist: "Change History",
+    colELIGIBLE: "Eligible", colUNCERTAIN: "Uncertain", colINELIGIBLE: "Excluded",
+    colTipELIGIBLE: "Trials where every criterion is resolved and the patient can join",
+    colTipUNCERTAIN: "Trials with criteria still to confirm — participation not yet decided",
+    colTipINELIGIBLE: "Trials ruled out by a confirmed blocking criterion",
+    loading: "Loading", liveWaiting: "{n} questions waiting", liveWaitingOne: "1 question waiting",
+    liveDone: "All questions resolved · ranking ready",
+    pdLoading: "Loading patients", pdSelect: "Select patient", pdMore: "More demo patients",
+    noPatients: "No patients registered", errPrefix: "Error: ",
+    loadingData: "Loading patient data.", loadingDataFor: "Loading {id}.",
+    secPatient: "Patient Record", secBoard: "Trial Matching — trial-level eligibility",
+    boardHint: "Click a card to see its criterion-level evidence.",
+    toggleOff: "Card moves locked — switch on to record human-review overrides by drag",
+    toggleOn: "Card moves on — a drag is recorded as a human-review override and never changes the verdict",
+    extractionTag: "[Auto-summarized synthetic data from the extraction step — not a real patient record]",
+    recordLabel: "Record",
+    emptyEligible: "No trial confirmed eligible yet<br>trials move here as questions get resolved",
+    emptyCol: "No trials here",
+    ovrChip: "Human review move",
+    ovrTip: "A reviewer dragged this card here. The decision logic's verdict ({v}) is unchanged.",
+    rankTip: "",
+    needLabel: "What this patient needs now",
+    hedge: "Low confidence — review advised",
+    hedgeTip: "The record's cues are weak, so this classification is low-confidence. A human check is the safe move.",
+    needWhy: "Evidence phrase in the record: “{q}”",
+    needReasonNote: "Full reasoning (Korean, as produced): {r}",
+    needLink: "The ranking's “does it help” question matches this need against each trial's purpose.",
+    bannerLbl: "Trial-level eligibility",
+    close: "Close",
+    footHint: "Criterion verdicts come from the decision logic · human review notes are recorded by dragging cards on the board",
+    incTag: "Inclusion", excTag: "Exclusion",
+    incTip: "The patient must match this for the trial to accept them",
+    excTip: "Matching this rules the patient out",
+    noEvidence: "No supporting sentence in the patient record",
+    qlinkBtn: "View the linked question",
+    nctTip: "Open the protocol on ClinicalTrials.gov",
+    verdictTip: "Criterion-level verdict: does this criterion statement apply to the patient ({v})",
+    effectTip: "Eligibility effect, decided by code from the verdict and criterion type: what this verdict does to participation",
+    actionTip: "The diagnosed cause of the uncertainty, and the action the policy chose for it",
+    trialLevelSuffix: " (trial-level)",
+    causeUnknown: "cause unclassified",
+    pathClosed: "Path to enrollment: closed — {n} blocking criteria",
+    pathClosedOne: "Path to enrollment: closed — 1 blocking criterion",
+    pathOpen: "Path to enrollment: {b} blocking · {o} to confirm — answering the linked questions can close them",
+    pathClear: "Path to enrollment: clear — nothing blocking, nothing left to confirm",
+    pillAll: "All", chatHead: "Clarifying Questions",
+    roundDone: "✓ Round {n} · applied",
+    roundPending: "Round {n} · clarifying questions",
+    roundWaitingCount: "({n} waiting)",
+    fuRound: "Follow-up questions (generated from your answers)",
+    fuBadge: "Follow-up",
+    fuBadgeTip: "Generated by the system after reading your earlier answers — it decided one more check was needed.",
+    roundResult: "This round applied: {s}",
+    segVerdict: "{n} verdict changes", segRank: "{n} rank/eligibility moves",
+    segFu: "{n} follow-up questions generated",
+    allDone: "✓ All clarifying questions resolved — applied to the re-evaluation",
+    goRank: "See the updated ranking",
+    noPillQuestions: "No waiting questions are linked to this trial — try the All filter.",
+    evHead: "Criteria this question re-checks",
+    evNone: "No clarifying questions are waiting. When you answer one, only its linked criteria are re-checked.",
+    evNoLink: "No open criterion links to this question — answering it changes nothing.",
+    evLinkUnmapped: "This question feeds the system's re-check (see the count above), but the exact criteria can't be highlighted here.",
+    prioNone: "Answering changes nothing right now — no open criterion links to this item (low priority)",
+    prioLead: "Answering:",
+    prioCrit: "re-checks {c} criteria", prioCritTrials: " ({t} trials)",
+    prioTrialsOnly: "feeds {t} trials",
+    rankYes: "ranking may change", rankNo: "ranking unchanged",
+    optNone: "no direct link to an open criterion",
+    optNoneTip: "No open, undecided criterion would be re-checked by this answer right now.",
+    optUsedOne: "used to judge {nct} · {c} criteria",
+    optUsedMany: "used to judge {n} trials ({list}) · {c} criteria",
+    optGeneric: " · closes the same criteria as the whole question",
+    optTipLead: "This answer feeds the verdicts of: ",
+    optTipItem: "{nct} ({c} criteria)",
+    optNote: "Answer options are shown as generated by the system (Korean).",
+    phWithOptions: "Type your own (applied together with the checked options)",
+    phFree: "Free-text answer (labs, history, medications …)",
+    batchBtn: "Apply selected answers ({n} questions)",
+    batchNote: "Checked answers are applied in one batch — re-evaluation runs once.",
+    batchBusyBtn: "Applying answers",
+    batchBusyNote: "Applying — only the criteria linked to your answers are re-checked",
+    batchLimit: "Up to {m} questions per batch — the first {m} apply now; the rest of your selections stay and can be applied next",
+    batchTooLong: "One answer exceeds {m} characters — please shorten it",
+    errTimeout: "Timed out — please retry",
+    ruleTitle: "Recommendation priority — why this order",
+    ruleVer: "(ranking rule {v})",
+    rule: "Can they join — an excluded (blocked) trial always sinks to the bottom · " +
+      "Does it help — trials whose purpose matches what this patient needs (treatment / diagnosis / monitoring / comfort) come first; ties prefer later, better-validated phases (Phase 4→1) · " +
+      "How sure are we — confirmed eligible before uncertain, a penalty when under half the protocol text was parsed, fewer unresolved criteria first",
+    guarantee: "Safety guarantee: an excluded trial never rises above uncertain or eligible",
+    staleChip: "Answers applied — press to see the new ranking with ▲▼ moves",
+    digestLead: "To resolve: ",
+    covLine: "{m} of ~{n} source criteria evaluated",
+    covTip: "Estimated from the trial's original eligibility text. Clauses not shown here may exist.",
+    mgJoin: "1 Join",
+    chipJoinTip: "Question 1 — can this patient join? A confirmed blocking criterion sinks the trial to the bottom.",
+    guaranteeTip: "“Can they join” is the first sort key, so a trial with a confirmed blocking criterion cannot out-rank any other trial, however good it looks elsewhere.",
+    rankStatusInit: "Last updated: initial matching",
+    rankStatusRound: "Last updated: round {n} applied",
+    rankStatusStale: "Round {n} awaiting — press Refresh to update this list",
+    refresh: "↻ Refresh", refreshDone: "✓ Updated",
+    eligBadgeTip: "Trial-level eligibility: can this patient join",
+    mgHelp: "Help", mgSure: "Sure",
+    chipNeed: "patient need: {v}", chipNeedNone: "patient need not computed",
+    chipNeedTip: "What this patient needs right now, read from the record",
+    chipHelpTip: "How the trial's purpose matched this patient's need",
+    chipHelp2: "fit: helps", chipHelp1: "fit: partial", chipHelp0: "fit: reference only",
+    chipFitTip: "What this trial is trying to do",
+    chipGuess: " (guess)",
+    chipPhaseTip: "Later phases are better validated — a lighter ask of the patient",
+    chipCoverage: "protocol read {p}", chipCoverageFull: "full (est.)",
+    chipPenalty: " · penalized",
+    chipCoverageTip: "Share of the raw protocol conditions this evaluation covered (estimated). Under half draws a penalty.",
+    chipBlocking: "blocking {n}",
+    chipBlockingTip: "Criteria that ruled this trial out — one is enough to sink it to the bottom",
+    chipOpen: "unresolved {v}",
+    chipOpenTip: "Criteria not yet decided / all criteria — fewer means more certain",
+    fitUnknown: "purpose unclassified",
+    needTreatment: "Treatment", needDiagnosis: "Diagnosis confirmation",
+    needMonitoring: "Monitoring", needComfort: "Comfort support",
+    reasonJoin: "Join", reasonHelp: "Help", reasonSure: "Sure",
+    reasonBlockingN: " ({n} blocking)",
+    reasonNeedNoFit: "{need} needed, trial purpose unclassified ({phase})",
+    reasonHelp2: "matches the {need} need ({fit} trial, {phase})",
+    reasonHelp1: "partly helps the {need} need ({fit} trial, {phase})",
+    reasonHelp0: "unrelated to the {need} need ({fit} trial, {phase})",
+    reasonNeedLow: ", need classification low-confidence",
+    reasonNoNeedFit: "patient need not computed — ordered by trial purpose ({fit} trial, {phase})",
+    reasonNoNeedNoFit: "patient need not computed, trial purpose unclassified ({phase})",
+    reasonOpen: "unresolved {v}",
+    reasonCovFull: "full protocol read (est.)",
+    reasonCov: "protocol read {p}%", reasonCovPen: " (penalized)",
+    histRound: "Round {n}", histReverted: " (reverted)",
+    histPillAnswers: "<b>{n}</b> answers", histPillVerdict: "<b>{n}</b> verdict changes",
+    histPillRank: "<b>{n}</b> rank/eligibility moves", histPillFu: "<b>{n}</b> follow-up questions",
+    histMore: "+{n} more",
+    causalCrit: "{n} criteria re-checked", causalCritOne: "1 criterion re-checked",
+    causalIndirect: "moved by changes to other trials",
+    revertBtn: "↩ Undo this round", revertedBtn: "Reverted",
+    revertOrderTip: "Rounds must be undone newest-first",
+    ovrTitle: "Human review override",
+    ovrLine: "Reviewer moved {title} from {from} to {to} (display-only override, separate from the decision logic)",
+    undoneSuffix: " · undone",
+    undoMove: "↩ Undo move", undoneBtn: "Undone",
+    revertEntryTitle: "Round reverted",
+    revertLabel: "Round {n} undone — {a} answers restored to their pre-round state",
+    round0: "Round 0 · initial matching",
+    round0Pill: "Initial matching: <b>{n} trials</b>",
+    footMain: "These results are for reference, not medical advice. When you submit an answer, a real decision-logic call re-evaluates only the criteria linked to it. This demo supports the pre-registered patients in the list only.",
+    footCompliance: "Data source: ClinicalTrials.gov API v2 (US NLM/NIH, public domain) · Patients are synthetic vignettes provided by the challenge · LLM backend: Anthropic (challenge-sponsored credits)",
+    footLinkAgents: "Agent architecture", footLinkGate: "Criteria gate map",
+    rankNum: "#{n}"
+  },
+  ko: {
+    tabBoard: "환자 & 임상시험 보드", tabChat: "확인 질문",
+    tabRank: "최종 순위 추천", tabHist: "변경 이력",
+    colELIGIBLE: "적격", colUNCERTAIN: "미확정", colINELIGIBLE: "부적격",
+    colTipELIGIBLE: "모든 기준이 해소되어 참여할 수 있다고 판정된 시험",
+    colTipUNCERTAIN: "아직 확인이 필요한 기준이 남아 참여 여부가 정해지지 않은 시험",
+    colTipINELIGIBLE: "참여를 막는 기준이 확정되어 탈락한 시험",
+    loading: "불러오는 중", liveWaiting: "확인 질문 {n}개 대기중", liveWaitingOne: "확인 질문 1개 대기중",
+    liveDone: "확인 질문 모두 해결됨 · 순위 확인 가능",
+    pdLoading: "환자 불러오는 중", pdSelect: "환자 선택", pdMore: "추가 데모 환자",
+    noPatients: "등록된 환자가 없습니다", errPrefix: "오류: ",
+    loadingData: "환자 데이터를 불러오는 중입니다.", loadingDataFor: "{id} 데이터를 불러오는 중입니다.",
+    secPatient: "환자 상세", secBoard: "임상시험 매칭 현황 — 시험 단위 적격성",
+    boardHint: "카드를 클릭하면 기준 단위 근거를 볼 수 있습니다.",
+    toggleOff: "카드 이동 잠김 — 토글을 켜면 드래그로 사람 검토 오버라이드 기록",
+    toggleOn: "카드 이동 켜짐 — 드래그는 사람 검토 오버라이드로 기록되며 판정은 바뀌지 않습니다",
+    extractionTag: "[정보 추출 단계에서 자동 요약된 가상 데이터입니다 — 실제 환자 기록 아님]",
+    recordLabel: "기록",
+    emptyEligible: "아직 적격 확정된 시험 없음<br>확인 질문이 해소되면 여기로 이동합니다",
+    emptyCol: "해당하는 시험 없음",
+    ovrChip: "사람 검토 이동",
+    ovrTip: "사람이 드래그로 옮긴 표시 위치입니다. 판정 로직의 결과({v})는 바뀌지 않았습니다.",
+    rankTip: "",
+    needLabel: "이 환자에게 지금 필요한 것",
+    hedge: "확신 낮음 — 검토 권장",
+    hedgeTip: "환자 기록의 단서가 약해 분류 확신이 낮습니다. 사람이 한 번 확인하는 것이 안전합니다.",
+    needWhy: "왜? {q}",
+    needReasonNote: "",
+    needLink: "추천 순위의 “도움이 되는가”는 이 필요와 각 시험의 목적을 맞춰 본 결과입니다.",
+    bannerLbl: "시험 단위 적격성",
+    close: "닫기",
+    footHint: "기준 판정은 판정 로직의 결과입니다 · 사람 검토 의견은 보드에서 카드 드래그(오버라이드)로 기록됩니다",
+    incTag: "포함기준", excTag: "제외기준",
+    incTip: "이 조건에 해당해야 참여할 수 있습니다",
+    excTip: "이 조건에 해당하면 참여할 수 없습니다",
+    noEvidence: "환자 기록에 근거 문장 없음",
+    qlinkBtn: "관련 확인 질문 보기",
+    nctTip: "ClinicalTrials.gov 원문 프로토콜 열기",
+    verdictTip: "기준 단위 판정: 기준 문장이 환자에게 해당하는지 ({v})",
+    effectTip: "적격성 효과: 판정과 기준 종류에서 코드가 결정 — 이 판정이 참여 가능 여부에 미치는 영향",
+    actionTip: "불확실성의 원인과, 정책이 고른 다음 행동",
+    trialLevelSuffix: " (시험 단위)",
+    causeUnknown: "원인 미분류",
+    pathClosed: "참여까지 남은 것: 막힘 — 탈락 사유 기준 {n}건",
+    pathClosedOne: "참여까지 남은 것: 막힘 — 탈락 사유 기준 1건",
+    pathOpen: "참여까지 남은 것: 탈락 사유 {b}건 · 확인 필요 {o}건 — 연결된 질문에 답하면 좁혀집니다",
+    pathClear: "참여까지 남은 것: 없음 — 막는 기준도, 확인할 기준도 없습니다",
+    pillAll: "전체", chatHead: "확인 질문",
+    roundDone: "✓ 라운드 {n} · 반영 완료",
+    roundPending: "라운드 {n} · 확인 질문",
+    roundWaitingCount: "({n}개 대기)",
+    fuRound: "추가 질문 (답변을 보고 생성됨)",
+    fuBadge: "추가 질문",
+    fuBadgeTip: "앞선 답변을 보고 시스템이 추가로 확인이 필요하다고 판단해 만든 질문입니다.",
+    roundResult: "이번 라운드 반영 결과: {s}",
+    segVerdict: "판정 변화 {n}건", segRank: "순위/적격 변동 {n}건",
+    segFu: "추가 질문 {n}개 생성",
+    allDone: "✓ 모든 확인 질문이 해결되었습니다 — 재평가에 반영됨",
+    goRank: "수정된 최종 순위 보기",
+    noPillQuestions: "이 시험과 연결된 대기 질문이 없습니다 — 전체 필을 선택해 보세요.",
+    evHead: "이 질문이 다시 판정하는 기준",
+    evNone: "대기 중인 확인 질문이 없습니다. 질문에 답하면, 그 답과 연결된 기준만 다시 판정됩니다.",
+    evNoLink: "이 질문과 직접 연결된 미확정 기준이 없습니다 — 답해도 바뀌는 것이 없습니다.",
+    evLinkUnmapped: "이 질문은 재판정에 반영되지만(위의 개수 참고), 어떤 기준인지 여기서는 하이라이트할 수 없습니다.",
+    prioNone: "답해도 바뀌는 것 없음 · 지금 열려 있는 기준과 직접 연결된 항목이 없습니다 (우선순위 낮음)",
+    prioLead: "답하면 바뀌는 것:",
+    prioCrit: "기준 {c}개 다시 판정", prioCritTrials: " (시험 {t}개)",
+    prioTrialsOnly: "시험 {t}개에 반영",
+    rankYes: "추천 순위가 바뀔 수 있음", rankNo: "추천 순위는 그대로",
+    optNone: "현재 열린 기준과 직접 연결 없음",
+    optNoneTip: "이 항목의 답으로 지금 다시 판정될 미확정 기준이 없습니다.",
+    optUsedOne: "{nct} 판정에 쓰임 · 기준 {c}개",
+    optUsedMany: "시험 {n}개 판정에 쓰임 ({list}) · 기준 {c}개",
+    optGeneric: " · 질문 전체와 같은 기준을 닫습니다",
+    optTipLead: "이 답이 판정에 쓰이는 시험: ",
+    optTipItem: "{nct} (기준 {c}개)",
+    optNote: "",
+    phWithOptions: "직접 입력 (선택 항목과 함께 반영됩니다)",
+    phFree: "자유 서술로 입력 (검사 수치, 병력, 복용 약 등)",
+    batchBtn: "선택한 답변 모두 반영 (질문 {n}개)",
+    batchNote: "고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.",
+    batchBusyBtn: "답변 반영 중",
+    batchBusyNote: "답변 반영 중 — 답과 연결된 기준만 다시 판정합니다",
+    batchLimit: "한 번에 질문 {m}개까지 반영됩니다 — 위에서부터 {m}개를 먼저 반영하고, 남은 선택은 그대로 두었다가 이어서 반영하세요",
+    batchTooLong: "답변 하나가 {m}자를 넘습니다 — 줄여 주세요",
+    errTimeout: "시간 초과 — 다시 시도해 주세요",
+    ruleTitle: "추천 우선순위 — 왜 이 순서인가",
+    ruleVer: "(정렬 규칙 {v})",
+    rule: "참여할 수 있는가 -- 부적격(탈락) 시험은 항상 맨 아래 · " +
+      "도움이 되는가 -- 환자에게 필요한 것(치료/진단 확정/관리/지지)과 시험의 목적이 맞는 순, 같으면 검증이 더 된 후기 단계(Phase 4→1) 먼저 · " +
+      "얼마나 확실한가 -- 적격 확정이 미확정보다 먼저, 원문을 절반도 못 읽었으면 감점, 미해결 기준이 적은 순",
+    guarantee: "안전 보장: 부적격 시험은 미확정/적격 위로 올라오지 않음",
+    staleChip: "답변 반영됨 — 누르면 새 순위와 변동(▲▼)이 표시됩니다",
+    digestLead: "남은 확인: ",
+    covLine: "원문 조건 추정 {n}개 중 {m}개 평가 반영",
+    covTip: "시험 원문 조건 수 추정치 기준. 표시되지 않은 조항이 있을 수 있습니다.",
+    mgJoin: "1 참여",
+    chipJoinTip: "질문 1 — 참여할 수 있는가. 확정된 차단 기준이 있으면 시험은 맨 아래로 내려갑니다.",
+    guaranteeTip: "참여할 수 있는가가 정렬의 첫 기준이므로, 탈락 사유가 있는 시험은 아래 어떤 항목이 좋아도 위로 올라올 수 없습니다.",
+    rankStatusInit: "마지막 업데이트: 초기 매칭 기준",
+    rankStatusRound: "마지막 업데이트: 라운드 {n} 반영",
+    rankStatusStale: "라운드 {n} 반영 대기 — ↻ 최신화를 누르면 목록이 갱신됩니다",
+    refresh: "↻ 최신화", refreshDone: "✓ 반영 완료",
+    eligBadgeTip: "시험 단위 적격성: 이 환자가 참여할 수 있는가",
+    mgHelp: "도움", mgSure: "확실",
+    chipNeed: "환자 필요 {v}", chipNeedNone: "환자 필요 미산출",
+    chipNeedTip: "환자 기록에서 읽어낸, 지금 이 환자에게 필요한 것",
+    chipHelpTip: "환자에게 필요한 것과 이 시험의 목적을 맞춰 본 결과",
+    chipHelp2: "맞춰본 결과 도움 됨", chipHelp1: "맞춰본 결과 부분적", chipHelp0: "맞춰본 결과 참고용",
+    chipFitTip: "이 시험이 무엇을 하려는 시험인지",
+    chipGuess: " (추정)",
+    chipPhaseTip: "후기 단계일수록 개입이 더 검증되어 환자 부담이 작다고 봅니다",
+    chipCoverage: "원문 반영 {p}", chipCoverageFull: "전체(추정)",
+    chipPenalty: " 감점",
+    chipCoverageTip: "시험 원문 조건 중 평가에 반영된 비율 (추정). 절반 미만이면 감점됩니다.",
+    chipBlocking: "탈락 사유 {n}건",
+    chipBlockingTip: "이 시험을 부적격으로 만든 기준 수 — 하나라도 있으면 순위가 맨 아래로 갑니다",
+    chipOpen: "미해결 {v}",
+    chipOpenTip: "아직 판정되지 않은 기준 수 / 전체 기준 수 — 적을수록 확실합니다",
+    fitUnknown: "목적 미확인",
+    needTreatment: "치료", needDiagnosis: "진단 확정",
+    needMonitoring: "관리", needComfort: "지지",
+    histRound: "라운드 {n}", histReverted: " (되돌려짐)",
+    histPillAnswers: "질문 <b>{n}개</b> 답변", histPillVerdict: "판정 변화 <b>{n}건</b>",
+    histPillRank: "순위/적격 변동 <b>{n}건</b>", histPillFu: "추가 질문 <b>{n}개</b>",
+    histMore: "외 {n}건",
+    causalCrit: "기준 {n}개 다시 판정", causalCritOne: "기준 1개 다시 판정",
+    causalIndirect: "다른 시험의 변화로 이동",
+    revertBtn: "↩ 이 라운드 되돌리기", revertedBtn: "되돌려짐",
+    revertOrderTip: "가장 최근 라운드부터 순서대로 되돌릴 수 있습니다",
+    ovrTitle: "사람 검토 오버라이드",
+    ovrLine: "사람이 {title}을(를) {from} → {to}(으)로 이동 (검토 오버라이드, 판정 로직과 별개)",
+    undoneSuffix: " · 취소됨",
+    undoMove: "↩ 이동 취소", undoneBtn: "취소됨",
+    revertEntryTitle: "라운드 되돌림",
+    revertLabel: "라운드 {n} 반영을 되돌림 — 답변 {a}건이 반영 전 상태로 복원됨",
+    round0: "라운드 0 · 초기 매칭",
+    round0Pill: "초기 매칭 <b>{n}건</b> 생성",
+    footMain: "본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 판정 로직 호출로 영향받는 기준만 재평가됩니다. 이 데모는 목록의 사전 등록된 환자만 지원합니다.",
+    footCompliance: "데이터 출처 ClinicalTrials.gov API v2 (미국 NLM/NIH, 공공저작물) · 환자 = 대회 제공 합성 vignette · LLM 백엔드 = Anthropic (대회 지원 크레딧)",
+    footLinkAgents: "에이전트 구성도", footLinkGate: "기준 게이트맵",
+    rankNum: "{n}위"
+  }
+};
+function t(key, vars){
+  var pack = I18N[LANG] || I18N.en;
+  var s = pack[key] != null ? pack[key] : (I18N.en[key] != null ? I18N.en[key] : key);
+  if (vars){
+    for (var k in vars){ s = s.split("{" + k + "}").join(String(vars[k])); }
+  }
+  return s;
+}
+
 var ELIG_META = {
-  ELIGIBLE:   {ko: "적격",   badge: "b-met",       banner: "verdict-met",       col: "ELIGIBLE"},
-  UNCERTAIN:  {ko: "미확정", badge: "b-uncertain",  banner: "verdict-uncertain", col: "UNCERTAIN"},
-  INELIGIBLE: {ko: "부적격", badge: "b-notmet",     banner: "verdict-notmet",    col: "INELIGIBLE"}
+  ELIGIBLE:   {ko: "적격",   en: "Eligible",  badge: "b-met",       banner: "verdict-met",       col: "ELIGIBLE"},
+  UNCERTAIN:  {ko: "미확정", en: "Uncertain", badge: "b-uncertain",  banner: "verdict-uncertain", col: "UNCERTAIN"},
+  INELIGIBLE: {ko: "부적격", en: "Excluded",  badge: "b-notmet",     banner: "verdict-notmet",    col: "INELIGIBLE"}
 };
 function eligMeta(v){ return ELIG_META[v] || ELIG_META.UNCERTAIN; }
+function eligLabel(v){ var m = eligMeta(v); return LANG === "en" ? m.en : m.ko; }
 
 var VERDICT_META = {
-  MET:       {cls: "b-met",       ko: "기준에 해당함"},
-  NOT_MET:   {cls: "b-notmet",    ko: "기준에 해당 안 함"},
-  UNCERTAIN: {cls: "b-uncertain", ko: "해석이 모호함"},
-  UNKNOWN:   {cls: "b-unknown",   ko: "기록에 정보 없음"}
+  MET:       {cls: "b-met",       ko: "기준에 해당함",      en: "applies"},
+  NOT_MET:   {cls: "b-notmet",    ko: "기준에 해당 안 함",  en: "does not apply"},
+  UNCERTAIN: {cls: "b-uncertain", ko: "해석이 모호함",      en: "ambiguous"},
+  UNKNOWN:   {cls: "b-unknown",   ko: "기록에 정보 없음",   en: "not in the record"}
 };
 var EFFECT_META = {
-  PASS:   {cls: "b-met",       ko: "참여에 문제 없음"},
-  FAIL:   {cls: "b-notmet",    ko: "참여 불가 사유"},
-  REVIEW: {cls: "b-uncertain", ko: "확인 필요"}
+  PASS:   {cls: "b-met",       ko: "참여에 문제 없음", en: "no barrier"},
+  FAIL:   {cls: "b-notmet",    ko: "참여 불가 사유",   en: "blocks enrollment"},
+  REVIEW: {cls: "b-uncertain", ko: "확인 필요",        en: "needs confirmation"}
 };
-var UTYPE_KO = {
-  MISSING: "정보 없음", STALE: "정보 오래됨", INSUFFICIENT_EVIDENCE: "근거 불충분",
-  AMBIGUOUS: "표현 모호", CONFLICTING: "근거 충돌", BOUNDARY: "경계값",
-  CLINICAL_JUDGMENT: "전문가 판단", NOT_APPLICABLE: "해당 없음",
-  CALCULABLE: "계산 가능", DEFINITE_EXCLUSION: "부적격 확정"
+var UTYPE_LABEL = {
+  MISSING: {ko: "정보 없음", en: "missing info"},
+  STALE: {ko: "정보 오래됨", en: "outdated info"},
+  INSUFFICIENT_EVIDENCE: {ko: "근거 불충분", en: "weak evidence"},
+  AMBIGUOUS: {ko: "표현 모호", en: "ambiguous wording"},
+  CONFLICTING: {ko: "근거 충돌", en: "conflicting evidence"},
+  BOUNDARY: {ko: "경계값", en: "borderline value"},
+  CLINICAL_JUDGMENT: {ko: "전문가 판단", en: "clinical judgment"},
+  NOT_APPLICABLE: {ko: "해당 없음", en: "not applicable"},
+  CALCULABLE: {ko: "계산 가능", en: "computable"},
+  DEFINITE_EXCLUSION: {ko: "부적격 확정", en: "definite exclusion"}
 };
-var ACTION_KO = {
-  ASK: "질문", RETRIEVE: "기록 검색", REQUEST_LATEST: "최신 검사 요청",
-  CALCULATE: "계산", VERIFY: "근거 재확인", PROTOCOL_REVIEW: "원문 재확인",
-  ESCALATE: "전문가 이관", IGNORE: "영향 없음", STOP: "중단"
+var ACTION_LABEL = {
+  ASK: {ko: "질문", en: "ask"},
+  RETRIEVE: {ko: "기록 검색", en: "search records"},
+  REQUEST_LATEST: {ko: "최신 검사 요청", en: "request latest labs"},
+  CALCULATE: {ko: "계산", en: "calculate"},
+  VERIFY: {ko: "근거 재확인", en: "re-verify evidence"},
+  PROTOCOL_REVIEW: {ko: "원문 재확인", en: "re-read protocol"},
+  ESCALATE: {ko: "전문가 이관", en: "escalate to a human"},
+  IGNORE: {ko: "영향 없음", en: "no impact"},
+  STOP: {ko: "중단", en: "stop"}
 };
-var FIT_LABEL_KO = {
-  therapeutic: "치료 목적", supportive: "지지·완화",
-  care_delivery: "의료전달·관리", observational: "관찰 연구"
+var FIT_LABEL = {
+  therapeutic: {ko: "치료 목적", en: "therapeutic"},
+  supportive: {ko: "지지·완화", en: "supportive/palliative"},
+  care_delivery: {ko: "의료전달·관리", en: "care delivery"},
+  observational: {ko: "관찰 연구", en: "observational"}
 };
+function fitLabel(v){
+  var m = FIT_LABEL[v];
+  if (!m) return v || t("fitUnknown");
+  return LANG === "en" ? m.en : m.ko;
+}
+var NEED_KEY = {treatment: "needTreatment", diagnosis: "needDiagnosis",
+                monitoring: "needMonitoring", comfort: "needComfort"};
+function needLabel(need){
+  // need = the served patient_need object; EN from the English enum, KO from the served gloss
+  if (!need) return "";
+  if (LANG === "ko" && need.need_ko) return need.need_ko;
+  if (NEED_KEY[need.need]) return t(NEED_KEY[need.need]);
+  return need.need || need.need_ko || "";
+}
+function needLabelByName(name){
+  return NEED_KEY[name] ? t(NEED_KEY[name]) : (name || "");
+}
+function rankNum(n){ return t("rankNum", {n: n}); }
 var MAX_ANSWER_LEN = 600;
 var MAX_BATCH_ANSWERS = 5;
 
@@ -497,6 +873,7 @@ var roundCounter = 0;
 var selectedQuestion = null; // question text
 var answerInFlight = false;
 var rankView = {order: [], round: 0, stale: false};
+var currentModalNct = null;
 
 function nowLabel(){
   var d = new Date();
@@ -506,6 +883,10 @@ function deepCopy(x){ return JSON.parse(JSON.stringify(x)); }
 function escapeHtml(s){
   return String(s == null ? "" : s)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function truncateText(s, n){
+  s = String(s == null ? "" : s);
+  return s.length > n ? s.slice(0, n - 1) + "…" : s;
 }
 function el(tag, cls, html){
   var e = document.createElement(tag);
@@ -517,14 +898,14 @@ function nctLinkHtml(nct, extraCls){
   // NCT 형식 화이트리스트 통과 시에만 링크 — 서버 텍스트를 URL로 신뢰하지 않는다
   if (/^NCT\d+$/.test(String(nct || ""))){
     return '<a href="https://clinicaltrials.gov/study/' + nct + '" target="_blank" rel="noopener"' +
-      ' class="' + (extraCls || "") + '" title="ClinicalTrials.gov 원문 프로토콜 열기">' + escapeHtml(nct) + ' ↗</a>';
+      ' class="' + (extraCls || "") + '" title="' + escapeHtml(t("nctTip")) + '">' + escapeHtml(nct) + ' ↗</a>';
   }
   return escapeHtml(nct);
 }
 function phaseLabel(v){
-  var t = String(v == null ? "" : v).toUpperCase().replace(/[\s_]/g, "");
-  if (!t || t === "NA" || t === "N/A" || t === "NONE" || t === "NULL") return "Phase NA";
-  return "Phase " + t.replace(/PHASE/g, "").replace(/EARLY/g, "Early ");
+  var p = String(v == null ? "" : v).toUpperCase().replace(/[\s_]/g, "");
+  if (!p || p === "NA" || p === "N/A" || p === "NONE" || p === "NULL") return "Phase NA";
+  return "Phase " + p.replace(/PHASE/g, "").replace(/EARLY/g, "Early ");
 }
 
 // ---------------------------------------------------------------------------
@@ -540,14 +921,14 @@ var TAG_STOPWORDS = (function(){
   return o;
 })();
 function normTagText(s){
-  var t = String(s == null ? "" : s).trim().toLowerCase().replace(/\s+/g, " ");
-  return t.replace(/[.,;:!?)\]}。，]+$/, "").trim();
+  var x = String(s == null ? "" : s).trim().toLowerCase().replace(/\s+/g, " ");
+  return x.replace(/[.,;:!?)\]}。，]+$/, "").trim();
 }
 function tagTokens(s){
   var out = {};
-  (normTagText(s).match(/[a-z0-9%.]+/g) || []).forEach(function(t){
-    if (TAG_STOPWORDS[t]) return;
-    if (t.length >= 3 || /[0-9]/.test(t)) out[t] = true;
+  (normTagText(s).match(/[a-z0-9%.]+/g) || []).forEach(function(tok){
+    if (TAG_STOPWORDS[tok]) return;
+    if (tok.length >= 3 || /[0-9]/.test(tok)) out[tok] = true;
   });
   return out;
 }
@@ -566,21 +947,21 @@ function getEffect(c){
   if (c && c.effect) return String(c.effect).toUpperCase();
   return null;
 }
-function trialIsBlocked(t){
-  if (!t) return true;
-  if (t.eligibility === "INELIGIBLE") return true;
-  return (t.criteria || []).some(function(c){ return getEffect(c) === "FAIL"; });
+function trialIsBlocked(trial){
+  if (!trial) return true;
+  if (trial.eligibility === "INELIGIBLE") return true;
+  return (trial.criteria || []).some(function(c){ return getEffect(c) === "FAIL"; });
 }
 // 아직 답으로 움직일 수 있는 기준: 미확정 판정 + 막히지 않은 시험 + STOP 아님
 function collectOpenCriteria(trials){
   var out = [];
-  (trials || []).forEach(function(t){
-    if (trialIsBlocked(t)) return;
-    (t.criteria || []).forEach(function(c){
+  (trials || []).forEach(function(trial){
+    if (trialIsBlocked(trial)) return;
+    (trial.criteria || []).forEach(function(c){
       var v = (c.verdict || "").toUpperCase();
       if (v !== "UNKNOWN" && v !== "UNCERTAIN") return;
       if (String(c.action || "").toUpperCase() === "STOP") return;
-      out.push({nct: t.nct_id, title: t.title || t.nct_id, text: c.text || "",
+      out.push({nct: trial.nct_id, title: trial.title || trial.nct_id, text: c.text || "",
                 tokens: tagTokens(c.text || ""), crit: c});
     });
   });
@@ -601,7 +982,7 @@ var GENERIC_NEGATIVES = {
   "해당 사항 없음": 1, "해당사항 없음": 1, "기록 없음/확인 불가": 1, "기록 없음": 1,
   "확인 불가": 1, "모두 정상 범위": 1, "정상 범위": 1, "없음": 1
 };
-function isGenericNegative(t){ return !!GENERIC_NEGATIVES[normTagText(t)]; }
+function isGenericNegative(x){ return !!GENERIC_NEGATIVES[normTagText(x)]; }
 function shortNct(n){
   n = String(n || "");
   return n.length > 11 ? n.slice(0, 11) + "…" : n;
@@ -622,8 +1003,9 @@ function roundsDone(){
 }
 function computeLiveStatus(){
   var n = pendingQuestions().length;
-  if (n > 0) return {text: "확인 질문 " + n + "개 대기중", tab: "chat"};
-  return {text: "확인 질문 모두 해결됨 · 순위 확인 가능", tab: "ranking"};
+  if (n === 1) return {text: t("liveWaitingOne"), tab: "chat"};
+  if (n > 0) return {text: t("liveWaiting", {n: n}), tab: "chat"};
+  return {text: t("liveDone"), tab: "ranking"};
 }
 function renderLiveStatus(){
   var s = computeLiveStatus();
@@ -633,20 +1015,101 @@ function renderLiveStatus(){
 }
 
 // ---------------------------------------------------------------------------
-// 탭 + LIVE 칩
+// 탭 + LIVE 칩 + 언어 토글
 // ---------------------------------------------------------------------------
-document.querySelectorAll(".tab").forEach(function(t){
-  t.addEventListener("click", function(){
+document.querySelectorAll(".tab").forEach(function(tab){
+  tab.addEventListener("click", function(){
     document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("active"); });
     document.querySelectorAll(".view").forEach(function(x){ x.classList.remove("active"); });
-    t.classList.add("active");
-    document.getElementById("v-" + t.dataset.v).classList.add("active");
+    tab.classList.add("active");
+    document.getElementById("v-" + tab.dataset.v).classList.add("active");
   });
 });
 document.getElementById("liveStatus").addEventListener("click", function(){
   var targetTab = document.getElementById("liveStatus").dataset.tab;
   var tabEl = document.querySelector('.tab[data-v="' + targetTab + '"]');
   if (tabEl) tabEl.click();
+});
+
+// 언어 전환: 사전 기반 chrome + 구조화 서버 데이터의 언어 인지 재렌더 (서버 재호출 없음)
+function applyStaticI18n(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("#langSeg button").forEach(function(b){
+    b.classList.toggle("on", b.dataset.lang === LANG);
+  });
+  var TAB_KEYS = {board: "tabBoard", chat: "tabChat", ranking: "tabRank", history: "tabHist"};
+  document.querySelectorAll(".tab").forEach(function(tab){
+    var key = TAB_KEYS[tab.dataset.v];
+    if (!key) return;
+    if (tab.dataset.v === "chat"){
+      var n = tab.querySelector("#qCountBadge") ? tab.querySelector("#qCountBadge").textContent : "0";
+      tab.innerHTML = escapeHtml(t(key)) + ' <span class="tabbadge" id="qCountBadge">' + escapeHtml(n) + '</span>';
+    } else {
+      tab.textContent = t(key);
+    }
+  });
+  ["ELIGIBLE", "UNCERTAIN", "INELIGIBLE"].forEach(function(colKey){
+    var h3 = document.querySelector('.col[data-col="' + colKey + '"] h3');
+    if (!h3) return;
+    var count = h3.querySelector(".count") ? h3.querySelector(".count").textContent : "0";
+    h3.title = t("colTip" + colKey);
+    h3.innerHTML = escapeHtml(t("col" + colKey)) +
+      (LANG === "ko" ? '<span class="en">' + colKey + '</span>' : "") +
+      ' <span class="count">' + escapeHtml(count) + '</span>';
+  });
+  document.getElementById("secPatient").textContent = t("secPatient");
+  document.getElementById("secBoard").textContent = t("secBoard");
+  document.getElementById("boardHint").textContent = t("boardHint");
+  document.getElementById("bannerLbl").textContent = t("bannerLbl");
+  document.getElementById("modalFootHint").textContent = t("footHint");
+  document.getElementById("modalCloseBtn").textContent = t("close");
+  document.getElementById("modalClose").setAttribute("aria-label", t("close"));
+  document.getElementById("round0Label").textContent = t("round0");
+  document.getElementById("chatHead").textContent = t("chatHead");
+  document.getElementById("refreshBtn").textContent = t("refresh");
+  document.getElementById("footerBox").innerHTML =
+    escapeHtml(t("footMain")) +
+    '<span class="compliance">' + escapeHtml(t("footCompliance")) + '</span>' +
+    '<span class="doclinks">' +
+    '<a href="/agent_orchestration.html" target="_blank" rel="noopener">' + escapeHtml(t("footLinkAgents")) + '</a>' +
+    '<a href="/criteria_map.html" target="_blank" rel="noopener">' + escapeHtml(t("footLinkGate")) + '</a></span>';
+  if (!cur){
+    document.getElementById("statusText").textContent = t("loading");
+    pdBtn.innerHTML = escapeHtml(t("pdLoading")) + ' <span class="chev">▾</span>';
+    document.getElementById("boardLoadNote").textContent = t("loadingData");
+    document.getElementById("batchNote").textContent = t("batchNote");
+    document.getElementById("batchBtn").textContent = t("batchBtn", {n: 0});
+    document.getElementById("rankStatus").textContent = t("rankStatusInit");
+  }
+  applyDraggable();
+}
+function setLang(lang){
+  if (lang !== "en" && lang !== "ko") return;
+  if (LANG === lang) return;
+  LANG = lang;
+  try { localStorage.setItem("board_lang", lang); } catch(e){}
+  applyStaticI18n();
+  if (!cur) return;
+  var saved = captureSelections();
+  renderPatientBtn();
+  renderPatientMenu();
+  renderPatientDetail();
+  renderNeedStrip();
+  renderKanban();
+  renderChatAll();
+  restoreSelections(saved);
+  updateBatchBar();
+  renderRuleBox();
+  var keepOrder = rankView.order.slice();  // 언어 전환이 다음 최신화의 델타 기준선을 지우지 않도록
+  renderRanking(false);
+  rankView.order = keepOrder;
+  renderRankStatusText();
+  renderHistory();
+  renderLiveStatus();
+  if (overlay.classList.contains("open") && currentModalNct) openModal(currentModalNct);
+}
+document.querySelectorAll("#langSeg button").forEach(function(b){
+  b.addEventListener("click", function(){ setLang(b.dataset.lang); });
 });
 
 // ---------------------------------------------------------------------------
@@ -663,7 +1126,7 @@ function renderPatientMenu(){
     var group = String(p.id || "").charAt(0);
     if (lastGroup !== null && group !== lastGroup){
       pdMenu.appendChild(el("div", "pdsep"));
-      pdMenu.appendChild(el("div", "pdgrouplabel", "추가 데모 환자"));
+      pdMenu.appendChild(el("div", "pdgrouplabel", escapeHtml(t("pdMore"))));
     }
     lastGroup = group;
     var item = el("div", "pditem" + (cur && cur.id === p.id ? " sel" : ""));
@@ -678,7 +1141,7 @@ function renderPatientMenu(){
   });
 }
 function renderPatientBtn(){
-  if (!cur){ pdBtn.innerHTML = '환자 선택 <span class="chev">▾</span>'; return; }
+  if (!cur){ pdBtn.innerHTML = escapeHtml(t("pdSelect")) + ' <span class="chev">▾</span>'; return; }
   pdBtn.innerHTML = escapeHtml(cur.id) + ' <span class="pdmeta">' + escapeHtml(cur.condition || "") + '</span> <span class="chev">▾</span>';
 }
 
@@ -686,10 +1149,12 @@ function renderPatientBtn(){
 // 환자 상세 그리드 — trace.extraction([{name,value,evidence_quote}])을 쉬운 말 그룹으로 매핑
 // ---------------------------------------------------------------------------
 var EXTRACT_GROUPS = [
-  {id: "age", label: "나이"}, {id: "sex", label: "성별"}, {id: "diagnosis", label: "진단"},
-  {id: "symptom", label: "증상"}, {id: "exam", label: "진찰 소견"}, {id: "lab", label: "검사 수치"},
-  {id: "imaging", label: "영상 소견"}, {id: "treatment", label: "치료 이력"},
-  {id: "history", label: "병력·위험 요인"}, {id: "other", label: "기타 기록"}
+  {id: "age", ko: "나이", en: "Age"}, {id: "sex", ko: "성별", en: "Sex"},
+  {id: "diagnosis", ko: "진단", en: "Diagnosis"},
+  {id: "symptom", ko: "증상", en: "Symptoms"}, {id: "exam", ko: "진찰 소견", en: "Exam findings"},
+  {id: "lab", ko: "검사 수치", en: "Lab results"},
+  {id: "imaging", ko: "영상 소견", en: "Imaging"}, {id: "treatment", ko: "치료 이력", en: "Treatment history"},
+  {id: "history", ko: "병력·위험 요인", en: "History & risk factors"}, {id: "other", ko: "기타 기록", en: "Other records"}
 ];
 function extractionGroup(name){
   var n = String(name || "").toLowerCase();
@@ -715,75 +1180,103 @@ function renderPatientDetail(){
     if (!it || it.value == null || it.value === "") return;
     var g = extractionGroup(it.name);
     var val = String(it.value);
-    if (g === "sex" && SEX_KO[val.toLowerCase()]) val = SEX_KO[val.toLowerCase()];
+    if (g === "sex" && LANG === "ko" && SEX_KO[val.toLowerCase()]) val = SEX_KO[val.toLowerCase()];
     if (g === "other") val = prettifyName(it.name) + ": " + val;
     (groups[g] = groups[g] || []).push(val);
   });
   var html = "";
   EXTRACT_GROUPS.forEach(function(g){
     if (!groups[g.id] || !groups[g.id].length) return;
-    html += '<div class="field"><div class="k">' + escapeHtml(g.label) + '</div><div class="v">' +
+    html += '<div class="field"><div class="k">' + escapeHtml(LANG === "en" ? g.en : g.ko) + '</div><div class="v">' +
       escapeHtml(groups[g.id].join(" · ")) + '</div></div>';
   });
-  if (!html) html = '<div class="field"><div class="k">기록</div><div class="v">' + escapeHtml(cur.patientText || "") + '</div></div>';
-  html += '<div class="pdetail-tag">[정보 추출 단계에서 자동 요약된 가상 데이터입니다 — 실제 환자 기록 아님]</div>';
+  if (!html) html = '<div class="field"><div class="k">' + escapeHtml(t("recordLabel")) + '</div><div class="v">' + escapeHtml(cur.patientText || "") + '</div></div>';
+  html += '<div class="pdetail-tag">' + escapeHtml(t("extractionTag")) + '</div>';
   box.innerHTML = html;
 }
 function renderNeedStrip(){
   var box = document.getElementById("needstrip");
   var need = cur.need;
-  if (!need || !need.need_ko){ box.style.display = "none"; box.innerHTML = ""; return; }
+  if (!need || !(need.need || need.need_ko)){ box.style.display = "none"; box.innerHTML = ""; return; }
   var hedge = need.confidence === "low"
-    ? '<span class="ns-hedge" title="환자 기록의 단서가 약해 분류 확신이 낮습니다. 사람이 한 번 확인하는 것이 안전합니다.">확신 낮음 — 검토 권장</span>'
+    ? '<span class="ns-hedge" title="' + escapeHtml(t("hedgeTip")) + '">' + escapeHtml(t("hedge")) + '</span>'
     : "";
-  var reason = (need.reasons && need.reasons.length) ? need.reasons[0] : "";
+  var reason = (need.reasons && need.reasons.length) ? String(need.reasons[0]) : "";
+  var reasonHtml = "";
+  if (reason){
+    if (LANG === "en"){
+      // reasons[] is authored in Korean by the classifier — never machine-translated.
+      // EN mode surfaces the literal quoted evidence phrase the rule fired on.
+      var qm = reason.match(/'([^']+)'/);
+      if (qm) reasonHtml = '<div class="ns-reason">' + escapeHtml(t("needWhy", {q: qm[1]})) + '</div>';
+    } else {
+      reasonHtml = '<div class="ns-reason">' + escapeHtml(t("needWhy", {q: reason})) + '</div>';
+    }
+  }
   box.innerHTML =
-    '<span class="ns-label">이 환자에게 지금 필요한 것</span>' +
-    '<div class="ns-need">' + escapeHtml(need.need_ko) + hedge + '</div>' +
-    (reason ? '<div class="ns-reason">왜? ' + escapeHtml(reason) + '</div>' : "") +
-    '<div class="ns-link">추천 순위의 "도움이 되는가"는 이 필요와 각 시험의 목적을 맞춰 본 결과입니다.</div>';
+    '<span class="ns-label">' + escapeHtml(t("needLabel")) + '</span>' +
+    '<div class="ns-need">' + escapeHtml(needLabel(need)) + hedge + '</div>' +
+    reasonHtml +
+    '<div class="ns-link">' + escapeHtml(t("needLink")) + '</div>';
   box.style.display = "block";
 }
 
 // ---------------------------------------------------------------------------
 // 칸반 — 3칼럼 적격성 보드. 드래그 = 사람 검토 오버라이드(표시 전용), 판정은 절대 바꾸지 않음.
 // ---------------------------------------------------------------------------
-function displayCol(t){
-  return (cur.overrides && cur.overrides[t.nct_id]) || eligMeta(t.eligibility).col;
+function displayCol(trial){
+  return (cur.overrides && cur.overrides[trial.nct_id]) || eligMeta(trial.eligibility).col;
 }
 var dragged = null;
+var ACTION_DIGEST_LABEL = {
+  en: {ASK: "ask", VERIFY: "verify", ESCALATE: "refer to expert", REQUEST_LATEST: "request latest", STOP: "closed", CALCULATE: "calculate", PROTOCOL_REVIEW: "protocol review"},
+  ko: {ASK: "질문", VERIFY: "재확인", ESCALATE: "전문가 이관", REQUEST_LATEST: "최신 검사", STOP: "중단", CALCULATE: "계산", PROTOCOL_REVIEW: "프로토콜 검토"}
+};
+function actionDigestHtml(trial){
+  // what remains, by next action -- the diagnose-then-act layer on the first screen
+  var counts = {};
+  (trial.criteria || []).forEach(function(c){
+    if ((c.verdict === "UNKNOWN" || c.verdict === "UNCERTAIN") && c.action && c.action !== "STOP" && c.action !== "IGNORE"){
+      counts[c.action] = (counts[c.action] || 0) + 1;
+    }
+  });
+  var keys = Object.keys(counts);
+  if (!keys.length) return "";
+  var lab = ACTION_DIGEST_LABEL[LANG] || ACTION_DIGEST_LABEL.en;
+  var parts = keys.map(function(k){ return (lab[k] || k.toLowerCase()) + " " + counts[k]; });
+  return '<div class="carddigest">' + escapeHtml(t("digestLead") + parts.join(" · ")) + '</div>';
+}
 function renderKanban(){
   var byCol = {ELIGIBLE: [], UNCERTAIN: [], INELIGIBLE: []};
   (cur.trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); })
-    .forEach(function(t){ byCol[displayCol(t)].push(t); });
+    .forEach(function(trial){ byCol[displayCol(trial)].push(trial); });
   ["ELIGIBLE", "UNCERTAIN", "INELIGIBLE"].forEach(function(colKey){
     var wrap = document.querySelector('[data-cards="' + colKey + '"]');
     var col = document.querySelector('.col[data-col="' + colKey + '"]');
     wrap.innerHTML = "";
     col.querySelector(".count").textContent = byCol[colKey].length;
     if (!byCol[colKey].length){
-      wrap.appendChild(el("div", "colempty", colKey === "ELIGIBLE"
-        ? "아직 적격 확정된 시험 없음<br>확인 질문이 해소되면 여기로 이동합니다"
-        : "해당하는 시험 없음"));
+      wrap.appendChild(el("div", "colempty", colKey === "ELIGIBLE" ? t("emptyEligible") : escapeHtml(t("emptyCol"))));
       return;
     }
-    byCol[colKey].forEach(function(t){
+    byCol[colKey].forEach(function(trial){
       var card = el("div", "kcard");
-      card.dataset.nct = t.nct_id;
-      var ovr = cur.overrides[t.nct_id]
-        ? '<span class="ovr" title="사람이 드래그로 옮긴 표시 위치입니다. 판정 로직의 결과(' +
-          escapeHtml(eligMeta(t.eligibility).ko) + ')는 바뀌지 않았습니다.">사람 검토 이동</span>'
+      card.dataset.nct = trial.nct_id;
+      var ovr = cur.overrides[trial.nct_id]
+        ? '<span class="ovr" title="' + escapeHtml(t("ovrTip", {v: eligLabel(trial.eligibility)})) + '">' +
+          escapeHtml(t("ovrChip")) + '</span>'
         : "";
+      var reasonLine = rankReasonText(trial);
       card.innerHTML =
-        '<div class="name">' + escapeHtml(t.title || t.nct_id) + '</div>' +
-        '<div class="cardmeta"><span class="rankchip" title="추천 순위">' + (t.rank || "?") + '위</span>' +
-        '<span class="nct mono">' + nctLinkHtml(t.nct_id) + '</span>' + ovr + '</div>' +
-        (t.rank_reason ? '<div class="reason" title="' + escapeHtml(t.rank_reason) + '">' + escapeHtml(t.rank_reason) + '</div>' : "") +
-        '<div class="hint">클릭 → 세부 근거 보기</div>';
+        '<div class="name">' + escapeHtml(trial.title || trial.nct_id) + '</div>' +
+        '<div class="cardmeta"><span class="rankchip">' + escapeHtml(rankNum(trial.rank || "?")) + '</span>' +
+        '<span class="nct mono">' + nctLinkHtml(trial.nct_id) + '</span>' + ovr + '</div>' +
+        (reasonLine ? '<div class="reason" title="' + escapeHtml(reasonLine) + '">' + escapeHtml(reasonLine) + '</div>' : "") +
+        actionDigestHtml(trial);
       card.addEventListener("click", function(e){
         if (dragged) return;
         if (e.target.closest("a")) return; // NCT 원문 링크는 링크대로
-        openModal(t.nct_id);
+        openModal(trial.nct_id);
       });
       card.addEventListener("dragstart", function(e){
         if (!dragEnable.checked){ e.preventDefault(); return; }
@@ -802,9 +1295,7 @@ var editWrap = document.getElementById("edittoggle");
 function applyDraggable(){
   var on = dragEnable.checked;
   document.querySelectorAll(".kcard").forEach(function(c){ c.draggable = on; });
-  toggleLabel.textContent = on
-    ? "카드 이동 켜짐 — 드래그는 사람 검토 오버라이드로 기록되며 판정은 바뀌지 않습니다"
-    : "카드 이동 잠김 — 토글을 켜면 드래그로 사람 검토 오버라이드 기록";
+  toggleLabel.textContent = on ? t("toggleOn") : t("toggleOff");
   editWrap.classList.toggle("on", on);
 }
 dragEnable.addEventListener("change", applyDraggable);
@@ -819,15 +1310,15 @@ document.querySelectorAll(".col").forEach(function(col){
     if (!dragEnable.checked || !dragged) return;
     e.preventDefault(); col.classList.remove("dragover");
     var nct = dragged.dataset.nct;
-    var t = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
-    if (!t) return;
-    var from = displayCol(t), to = col.dataset.col;
+    var trial = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
+    if (!trial) return;
+    var from = displayCol(trial), to = col.dataset.col;
     if (from === to) return;
     // 표시 전용 오버라이드 — 서버 판정과 같은 칼럼으로 되돌리면 오버라이드 해제
-    if (to === eligMeta(t.eligibility).col) delete cur.overrides[nct];
+    if (to === eligMeta(trial.eligibility).col) delete cur.overrides[nct];
     else cur.overrides[nct] = to;
     events.push({kind: "override", seq: ++histSeq, id: histSeq, nct: nct,
-      title: t.title || nct, from: from, to: to, timeLabel: nowLabel(), undone: false});
+      title: trial.title || nct, from: from, to: to, timeLabel: nowLabel(), undone: false});
     renderKanban();
     renderHistory();
   });
@@ -840,20 +1331,24 @@ var overlay = document.getElementById("overlay");
 function critBadgeHtml(c){
   var v = (c.verdict || "UNKNOWN").toUpperCase();
   var vm = VERDICT_META[v] || VERDICT_META.UNKNOWN;
-  var html = '<span class="badge ' + vm.cls + '" title="기준 단위 판정: 기준 문장이 환자에게 해당하는지 (' +
-    escapeHtml(vm.ko) + ')">' + escapeHtml(v.replace("_", " ")) + " · " + escapeHtml(vm.ko) + '</span>';
+  var gloss = LANG === "en" ? vm.en : vm.ko;
+  var html = '<span class="badge ' + vm.cls + '" title="' + escapeHtml(t("verdictTip", {v: gloss})) + '">' +
+    escapeHtml(v.replace("_", " ")) + " · " + escapeHtml(gloss) + '</span>';
   var e = getEffect(c);
   if (e && EFFECT_META[e]){
-    html += '<span class="badge ' + EFFECT_META[e].cls + '" title="적격성 효과: 이 판정이 참여 가능 여부에 미치는 영향">' +
-      escapeHtml(e) + " · " + escapeHtml(EFFECT_META[e].ko) + '</span>';
+    html += '<span class="badge ' + EFFECT_META[e].cls + '" title="' + escapeHtml(t("effectTip")) + '">' +
+      escapeHtml(e) + " · " + escapeHtml(LANG === "en" ? EFFECT_META[e].en : EFFECT_META[e].ko) + '</span>';
   }
   if (c.action){
-    var cause = c.uncertainty_type ? (UTYPE_KO[c.uncertainty_type] || c.uncertainty_type) : "원인 미분류";
-    var act = ACTION_KO[String(c.action).toUpperCase()] || c.action;
+    var causeMeta = c.uncertainty_type ? UTYPE_LABEL[c.uncertainty_type] : null;
+    var cause = causeMeta ? (LANG === "en" ? causeMeta.en : causeMeta.ko)
+      : (c.uncertainty_type || t("causeUnknown"));
+    var actMeta = ACTION_LABEL[String(c.action).toUpperCase()];
+    var act = actMeta ? (LANG === "en" ? actMeta.en : actMeta.ko) : c.action;
     var trialStop = String(c.action).toUpperCase() === "STOP" && c.action_scope === "trial";
-    var title = (trialStop && c.action_reason) ? c.action_reason : "불확실성의 원인과, 정책이 고른 다음 행동";
+    var title = (trialStop && c.action_reason) ? c.action_reason : t("actionTip");
     html += '<span class="action-chip' + (trialStop ? " stop" : "") + '" title="' + escapeHtml(title) + '">' +
-      escapeHtml(cause) + " → " + escapeHtml(act) + (trialStop ? " (시험 단위)" : "") + '</span>';
+      escapeHtml(cause) + " → " + escapeHtml(act) + (trialStop ? escapeHtml(t("trialLevelSuffix")) : "") + '</span>';
   }
   return html;
 }
@@ -865,40 +1360,68 @@ function findLinkedPendingQuestion(critText){
   }
   return null;
 }
+// 참여까지 남은 것 — 기준 배열에서 코드가 세는 막는 기준/확인 필요 기준 수
+function pathCounts(trial){
+  var blocking = 0, open = 0;
+  (trial.criteria || []).forEach(function(c){
+    if (getEffect(c) === "FAIL"){ blocking += 1; return; }
+    var v = (c.verdict || "").toUpperCase();
+    if (v === "UNKNOWN" || v === "UNCERTAIN") open += 1;
+  });
+  return {blocking: blocking, open: open};
+}
+function pathLineText(trial){
+  var pc = pathCounts(trial);
+  if (trial.eligibility === "INELIGIBLE" || pc.blocking > 0){
+    return pc.blocking === 1 ? t("pathClosedOne") : t("pathClosed", {n: pc.blocking});
+  }
+  if (pc.open > 0) return t("pathOpen", {b: pc.blocking, o: pc.open});
+  return t("pathClear");
+}
 function openModal(nct){
-  var t = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
-  if (!t) return;
-  document.getElementById("modalName").textContent = t.title || t.nct_id;
-  document.getElementById("modalNct").innerHTML = nctLinkHtml(t.nct_id) +
-    (t.phase ? ' · ' + escapeHtml(phaseLabel(t.phase)) : "");
-  var em = eligMeta(t.eligibility);
+  var trial = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
+  if (!trial) return;
+  currentModalNct = nct;
+  document.getElementById("modalName").textContent = trial.title || trial.nct_id;
+  var covLine = "";
+  if (trial.coverage && typeof trial.coverage.parsed === "number" && trial.coverage.raw_estimated > 0){
+    var covPct = trial.coverage.parsed / trial.coverage.raw_estimated;
+    covLine = ' · <span class="' + (covPct < 0.5 ? "covlow" : "") + '" title="' + escapeHtml(t("covTip")) + '">' +
+      escapeHtml(t("covLine", {m: trial.coverage.parsed, n: trial.coverage.raw_estimated})) + '</span>';
+  }
+  document.getElementById("modalNct").innerHTML = nctLinkHtml(trial.nct_id) +
+    (trial.phase ? ' · ' + escapeHtml(phaseLabel(trial.phase)) : "") + covLine;
+  var em = eligMeta(trial.eligibility);
   var banner = document.getElementById("verdictBanner");
   banner.className = "verdict-banner " + em.banner;
-  document.getElementById("verdictText").textContent = em.ko + " · " + (t.eligibility || "UNCERTAIN");
-  document.getElementById("verdictSummary").textContent = t.rationale || "";
+  document.getElementById("verdictText").textContent = LANG === "en"
+    ? em.en
+    : em.ko + " · " + (trial.eligibility || "UNCERTAIN");
+  document.getElementById("verdictSummary").textContent = trial.rationale || "";
+  document.getElementById("pathLine").textContent = pathLineText(trial);
   var body = document.getElementById("modalBody");
   body.innerHTML = "";
   var incN = 0, excN = 0;
-  (t.criteria || []).forEach(function(c){
+  (trial.criteria || []).forEach(function(c){
     var isInc = c.type === "inclusion";
-    var tag = isInc ? ("포함기준 " + String(++incN).padStart(2, "0")) : ("제외기준 " + String(++excN).padStart(2, "0"));
+    var tag = (isInc ? t("incTag") : t("excTag")) + " " + String(isInc ? ++incN : ++excN).padStart(2, "0");
     var row = el("div", "critdetail " + (isInc ? "inc" : "exc"));
     var evHtml = c.evidence
       ? '<div class="critevidence">"' + escapeHtml(c.evidence) + '"</div>'
-      : '<div class="critevidence">환자 기록에 근거 문장 없음</div>';
-    var linked = ((c.verdict === "UNCERTAIN" || c.verdict === "UNKNOWN") && !trialIsBlocked(t))
+      : '<div class="critevidence">' + escapeHtml(t("noEvidence")) + '</div>';
+    var linked = ((c.verdict === "UNCERTAIN" || c.verdict === "UNKNOWN") && !trialIsBlocked(trial))
       ? findLinkedPendingQuestion(c.text) : null;
     row.innerHTML =
-      '<div class="crittag" title="' + (isInc ? "이 조건에 해당해야 참여할 수 있습니다" : "이 조건에 해당하면 참여할 수 없습니다") + '">' + tag + '</div>' +
+      '<div class="crittag" title="' + escapeHtml(isInc ? t("incTip") : t("excTip")) + '">' + escapeHtml(tag) + '</div>' +
       '<div class="crittext">' + escapeHtml(c.text || "") + '</div>' +
       evHtml +
       (c.reasoning ? '<div class="critnote">' + escapeHtml(c.reasoning) + '</div>' : "") +
       '<div class="critfoot">' + critBadgeHtml(c) +
-      (linked ? '<button class="qlink" type="button">관련 확인 질문 보기 →</button>' : "") + '</div>';
+      (linked ? '<button class="qlink" type="button">' + escapeHtml(t("qlinkBtn")) + '</button>' : "") + '</div>';
     if (linked){
       row.querySelector(".qlink").addEventListener("click", function(){
         overlay.classList.remove("open");
-        goToQuestion(linked, t.nct_id);
+        goToQuestion(linked, trial.nct_id);
       });
     }
     body.appendChild(row);
@@ -914,6 +1437,10 @@ function goToQuestion(q, nct){
   restoreSelections(_sv); updateBatchBar();
   var tabEl = document.querySelector('.tab[data-v="chat"]');
   if (tabEl) tabEl.click();
+  setTimeout(function(){
+    var sel = document.querySelector('#chatscroll .qitem.sel');
+    if (sel) sel.scrollIntoView({block: "start"});
+  }, 60);
 }
 document.getElementById("modalClose").addEventListener("click", function(){ overlay.classList.remove("open"); });
 document.getElementById("modalCloseBtn").addEventListener("click", function(){ overlay.classList.remove("open"); });
@@ -945,16 +1472,16 @@ function renderTrialPills(){
   var openList = collectOpenCriteria(cur.trials);
   var pend = pendingQuestions();
   var allPill = el("div", "trialpill" + (selectedPill === "ALL" ? " sel" : ""));
-  allPill.innerHTML = "전체 <span class=\"pillcount\">" + pend.length + "</span>";
+  allPill.innerHTML = escapeHtml(t("pillAll")) + ' <span class="pillcount">' + pend.length + '</span>';
   allPill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = "ALL"; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
   box.appendChild(allPill);
   pillTrialNcts().forEach(function(nct){
     var count = pend.filter(function(q){
       return matchOpenCriteria(questionTokens(q), openList).ncts.indexOf(nct) >= 0;
     }).length;
-    var t = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
+    var trial = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
     var pill = el("div", "trialpill" + (selectedPill === nct ? " sel" : ""));
-    pill.title = t ? (t.title || nct) : nct;
+    pill.title = trial ? (trial.title || nct) : nct;
     pill.innerHTML = escapeHtml(nct) + ' <span class="pillcount">' + count + '</span>';
     pill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = nct; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
     box.appendChild(pill);
@@ -966,38 +1493,47 @@ function questionPriorityLine(q){
   var hasRank = typeof q.may_change_rank === "boolean";
   if (!hasTrials && !hasCrit && !hasRank) return "";
   if (hasTrials && hasCrit && q.affects_trials === 0 && q.affects_criteria === 0){
-    return '<div class="qprio">답해도 바뀌는 것 없음 · 지금 열려 있는 기준과 직접 연결된 항목이 없습니다 (우선순위 낮음)</div>';
+    return '<div class="qprio">' + escapeHtml(t("prioNone")) + '</div>';
   }
-  var parts = ["답하면 바뀌는 것"];
-  if (hasCrit) parts.push("기준 " + q.affects_criteria + "개 다시 판정" + (hasTrials ? " (시험 " + q.affects_trials + "개)" : ""));
-  else if (hasTrials) parts.push("시험 " + q.affects_trials + "개에 반영");
-  var line = parts.join(" · ");
+  var line = escapeHtml(t("prioLead")) + " ";
+  if (hasCrit){
+    line += escapeHtml(t("prioCrit", {c: q.affects_criteria}) +
+      (hasTrials ? t("prioCritTrials", {t: q.affects_trials}) : ""));
+  } else if (hasTrials){
+    line += escapeHtml(t("prioTrialsOnly", {t: q.affects_trials}));
+  }
   if (hasRank){
     line += ' · <span class="' + (q.may_change_rank ? "rank-yes" : "") + '">' +
-      (q.may_change_rank ? "추천 순위가 바뀔 수 있음" : "추천 순위는 그대로") + "</span>";
+      escapeHtml(q.may_change_rank ? t("rankYes") : t("rankNo")) + "</span>";
   }
   return '<div class="qprio">' + line + "</div>";
 }
 // 선택지 아래 작은 태그: 이 답이 지금 어떤 시험 판정에 쓰이는지 (매퍼 실시간 계산)
+function sameMatch(a, b){
+  return a.count === b.count && a.ncts.length === b.ncts.length &&
+    a.ncts.every(function(n, i){ return n === b.ncts[i]; });
+}
 function optionTagEl(optText, qTok, qMatch, openList){
   var generic = isGenericNegative(optText);
   var m = generic ? qMatch : matchOpenCriteria(unionTokens(tagTokens(optText), qTok), openList);
+  // one identical line repeated under every option is boilerplate: the question-level line
+  // (rendered once on the card) already says it -- tag an option only when it DIFFERS.
+  if (sameMatch(m, qMatch)) return null;
   var tag = document.createElement("span");
   if (!m.ncts.length){
     tag.className = "opt-tag none";
-    tag.textContent = "현재 열린 기준과 직접 연결 없음";
-    tag.title = "이 항목의 답으로 지금 다시 판정될 미확정 기준이 없습니다.";
+    tag.textContent = t("optNone");
+    tag.title = t("optNoneTip");
     return tag;
   }
   tag.className = "opt-tag";
-  var label = m.ncts.length === 1 ? m.ncts[0] : "시험 " + m.ncts.length + "개";
-  var rest = m.ncts.length === 1
-    ? " 판정에 쓰임 · 기준 " + m.count + "개"
-    : " 판정에 쓰임 (" + m.ncts.map(shortNct).join(", ") + ") · 기준 " + m.count + "개";
-  if (generic) rest += " · 질문 전체와 같은 기준을 닫습니다";
-  tag.textContent = "→ " + label + rest;
-  tag.title = "이 답이 판정에 쓰이는 시험: " + m.ncts.map(function(n){
-    return n + " (기준 " + m.byNct[n] + "개)";
+  var txt = m.ncts.length === 1
+    ? t("optUsedOne", {nct: m.ncts[0], c: m.count})
+    : t("optUsedMany", {n: m.ncts.length, list: m.ncts.map(shortNct).join(", "), c: m.count});
+  if (generic) txt += t("optGeneric");
+  tag.textContent = txt;
+  tag.title = t("optTipLead") + m.ncts.map(function(n){
+    return t("optTipItem", {nct: n, c: m.byNct[n]});
   }).join(", ");
   return tag;
 }
@@ -1006,15 +1542,30 @@ function buildPendingCard(q, openList){
   card.dataset.question = q.question;
   if (selectedQuestion === q.question) card.classList.add("sel");
   var fuBadge = q.followup
-    ? '<span class="fu-badge" title="앞선 답변을 보고 시스템이 추가로 확인이 필요하다고 판단해 만든 질문입니다.">추가 질문</span>'
+    ? '<span class="fu-badge" title="' + escapeHtml(t("fuBadgeTip")) + '">' + escapeHtml(t("fuBadge")) + '</span>'
     : "";
   card.innerHTML =
-    (q.field ? '<div class="qfield">' + escapeHtml(q.field) + '</div>' : "") +
+    (q.field ? '<div class="qfield" title="' + escapeHtml(q.field) + '">' + escapeHtml(prettifyName(q.field)) + '</div>' : "") +
     '<div class="qtext">' + escapeHtml(q.question) + fuBadge + '</div>' +
     (q.why ? '<div class="qwhy">' + escapeHtml(q.why) + '</div>' : "") +
     questionPriorityLine(q);
   var qTok = questionTokens(q);
   var qMatch = matchOpenCriteria(qTok, openList);
+  // single question-level line: which trials this question's answer feeds (client mapper).
+  // Suppressed when the server says the question DOES affect criteria but the mapper finds
+  // nothing (Korean-question/English-criterion token gap) -- never contradict the server line.
+  var serverSaysLinked = typeof q.affects_criteria === "number" && q.affects_criteria > 0;
+  if (qMatch.ncts.length){
+    var qml = el("div", "opt-tag");
+    qml.textContent = qMatch.ncts.length === 1
+      ? t("optUsedOne", {nct: qMatch.ncts[0], c: qMatch.count})
+      : t("optUsedMany", {n: qMatch.ncts.length, list: qMatch.ncts.map(shortNct).join(", "), c: qMatch.count});
+    card.appendChild(qml);
+  } else if (!serverSaysLinked){
+    var qml0 = el("div", "opt-tag none");
+    qml0.textContent = t("optNone");
+    card.appendChild(qml0);
+  }
   if (Array.isArray(q.options) && q.options.length){
     var optWrap = el("div", "opt-list");
     q.options.forEach(function(optText){
@@ -1027,7 +1578,8 @@ function buildPendingCard(q, openList){
       var span = el("span", "opt-text");
       span.textContent = String(optText);
       bodyDiv.appendChild(span);
-      bodyDiv.appendChild(optionTagEl(String(optText), qTok, qMatch, openList));
+      var _tag = optionTagEl(String(optText), qTok, qMatch, openList);
+      if (_tag) bodyDiv.appendChild(_tag);
       lab.appendChild(cb);
       lab.appendChild(bodyDiv);
       optWrap.appendChild(lab);
@@ -1037,9 +1589,7 @@ function buildPendingCard(q, openList){
   var input = document.createElement("input");
   input.type = "text";
   input.className = "qinput";
-  input.placeholder = (Array.isArray(q.options) && q.options.length)
-    ? "직접 입력 (선택 항목과 함께 반영됩니다)"
-    : "자유 서술로 입력 (검사 수치, 병력, 복용 약 등)";
+  input.placeholder = (Array.isArray(q.options) && q.options.length) ? t("phWithOptions") : t("phFree");
   input.maxLength = MAX_ANSWER_LEN;
   input.addEventListener("input", updateBatchBar);
   card.appendChild(input);
@@ -1064,7 +1614,7 @@ function renderChat(){
   // 완료된 라운드 (읽기 전용, 접힌 톤)
   roundsDone().forEach(function(r){
     var block = el("div", "roundblock done");
-    var head = el("div", "roundlabel", "✓ 라운드 " + r.n + " · 반영 완료");
+    var head = el("div", "roundlabel", escapeHtml(t("roundDone", {n: r.n})));
     block.appendChild(head);
     (r.qa || []).forEach(function(pair, i){
       var item = el("div", "qitem answered");
@@ -1072,10 +1622,10 @@ function renderChat(){
         '<div class="qanswer">' + escapeHtml(pair.answer) + '</div>';
       block.appendChild(item);
     });
-    var seg = ["판정 변화 " + (r.verdictChanges || []).length + "건",
-               "순위/적격 변동 " + (r.rankChanges || []).length + "건"];
-    if (r.followupCount) seg.push("추가 질문 " + r.followupCount + "개 생성");
-    var sys = el("div", "sysbubble", "이번 라운드 반영 결과: " + escapeHtml(seg.join(" · ")) +
+    var seg = [t("segVerdict", {n: (r.verdictChanges || []).length}),
+               t("segRank", {n: (r.rankChanges || []).length})];
+    if (r.followupCount) seg.push(t("segFu", {n: r.followupCount}));
+    var sys = el("div", "sysbubble", escapeHtml(t("roundResult", {s: seg.join(" · ")})) +
       (r.note ? "<br>" + escapeHtml(r.note) : ""));
     block.appendChild(sys);
     box.appendChild(block);
@@ -1089,29 +1639,35 @@ function renderChat(){
   var base = pend.filter(function(q){ return !q.followup; });
   var fups = pend.filter(function(q){ return q.followup; });
   var roundNo = roundsDone().length + 1;
+  // 선택지(options)는 시스템이 한국어로 생성한 원문 — EN 모드에서 한 번만 라벨 (기계번역 금지)
+  var optNoteText = t("optNote");
+  if (optNoteText && pend.some(function(q){ return Array.isArray(q.options) && q.options.length; })){
+    box.appendChild(el("div", "optnote", escapeHtml(optNoteText)));
+  }
   if (base.length){
     var block = el("div", "roundblock");
     block.appendChild(el("div", "roundlabel",
-      "라운드 " + roundNo + " · 확인 질문 <span class=\"progress\">(" + base.length + "개 대기)</span>"));
+      escapeHtml(t("roundPending", {n: roundNo})) + ' <span class="progress">' +
+      escapeHtml(t("roundWaitingCount", {n: base.length})) + '</span>'));
     base.forEach(function(q){ block.appendChild(buildPendingCard(q, openList)); });
     box.appendChild(block);
   }
   if (fups.length){
     var fblock = el("div", "roundblock");
-    fblock.appendChild(el("div", "roundlabel fu", "추가 질문 (답변을 보고 생성됨)"));
+    fblock.appendChild(el("div", "roundlabel fu", escapeHtml(t("fuRound"))));
     fups.forEach(function(q){ fblock.appendChild(buildPendingCard(q, openList)); });
     box.appendChild(fblock);
   }
   if (!pendAll.length){
-    var doneBlock = el("div", "roundcomplete", "✓ 모든 확인 질문이 해결되었습니다 — 재평가에 반영됨<br>" +
-      '<button class="gorank-btn" type="button">수정된 최종 순위 보러가기 →</button>');
+    var doneBlock = el("div", "roundcomplete", escapeHtml(t("allDone")) + "<br>" +
+      '<button class="gorank-btn" type="button">' + escapeHtml(t("goRank")) + '</button>');
     doneBlock.querySelector(".gorank-btn").addEventListener("click", function(){
       var tabEl = document.querySelector('.tab[data-v="ranking"]');
       if (tabEl) tabEl.click();
     });
     box.appendChild(doneBlock);
   } else if (!pend.length){
-    box.appendChild(el("div", "evempty", "이 시험과 연결된 대기 질문이 없습니다 — 전체 필을 선택해 보세요."));
+    box.appendChild(el("div", "evempty", escapeHtml(t("noPillQuestions"))));
   }
   // 선택 질문 기본값: 필터된 대기 질문의 첫 번째
   if (pend.length && (!selectedQuestion || !pend.some(function(q){ return q.question === selectedQuestion; }))){
@@ -1121,7 +1677,7 @@ function renderChat(){
     c.classList.toggle("sel", c.dataset.question === selectedQuestion);
   });
   document.getElementById("chatHead").textContent =
-    "확인 질문" + (selectedPill === "ALL" ? "" : " — " + selectedPill);
+    t("chatHead") + (selectedPill === "ALL" ? "" : " — " + selectedPill);
   box.scrollTop = box.scrollHeight;
   updateBatchBar();
 }
@@ -1129,17 +1685,18 @@ function renderEvidence(){
   var box = document.getElementById("evidencepane");
   var q = pendingQuestions().find(function(x){ return x.question === selectedQuestion; });
   if (!q){
-    box.innerHTML = "<h3>이 질문이 다시 판정하는 기준</h3>" +
-      '<div class="evempty">대기 중인 확인 질문이 없습니다. 질문에 답하면, 그 답과 연결된 기준만 다시 판정됩니다.</div>';
+    box.innerHTML = "<h3>" + escapeHtml(t("evHead")) + "</h3>" +
+      '<div class="evempty">' + escapeHtml(t("evNone")) + '</div>';
     return;
   }
   var openList = collectOpenCriteria(cur.trials);
   var m = matchOpenCriteria(questionTokens(q), openList);
-  var html = "<h3>이 질문이 다시 판정하는 기준</h3>" +
+  var html = "<h3>" + escapeHtml(t("evHead")) + "</h3>" +
     '<div class="evq">' + escapeHtml(q.question) + '</div>' +
     (q.why ? '<div class="evwhy">' + escapeHtml(q.why) + '</div>' : "");
   if (!m.items.length){
-    html += '<div class="evempty">이 질문과 직접 연결된 미확정 기준이 없습니다 — 답해도 바뀌는 것이 없습니다.</div>';
+    var serverLinked = typeof q.affects_criteria === "number" && q.affects_criteria > 0;
+    html += '<div class="evempty">' + escapeHtml(t(serverLinked ? "evLinkUnmapped" : "evNoLink")) + '</div>';
     box.innerHTML = html;
     return;
   }
@@ -1151,10 +1708,10 @@ function renderEvidence(){
     byNct[nct].forEach(function(oc){
       var c = oc.crit;
       html += '<div class="critdetail ' + (c.type === "inclusion" ? "inc" : "exc") + '">' +
-        '<div class="crittag">' + (c.type === "inclusion" ? "포함기준" : "제외기준") + '</div>' +
+        '<div class="crittag">' + escapeHtml(c.type === "inclusion" ? t("incTag") : t("excTag")) + '</div>' +
         '<div class="crittext">' + escapeHtml(c.text || "") + '</div>' +
         (c.evidence ? '<div class="critevidence">"' + escapeHtml(c.evidence) + '"</div>'
-                    : '<div class="critevidence">환자 기록에 근거 문장 없음</div>') +
+                    : '<div class="critevidence">' + escapeHtml(t("noEvidence")) + '</div>') +
         (c.reasoning ? '<div class="critnote">' + escapeHtml(c.reasoning) + '</div>' : "") +
         '<div class="critfoot">' + critBadgeHtml(c) + '</div></div>';
     });
@@ -1210,22 +1767,18 @@ function restoreSelections(saved){
     if (input && s.typed) input.value = s.typed;
   });
 }
-var BATCH_NOTE_DEFAULT = "고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.";
 function updateBatchBar(){
   var btn = document.getElementById("batchBtn");
   var note = document.getElementById("batchNote");
   if (answerInFlight) return;
   var pending = collectPendingAnswers();
   var n = Math.min(pending.length, MAX_BATCH_ANSWERS);
-  btn.textContent = "선택한 답변 모두 반영 (질문 " + n + "개)";
+  btn.textContent = t("batchBtn", {n: n});
   var tooLong = pending.slice(0, MAX_BATCH_ANSWERS).some(function(p){ return p.answer.length > MAX_ANSWER_LEN; });
   var msgs = [];
-  if (pending.length > MAX_BATCH_ANSWERS){
-    msgs.push("한 번에 질문 " + MAX_BATCH_ANSWERS + "개까지 반영됩니다 — 위에서부터 " + MAX_BATCH_ANSWERS +
-      "개를 먼저 반영하고, 남은 선택은 그대로 두었다가 이어서 반영하세요");
-  }
-  if (tooLong) msgs.push("답변 하나가 " + MAX_ANSWER_LEN + "자를 넘습니다 — 줄여 주세요");
-  note.textContent = msgs.length ? msgs.join(" · ") : BATCH_NOTE_DEFAULT;
+  if (pending.length > MAX_BATCH_ANSWERS) msgs.push(t("batchLimit", {m: MAX_BATCH_ANSWERS}));
+  if (tooLong) msgs.push(t("batchTooLong", {m: MAX_ANSWER_LEN}));
+  note.textContent = msgs.length ? msgs.join(" · ") : t("batchNote");
   btn.disabled = tooLong || n < 1;
 }
 function setAnswerControlsDisabled(disabled){
@@ -1241,8 +1794,8 @@ function submitBatch(){
   var btn = document.getElementById("batchBtn");
   var note = document.getElementById("batchNote");
   btn.disabled = true;
-  btn.textContent = "답변 반영 중";
-  note.textContent = "답변 반영 중 — 답과 연결된 기준만 다시 판정합니다";
+  btn.textContent = t("batchBusyBtn");
+  note.textContent = t("batchBusyNote");
 
   function unlock(){
     answerInFlight = false;
@@ -1251,7 +1804,7 @@ function submitBatch(){
   function recover(message){
     unlock();
     btn.disabled = false;
-    btn.textContent = "선택한 답변 모두 반영 (질문 " + pending.length + "개)";
+    btn.textContent = t("batchBtn", {n: pending.length});
     note.textContent = message;
   }
   var aborter = new AbortController();
@@ -1276,13 +1829,13 @@ function submitBatch(){
     signal: aborter.signal
   }).then(function(r){ return r.json(); }).then(function(data){
     clearTimeout(deadline);
-    if (data.error){ recover("오류: " + data.error); return; }
+    if (data.error){ recover(t("errPrefix") + data.error); return; }
     applyAnswerResponse(pending, data);
     unlock();
     updateBatchBar();
   }).catch(function(err){
     clearTimeout(deadline);
-    recover(err && err.name === "AbortError" ? "시간 초과 — 다시 시도해 주세요" : "오류: " + String(err));
+    recover(err && err.name === "AbortError" ? t("errTimeout") : t("errPrefix") + String(err));
   });
 }
 document.getElementById("batchBtn").addEventListener("click", submitBatch);
@@ -1297,20 +1850,20 @@ function applyAnswerResponse(pending, data){
   };
   pending.forEach(function(p){ cur.answered[p.question] = p.answer; });
   var prevState = {};
-  (cur.trials || []).forEach(function(t){
-    if (t.nct_id) prevState[t.nct_id] = {rank: t.rank, eligibility: t.eligibility, title: t.title};
+  (cur.trials || []).forEach(function(trial){
+    if (trial.nct_id) prevState[trial.nct_id] = {rank: trial.rank, eligibility: trial.eligibility, title: trial.title};
   });
   cur.trials = data.trials || cur.trials;
   cur.extendedRecord = data.extended_record || cur.extendedRecord;
   if (data.patient_need) cur.need = data.patient_need;
   var rankChanges = [];
-  (cur.trials || []).forEach(function(t){
-    var p = prevState[t.nct_id];
+  (cur.trials || []).forEach(function(trial){
+    var p = prevState[trial.nct_id];
     if (!p) return;
-    if ((p.rank && t.rank && p.rank !== t.rank) || (p.eligibility !== t.eligibility)){
-      rankChanges.push({nct_id: t.nct_id, title: t.title || p.title || t.nct_id,
-        rank_before: p.rank, rank_after: t.rank,
-        eligibility_before: p.eligibility, eligibility_after: t.eligibility});
+    if ((p.rank && trial.rank && p.rank !== trial.rank) || (p.eligibility !== trial.eligibility)){
+      rankChanges.push({nct_id: trial.nct_id, title: trial.title || p.title || trial.nct_id,
+        rank_before: p.rank, rank_after: trial.rank,
+        eligibility_before: p.eligibility, eligibility_after: trial.eligibility});
     }
   });
   // 우선순위 숫자 갱신 (질문 텍스트로 병합)
@@ -1339,9 +1892,7 @@ function applyAnswerResponse(pending, data){
     qa: pending, verdictChanges: data.verdict_changes || [], rankChanges: rankChanges,
     note: data.note || null, followupCount: fuCount, snapshot: snapshot, reverted: false});
   rankView.stale = true;
-  document.getElementById("rankStatus").textContent =
-    "라운드 " + roundsDone().length + " 반영 대기 — ↻ 최신화를 누르면 목록이 갱신됩니다";
-  document.getElementById("rankStatus").classList.remove("fresh");
+  renderRankStatusText();
   var saved = captureSelections();
   renderKanban();
   renderChatAll();
@@ -1352,22 +1903,70 @@ function applyAnswerResponse(pending, data){
 }
 
 // ---------------------------------------------------------------------------
-// 최종 순위 추천 — 실제 rank/rank_reason/rank_basis, 규칙 원문 + hard-exclusion 보장 필
+// 최종 순위 추천 — 실제 rank/rank_basis, 규칙 원문 + hard-exclusion 보장 필.
+// EN 순위 사유는 rank_basis에서 클라이언트가 재구성 (Join/Help/Sure), KO는 서버 원문 그대로.
 // ---------------------------------------------------------------------------
 function hardExclusionHoldsClient(trials){
   var ranked = (trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); });
   var seenInel = false, ok = true;
-  ranked.forEach(function(t){
-    if (t.eligibility === "INELIGIBLE") seenInel = true;
+  ranked.forEach(function(trial){
+    if (trial.eligibility === "INELIGIBLE") seenInel = true;
     else if (seenInel) ok = false;
   });
   return ok;
 }
+function basisByKey(trial){
+  var by = {};
+  if (Array.isArray(trial.rank_basis)){
+    trial.rank_basis.forEach(function(b){ if (b && b.key && !(b.key in by)) by[b.key] = b; });
+  }
+  return by;
+}
+// 서버 rank_reason(한국어)과 같은 의미의 문장을 rank_basis에서 활성 언어로 재구성.
+// KO = 서버 원문 그대로, EN = ranking.rank_basis()의 의미론을 그대로 미러링한 클라이언트 조립.
+function rankReasonText(trial){
+  if (LANG === "ko") return trial.rank_reason || "";
+  var by = basisByKey(trial);
+  if (!by.eligibility && !trial.rank_reason) return "";
+  if (!by.eligibility) return "";
+  var join = eligMeta(by.eligibility.value).en;
+  if (by.blocking && by.blocking.value) join += t("reasonBlockingN", {n: by.blocking.value});
+  var phase = phaseLabel(by.phase ? by.phase.value : trial.phase);
+  var fitB = by.fit;
+  var fitKnown = fitB && fitB.confidence === "high" && FIT_LABEL[fitB.value] ? fitB.value : null;
+  var needName = by.need ? by.need.need : null;
+  var help;
+  if (needName){
+    var needEn = needLabelByName(needName).toLowerCase();
+    if (!fitKnown){
+      help = t("reasonNeedNoFit", {need: needLabelByName(needName), phase: phase});
+    } else {
+      var score = by.help ? by.help.score : 0;
+      var vars = {need: needEn, fit: fitLabel(fitKnown), phase: phase};
+      help = score === 2 ? t("reasonHelp2", vars) : score === 1 ? t("reasonHelp1", vars) : t("reasonHelp0", vars);
+    }
+    if (by.need.confidence === "low") help += t("reasonNeedLow");
+  } else {
+    help = fitKnown
+      ? t("reasonNoNeedFit", {fit: fitLabel(fitKnown), phase: phase})
+      : t("reasonNoNeedNoFit", {phase: phase});
+  }
+  var sure = by.open ? t("reasonOpen", {v: by.open.value}) : "";
+  if (by.coverage && typeof by.coverage.value === "number"){
+    var covTxt = by.coverage.value >= 1
+      ? t("reasonCovFull")
+      : t("reasonCov", {p: Math.round(by.coverage.value * 100)}) + (by.coverage.penalty ? t("reasonCovPen") : "");
+    sure += (sure ? ", " : "") + covTxt;
+  }
+  return t("reasonJoin") + ": " + join + " · " + t("reasonHelp") + ": " + help +
+    (sure ? " · " + t("reasonSure") + ": " + sure : "");
+}
 function renderRuleBox(){
   var box = document.getElementById("rulebox");
   var r = cur.ranking || {};
-  var rule = r.rule_ko || "";
-  var html = "<h2>추천 우선순위 — 왜 이 순서인가</h2>";
+  // 규칙 문장: 언어별 클라이언트 상수 (서버 rule_ko와 의미 동일 — ranking.RANKING_RULE_KO 미러)
+  var rule = LANG === "ko" ? (r.rule_ko || t("rule")) : t("rule");
+  var html = "<h2>" + escapeHtml(t("ruleTitle")) + "</h2>";
   var parts = rule.split(" · ");
   if (parts.length === 3){
     html += parts.map(function(p, i){
@@ -1376,43 +1975,48 @@ function renderRuleBox(){
   } else if (rule){
     html += '<p class="rule">' + escapeHtml(rule) + '</p>';
   }
-  if (r.version) html += '<p class="rule"><span class="ver">(정렬 규칙 ' + escapeHtml(r.version) + ')</span></p>';
+  if (r.version) html += '<p class="rule"><span class="ver">' + escapeHtml(t("ruleVer", {v: r.version})) + '</span></p>';
   var holds = hardExclusionHoldsClient(cur.trials) && r.hard_exclusion_holds !== false;
   if (holds){
-    html += '<span class="guarantee" title="참여할 수 있는가가 정렬의 첫 기준이므로, 탈락 사유가 있는 시험은 아래 어떤 항목이 좋아도 위로 올라올 수 없습니다.">hard-exclusion 보장: 부적격 시험은 미확정/적격 위로 올라오지 않음</span>';
+    html += '<span class="guarantee" title="' + escapeHtml(t("guaranteeTip")) + '">' + escapeHtml(t("guarantee")) + '</span>';
   }
   box.innerHTML = html;
 }
-function miniChipsHtml(t){
-  if (!Array.isArray(t.rank_basis) || !t.rank_basis.length) return "";
-  var help = [], sure = [];
-  t.rank_basis.forEach(function(b){
+function miniChipsHtml(trial){
+  if (!Array.isArray(trial.rank_basis) || !trial.rank_basis.length) return "";
+  var join = [], help = [], sure = [];
+  var em0 = eligMeta(trial.eligibility);
+  join.push({text: (LANG === "en" ? em0.en : em0.ko), title: t("chipJoinTip")});
+  trial.rank_basis.forEach(function(b){
     if (!b || !b.key) return;
     if (b.key === "need"){
-      help.push({text: "환자 필요 " + (b.value || "미산출"), title: "환자 기록에서 읽어낸, 지금 이 환자에게 필요한 것"});
+      help.push({text: b.need ? t("chipNeed", {v: needLabelByName(b.need)}) : t("chipNeedNone"),
+                 title: t("chipNeedTip")});
     } else if (b.key === "help"){
-      help.push({text: "맞춰본 결과 " + (b.value || "참고용"), title: "환자에게 필요한 것과 이 시험의 목적을 맞춰 본 결과"});
+      var hk = b.score === 2 ? "chipHelp2" : b.score === 1 ? "chipHelp1" : "chipHelp0";
+      help.push({text: t(hk), title: t("chipHelpTip")});
     } else if (b.key === "fit"){
-      help.push({text: (FIT_LABEL_KO[b.value] || b.value || "목적 미확인") + (b.confidence === "low" ? " (추정)" : ""),
-                 title: "이 시험이 무엇을 하려는 시험인지"});
+      help.push({text: fitLabel(b.value) + (b.confidence === "low" ? t("chipGuess") : ""),
+                 title: t("chipFitTip")});
     } else if (b.key === "phase"){
-      help.push({text: phaseLabel(b.value), title: "후기 단계일수록 개입이 더 검증되어 환자 부담이 작다고 봅니다"});
+      help.push({text: phaseLabel(b.value), title: t("chipPhaseTip")});
     } else if (b.key === "coverage" && typeof b.value === "number"){
-      sure.push({text: "원문 반영 " + (b.value >= 1 ? "전체(추정)" : Math.round(b.value * 100) + "%") + (b.penalty ? " 감점" : ""),
-                 warn: !!b.penalty, title: "시험 원문 조건 중 평가에 반영된 비율 (추정). 절반 미만이면 감점됩니다."});
+      sure.push({text: t("chipCoverage", {p: b.value >= 1 ? t("chipCoverageFull") : Math.round(b.value * 100) + "%"}) +
+                 (b.penalty ? t("chipPenalty") : ""),
+                 warn: !!b.penalty, title: t("chipCoverageTip")});
     } else if (b.key === "blocking" && b.value){
-      sure.push({text: "탈락 사유 " + b.value + "건", warn: true, title: "이 시험을 부적격으로 만든 기준 수 — 하나라도 있으면 순위가 맨 아래로 갑니다"});
+      join.push({text: t("chipBlocking", {n: b.value}), warn: true, title: t("chipBlockingTip")});
     } else if (b.key === "open"){
-      sure.push({text: "미해결 " + b.value, title: "아직 판정되지 않은 기준 수 / 전체 기준 수 — 적을수록 확실합니다"});
+      sure.push({text: t("chipOpen", {v: b.value}), title: t("chipOpenTip")});
     }
   });
   function chips(label, list){
     if (!list.length) return "";
-    return '<span class="mgroup">' + label + '</span>' + list.map(function(c){
+    return '<span class="mgroup">' + escapeHtml(label) + '</span>' + list.map(function(c){
       return '<span class="mchip' + (c.warn ? " warn" : "") + '" title="' + escapeHtml(c.title) + '">' + escapeHtml(c.text) + '</span>';
     }).join("");
   }
-  var html = chips("도움", help) + chips("확실", sure);
+  var html = chips(t("mgJoin"), join) + chips(t("mgHelp"), help) + chips(t("mgSure"), sure);
   return html ? '<div class="minichips">' + html + '</div>' : "";
 }
 function renderRanking(withDeltas){
@@ -1420,48 +2024,66 @@ function renderRanking(withDeltas){
   var sorted = (cur.trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); });
   var prevOrder = rankView.order;
   list.innerHTML = "";
-  sorted.forEach(function(t, i){
+  sorted.forEach(function(trial, i){
     var d = 0;
     if (withDeltas && prevOrder.length){
-      var pi = prevOrder.indexOf(t.nct_id);
+      var pi = prevOrder.indexOf(trial.nct_id);
       if (pi >= 0) d = pi - i;
     }
     var dirClass = d > 0 ? "up" : d < 0 ? "down" : "same";
     var arrow = d > 0 ? "▲" : d < 0 ? "▼" : "—";
     var dtext = d === 0 ? "—" : arrow + Math.abs(d);
     var changed = withDeltas && d !== 0;
-    var em = eligMeta(t.eligibility);
+    var em = eligMeta(trial.eligibility);
     var row = el("div", "rankrow" + (changed ? " flash" : ""));
-    row.dataset.nct = t.nct_id;
+    row.dataset.nct = trial.nct_id;
+    var reasonLine = rankReasonText(trial);
     row.innerHTML =
-      '<div class="rnum">' + (t.rank || i + 1) + '</div>' +
-      '<div class="rinfo"><div class="rname">' + escapeHtml(t.title || t.nct_id) + '</div>' +
-      '<div class="rnct">' + nctLinkHtml(t.nct_id) + '</div>' +
-      (t.rank_reason ? '<div class="rreason">' + escapeHtml(t.rank_reason) + '</div>' : "") +
-      miniChipsHtml(t) + '</div>' +
-      '<div class="rside"><span class="badge ' + em.badge + '" title="시험 단위 적격성: 이 환자가 참여할 수 있는가">' +
-      escapeHtml(em.ko) + '</span>' +
+      '<div class="rnum">' + (trial.rank || i + 1) + '</div>' +
+      '<div class="rinfo"><div class="rname">' + escapeHtml(trial.title || trial.nct_id) + '</div>' +
+      '<div class="rnct">' + nctLinkHtml(trial.nct_id) + '</div>' +
+      miniChipsHtml(trial) + '</div>' +
+      '<div class="rside"><span class="badge ' + em.badge + '" title="' + escapeHtml(t("eligBadgeTip")) + '">' +
+      escapeHtml(eligLabel(trial.eligibility)) + '</span>' +
       '<span class="rankdelta ' + dirClass + '">' + dtext + '</span></div>';
     list.appendChild(row);
   });
-  rankView.order = sorted.map(function(t){ return t.nct_id; });
+  rankView.order = sorted.map(function(trial){ return trial.nct_id; });
 }
+function renderRankStatusText(){
+  var rankStatus = document.getElementById("rankStatus");
+  var list = document.getElementById("ranklist");
+  var chip = document.getElementById("staleChip");
+  if (rankView.stale){
+    rankStatus.textContent = t("rankStatusStale", {n: roundsDone().length});
+    rankStatus.classList.remove("fresh");
+    list.classList.add("stale");
+    chip.classList.add("show");
+    document.getElementById("staleChipBtn").textContent = t("staleChip");
+    return;
+  }
+  list.classList.remove("stale");
+  chip.classList.remove("show");
+  rankStatus.textContent = rankView.round > 0
+    ? t("rankStatusRound", {n: rankView.round})
+    : t("rankStatusInit");
+}
+document.getElementById("staleChipBtn").addEventListener("click", function(){
+  document.getElementById("refreshBtn").click();
+});
 var refreshBtn = document.getElementById("refreshBtn");
 refreshBtn.addEventListener("click", function(){
   if (!cur) return;
   renderRanking(true);
   rankView.stale = false;
   rankView.round = roundsDone().length;
-  var rankStatus = document.getElementById("rankStatus");
-  rankStatus.textContent = rankView.round > 0
-    ? "마지막 업데이트: 라운드 " + rankView.round + " 반영"
-    : "마지막 업데이트: 초기 매칭 기준";
-  rankStatus.classList.add("fresh");
+  renderRankStatusText();
+  document.getElementById("rankStatus").classList.add("fresh");
   refreshBtn.classList.add("done");
-  refreshBtn.textContent = "✓ 반영 완료";
+  refreshBtn.textContent = t("refreshDone");
   setTimeout(function(){
     refreshBtn.classList.remove("done");
-    refreshBtn.textContent = "↻ 최신화";
+    refreshBtn.textContent = t("refresh");
   }, 1400);
   setTimeout(function(){
     document.querySelectorAll(".rankrow.flash").forEach(function(r){ r.classList.remove("flash"); });
@@ -1470,7 +2092,34 @@ refreshBtn.addEventListener("click", function(){
 
 // ---------------------------------------------------------------------------
 // 변경 이력 — 실제 라운드(최신 우선) + 오버라이드 + 되돌리기. 라운드 0 = 초기 매칭.
+// 라운드 카드 상단: "이 답이 무엇을 바꿨나" — 질문 → 재판정 기준 수 → 움직인 시험 (인과 한 줄).
 // ---------------------------------------------------------------------------
+function causalLinesHtml(e){
+  var vc = e.verdictChanges || [], rc = e.rankChanges || [];
+  var html = "";
+  rc.forEach(function(c){
+    var linked = vc.filter(function(v){ return v.nct_id === c.nct_id; });
+    var qs = [];
+    linked.forEach(function(v){ if (v.question && qs.indexOf(v.question) < 0) qs.push(v.question); });
+    var seg = [];
+    if (c.rank_before && c.rank_after && c.rank_before !== c.rank_after){
+      seg.push(rankNum(c.rank_before) + " → " + rankNum(c.rank_after));
+    }
+    if (c.eligibility_before !== c.eligibility_after){
+      seg.push(eligLabel(c.eligibility_before) + " → " + eligLabel(c.eligibility_after));
+    }
+    if (!seg.length) return;
+    var line = "";
+    if (linked.length){
+      if (qs.length === 1) line += "“" + escapeHtml(truncateText(qs[0], 64)) + "” → ";
+      line += escapeHtml(linked.length === 1 ? t("causalCritOne") : t("causalCrit", {n: linked.length})) + " → ";
+    }
+    line += "<b>" + escapeHtml(c.title || c.nct_id) + "</b>: " + escapeHtml(seg.join(" · "));
+    if (!linked.length) line += " — " + escapeHtml(t("causalIndirect"));
+    html += '<div class="hist-causal">' + line + '</div>';
+  });
+  return html;
+}
 function renderHistory(){
   var box = document.getElementById("dynamicHistory");
   box.innerHTML = "";
@@ -1480,14 +2129,15 @@ function renderHistory(){
     var item = el("div", "histitem" + (e.kind !== "round" ? " past" : "") + (e.reverted ? " reverted" : ""));
     if (e.kind === "round"){
       var vc = e.verdictChanges || [], rc = e.rankChanges || [];
-      var html = '<div class="histtop"><span class="histround">라운드 ' + e.n +
-        (e.reverted ? " (되돌려짐)" : "") + '</span><span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
+      var html = '<div class="histtop"><span class="histround">' + escapeHtml(t("histRound", {n: e.n})) +
+        (e.reverted ? escapeHtml(t("histReverted")) : "") + '</span><span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
         '<div class="histstats">' +
-        '<span class="histpill">질문 <b>' + (e.qa || []).length + '개</b> 답변</span>' +
-        '<span class="histpill">판정 변화 <b>' + vc.length + '건</b></span>' +
-        '<span class="histpill">순위/적격 변동 <b>' + rc.length + '건</b></span>' +
-        (e.followupCount ? '<span class="histpill">추가 질문 <b>' + e.followupCount + '개</b></span>' : "") +
-        '</div>';
+        '<span class="histpill">' + t("histPillAnswers", {n: (e.qa || []).length}) + '</span>' +
+        '<span class="histpill">' + t("histPillVerdict", {n: vc.length}) + '</span>' +
+        '<span class="histpill">' + t("histPillRank", {n: rc.length}) + '</span>' +
+        (e.followupCount ? '<span class="histpill">' + t("histPillFu", {n: e.followupCount}) + '</span>' : "") +
+        '</div>' +
+        causalLinesHtml(e);
       (e.qa || []).forEach(function(pair){
         html += '<div class="hist-qa"><b>Q</b> ' + escapeHtml(pair.question) + '<br><b>A</b> ' + escapeHtml(pair.answer) + '</div>';
       });
@@ -1496,35 +2146,27 @@ function renderHistory(){
         html += '<div class="hist-change"><span class="delta-chip">' + escapeHtml(c.before) + " → " + escapeHtml(c.after) +
           '</span>' + escapeHtml(c.criterion) + '</div>';
       });
-      if (vc.length > 6) html += '<div class="hist-more">외 ' + (vc.length - 6) + '건</div>';
-      rc.forEach(function(c){
-        var seg = [];
-        if (c.rank_before && c.rank_after && c.rank_before !== c.rank_after) seg.push(c.rank_before + "위 → " + c.rank_after + "위");
-        if (c.eligibility_before !== c.eligibility_after){
-          seg.push(eligMeta(c.eligibility_before).ko + " → " + eligMeta(c.eligibility_after).ko);
-        }
-        if (seg.length) html += '<div class="hist-change">' + escapeHtml(c.title || c.nct_id) + ": " + escapeHtml(seg.join(" · ")) + '</div>';
-      });
+      if (vc.length > 6) html += '<div class="hist-more">' + escapeHtml(t("histMore", {n: vc.length - 6})) + '</div>';
       item.innerHTML = html;
-      var btn = el("button", "revert-btn", "↩ 이 라운드 되돌리기");
-      if (e.reverted){ btn.disabled = true; btn.textContent = "되돌려짐"; }
+      var btn = el("button", "revert-btn", escapeHtml(t("revertBtn")));
+      if (e.reverted){ btn.disabled = true; btn.textContent = t("revertedBtn"); }
       else if (e.seq !== latestRoundSeq){
         btn.disabled = true;
-        btn.title = "가장 최근 라운드부터 순서대로 되돌릴 수 있습니다";
+        btn.title = t("revertOrderTip");
       } else {
         btn.addEventListener("click", function(){ revertRound(e); });
       }
       item.appendChild(btn);
     } else if (e.kind === "override"){
-      item.innerHTML = '<div class="histtop"><span class="histround">사람 검토 오버라이드</span>' +
+      item.innerHTML = '<div class="histtop"><span class="histround">' + escapeHtml(t("ovrTitle")) + '</span>' +
         '<span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
-        '<div class="hist-change">사람이 ' + escapeHtml(e.title) + '을(를) ' +
-        eligColKo(e.from) + " → " + eligColKo(e.to) +
-        '(으)로 이동 (검토 오버라이드, 판정 로직과 별개)' + (e.undone ? " · 취소됨" : "") + '</div>';
-      var ub = el("button", "revert-btn", "↩ 이동 취소");
+        '<div class="hist-change">' + escapeHtml(t("ovrLine",
+          {title: e.title, from: eligColLabel(e.from), to: eligColLabel(e.to)})) +
+        (e.undone ? escapeHtml(t("undoneSuffix")) : "") + '</div>';
+      var ub = el("button", "revert-btn", escapeHtml(t("undoMove")));
       if (e.undone || !cur.overrides[e.nct] || cur.overrides[e.nct] !== e.to){
         ub.disabled = true;
-        if (e.undone) ub.textContent = "취소됨";
+        if (e.undone) ub.textContent = t("undoneBtn");
       } else {
         ub.addEventListener("click", function(){
           delete cur.overrides[e.nct];
@@ -1535,17 +2177,18 @@ function renderHistory(){
       }
       item.appendChild(ub);
     } else { // revert
-      item.innerHTML = '<div class="histtop"><span class="histround">라운드 되돌림</span>' +
+      item.innerHTML = '<div class="histtop"><span class="histround">' + escapeHtml(t("revertEntryTitle")) + '</span>' +
         '<span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
-        '<div class="hist-change">' + escapeHtml(e.label) + '</div>';
+        '<div class="hist-change">' + escapeHtml(t("revertLabel", {n: e.n, a: e.answerCount})) + '</div>';
     }
     box.appendChild(item);
   });
+  document.getElementById("round0Label").textContent = t("round0");
   document.getElementById("round0Pill").innerHTML =
-    "초기 매칭 <b>" + ((cur && cur.trials) || []).length + "건</b> 생성";
+    t("round0Pill", {n: ((cur && cur.trials) || []).length});
 }
-function eligColKo(colKey){
-  return (ELIG_META[colKey] && ELIG_META[colKey].ko) || colKey;
+function eligColLabel(colKey){
+  return ELIG_META[colKey] ? eligLabel(colKey) : colKey;
 }
 // 스냅샷 복원: 라운드 반영 직전 상태(trials·questions·extended_record·답변·오버라이드)로 되돌림
 function revertRound(e){
@@ -1559,7 +2202,7 @@ function revertRound(e){
   cur.followupNote = e.snapshot.followupNote || null;
   e.reverted = true;
   events.push({kind: "revert", seq: ++histSeq, timeLabel: nowLabel(),
-    label: "라운드 " + e.n + " 반영을 되돌림 — 답변 " + (e.qa || []).length + "건이 반영 전 상태로 복원됨"});
+    n: e.n, answerCount: (e.qa || []).length});
   rankView.stale = true;
   selectedPill = "ALL";
   selectedQuestion = null;
@@ -1578,11 +2221,10 @@ function renderAll(){
   renderChatAll();
   renderRuleBox();
   renderRanking(false);
-  var rankStatus = document.getElementById("rankStatus");
   var n = roundsDone().length;
-  rankStatus.textContent = n > 0 ? "마지막 업데이트: 라운드 " + n + " 반영" : "마지막 업데이트: 초기 매칭 기준";
-  rankStatus.classList.remove("fresh");
   rankView.round = n; rankView.stale = false;
+  renderRankStatusText();
+  document.getElementById("rankStatus").classList.remove("fresh");
   renderHistory();
   renderLiveStatus();
   document.getElementById("boardLoadNote").style.display = "none";
@@ -1591,12 +2233,12 @@ function renderAll(){
 function showLoadError(msg){
   var note = document.getElementById("boardLoadNote");
   note.style.display = "block";
-  note.textContent = "오류: " + msg;
+  note.textContent = t("errPrefix") + msg;
 }
 function loadTrace(patientId){
   var note = document.getElementById("boardLoadNote");
   note.style.display = "block";
-  note.textContent = patientId + " 데이터를 불러오는 중입니다.";
+  note.textContent = t("loadingDataFor", {id: patientId});
   fetch("/api/trace?patient_id=" + encodeURIComponent(patientId))
     .then(function(r){ return r.json(); })
     .then(function(data){
@@ -1636,10 +2278,11 @@ function loadPatients(){
       });
       renderPatientMenu();
       if (patients.length) loadTrace(patients[0].id);
-      else showLoadError("등록된 환자가 없습니다");
+      else showLoadError(t("noPatients"));
     })
     .catch(function(e){ showLoadError(String(e)); });
 }
+applyStaticI18n();
 loadPatients();
 </script>
 </body>
