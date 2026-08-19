@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/site.html"
+      "destination": "/board.html"
     }
   ],
   "functions": {

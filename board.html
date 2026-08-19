@@ -1,0 +1,1646 @@
+<!--
+  live-v2.html(정원 디자인 확정본)의 실데이터 연동판. 디자인 소유: 정원 (UI/UX) — 토큰/레이아웃/
+  타이포/탭 구조/칸반/LIVE 칩/환자 드롭다운/모달/채팅형 질문 라운드/이력 타임라인 모두 그대로 유지.
+  이 파일이 바꾼 것은 데이터 배관(실제 /api/patients·/api/trace·/api/answer 연동)과 사실 어휘뿐:
+  - 시험 단위 상태는 적격성(적격/미확정/부적격) 3칼럼. MET/NOT MET/UNKNOWN은 기준 단위 어휘라
+    보드 칼럼에는 쓰지 않는다 (7월 극성 버그 클래스 — 모달 안 기준 칩에서만 사용).
+  - 카드 드래그는 "사람 검토 오버라이드"(표시 전용)로 기록되고 판정을 바꾸지 않는다.
+  live-v2.html과 ui-concepts/g-board.html은 읽기 전용 참조 — 수정 금지.
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Clinical Trial Recommendation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#1E40AF; --secondary:#3B82F6; /* LOCKED from Concept A */
+    --bg:#F1F3F7; --ink:#181B22; --ink-soft:#6B7280;
+    --border:#DDE1E9; --card:#FFFFFF; --accent:#7C3AED; --orange:#C2410C; --orange-bg:#FFF1E8;
+    --met:#087F5B; --met-bg:#D9F4EB; --met-mid:#70B9A3; --notmet:#C0362C; --notmet-bg:#FBE3E1; --notmet-mid:#DD8C86;
+    --uncertain:#9A6700; --uncertain-bg:#FCEFCB; --uncertain-mid:#CBAB65; --unknown:#6B7280; --unknown-bg:#E7E9EE; --unknown-mid:#A9ADB7;
+    --up:#0F9D58; --down:#D93025;
+  }
+  *{box-sizing:border-box;}
+  /* 오프라인 행사장 대비: IBM Plex를 못 받아와도 시스템 한글 폰트로 자연 강등 */
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans KR","Apple SD Gothic Neo",-apple-system,sans-serif;}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,"Apple SD Gothic Neo",monospace;}
+  a{color:var(--secondary);}
+
+  .utilbar{background:var(--primary);color:#fff;padding:10px 24px;display:flex;align-items:center;font-size:0.8rem;}
+  .utilbar .name{font-weight:700;}
+  .utilbar .eventtag{margin-left:auto;font-size:0.6rem;font-weight:500;letter-spacing:.03em;color:rgba(255,255,255,.65);
+    text-align:right;line-height:1.35;max-width:150px;}
+
+  .livestatus{flex:0 0 auto;display:flex;align-items:center;gap:10px;margin:12px 24px 12px auto;padding:7px 14px 7px 10px;
+    border-radius:10px;background:var(--bg);box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+    cursor:pointer;transition:box-shadow .15s;}
+  .livestatus:hover{box-shadow:0 2px 4px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.1);}
+  .livebadge{display:flex;align-items:center;gap:6px;background:#0A0F0A;color:#39FF6E;border-radius:8px;
+    padding:4px 9px;font-size:0.66rem;font-weight:700;letter-spacing:.08em;font-family:"IBM Plex Mono",ui-monospace,monospace;}
+  .livedot{width:6px;height:6px;border-radius:50%;background:#39FF6E;flex:0 0 auto;
+    box-shadow:0 0 0 0 rgba(57,255,110,.5);animation:livepulse 1.8s infinite;}
+  @keyframes livepulse{
+    0%{box-shadow:0 0 0 0 rgba(57,255,110,.45);}
+    70%{box-shadow:0 0 0 6px rgba(57,255,110,0);}
+    100%{box-shadow:0 0 0 0 rgba(57,255,110,0);}
+  }
+  .statustext{font-size:0.85rem;font-weight:600;color:var(--ink);transition:color .15s;white-space:nowrap;}
+  .livestatus:hover .statustext{color:var(--secondary);}
+  @media (max-width:640px){ .statustext{white-space:normal;font-size:0.74rem;} .livestatus{margin-right:12px;} }
+
+  .tabbarouter{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;}
+  .tabbar{display:flex;align-items:stretch;padding-right:24px;overflow-x:auto;flex:1;min-width:0;}
+  .tab{padding:16px 22px;font-size:0.9rem;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;
+    display:flex;align-items:center;gap:8px;}
+  .tab.active{color:var(--primary);border-color:var(--secondary);}
+  .tabbadge{background:var(--secondary);color:#fff;font-size:0.66rem;font-weight:700;min-width:17px;height:17px;border-radius:99px;
+    display:inline-flex;align-items:center;justify-content:center;padding:0 4px;}
+
+  .patient-dropdown{position:relative;display:flex;align-items:stretch;flex:0 0 auto;background:#232B3D;}
+  .pdbtn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:0.9rem;font-weight:700;color:#fff;
+    display:flex;align-items:center;gap:8px;padding:0 22px;height:100%;transition:opacity .15s;}
+  .pdbtn:hover{opacity:.8;}
+  .pdbtn .pdmeta{font-weight:400;color:rgba(255,255,255,.6);font-size:0.78rem;max-width:180px;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
+  .pdbtn .chev{font-size:0.7rem;color:rgba(255,255,255,.5);}
+  @media (max-width:640px){ .pdbtn{padding:0 14px;} .pdbtn .pdmeta{display:none;} }
+  .pdmenu{display:none;position:absolute;left:0;top:52px;background:var(--card);border:1px solid var(--border);border-radius:10px;
+    box-shadow:0 14px 34px rgba(0,0,0,.14);width:300px;max-width:88vw;z-index:250;overflow:hidden auto;max-height:70vh;}
+  .pdmenu.open{display:block;}
+  .pditem{padding:11px 16px;cursor:pointer;font-size:0.86rem;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:baseline;}
+  .pditem:last-child{border-bottom:none;}
+  .pditem:hover{background:var(--bg);}
+  .pditem span{color:var(--ink-soft);font-size:0.76rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pditem.sel{background:#EAF1FE;font-weight:700;}
+  .pdsep{height:1px;background:var(--border);margin:0;}
+  .pdgrouplabel{padding:8px 16px 4px;font-size:0.64rem;font-weight:700;letter-spacing:.05em;color:var(--ink-soft);text-transform:uppercase;}
+
+  .view{display:none;padding:24px;}
+  .view.active{display:block;}
+  @media (max-width:480px){ .view{padding:16px 12px;} }
+
+  /* ===== TAB 1: patient detail + board ===== */
+  .sectionlabel{font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700;margin:0 0 12px;
+    display:flex;align-items:center;gap:8px;}
+  .sectionlabel::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--secondary);}
+  .boardhead{display:flex;justify-content:flex-end;margin-bottom:6px;}
+
+  .edittoggle{display:flex;align-items:center;gap:10px;font-size:0.84rem;color:var(--ink-soft);}
+  .switch{position:relative;width:44px;height:24px;flex:0 0 auto;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;inset:0;background:var(--border);border-radius:99px;cursor:pointer;transition:.2s;}
+  .slider::before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .switch input:checked + .slider{background:var(--accent);}
+  .switch input:checked + .slider::before{transform:translateX(20px);}
+  .edittoggle.on{color:var(--accent);font-weight:700;}
+
+  .pdetail{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:18px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px 28px;}
+  @media (max-width:760px){ .pdetail{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .pdetail{grid-template-columns:1fr;} }
+  .pdetail .field .k{font-size:0.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:4px;}
+  .pdetail .field .v{font-size:0.92rem;font-weight:600;line-height:1.4;overflow-wrap:anywhere;}
+  .pdetail-tag{grid-column:1/-1;font-size:0.72rem;color:var(--ink-soft);border-top:1px solid var(--border);padding-top:12px;margin-top:2px;}
+
+  /* 환자 필요 스트립 — patient_need 실데이터. 정원 토큰의 accent를 재사용 */
+  .needstrip{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:12px;
+    padding:16px 20px;margin-bottom:24px;}
+  .needstrip .ns-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700;}
+  .needstrip .ns-need{font-size:1.25rem;font-weight:700;color:var(--accent);margin:4px 0 6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .needstrip .ns-hedge{font-size:0.7rem;font-weight:700;background:var(--uncertain-bg);color:var(--uncertain);border-radius:99px;padding:3px 10px;}
+  .needstrip .ns-reason{font-size:0.82rem;color:var(--ink-soft);line-height:1.5;}
+  .needstrip .ns-link{font-size:0.74rem;color:var(--ink-soft);margin-top:8px;}
+
+  /* 시험 단위 상태 = 적격성 3칼럼 (기준 단위 MET/NOT MET는 모달 안에서만) */
+  .board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+  @media (max-width:900px){ .board{grid-template-columns:1fr;} }
+  .col{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:0 14px 14px;min-height:120px;
+    transition:background .15s,border-color .15s;overflow:hidden;}
+  .col.dragover{background:#EAF1FE;border-color:var(--secondary);}
+  .col h3{font-size:0.8rem;text-transform:uppercase;letter-spacing:.04em;margin:0 -14px 14px;display:flex;justify-content:space-between;
+    padding:7px 14px;font-weight:700;}
+  .col h3 .count{background:rgba(0,0,0,.18);color:#fff;border-radius:99px;padding:1px 9px;font-size:0.74rem;}
+  .col h3 .en{font-weight:500;opacity:.75;margin-left:6px;font-size:0.68rem;}
+  .kcard{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;cursor:pointer;font-size:0.85rem;}
+  .kcard.dragging{opacity:.4;}
+  .kcard[draggable="true"]{cursor:grab;}
+  .kcard .name{font-weight:600;line-height:1.4;}
+  .kcard .cardmeta{display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap;}
+  .kcard .nct{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.7rem;color:var(--ink-soft);}
+  .kcard .nct a{color:var(--ink-soft);text-decoration:underline dotted;}
+  .kcard .rankchip{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.66rem;font-weight:700;background:#fff;
+    border:1px solid var(--border);border-radius:99px;padding:1px 8px;color:var(--ink);}
+  .kcard .ovr{font-size:0.64rem;font-weight:700;color:var(--accent);background:#F1EAFE;border-radius:99px;padding:2px 8px;}
+  .kcard .reason{font-size:0.72rem;color:var(--ink-soft);margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .kcard .hint{font-size:0.68rem;color:var(--secondary);margin-top:8px;}
+  /* 3칼럼 컬러 = 정원의 met/uncertain/notmet 토큰 재사용 */
+  .col-ELIGIBLE h3{background:var(--met-mid);color:#fff;}
+  .col-UNCERTAIN h3{background:var(--uncertain-mid);color:#fff;}
+  .col-INELIGIBLE h3{background:var(--notmet-mid);color:#fff;}
+  /* 빈 칼럼 상태는 unknown 토큰으로 */
+  .colempty{border:1px dashed var(--unknown-mid);background:var(--unknown-bg);color:var(--unknown);border-radius:8px;
+    padding:14px;font-size:0.76rem;text-align:center;line-height:1.5;}
+
+  /* detail overlay */
+  .overlay{position:fixed;inset:0;background:rgba(15,18,25,.6);display:none;align-items:center;justify-content:center;z-index:300;padding:32px;}
+  .overlay.open{display:flex;}
+  @media (max-width:480px){ .overlay{padding:10px;} }
+  .modal{background:var(--card);border-radius:18px;max-width:820px;width:100%;height:min(88vh,900px);
+    display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,.4);}
+  .modalhead{flex:0 0 auto;padding:26px 30px;border-bottom:1px solid var(--border);}
+  @media (max-width:480px){ .modalhead{padding:18px 16px;} }
+  .modalhead-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px;}
+  .modalhead .name{font-weight:700;font-size:1.15rem;line-height:1.4;}
+  .modalhead .nct{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.8rem;color:var(--ink-soft);margin-top:4px;}
+  .modalclose{background:var(--bg);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:1.05rem;flex:0 0 auto;}
+  .verdict-banner{border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1rem;gap:14px;flex-wrap:wrap;}
+  .verdict-banner .lbl{font-size:0.74rem;font-weight:600;opacity:.75;text-transform:uppercase;letter-spacing:.05em;}
+  .verdict-banner .sub{font-weight:500;font-size:0.82rem;flex:1;min-width:180px;text-align:right;line-height:1.45;}
+  .verdict-met{background:var(--met-bg);color:var(--met);} .verdict-notmet{background:var(--notmet-bg);color:var(--notmet);}
+  .verdict-uncertain{background:var(--uncertain-bg);color:var(--uncertain);} .verdict-unknown{background:var(--unknown-bg);color:var(--unknown);}
+
+  .modalbody{flex:1 1 auto;overflow-y:auto;padding:10px 30px 30px;}
+  @media (max-width:480px){ .modalbody{padding:10px 14px 20px;} }
+  .modalfoot{flex:0 0 auto;padding:16px 30px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .modalfoot .hint{font-size:0.78rem;color:var(--ink-soft);line-height:1.5;}
+  .save-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:11px 24px;font-weight:700;font-size:0.88rem;cursor:pointer;flex:0 0 auto;}
+  .save-btn:hover{background:#16307F;}
+  .critdetail{border-left:5px solid var(--border);border-radius:0 10px 10px 0;background:var(--bg);padding:16px 18px;margin:16px 0;}
+  .critdetail.inc{border-left-color:var(--secondary);}
+  .critdetail.exc{border-left-color:var(--orange);}
+  .crittag{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .critdetail.inc .crittag{color:var(--secondary);} .critdetail.exc .crittag{color:var(--orange);}
+  .crittext{font-size:0.94rem;margin-bottom:10px;line-height:1.5;}
+  .critevidence{font-size:0.86rem;color:var(--ink-soft);font-style:italic;background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+  .critnote{font-size:0.82rem;color:var(--ink-soft);margin-bottom:10px;line-height:1.5;}
+  .critfoot{display:flex;justify-content:flex-start;align-items:center;gap:8px;flex-wrap:wrap;}
+  .badge{display:inline-block;padding:3px 11px;border-radius:99px;font-size:0.72rem;font-weight:700;}
+  .b-met{background:var(--met-bg);color:var(--met);} .b-notmet{background:var(--notmet-bg);color:var(--notmet);}
+  .b-uncertain{background:var(--uncertain-bg);color:var(--uncertain);} .b-unknown{background:var(--unknown-bg);color:var(--unknown);}
+  .action-chip{font-size:0.68rem;background:#fff;border:1px solid var(--border);border-radius:99px;padding:3px 10px;color:var(--ink-soft);cursor:help;}
+  .action-chip.stop{border-color:var(--notmet-mid);color:var(--notmet);}
+  .qlink{background:none;border:none;color:var(--secondary);font-size:0.78rem;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;margin-left:auto;}
+
+  /* ===== TAB: confirm questions — split chat + evidence ===== */
+  .trialpills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+  .trialpill{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:9px 16px;font-size:0.82rem;cursor:pointer;
+    display:flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",ui-monospace,"Apple SD Gothic Neo",monospace;}
+  .trialpill.sel{border:2px solid var(--secondary);background:#EAF1FE;font-weight:700;}
+  .trialpill .pillcount{background:var(--secondary);color:#fff;font-size:0.66rem;font-weight:700;min-width:16px;height:16px;border-radius:99px;
+    display:inline-flex;align-items:center;justify-content:center;padding:0 4px;font-family:"IBM Plex Sans KR","Apple SD Gothic Neo",sans-serif;}
+  .trialpill.sel .pillcount{background:var(--primary);}
+
+  .splitwrap{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr);gap:0;height:calc(100vh - 270px);min-height:480px;
+    border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+  @media (max-width:860px){ .splitwrap{grid-template-columns:1fr;height:auto;min-height:0;} }
+  .evidencepane{border-right:1px solid var(--border);overflow-y:auto;padding:22px 24px;min-height:0;}
+  @media (max-width:860px){ .evidencepane{border-right:none;border-bottom:1px solid var(--border);max-height:44vh;} }
+  .evidencepane h3{font-size:0.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:0 0 14px;}
+  .evq{font-size:0.9rem;font-weight:700;margin-bottom:4px;line-height:1.5;}
+  .evwhy{font-size:0.78rem;color:var(--ink-soft);margin-bottom:14px;line-height:1.5;}
+  .evtrial{font-weight:700;font-size:0.95rem;margin:14px 0 2px;}
+  .evnct{font-size:0.74rem;color:var(--ink-soft);margin-bottom:4px;font-family:"IBM Plex Mono",ui-monospace,monospace;}
+  .evempty{font-size:0.82rem;color:var(--ink-soft);background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:14px;line-height:1.6;}
+
+  .chatpane{display:flex;flex-direction:column;min-height:0;}
+  .chathead{padding:16px 20px;border-bottom:1px solid var(--border);font-size:0.86rem;font-weight:700;color:var(--ink-soft);flex:0 0 auto;}
+  .chatscroll{flex:1;overflow-y:auto;padding:20px;min-height:0;}
+  @media (max-width:860px){ .chatscroll{max-height:56vh;} }
+
+  .roundblock{margin-bottom:22px;}
+  .roundblock.done{opacity:.72;}
+  .roundlabel{font-size:0.76rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .roundblock.done .roundlabel{color:var(--met);}
+  .roundlabel .progress{font-weight:600;color:var(--secondary);text-transform:none;letter-spacing:0;}
+  .roundlabel.fu{color:var(--accent);}
+  .qitem{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+  .qitem.sel{border-color:var(--secondary);box-shadow:0 0 0 1px var(--secondary);}
+  .qitem .qfield{font-size:0.64rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:4px;}
+  .qitem .qtext{font-size:0.9rem;font-weight:600;line-height:1.5;}
+  .qitem .qwhy{font-size:0.76rem;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
+  .qitem .qprio{font-size:0.72rem;color:var(--ink-soft);margin-top:6px;}
+  .qitem .qprio .rank-yes{color:var(--accent);font-weight:700;}
+  .qitem .fu-badge{font-size:0.62rem;font-weight:700;background:#F1EAFE;color:var(--accent);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:middle;}
+  .opt-list{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .opt-item{display:flex;align-items:flex-start;gap:9px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 12px;cursor:pointer;}
+  .opt-item input{margin-top:3px;width:15px;height:15px;flex:0 0 auto;cursor:pointer;accent-color:var(--secondary);}
+  .opt-body{flex:1;min-width:0;}
+  .opt-text{font-size:0.84rem;line-height:1.45;}
+  .opt-tag{display:block;font-size:0.66rem;color:var(--secondary);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .opt-tag.none{color:var(--ink-soft);}
+  .qinput{width:100%;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.86rem;padding:10px;margin-top:8px;background:#fff;}
+  .qitem.answered .qanswer{font-size:0.84rem;color:var(--ink-soft);padding:9px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-top:8px;}
+  .sysbubble{background:#EAF1FE;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:0.78rem;line-height:1.6;color:var(--ink);margin-bottom:10px;}
+  .funote{background:var(--uncertain-bg);color:var(--uncertain);border-radius:10px;padding:10px 14px;font-size:0.78rem;margin-bottom:10px;}
+  .roundcomplete{background:var(--met-bg);color:var(--met);border-radius:10px;padding:18px 16px;font-size:0.9rem;font-weight:700;text-align:center;line-height:1.6;}
+  .roundcomplete .gorank-btn{display:inline-block;margin-top:12px;background:var(--met);color:#fff;border:none;border-radius:8px;
+    padding:10px 20px;font-weight:700;font-size:0.86rem;cursor:pointer;}
+
+  .chatbar{flex:0 0 auto;border-top:1px solid var(--border);padding:12px 20px;background:var(--card);}
+  .chatbar .bb-note{display:block;font-size:0.72rem;color:var(--ink-soft);margin-bottom:8px;line-height:1.5;}
+  .submit-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:8px;padding:12px;font-weight:700;font-size:0.9rem;cursor:pointer;}
+  .submit-btn:disabled{background:var(--border);color:var(--ink-soft);cursor:default;}
+
+  /* ===== TAB: ranking ===== */
+  .rulebox{max-width:560px;margin:0 auto 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;}
+  .rulebox h2{font-size:0.9rem;margin:0 0 8px;}
+  .rulebox .rule{font-size:0.78rem;color:var(--ink-soft);margin:3px 0;line-height:1.55;}
+  .rulebox .rule b{color:var(--ink);}
+  .rulebox .ver{font-size:0.7rem;color:var(--ink-soft);}
+  .guarantee{display:inline-block;margin-top:8px;background:var(--met-bg);color:var(--met);border-radius:99px;padding:4px 12px;
+    font-size:0.72rem;font-weight:700;cursor:help;}
+  .rankhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;max-width:560px;margin-left:auto;margin-right:auto;}
+  .rankhead .status{font-size:0.8rem;color:var(--ink-soft);}
+  .rankhead .status.fresh{color:var(--met);font-weight:700;}
+  .refresh-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:11px 22px;font-weight:700;cursor:pointer;font-size:0.86rem;
+    display:inline-flex;align-items:center;gap:8px;}
+  .refresh-btn.done{background:var(--met);}
+  .ranklist{display:flex;flex-direction:column;gap:10px;max-width:560px;margin:0 auto;}
+  .rankrow{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:flex-start;gap:14px;transition:box-shadow .8s ease,border-color .8s ease,background .8s ease;}
+  .rankrow.flash{border-color:var(--secondary);box-shadow:0 0 0 3px rgba(59,130,246,.2);background:#F5F9FF;}
+  .rankrow .rnum{width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;
+    align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex:0 0 auto;}
+  .rankrow:first-child .rnum{background:var(--secondary);border-color:var(--secondary);color:#fff;}
+  .rankrow .rinfo{flex:1;min-width:0;}
+  .rankrow .rname{font-weight:600;font-size:0.9rem;line-height:1.4;}
+  .rankrow .rnct{font-size:0.72rem;color:var(--ink-soft);font-family:"IBM Plex Mono",ui-monospace,monospace;margin-top:2px;}
+  .rankrow .rnct a{color:var(--ink-soft);}
+  .rankrow .rreason{font-size:0.74rem;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
+  .minichips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;align-items:center;}
+  .mgroup{font-size:0.66rem;font-weight:700;color:var(--ink-soft);}
+  .mchip{font-size:0.66rem;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:2px 8px;color:var(--ink-soft);cursor:help;}
+  .mchip.warn{border-color:var(--uncertain-mid);color:var(--uncertain);}
+  .rankrow .rside{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .rankdelta{font-size:0.86rem;font-weight:700;display:flex;align-items:center;gap:3px;justify-content:flex-end;}
+  .rankdelta.up{color:var(--up);} .rankdelta.down{color:var(--down);} .rankdelta.same{color:var(--ink-soft);}
+
+  /* ===== TAB: history ===== */
+  .historywrap{max-width:640px;margin:0 auto;position:relative;padding-left:30px;}
+  .historywrap::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--border);}
+  .histitem{position:relative;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:16px;}
+  .histitem::before{content:"";position:absolute;left:-25px;top:20px;width:10px;height:10px;border-radius:50%;background:var(--secondary);
+    border:3px solid var(--bg);box-shadow:0 0 0 1px var(--border);}
+  .histitem.past::before{background:var(--ink-soft);}
+  .histitem.reverted{opacity:.55;}
+  .histtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
+  .histround{font-weight:700;font-size:0.92rem;}
+  .histtime{font-size:0.74rem;color:var(--ink-soft);}
+  .histstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .histpill{background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:3px 12px;font-size:0.76rem;color:var(--ink-soft);}
+  .histpill b{color:var(--ink);}
+  .hist-qa{font-size:0.78rem;color:var(--ink-soft);background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:8px;line-height:1.6;overflow-wrap:anywhere;}
+  .hist-qa b{color:var(--ink);}
+  .hist-change{font-size:0.76rem;color:var(--ink-soft);margin:4px 0;line-height:1.5;overflow-wrap:anywhere;}
+  .delta-chip{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.68rem;background:#fff;border:1px solid var(--border);
+    border-radius:6px;padding:1px 6px;margin-right:6px;white-space:nowrap;}
+  .hist-more{font-size:0.72rem;color:var(--ink-soft);margin:4px 0;}
+  .revert-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:7px 16px;cursor:pointer;color:var(--ink);font-size:0.8rem;font-weight:600;}
+  .revert-btn:hover:not(:disabled){border-color:var(--secondary);color:var(--secondary);}
+  .revert-btn:disabled{opacity:.4;cursor:default;}
+
+  footer.disclaimer{padding:20px 24px 30px;font-size:0.76rem;color:var(--ink-soft);line-height:1.6;border-top:1px solid var(--border);
+    background:var(--card);margin-top:24px;}
+  footer.disclaimer .compliance{display:block;margin-top:7px;font-size:0.7rem;color:var(--ink-soft);opacity:.85;}
+  footer.disclaimer .doclinks{display:block;margin-top:7px;}
+  footer.disclaimer .doclinks a{margin-right:14px;}
+
+  .loadnote{padding:40px 24px;text-align:center;color:var(--ink-soft);font-size:0.9rem;}
+</style>
+</head>
+<body>
+<div class="utilbar">
+  <span class="name">Interactive Clinical Trial Recommendation</span>
+  <span class="eventtag">2026 SKKU HEALTHCARE<br>AGENTIC CHALLENGE</span>
+</div>
+
+<div class="tabbarouter">
+  <div class="patient-dropdown" id="patientDropdown">
+    <button class="pdbtn" id="pdBtn">환자 불러오는 중 <span class="chev">▾</span></button>
+    <div class="pdmenu" id="pdMenu"></div>
+  </div>
+  <div class="tabbar" id="tabbar">
+    <div class="tab active" data-v="board">환자 &amp; 임상시험 보드</div>
+    <div class="tab" data-v="chat">확인 질문 <span class="tabbadge" id="qCountBadge">0</span></div>
+    <div class="tab" data-v="ranking">최종 순위 추천</div>
+    <div class="tab" data-v="history">변경 이력</div>
+  </div>
+  <div class="livestatus" id="liveStatus">
+    <span class="livebadge"><span class="livedot"></span>LIVE</span>
+    <span class="statustext" id="statusText">불러오는 중</span>
+  </div>
+</div>
+
+<!-- ===== TAB 1: 환자 상세 + 적격성 보드 ===== -->
+<div class="view active" id="v-board">
+  <div class="loadnote" id="boardLoadNote">환자 데이터를 불러오는 중입니다.</div>
+  <div id="boardContent" style="display:none;">
+    <div class="sectionlabel">환자 상세</div>
+    <div class="pdetail" id="pdetail"></div>
+
+    <div class="needstrip" id="needstrip" style="display:none;"></div>
+
+    <div class="boardhead">
+      <label class="edittoggle" id="edittoggle">
+        <span class="switch">
+          <input type="checkbox" id="dragEnable">
+          <span class="slider"></span>
+        </span>
+        <span id="toggleLabel">카드 이동 잠김 — 토글을 켜면 드래그로 사람 검토 오버라이드 기록</span>
+      </label>
+    </div>
+
+    <div class="sectionlabel">임상시험 매칭 현황 — 시험 단위 적격성</div>
+    <div class="board" id="board">
+      <div class="col col-ELIGIBLE" data-col="ELIGIBLE">
+        <h3 title="모든 기준이 해소되어 참여할 수 있다고 판정된 시험">적격<span class="en">ELIGIBLE</span> <span class="count">0</span></h3>
+        <div class="cards" data-cards="ELIGIBLE"></div>
+      </div>
+      <div class="col col-UNCERTAIN" data-col="UNCERTAIN">
+        <h3 title="아직 확인이 필요한 기준이 남아 참여 여부가 정해지지 않은 시험">미확정<span class="en">UNCERTAIN</span> <span class="count">0</span></h3>
+        <div class="cards" data-cards="UNCERTAIN"></div>
+      </div>
+      <div class="col col-INELIGIBLE" data-col="INELIGIBLE">
+        <h3 title="참여를 막는 기준이 확정되어 탈락한 시험">부적격<span class="en">INELIGIBLE</span> <span class="count">0</span></h3>
+        <div class="cards" data-cards="INELIGIBLE"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 2: 확인 질문 — 근거 + 채팅 라운드 ===== -->
+<div class="view" id="v-chat">
+  <div class="trialpills" id="trialPills"></div>
+  <div class="splitwrap">
+    <div class="evidencepane" id="evidencepane"></div>
+    <div class="chatpane">
+      <div class="chathead" id="chatHead">확인 질문</div>
+      <div class="chatscroll" id="chatscroll"></div>
+      <div class="chatbar" id="chatbar">
+        <span class="bb-note" id="batchNote">고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.</span>
+        <button class="submit-btn" id="batchBtn" disabled>선택한 답변 모두 반영 (질문 0개)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 3: 최종 순위 추천 ===== -->
+<div class="view" id="v-ranking">
+  <div class="rulebox" id="rulebox"></div>
+  <div class="rankhead">
+    <div class="status" id="rankStatus">마지막 업데이트: 초기 매칭 기준</div>
+    <button class="refresh-btn" id="refreshBtn">↻ 최신화</button>
+  </div>
+  <div class="ranklist" id="ranklist"></div>
+</div>
+
+<!-- ===== TAB 4: 변경 이력 ===== -->
+<div class="view" id="v-history">
+  <div class="historywrap" id="historyWrap">
+    <div id="dynamicHistory"></div>
+    <div class="histitem past" id="round0Item">
+      <div class="histtop"><span class="histround">라운드 0 · 초기 매칭</span><span class="histtime" id="round0Time"></span></div>
+      <div class="histstats"><span class="histpill" id="round0Pill">초기 매칭 생성</span></div>
+      <button class="revert-btn" disabled>—</button>
+    </div>
+  </div>
+</div>
+
+<!-- 시험 상세 모달 -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modalhead">
+      <div class="modalhead-top">
+        <div><div class="name" id="modalName"></div><div class="nct" id="modalNct"></div></div>
+        <button class="modalclose" id="modalClose" aria-label="닫기">✕</button>
+      </div>
+      <div class="verdict-banner" id="verdictBanner">
+        <span><span class="lbl">시험 단위 적격성</span><br><span id="verdictText"></span></span>
+        <span class="sub" id="verdictSummary"></span>
+      </div>
+    </div>
+    <div class="modalbody" id="modalBody"></div>
+    <div class="modalfoot">
+      <span class="hint">기준 판정은 판정 로직의 결과입니다 · 사람 검토 의견은 보드에서 카드 드래그(오버라이드)로 기록됩니다</span>
+      <button class="save-btn" id="modalCloseBtn">닫기</button>
+    </div>
+  </div>
+</div>
+
+<footer class="disclaimer">
+  본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 판정 로직 호출로 영향받는 기준만 재평가됩니다. 이 데모는 목록의 사전 등록된 환자만 지원합니다.
+  <span class="compliance">데이터 출처 ClinicalTrials.gov API v2 (미국 NLM/NIH, 공공저작물) · 환자 = 대회 제공 합성 vignette · LLM 백엔드 = Anthropic (대회 지원 크레딧)</span>
+  <span class="doclinks">
+    <a href="/agent_orchestration.html" target="_blank" rel="noopener">에이전트 구성도</a>
+    <a href="/criteria_map.html" target="_blank" rel="noopener">기준 게이트맵</a>
+  </span>
+</footer>
+
+<script>
+"use strict";
+
+// ---------------------------------------------------------------------------
+// 어휘 (극성 규칙): 시험 단위 = 적격성(적격/미확정/부적격), 기준 단위 = MET/NOT_MET/UNCERTAIN/UNKNOWN.
+// 두 어휘를 섞지 않는다 — 보드 칼럼·랭킹 배지는 항상 시험 단위, 모달/근거 칩은 항상 기준 단위.
+// ---------------------------------------------------------------------------
+var ELIG_META = {
+  ELIGIBLE:   {ko: "적격",   badge: "b-met",       banner: "verdict-met",       col: "ELIGIBLE"},
+  UNCERTAIN:  {ko: "미확정", badge: "b-uncertain",  banner: "verdict-uncertain", col: "UNCERTAIN"},
+  INELIGIBLE: {ko: "부적격", badge: "b-notmet",     banner: "verdict-notmet",    col: "INELIGIBLE"}
+};
+function eligMeta(v){ return ELIG_META[v] || ELIG_META.UNCERTAIN; }
+
+var VERDICT_META = {
+  MET:       {cls: "b-met",       ko: "기준에 해당함"},
+  NOT_MET:   {cls: "b-notmet",    ko: "기준에 해당 안 함"},
+  UNCERTAIN: {cls: "b-uncertain", ko: "해석이 모호함"},
+  UNKNOWN:   {cls: "b-unknown",   ko: "기록에 정보 없음"}
+};
+var EFFECT_META = {
+  PASS:   {cls: "b-met",       ko: "참여에 문제 없음"},
+  FAIL:   {cls: "b-notmet",    ko: "참여 불가 사유"},
+  REVIEW: {cls: "b-uncertain", ko: "확인 필요"}
+};
+var UTYPE_KO = {
+  MISSING: "정보 없음", STALE: "정보 오래됨", INSUFFICIENT_EVIDENCE: "근거 불충분",
+  AMBIGUOUS: "표현 모호", CONFLICTING: "근거 충돌", BOUNDARY: "경계값",
+  CLINICAL_JUDGMENT: "전문가 판단", NOT_APPLICABLE: "해당 없음",
+  CALCULABLE: "계산 가능", DEFINITE_EXCLUSION: "부적격 확정"
+};
+var ACTION_KO = {
+  ASK: "질문", RETRIEVE: "기록 검색", REQUEST_LATEST: "최신 검사 요청",
+  CALCULATE: "계산", VERIFY: "근거 재확인", PROTOCOL_REVIEW: "원문 재확인",
+  ESCALATE: "전문가 이관", IGNORE: "영향 없음", STOP: "중단"
+};
+var FIT_LABEL_KO = {
+  therapeutic: "치료 목적", supportive: "지지·완화",
+  care_delivery: "의료전달·관리", observational: "관찰 연구"
+};
+var MAX_ANSWER_LEN = 600;
+var MAX_BATCH_ANSWERS = 5;
+
+// ---------------------------------------------------------------------------
+// 상태 — 서버는 무상태(stateless): trials + extended_record를 클라이언트가 들고 라운드마다 재전송
+// ---------------------------------------------------------------------------
+var patients = [];
+var cur = null;          // {id, condition, patientText, extraction, trials, questions, need, ranking, extendedRecord, answered{}, overrides{}, followupNote}
+var events = [];         // 이력: {kind:'round'|'override'|'revert', seq, ...} — 라운드는 snapshot(반영 직전 상태) 보유
+var histSeq = 0;
+var selectedPill = "ALL";
+var roundCounter = 0;
+var selectedQuestion = null; // question text
+var answerInFlight = false;
+var rankView = {order: [], round: 0, stale: false};
+
+function nowLabel(){
+  var d = new Date();
+  return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+}
+function deepCopy(x){ return JSON.parse(JSON.stringify(x)); }
+function escapeHtml(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function el(tag, cls, html){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+function nctLinkHtml(nct, extraCls){
+  // NCT 형식 화이트리스트 통과 시에만 링크 — 서버 텍스트를 URL로 신뢰하지 않는다
+  if (/^NCT\d+$/.test(String(nct || ""))){
+    return '<a href="https://clinicaltrials.gov/study/' + nct + '" target="_blank" rel="noopener"' +
+      ' class="' + (extraCls || "") + '" title="ClinicalTrials.gov 원문 프로토콜 열기">' + escapeHtml(nct) + ' ↗</a>';
+  }
+  return escapeHtml(nct);
+}
+function phaseLabel(v){
+  var t = String(v == null ? "" : v).toUpperCase().replace(/[\s_]/g, "");
+  if (!t || t === "NA" || t === "N/A" || t === "NONE" || t === "NULL") return "Phase NA";
+  return "Phase " + t.replace(/PHASE/g, "").replace(/EARLY/g, "Early ");
+}
+
+// ---------------------------------------------------------------------------
+// 질문 ↔ 열린 기준 토큰 매퍼 — site.html에서 검증된 포팅 (action_policy 정규화 규칙의 JS판)
+// ---------------------------------------------------------------------------
+var TAG_STOPWORDS = (function(){
+  var words = ("the a an and or of to in on for with without any has have had is are was were " +
+    "be been at by as if it its this that these those no not than patient patients history " +
+    "prior current currently known presence evidence status study trial criteria criterion " +
+    "what when does do did their they she he you your").split(" ");
+  var o = {};
+  words.forEach(function(w){ o[w] = true; });
+  return o;
+})();
+function normTagText(s){
+  var t = String(s == null ? "" : s).trim().toLowerCase().replace(/\s+/g, " ");
+  return t.replace(/[.,;:!?)\]}。，]+$/, "").trim();
+}
+function tagTokens(s){
+  var out = {};
+  (normTagText(s).match(/[a-z0-9%.]+/g) || []).forEach(function(t){
+    if (TAG_STOPWORDS[t]) return;
+    if (t.length >= 3 || /[0-9]/.test(t)) out[t] = true;
+  });
+  return out;
+}
+function unionTokens(a, b){
+  var o = {}, k;
+  for (k in a) o[k] = true;
+  for (k in b) o[k] = true;
+  return o;
+}
+function overlapSize(a, b){
+  var n = 0;
+  for (var k in a){ if (b[k]) n += 1; }
+  return n;
+}
+function getEffect(c){
+  if (c && c.effect) return String(c.effect).toUpperCase();
+  return null;
+}
+function trialIsBlocked(t){
+  if (!t) return true;
+  if (t.eligibility === "INELIGIBLE") return true;
+  return (t.criteria || []).some(function(c){ return getEffect(c) === "FAIL"; });
+}
+// 아직 답으로 움직일 수 있는 기준: 미확정 판정 + 막히지 않은 시험 + STOP 아님
+function collectOpenCriteria(trials){
+  var out = [];
+  (trials || []).forEach(function(t){
+    if (trialIsBlocked(t)) return;
+    (t.criteria || []).forEach(function(c){
+      var v = (c.verdict || "").toUpperCase();
+      if (v !== "UNKNOWN" && v !== "UNCERTAIN") return;
+      if (String(c.action || "").toUpperCase() === "STOP") return;
+      out.push({nct: t.nct_id, title: t.title || t.nct_id, text: c.text || "",
+                tokens: tagTokens(c.text || ""), crit: c});
+    });
+  });
+  return out;
+}
+function matchOpenCriteria(tokens, openList){
+  var ncts = [], byNct = {}, count = 0, items = [];
+  (openList || []).forEach(function(oc){
+    if (!overlapSize(tokens, oc.tokens)) return;
+    count += 1;
+    items.push(oc);
+    if (!byNct[oc.nct]){ byNct[oc.nct] = 0; ncts.push(oc.nct); }
+    byNct[oc.nct] += 1;
+  });
+  return {ncts: ncts, byNct: byNct, count: count, items: items};
+}
+var GENERIC_NEGATIVES = {
+  "해당 사항 없음": 1, "해당사항 없음": 1, "기록 없음/확인 불가": 1, "기록 없음": 1,
+  "확인 불가": 1, "모두 정상 범위": 1, "정상 범위": 1, "없음": 1
+};
+function isGenericNegative(t){ return !!GENERIC_NEGATIVES[normTagText(t)]; }
+function shortNct(n){
+  n = String(n || "");
+  return n.length > 11 ? n.slice(0, 11) + "…" : n;
+}
+function questionTokens(q){
+  return unionTokens(tagTokens(q.field || ""), tagTokens(q.question || ""));
+}
+
+// ---------------------------------------------------------------------------
+// 파생 상태
+// ---------------------------------------------------------------------------
+function pendingQuestions(){
+  if (!cur) return [];
+  return (cur.questions || []).filter(function(q){ return q && q.question && !cur.answered[q.question]; });
+}
+function roundsDone(){
+  return events.filter(function(e){ return e.kind === "round" && !e.reverted; });
+}
+function computeLiveStatus(){
+  var n = pendingQuestions().length;
+  if (n > 0) return {text: "확인 질문 " + n + "개 대기중", tab: "chat"};
+  return {text: "확인 질문 모두 해결됨 · 순위 확인 가능", tab: "ranking"};
+}
+function renderLiveStatus(){
+  var s = computeLiveStatus();
+  document.getElementById("statusText").textContent = s.text;
+  document.getElementById("liveStatus").dataset.tab = s.tab;
+  document.getElementById("qCountBadge").textContent = pendingQuestions().length;
+}
+
+// ---------------------------------------------------------------------------
+// 탭 + LIVE 칩
+// ---------------------------------------------------------------------------
+document.querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click", function(){
+    document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("active"); });
+    document.querySelectorAll(".view").forEach(function(x){ x.classList.remove("active"); });
+    t.classList.add("active");
+    document.getElementById("v-" + t.dataset.v).classList.add("active");
+  });
+});
+document.getElementById("liveStatus").addEventListener("click", function(){
+  var targetTab = document.getElementById("liveStatus").dataset.tab;
+  var tabEl = document.querySelector('.tab[data-v="' + targetTab + '"]');
+  if (tabEl) tabEl.click();
+});
+
+// ---------------------------------------------------------------------------
+// 환자 드롭다운 — /api/patients 실데이터 (S 그룹 / E 그룹 구분선)
+// ---------------------------------------------------------------------------
+var pdBtn = document.getElementById("pdBtn"), pdMenu = document.getElementById("pdMenu");
+pdBtn.addEventListener("click", function(e){ e.stopPropagation(); pdMenu.classList.toggle("open"); });
+document.addEventListener("click", function(){ pdMenu.classList.remove("open"); });
+
+function renderPatientMenu(){
+  pdMenu.innerHTML = "";
+  var lastGroup = null;
+  patients.forEach(function(p){
+    var group = String(p.id || "").charAt(0);
+    if (lastGroup !== null && group !== lastGroup){
+      pdMenu.appendChild(el("div", "pdsep"));
+      pdMenu.appendChild(el("div", "pdgrouplabel", "추가 데모 환자"));
+    }
+    lastGroup = group;
+    var item = el("div", "pditem" + (cur && cur.id === p.id ? " sel" : ""));
+    item.dataset.p = p.id;
+    item.innerHTML = "<strong>" + escapeHtml(p.id) + "</strong><span>" + escapeHtml(p.condition || "") + "</span>";
+    item.addEventListener("click", function(e){
+      e.stopPropagation();
+      pdMenu.classList.remove("open");
+      if (!cur || cur.id !== p.id) loadTrace(p.id);
+    });
+    pdMenu.appendChild(item);
+  });
+}
+function renderPatientBtn(){
+  if (!cur){ pdBtn.innerHTML = '환자 선택 <span class="chev">▾</span>'; return; }
+  pdBtn.innerHTML = escapeHtml(cur.id) + ' <span class="pdmeta">' + escapeHtml(cur.condition || "") + '</span> <span class="chev">▾</span>';
+}
+
+// ---------------------------------------------------------------------------
+// 환자 상세 그리드 — trace.extraction([{name,value,evidence_quote}])을 쉬운 말 그룹으로 매핑
+// ---------------------------------------------------------------------------
+var EXTRACT_GROUPS = [
+  {id: "age", label: "나이"}, {id: "sex", label: "성별"}, {id: "diagnosis", label: "진단"},
+  {id: "symptom", label: "증상"}, {id: "exam", label: "진찰 소견"}, {id: "lab", label: "검사 수치"},
+  {id: "imaging", label: "영상 소견"}, {id: "treatment", label: "치료 이력"},
+  {id: "history", label: "병력·위험 요인"}, {id: "other", label: "기타 기록"}
+];
+function extractionGroup(name){
+  var n = String(name || "").toLowerCase();
+  if (n === "age") return "age";
+  if (n === "sex") return "sex";
+  if (/^diagnos|biopsy/.test(n)) return "diagnosis";
+  if (/^exam/.test(n)) return "exam";
+  if (/^lab|tsh|monospot|^blood/.test(n)) return "lab";
+  if (/imaging|nodule|ultrasound|radiograph|x-?ray|\bct\b|\bmri\b/.test(n)) return "imaging";
+  if (/treatment|medication|drug|therapy/.test(n)) return "treatment";
+  if (/history|risk|smoking|family/.test(n)) return "history";
+  if (/^symptom|^vomiting|pain|^vision|photopsia|floaters|fatigue|affected_eye|onset|duration/.test(n)) return "symptom";
+  return "other";
+}
+var SEX_KO = {female: "여성", male: "남성"};
+function prettifyName(name){
+  return String(name || "").replace(/[_\-]+/g, " ").trim();
+}
+function renderPatientDetail(){
+  var box = document.getElementById("pdetail");
+  var groups = {};
+  (Array.isArray(cur.extraction) ? cur.extraction : []).forEach(function(it){
+    if (!it || it.value == null || it.value === "") return;
+    var g = extractionGroup(it.name);
+    var val = String(it.value);
+    if (g === "sex" && SEX_KO[val.toLowerCase()]) val = SEX_KO[val.toLowerCase()];
+    if (g === "other") val = prettifyName(it.name) + ": " + val;
+    (groups[g] = groups[g] || []).push(val);
+  });
+  var html = "";
+  EXTRACT_GROUPS.forEach(function(g){
+    if (!groups[g.id] || !groups[g.id].length) return;
+    html += '<div class="field"><div class="k">' + escapeHtml(g.label) + '</div><div class="v">' +
+      escapeHtml(groups[g.id].join(" · ")) + '</div></div>';
+  });
+  if (!html) html = '<div class="field"><div class="k">기록</div><div class="v">' + escapeHtml(cur.patientText || "") + '</div></div>';
+  html += '<div class="pdetail-tag">[정보 추출 단계에서 자동 요약된 가상 데이터입니다 — 실제 환자 기록 아님]</div>';
+  box.innerHTML = html;
+}
+function renderNeedStrip(){
+  var box = document.getElementById("needstrip");
+  var need = cur.need;
+  if (!need || !need.need_ko){ box.style.display = "none"; box.innerHTML = ""; return; }
+  var hedge = need.confidence === "low"
+    ? '<span class="ns-hedge" title="환자 기록의 단서가 약해 분류 확신이 낮습니다. 사람이 한 번 확인하는 것이 안전합니다.">확신 낮음 — 검토 권장</span>'
+    : "";
+  var reason = (need.reasons && need.reasons.length) ? need.reasons[0] : "";
+  box.innerHTML =
+    '<span class="ns-label">이 환자에게 지금 필요한 것</span>' +
+    '<div class="ns-need">' + escapeHtml(need.need_ko) + hedge + '</div>' +
+    (reason ? '<div class="ns-reason">왜? ' + escapeHtml(reason) + '</div>' : "") +
+    '<div class="ns-link">추천 순위의 "도움이 되는가"는 이 필요와 각 시험의 목적을 맞춰 본 결과입니다.</div>';
+  box.style.display = "block";
+}
+
+// ---------------------------------------------------------------------------
+// 칸반 — 3칼럼 적격성 보드. 드래그 = 사람 검토 오버라이드(표시 전용), 판정은 절대 바꾸지 않음.
+// ---------------------------------------------------------------------------
+function displayCol(t){
+  return (cur.overrides && cur.overrides[t.nct_id]) || eligMeta(t.eligibility).col;
+}
+var dragged = null;
+function renderKanban(){
+  var byCol = {ELIGIBLE: [], UNCERTAIN: [], INELIGIBLE: []};
+  (cur.trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); })
+    .forEach(function(t){ byCol[displayCol(t)].push(t); });
+  ["ELIGIBLE", "UNCERTAIN", "INELIGIBLE"].forEach(function(colKey){
+    var wrap = document.querySelector('[data-cards="' + colKey + '"]');
+    var col = document.querySelector('.col[data-col="' + colKey + '"]');
+    wrap.innerHTML = "";
+    col.querySelector(".count").textContent = byCol[colKey].length;
+    if (!byCol[colKey].length){
+      wrap.appendChild(el("div", "colempty", colKey === "ELIGIBLE"
+        ? "아직 적격 확정된 시험 없음<br>확인 질문이 해소되면 여기로 이동합니다"
+        : "해당하는 시험 없음"));
+      return;
+    }
+    byCol[colKey].forEach(function(t){
+      var card = el("div", "kcard");
+      card.dataset.nct = t.nct_id;
+      var ovr = cur.overrides[t.nct_id]
+        ? '<span class="ovr" title="사람이 드래그로 옮긴 표시 위치입니다. 판정 로직의 결과(' +
+          escapeHtml(eligMeta(t.eligibility).ko) + ')는 바뀌지 않았습니다.">사람 검토 이동</span>'
+        : "";
+      card.innerHTML =
+        '<div class="name">' + escapeHtml(t.title || t.nct_id) + '</div>' +
+        '<div class="cardmeta"><span class="rankchip" title="추천 순위">' + (t.rank || "?") + '위</span>' +
+        '<span class="nct mono">' + nctLinkHtml(t.nct_id) + '</span>' + ovr + '</div>' +
+        (t.rank_reason ? '<div class="reason" title="' + escapeHtml(t.rank_reason) + '">' + escapeHtml(t.rank_reason) + '</div>' : "") +
+        '<div class="hint">클릭 → 세부 근거 보기</div>';
+      card.addEventListener("click", function(e){
+        if (dragged) return;
+        if (e.target.closest("a")) return; // NCT 원문 링크는 링크대로
+        openModal(t.nct_id);
+      });
+      card.addEventListener("dragstart", function(e){
+        if (!dragEnable.checked){ e.preventDefault(); return; }
+        dragged = card; card.classList.add("dragging");
+      });
+      card.addEventListener("dragend", function(){ card.classList.remove("dragging"); dragged = null; });
+      wrap.appendChild(card);
+    });
+  });
+  applyDraggable();
+}
+
+var dragEnable = document.getElementById("dragEnable");
+var toggleLabel = document.getElementById("toggleLabel");
+var editWrap = document.getElementById("edittoggle");
+function applyDraggable(){
+  var on = dragEnable.checked;
+  document.querySelectorAll(".kcard").forEach(function(c){ c.draggable = on; });
+  toggleLabel.textContent = on
+    ? "카드 이동 켜짐 — 드래그는 사람 검토 오버라이드로 기록되며 판정은 바뀌지 않습니다"
+    : "카드 이동 잠김 — 토글을 켜면 드래그로 사람 검토 오버라이드 기록";
+  editWrap.classList.toggle("on", on);
+}
+dragEnable.addEventListener("change", applyDraggable);
+
+document.querySelectorAll(".col").forEach(function(col){
+  col.addEventListener("dragover", function(e){
+    if (!dragEnable.checked || !dragged) return;
+    e.preventDefault(); col.classList.add("dragover");
+  });
+  col.addEventListener("dragleave", function(){ col.classList.remove("dragover"); });
+  col.addEventListener("drop", function(e){
+    if (!dragEnable.checked || !dragged) return;
+    e.preventDefault(); col.classList.remove("dragover");
+    var nct = dragged.dataset.nct;
+    var t = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
+    if (!t) return;
+    var from = displayCol(t), to = col.dataset.col;
+    if (from === to) return;
+    // 표시 전용 오버라이드 — 서버 판정과 같은 칼럼으로 되돌리면 오버라이드 해제
+    if (to === eligMeta(t.eligibility).col) delete cur.overrides[nct];
+    else cur.overrides[nct] = to;
+    events.push({kind: "override", seq: ++histSeq, id: histSeq, nct: nct,
+      title: t.title || nct, from: from, to: to, timeLabel: nowLabel(), undone: false});
+    renderKanban();
+    renderHistory();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 모달 — 배너는 시험 단위 적격성 + rationale, 본문은 기준 단위 전체 (여기서만 MET/NOT_MET 어휘)
+// ---------------------------------------------------------------------------
+var overlay = document.getElementById("overlay");
+function critBadgeHtml(c){
+  var v = (c.verdict || "UNKNOWN").toUpperCase();
+  var vm = VERDICT_META[v] || VERDICT_META.UNKNOWN;
+  var html = '<span class="badge ' + vm.cls + '" title="기준 단위 판정: 기준 문장이 환자에게 해당하는지 (' +
+    escapeHtml(vm.ko) + ')">' + escapeHtml(v.replace("_", " ")) + " · " + escapeHtml(vm.ko) + '</span>';
+  var e = getEffect(c);
+  if (e && EFFECT_META[e]){
+    html += '<span class="badge ' + EFFECT_META[e].cls + '" title="적격성 효과: 이 판정이 참여 가능 여부에 미치는 영향">' +
+      escapeHtml(e) + " · " + escapeHtml(EFFECT_META[e].ko) + '</span>';
+  }
+  if (c.action){
+    var cause = c.uncertainty_type ? (UTYPE_KO[c.uncertainty_type] || c.uncertainty_type) : "원인 미분류";
+    var act = ACTION_KO[String(c.action).toUpperCase()] || c.action;
+    var trialStop = String(c.action).toUpperCase() === "STOP" && c.action_scope === "trial";
+    var title = (trialStop && c.action_reason) ? c.action_reason : "불확실성의 원인과, 정책이 고른 다음 행동";
+    html += '<span class="action-chip' + (trialStop ? " stop" : "") + '" title="' + escapeHtml(title) + '">' +
+      escapeHtml(cause) + " → " + escapeHtml(act) + (trialStop ? " (시험 단위)" : "") + '</span>';
+  }
+  return html;
+}
+function findLinkedPendingQuestion(critText){
+  var tok = tagTokens(critText || "");
+  var qs = pendingQuestions();
+  for (var i = 0; i < qs.length; i++){
+    if (overlapSize(questionTokens(qs[i]), tok)) return qs[i];
+  }
+  return null;
+}
+function openModal(nct){
+  var t = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
+  if (!t) return;
+  document.getElementById("modalName").textContent = t.title || t.nct_id;
+  document.getElementById("modalNct").innerHTML = nctLinkHtml(t.nct_id) +
+    (t.phase ? ' · ' + escapeHtml(phaseLabel(t.phase)) : "");
+  var em = eligMeta(t.eligibility);
+  var banner = document.getElementById("verdictBanner");
+  banner.className = "verdict-banner " + em.banner;
+  document.getElementById("verdictText").textContent = em.ko + " · " + (t.eligibility || "UNCERTAIN");
+  document.getElementById("verdictSummary").textContent = t.rationale || "";
+  var body = document.getElementById("modalBody");
+  body.innerHTML = "";
+  var incN = 0, excN = 0;
+  (t.criteria || []).forEach(function(c){
+    var isInc = c.type === "inclusion";
+    var tag = isInc ? ("포함기준 " + String(++incN).padStart(2, "0")) : ("제외기준 " + String(++excN).padStart(2, "0"));
+    var row = el("div", "critdetail " + (isInc ? "inc" : "exc"));
+    var evHtml = c.evidence
+      ? '<div class="critevidence">"' + escapeHtml(c.evidence) + '"</div>'
+      : '<div class="critevidence">환자 기록에 근거 문장 없음</div>';
+    var linked = ((c.verdict === "UNCERTAIN" || c.verdict === "UNKNOWN") && !trialIsBlocked(t))
+      ? findLinkedPendingQuestion(c.text) : null;
+    row.innerHTML =
+      '<div class="crittag" title="' + (isInc ? "이 조건에 해당해야 참여할 수 있습니다" : "이 조건에 해당하면 참여할 수 없습니다") + '">' + tag + '</div>' +
+      '<div class="crittext">' + escapeHtml(c.text || "") + '</div>' +
+      evHtml +
+      (c.reasoning ? '<div class="critnote">' + escapeHtml(c.reasoning) + '</div>' : "") +
+      '<div class="critfoot">' + critBadgeHtml(c) +
+      (linked ? '<button class="qlink" type="button">관련 확인 질문 보기 →</button>' : "") + '</div>';
+    if (linked){
+      row.querySelector(".qlink").addEventListener("click", function(){
+        overlay.classList.remove("open");
+        goToQuestion(linked, t.nct_id);
+      });
+    }
+    body.appendChild(row);
+  });
+  overlay.classList.add("open");
+}
+function goToQuestion(q, nct){
+  var pillNcts = pillTrialNcts();
+  var _sv = captureSelections();
+  selectedPill = pillNcts.indexOf(nct) >= 0 ? nct : "ALL";
+  selectedQuestion = q.question;
+  renderChatAll();
+  restoreSelections(_sv); updateBatchBar();
+  var tabEl = document.querySelector('.tab[data-v="chat"]');
+  if (tabEl) tabEl.click();
+}
+document.getElementById("modalClose").addEventListener("click", function(){ overlay.classList.remove("open"); });
+document.getElementById("modalCloseBtn").addEventListener("click", function(){ overlay.classList.remove("open"); });
+overlay.addEventListener("click", function(e){ if (e.target === overlay) overlay.classList.remove("open"); });
+
+// ---------------------------------------------------------------------------
+// 확인 질문 탭 — 시험 필터 필 + 근거 페인 + 채팅 라운드 + 하단 일괄 반영 바
+// ---------------------------------------------------------------------------
+function pillTrialNcts(){
+  var openList = collectOpenCriteria(cur.trials);
+  var ncts = [];
+  pendingQuestions().forEach(function(q){
+    matchOpenCriteria(questionTokens(q), openList).ncts.forEach(function(n){
+      if (ncts.indexOf(n) < 0) ncts.push(n);
+    });
+  });
+  return ncts;
+}
+function questionsForPill(list){
+  if (selectedPill === "ALL") return list;
+  var openList = collectOpenCriteria(cur.trials);
+  return list.filter(function(q){
+    return matchOpenCriteria(questionTokens(q), openList).ncts.indexOf(selectedPill) >= 0;
+  });
+}
+function renderTrialPills(){
+  var box = document.getElementById("trialPills");
+  box.innerHTML = "";
+  var openList = collectOpenCriteria(cur.trials);
+  var pend = pendingQuestions();
+  var allPill = el("div", "trialpill" + (selectedPill === "ALL" ? " sel" : ""));
+  allPill.innerHTML = "전체 <span class=\"pillcount\">" + pend.length + "</span>";
+  allPill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = "ALL"; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
+  box.appendChild(allPill);
+  pillTrialNcts().forEach(function(nct){
+    var count = pend.filter(function(q){
+      return matchOpenCriteria(questionTokens(q), openList).ncts.indexOf(nct) >= 0;
+    }).length;
+    var t = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
+    var pill = el("div", "trialpill" + (selectedPill === nct ? " sel" : ""));
+    pill.title = t ? (t.title || nct) : nct;
+    pill.innerHTML = escapeHtml(nct) + ' <span class="pillcount">' + count + '</span>';
+    pill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = nct; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
+    box.appendChild(pill);
+  });
+}
+function questionPriorityLine(q){
+  var hasTrials = typeof q.affects_trials === "number";
+  var hasCrit = typeof q.affects_criteria === "number";
+  var hasRank = typeof q.may_change_rank === "boolean";
+  if (!hasTrials && !hasCrit && !hasRank) return "";
+  if (hasTrials && hasCrit && q.affects_trials === 0 && q.affects_criteria === 0){
+    return '<div class="qprio">답해도 바뀌는 것 없음 · 지금 열려 있는 기준과 직접 연결된 항목이 없습니다 (우선순위 낮음)</div>';
+  }
+  var parts = ["답하면 바뀌는 것"];
+  if (hasCrit) parts.push("기준 " + q.affects_criteria + "개 다시 판정" + (hasTrials ? " (시험 " + q.affects_trials + "개)" : ""));
+  else if (hasTrials) parts.push("시험 " + q.affects_trials + "개에 반영");
+  var line = parts.join(" · ");
+  if (hasRank){
+    line += ' · <span class="' + (q.may_change_rank ? "rank-yes" : "") + '">' +
+      (q.may_change_rank ? "추천 순위가 바뀔 수 있음" : "추천 순위는 그대로") + "</span>";
+  }
+  return '<div class="qprio">' + line + "</div>";
+}
+// 선택지 아래 작은 태그: 이 답이 지금 어떤 시험 판정에 쓰이는지 (매퍼 실시간 계산)
+function optionTagEl(optText, qTok, qMatch, openList){
+  var generic = isGenericNegative(optText);
+  var m = generic ? qMatch : matchOpenCriteria(unionTokens(tagTokens(optText), qTok), openList);
+  var tag = document.createElement("span");
+  if (!m.ncts.length){
+    tag.className = "opt-tag none";
+    tag.textContent = "현재 열린 기준과 직접 연결 없음";
+    tag.title = "이 항목의 답으로 지금 다시 판정될 미확정 기준이 없습니다.";
+    return tag;
+  }
+  tag.className = "opt-tag";
+  var label = m.ncts.length === 1 ? m.ncts[0] : "시험 " + m.ncts.length + "개";
+  var rest = m.ncts.length === 1
+    ? " 판정에 쓰임 · 기준 " + m.count + "개"
+    : " 판정에 쓰임 (" + m.ncts.map(shortNct).join(", ") + ") · 기준 " + m.count + "개";
+  if (generic) rest += " · 질문 전체와 같은 기준을 닫습니다";
+  tag.textContent = "→ " + label + rest;
+  tag.title = "이 답이 판정에 쓰이는 시험: " + m.ncts.map(function(n){
+    return n + " (기준 " + m.byNct[n] + "개)";
+  }).join(", ");
+  return tag;
+}
+function buildPendingCard(q, openList){
+  var card = el("div", "qitem");
+  card.dataset.question = q.question;
+  if (selectedQuestion === q.question) card.classList.add("sel");
+  var fuBadge = q.followup
+    ? '<span class="fu-badge" title="앞선 답변을 보고 시스템이 추가로 확인이 필요하다고 판단해 만든 질문입니다.">추가 질문</span>'
+    : "";
+  card.innerHTML =
+    (q.field ? '<div class="qfield">' + escapeHtml(q.field) + '</div>' : "") +
+    '<div class="qtext">' + escapeHtml(q.question) + fuBadge + '</div>' +
+    (q.why ? '<div class="qwhy">' + escapeHtml(q.why) + '</div>' : "") +
+    questionPriorityLine(q);
+  var qTok = questionTokens(q);
+  var qMatch = matchOpenCriteria(qTok, openList);
+  if (Array.isArray(q.options) && q.options.length){
+    var optWrap = el("div", "opt-list");
+    q.options.forEach(function(optText){
+      var lab = el("label", "opt-item");
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = String(optText);
+      cb.addEventListener("change", updateBatchBar);
+      var bodyDiv = el("div", "opt-body");
+      var span = el("span", "opt-text");
+      span.textContent = String(optText);
+      bodyDiv.appendChild(span);
+      bodyDiv.appendChild(optionTagEl(String(optText), qTok, qMatch, openList));
+      lab.appendChild(cb);
+      lab.appendChild(bodyDiv);
+      optWrap.appendChild(lab);
+    });
+    card.appendChild(optWrap);
+  }
+  var input = document.createElement("input");
+  input.type = "text";
+  input.className = "qinput";
+  input.placeholder = (Array.isArray(q.options) && q.options.length)
+    ? "직접 입력 (선택 항목과 함께 반영됩니다)"
+    : "자유 서술로 입력 (검사 수치, 병력, 복용 약 등)";
+  input.maxLength = MAX_ANSWER_LEN;
+  input.addEventListener("input", updateBatchBar);
+  card.appendChild(input);
+  card.addEventListener("click", function(e){
+    if (e.target.tagName === "INPUT" && e.target.type === "text") { selectQuestion(q.question); return; }
+    selectQuestion(q.question);
+  });
+  return card;
+}
+function selectQuestion(qText){
+  if (selectedQuestion === qText) return;
+  selectedQuestion = qText;
+  document.querySelectorAll("#chatscroll .qitem[data-question]").forEach(function(c){
+    c.classList.toggle("sel", c.dataset.question === qText);
+  });
+  renderEvidence();
+}
+function renderChat(){
+  var box = document.getElementById("chatscroll");
+  box.innerHTML = "";
+  var openList = collectOpenCriteria(cur.trials);
+  // 완료된 라운드 (읽기 전용, 접힌 톤)
+  roundsDone().forEach(function(r){
+    var block = el("div", "roundblock done");
+    var head = el("div", "roundlabel", "✓ 라운드 " + r.n + " · 반영 완료");
+    block.appendChild(head);
+    (r.qa || []).forEach(function(pair, i){
+      var item = el("div", "qitem answered");
+      item.innerHTML = '<div class="qtext">Q' + (i + 1) + ". " + escapeHtml(pair.question) + '</div>' +
+        '<div class="qanswer">' + escapeHtml(pair.answer) + '</div>';
+      block.appendChild(item);
+    });
+    var seg = ["판정 변화 " + (r.verdictChanges || []).length + "건",
+               "순위/적격 변동 " + (r.rankChanges || []).length + "건"];
+    if (r.followupCount) seg.push("추가 질문 " + r.followupCount + "개 생성");
+    var sys = el("div", "sysbubble", "이번 라운드 반영 결과: " + escapeHtml(seg.join(" · ")) +
+      (r.note ? "<br>" + escapeHtml(r.note) : ""));
+    block.appendChild(sys);
+    box.appendChild(block);
+  });
+  if (cur.followupNote){
+    box.appendChild(el("div", "funote", escapeHtml(cur.followupNote)));
+  }
+  // 대기 중 질문 — 기본 질문 라운드 + 추가 질문(followup) 라운드
+  var pendAll = pendingQuestions();
+  var pend = questionsForPill(pendAll);
+  var base = pend.filter(function(q){ return !q.followup; });
+  var fups = pend.filter(function(q){ return q.followup; });
+  var roundNo = roundsDone().length + 1;
+  if (base.length){
+    var block = el("div", "roundblock");
+    block.appendChild(el("div", "roundlabel",
+      "라운드 " + roundNo + " · 확인 질문 <span class=\"progress\">(" + base.length + "개 대기)</span>"));
+    base.forEach(function(q){ block.appendChild(buildPendingCard(q, openList)); });
+    box.appendChild(block);
+  }
+  if (fups.length){
+    var fblock = el("div", "roundblock");
+    fblock.appendChild(el("div", "roundlabel fu", "추가 질문 (답변을 보고 생성됨)"));
+    fups.forEach(function(q){ fblock.appendChild(buildPendingCard(q, openList)); });
+    box.appendChild(fblock);
+  }
+  if (!pendAll.length){
+    var doneBlock = el("div", "roundcomplete", "✓ 모든 확인 질문이 해결되었습니다 — 재평가에 반영됨<br>" +
+      '<button class="gorank-btn" type="button">수정된 최종 순위 보러가기 →</button>');
+    doneBlock.querySelector(".gorank-btn").addEventListener("click", function(){
+      var tabEl = document.querySelector('.tab[data-v="ranking"]');
+      if (tabEl) tabEl.click();
+    });
+    box.appendChild(doneBlock);
+  } else if (!pend.length){
+    box.appendChild(el("div", "evempty", "이 시험과 연결된 대기 질문이 없습니다 — 전체 필을 선택해 보세요."));
+  }
+  // 선택 질문 기본값: 필터된 대기 질문의 첫 번째
+  if (pend.length && (!selectedQuestion || !pend.some(function(q){ return q.question === selectedQuestion; }))){
+    selectedQuestion = pend[0].question;
+  }
+  document.querySelectorAll("#chatscroll .qitem[data-question]").forEach(function(c){
+    c.classList.toggle("sel", c.dataset.question === selectedQuestion);
+  });
+  document.getElementById("chatHead").textContent =
+    "확인 질문" + (selectedPill === "ALL" ? "" : " — " + selectedPill);
+  box.scrollTop = box.scrollHeight;
+  updateBatchBar();
+}
+function renderEvidence(){
+  var box = document.getElementById("evidencepane");
+  var q = pendingQuestions().find(function(x){ return x.question === selectedQuestion; });
+  if (!q){
+    box.innerHTML = "<h3>이 질문이 다시 판정하는 기준</h3>" +
+      '<div class="evempty">대기 중인 확인 질문이 없습니다. 질문에 답하면, 그 답과 연결된 기준만 다시 판정됩니다.</div>';
+    return;
+  }
+  var openList = collectOpenCriteria(cur.trials);
+  var m = matchOpenCriteria(questionTokens(q), openList);
+  var html = "<h3>이 질문이 다시 판정하는 기준</h3>" +
+    '<div class="evq">' + escapeHtml(q.question) + '</div>' +
+    (q.why ? '<div class="evwhy">' + escapeHtml(q.why) + '</div>' : "");
+  if (!m.items.length){
+    html += '<div class="evempty">이 질문과 직접 연결된 미확정 기준이 없습니다 — 답해도 바뀌는 것이 없습니다.</div>';
+    box.innerHTML = html;
+    return;
+  }
+  var byNct = {};
+  m.items.forEach(function(oc){ (byNct[oc.nct] = byNct[oc.nct] || []).push(oc); });
+  Object.keys(byNct).forEach(function(nct){
+    html += '<div class="evtrial">' + escapeHtml(byNct[nct][0].title) + '</div>' +
+      '<div class="evnct">' + nctLinkHtml(nct) + '</div>';
+    byNct[nct].forEach(function(oc){
+      var c = oc.crit;
+      html += '<div class="critdetail ' + (c.type === "inclusion" ? "inc" : "exc") + '">' +
+        '<div class="crittag">' + (c.type === "inclusion" ? "포함기준" : "제외기준") + '</div>' +
+        '<div class="crittext">' + escapeHtml(c.text || "") + '</div>' +
+        (c.evidence ? '<div class="critevidence">"' + escapeHtml(c.evidence) + '"</div>'
+                    : '<div class="critevidence">환자 기록에 근거 문장 없음</div>') +
+        (c.reasoning ? '<div class="critnote">' + escapeHtml(c.reasoning) + '</div>' : "") +
+        '<div class="critfoot">' + critBadgeHtml(c) + '</div></div>';
+    });
+  });
+  box.innerHTML = html;
+}
+function renderChatAll(){
+  renderTrialPills();
+  renderChat();
+  renderEvidence();
+}
+
+// ---------------------------------------------------------------------------
+// 일괄 반영 — site.html의 검증된 배치 제출 흐름 포팅 (POST 1회 = 라운드 1회, 최대 5개)
+// ---------------------------------------------------------------------------
+function collectPendingAnswers(){
+  var out = [];
+  document.querySelectorAll("#chatscroll .qitem[data-question]").forEach(function(card){
+    var q = card.dataset.question;
+    if (!q || cur.answered[q]) return;
+    var picked = [];
+    card.querySelectorAll(".opt-item input:checked").forEach(function(cb){ picked.push(cb.value); });
+    var input = card.querySelector('input[type="text"]');
+    var typed = input ? input.value.trim() : "";
+    if (typed) picked.push(typed);
+    if (!picked.length) return;
+    out.push({question: q, answer: picked.join("; ")});
+  });
+  return out;
+}
+function captureSelections(){
+  var saved = {};
+  document.querySelectorAll("#chatscroll .qitem[data-question]").forEach(function(card){
+    var q = card.dataset.question;
+    if (!q || cur.answered[q]) return;
+    var checked = [];
+    card.querySelectorAll('.opt-item input:checked').forEach(function(cb){ checked.push(cb.value); });
+    var input = card.querySelector('input[type="text"]');
+    var typed = input ? input.value : "";
+    if (checked.length || typed.trim()) saved[q] = {checked: checked, typed: typed};
+  });
+  return saved;
+}
+function restoreSelections(saved){
+  if (!saved) return;
+  document.querySelectorAll("#chatscroll .qitem[data-question]").forEach(function(card){
+    var s = saved[card.dataset.question];
+    if (!s) return;
+    card.querySelectorAll('.opt-item input[type="checkbox"]').forEach(function(cb){
+      if (s.checked.indexOf(cb.value) >= 0) cb.checked = true;
+    });
+    var input = card.querySelector('input[type="text"]');
+    if (input && s.typed) input.value = s.typed;
+  });
+}
+var BATCH_NOTE_DEFAULT = "고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.";
+function updateBatchBar(){
+  var btn = document.getElementById("batchBtn");
+  var note = document.getElementById("batchNote");
+  if (answerInFlight) return;
+  var pending = collectPendingAnswers();
+  var n = Math.min(pending.length, MAX_BATCH_ANSWERS);
+  btn.textContent = "선택한 답변 모두 반영 (질문 " + n + "개)";
+  var tooLong = pending.slice(0, MAX_BATCH_ANSWERS).some(function(p){ return p.answer.length > MAX_ANSWER_LEN; });
+  var msgs = [];
+  if (pending.length > MAX_BATCH_ANSWERS){
+    msgs.push("한 번에 질문 " + MAX_BATCH_ANSWERS + "개까지 반영됩니다 — 위에서부터 " + MAX_BATCH_ANSWERS +
+      "개를 먼저 반영하고, 남은 선택은 그대로 두었다가 이어서 반영하세요");
+  }
+  if (tooLong) msgs.push("답변 하나가 " + MAX_ANSWER_LEN + "자를 넘습니다 — 줄여 주세요");
+  note.textContent = msgs.length ? msgs.join(" · ") : BATCH_NOTE_DEFAULT;
+  btn.disabled = tooLong || n < 1;
+}
+function setAnswerControlsDisabled(disabled){
+  document.querySelectorAll("#chatscroll input, #batchBtn").forEach(function(elm){ elm.disabled = disabled; });
+}
+function submitBatch(){
+  if (answerInFlight || !cur) return;
+  var pending = collectPendingAnswers().slice(0, MAX_BATCH_ANSWERS);
+  if (!pending.length) return;
+  if (pending.some(function(p){ return p.answer.length > MAX_ANSWER_LEN; })) return;
+  answerInFlight = true;
+  setAnswerControlsDisabled(true);
+  var btn = document.getElementById("batchBtn");
+  var note = document.getElementById("batchNote");
+  btn.disabled = true;
+  btn.textContent = "답변 반영 중";
+  note.textContent = "답변 반영 중 — 답과 연결된 기준만 다시 판정합니다";
+
+  function unlock(){
+    answerInFlight = false;
+    setAnswerControlsDisabled(false);
+  }
+  function recover(message){
+    unlock();
+    btn.disabled = false;
+    btn.textContent = "선택한 답변 모두 반영 (질문 " + pending.length + "개)";
+    note.textContent = message;
+  }
+  var aborter = new AbortController();
+  var deadline = setTimeout(function(){ aborter.abort(); }, 90000);
+
+  var payload = {
+    patient_id: cur.id,
+    trials: cur.trials,
+    extended_record: cur.extendedRecord,
+    questions: (cur.questions || []).slice(0, 12).map(function(q){ return {field: q.field, question: q.question}; }),
+    asked_questions: (cur.questions || []).map(function(q){ return q.question; })
+  };
+  if (pending.length === 1){
+    payload.question = pending[0].question;
+    payload.answer = pending[0].answer;
+  } else {
+    payload.answers = pending;
+  }
+  fetch("/api/answer", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload),
+    signal: aborter.signal
+  }).then(function(r){ return r.json(); }).then(function(data){
+    clearTimeout(deadline);
+    if (data.error){ recover("오류: " + data.error); return; }
+    applyAnswerResponse(pending, data);
+    unlock();
+    updateBatchBar();
+  }).catch(function(err){
+    clearTimeout(deadline);
+    recover(err && err.name === "AbortError" ? "시간 초과 — 다시 시도해 주세요" : "오류: " + String(err));
+  });
+}
+document.getElementById("batchBtn").addEventListener("click", submitBatch);
+
+// 응답 1건 = 라운드 1건. 반영 직전 상태를 스냅샷으로 보관해 '이 라운드 되돌리기'를 지원.
+function applyAnswerResponse(pending, data){
+  var snapshot = {
+    trials: deepCopy(cur.trials), questions: deepCopy(cur.questions),
+    extendedRecord: cur.extendedRecord, answered: deepCopy(cur.answered),
+    overrides: deepCopy(cur.overrides), need: deepCopy(cur.need),
+    followupNote: cur.followupNote
+  };
+  pending.forEach(function(p){ cur.answered[p.question] = p.answer; });
+  var prevState = {};
+  (cur.trials || []).forEach(function(t){
+    if (t.nct_id) prevState[t.nct_id] = {rank: t.rank, eligibility: t.eligibility, title: t.title};
+  });
+  cur.trials = data.trials || cur.trials;
+  cur.extendedRecord = data.extended_record || cur.extendedRecord;
+  if (data.patient_need) cur.need = data.patient_need;
+  var rankChanges = [];
+  (cur.trials || []).forEach(function(t){
+    var p = prevState[t.nct_id];
+    if (!p) return;
+    if ((p.rank && t.rank && p.rank !== t.rank) || (p.eligibility !== t.eligibility)){
+      rankChanges.push({nct_id: t.nct_id, title: t.title || p.title || t.nct_id,
+        rank_before: p.rank, rank_after: t.rank,
+        eligibility_before: p.eligibility, eligibility_after: t.eligibility});
+    }
+  });
+  // 우선순위 숫자 갱신 (질문 텍스트로 병합)
+  if (Array.isArray(data.questions)){
+    var fresh = {};
+    data.questions.forEach(function(q){ if (q && q.question) fresh[q.question] = q; });
+    (cur.questions || []).forEach(function(q){
+      var f = fresh[q.question];
+      if (f){ q.affects_trials = f.affects_trials; q.affects_criteria = f.affects_criteria; q.may_change_rank = f.may_change_rank; }
+    });
+  }
+  // 추가 질문(followup): 새 라운드 버블로 등장 — 기존 질문과 중복이면 버림
+  cur.followupNote = data.followup_error ? String(data.followup_error) : null;
+  var fuCount = 0;
+  (data.followup_questions || []).forEach(function(fq){
+    if (!fq || !fq.question) return;
+    var norm = normTagText(fq.question);
+    var dupe = (cur.questions || []).some(function(q){ return normTagText(q.question) === norm; });
+    if (dupe) return;
+    fq.followup = true;
+    cur.questions.push(fq);
+    fuCount += 1;
+  });
+  roundCounter += 1;  // monotonic: a reverted round keeps its number, the next round gets a fresh one
+  events.push({kind: "round", seq: ++histSeq, n: roundCounter, timeLabel: nowLabel(),
+    qa: pending, verdictChanges: data.verdict_changes || [], rankChanges: rankChanges,
+    note: data.note || null, followupCount: fuCount, snapshot: snapshot, reverted: false});
+  rankView.stale = true;
+  document.getElementById("rankStatus").textContent =
+    "라운드 " + roundsDone().length + " 반영 대기 — ↻ 최신화를 누르면 목록이 갱신됩니다";
+  document.getElementById("rankStatus").classList.remove("fresh");
+  var saved = captureSelections();
+  renderKanban();
+  renderChatAll();
+  restoreSelections(saved);
+  renderHistory();
+  renderLiveStatus();
+  updateBatchBar();
+}
+
+// ---------------------------------------------------------------------------
+// 최종 순위 추천 — 실제 rank/rank_reason/rank_basis, 규칙 원문 + hard-exclusion 보장 필
+// ---------------------------------------------------------------------------
+function hardExclusionHoldsClient(trials){
+  var ranked = (trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); });
+  var seenInel = false, ok = true;
+  ranked.forEach(function(t){
+    if (t.eligibility === "INELIGIBLE") seenInel = true;
+    else if (seenInel) ok = false;
+  });
+  return ok;
+}
+function renderRuleBox(){
+  var box = document.getElementById("rulebox");
+  var r = cur.ranking || {};
+  var rule = r.rule_ko || "";
+  var html = "<h2>추천 우선순위 — 왜 이 순서인가</h2>";
+  var parts = rule.split(" · ");
+  if (parts.length === 3){
+    html += parts.map(function(p, i){
+      return '<p class="rule"><b>' + (i + 1) + '</b> ' + escapeHtml(p) + '</p>';
+    }).join("");
+  } else if (rule){
+    html += '<p class="rule">' + escapeHtml(rule) + '</p>';
+  }
+  if (r.version) html += '<p class="rule"><span class="ver">(정렬 규칙 ' + escapeHtml(r.version) + ')</span></p>';
+  var holds = hardExclusionHoldsClient(cur.trials) && r.hard_exclusion_holds !== false;
+  if (holds){
+    html += '<span class="guarantee" title="참여할 수 있는가가 정렬의 첫 기준이므로, 탈락 사유가 있는 시험은 아래 어떤 항목이 좋아도 위로 올라올 수 없습니다.">hard-exclusion 보장: 부적격 시험은 미확정/적격 위로 올라오지 않음</span>';
+  }
+  box.innerHTML = html;
+}
+function miniChipsHtml(t){
+  if (!Array.isArray(t.rank_basis) || !t.rank_basis.length) return "";
+  var help = [], sure = [];
+  t.rank_basis.forEach(function(b){
+    if (!b || !b.key) return;
+    if (b.key === "need"){
+      help.push({text: "환자 필요 " + (b.value || "미산출"), title: "환자 기록에서 읽어낸, 지금 이 환자에게 필요한 것"});
+    } else if (b.key === "help"){
+      help.push({text: "맞춰본 결과 " + (b.value || "참고용"), title: "환자에게 필요한 것과 이 시험의 목적을 맞춰 본 결과"});
+    } else if (b.key === "fit"){
+      help.push({text: (FIT_LABEL_KO[b.value] || b.value || "목적 미확인") + (b.confidence === "low" ? " (추정)" : ""),
+                 title: "이 시험이 무엇을 하려는 시험인지"});
+    } else if (b.key === "phase"){
+      help.push({text: phaseLabel(b.value), title: "후기 단계일수록 개입이 더 검증되어 환자 부담이 작다고 봅니다"});
+    } else if (b.key === "coverage" && typeof b.value === "number"){
+      sure.push({text: "원문 반영 " + (b.value >= 1 ? "전체(추정)" : Math.round(b.value * 100) + "%") + (b.penalty ? " 감점" : ""),
+                 warn: !!b.penalty, title: "시험 원문 조건 중 평가에 반영된 비율 (추정). 절반 미만이면 감점됩니다."});
+    } else if (b.key === "blocking" && b.value){
+      sure.push({text: "탈락 사유 " + b.value + "건", warn: true, title: "이 시험을 부적격으로 만든 기준 수 — 하나라도 있으면 순위가 맨 아래로 갑니다"});
+    } else if (b.key === "open"){
+      sure.push({text: "미해결 " + b.value, title: "아직 판정되지 않은 기준 수 / 전체 기준 수 — 적을수록 확실합니다"});
+    }
+  });
+  function chips(label, list){
+    if (!list.length) return "";
+    return '<span class="mgroup">' + label + '</span>' + list.map(function(c){
+      return '<span class="mchip' + (c.warn ? " warn" : "") + '" title="' + escapeHtml(c.title) + '">' + escapeHtml(c.text) + '</span>';
+    }).join("");
+  }
+  var html = chips("도움", help) + chips("확실", sure);
+  return html ? '<div class="minichips">' + html + '</div>' : "";
+}
+function renderRanking(withDeltas){
+  var list = document.getElementById("ranklist");
+  var sorted = (cur.trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); });
+  var prevOrder = rankView.order;
+  list.innerHTML = "";
+  sorted.forEach(function(t, i){
+    var d = 0;
+    if (withDeltas && prevOrder.length){
+      var pi = prevOrder.indexOf(t.nct_id);
+      if (pi >= 0) d = pi - i;
+    }
+    var dirClass = d > 0 ? "up" : d < 0 ? "down" : "same";
+    var arrow = d > 0 ? "▲" : d < 0 ? "▼" : "—";
+    var dtext = d === 0 ? "—" : arrow + Math.abs(d);
+    var changed = withDeltas && d !== 0;
+    var em = eligMeta(t.eligibility);
+    var row = el("div", "rankrow" + (changed ? " flash" : ""));
+    row.dataset.nct = t.nct_id;
+    row.innerHTML =
+      '<div class="rnum">' + (t.rank || i + 1) + '</div>' +
+      '<div class="rinfo"><div class="rname">' + escapeHtml(t.title || t.nct_id) + '</div>' +
+      '<div class="rnct">' + nctLinkHtml(t.nct_id) + '</div>' +
+      (t.rank_reason ? '<div class="rreason">' + escapeHtml(t.rank_reason) + '</div>' : "") +
+      miniChipsHtml(t) + '</div>' +
+      '<div class="rside"><span class="badge ' + em.badge + '" title="시험 단위 적격성: 이 환자가 참여할 수 있는가">' +
+      escapeHtml(em.ko) + '</span>' +
+      '<span class="rankdelta ' + dirClass + '">' + dtext + '</span></div>';
+    list.appendChild(row);
+  });
+  rankView.order = sorted.map(function(t){ return t.nct_id; });
+}
+var refreshBtn = document.getElementById("refreshBtn");
+refreshBtn.addEventListener("click", function(){
+  if (!cur) return;
+  renderRanking(true);
+  rankView.stale = false;
+  rankView.round = roundsDone().length;
+  var rankStatus = document.getElementById("rankStatus");
+  rankStatus.textContent = rankView.round > 0
+    ? "마지막 업데이트: 라운드 " + rankView.round + " 반영"
+    : "마지막 업데이트: 초기 매칭 기준";
+  rankStatus.classList.add("fresh");
+  refreshBtn.classList.add("done");
+  refreshBtn.textContent = "✓ 반영 완료";
+  setTimeout(function(){
+    refreshBtn.classList.remove("done");
+    refreshBtn.textContent = "↻ 최신화";
+  }, 1400);
+  setTimeout(function(){
+    document.querySelectorAll(".rankrow.flash").forEach(function(r){ r.classList.remove("flash"); });
+  }, 2000);
+});
+
+// ---------------------------------------------------------------------------
+// 변경 이력 — 실제 라운드(최신 우선) + 오버라이드 + 되돌리기. 라운드 0 = 초기 매칭.
+// ---------------------------------------------------------------------------
+function renderHistory(){
+  var box = document.getElementById("dynamicHistory");
+  box.innerHTML = "";
+  var latestRoundSeq = null;
+  events.forEach(function(e){ if (e.kind === "round" && !e.reverted) latestRoundSeq = e.seq; });
+  events.slice().reverse().forEach(function(e){
+    var item = el("div", "histitem" + (e.kind !== "round" ? " past" : "") + (e.reverted ? " reverted" : ""));
+    if (e.kind === "round"){
+      var vc = e.verdictChanges || [], rc = e.rankChanges || [];
+      var html = '<div class="histtop"><span class="histround">라운드 ' + e.n +
+        (e.reverted ? " (되돌려짐)" : "") + '</span><span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
+        '<div class="histstats">' +
+        '<span class="histpill">질문 <b>' + (e.qa || []).length + '개</b> 답변</span>' +
+        '<span class="histpill">판정 변화 <b>' + vc.length + '건</b></span>' +
+        '<span class="histpill">순위/적격 변동 <b>' + rc.length + '건</b></span>' +
+        (e.followupCount ? '<span class="histpill">추가 질문 <b>' + e.followupCount + '개</b></span>' : "") +
+        '</div>';
+      (e.qa || []).forEach(function(pair){
+        html += '<div class="hist-qa"><b>Q</b> ' + escapeHtml(pair.question) + '<br><b>A</b> ' + escapeHtml(pair.answer) + '</div>';
+      });
+      if (e.note) html += '<div class="hist-change">' + escapeHtml(e.note) + '</div>';
+      vc.slice(0, 6).forEach(function(c){
+        html += '<div class="hist-change"><span class="delta-chip">' + escapeHtml(c.before) + " → " + escapeHtml(c.after) +
+          '</span>' + escapeHtml(c.criterion) + '</div>';
+      });
+      if (vc.length > 6) html += '<div class="hist-more">외 ' + (vc.length - 6) + '건</div>';
+      rc.forEach(function(c){
+        var seg = [];
+        if (c.rank_before && c.rank_after && c.rank_before !== c.rank_after) seg.push(c.rank_before + "위 → " + c.rank_after + "위");
+        if (c.eligibility_before !== c.eligibility_after){
+          seg.push(eligMeta(c.eligibility_before).ko + " → " + eligMeta(c.eligibility_after).ko);
+        }
+        if (seg.length) html += '<div class="hist-change">' + escapeHtml(c.title || c.nct_id) + ": " + escapeHtml(seg.join(" · ")) + '</div>';
+      });
+      item.innerHTML = html;
+      var btn = el("button", "revert-btn", "↩ 이 라운드 되돌리기");
+      if (e.reverted){ btn.disabled = true; btn.textContent = "되돌려짐"; }
+      else if (e.seq !== latestRoundSeq){
+        btn.disabled = true;
+        btn.title = "가장 최근 라운드부터 순서대로 되돌릴 수 있습니다";
+      } else {
+        btn.addEventListener("click", function(){ revertRound(e); });
+      }
+      item.appendChild(btn);
+    } else if (e.kind === "override"){
+      item.innerHTML = '<div class="histtop"><span class="histround">사람 검토 오버라이드</span>' +
+        '<span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
+        '<div class="hist-change">사람이 ' + escapeHtml(e.title) + '을(를) ' +
+        eligColKo(e.from) + " → " + eligColKo(e.to) +
+        '(으)로 이동 (검토 오버라이드, 판정 로직과 별개)' + (e.undone ? " · 취소됨" : "") + '</div>';
+      var ub = el("button", "revert-btn", "↩ 이동 취소");
+      if (e.undone || !cur.overrides[e.nct] || cur.overrides[e.nct] !== e.to){
+        ub.disabled = true;
+        if (e.undone) ub.textContent = "취소됨";
+      } else {
+        ub.addEventListener("click", function(){
+          delete cur.overrides[e.nct];
+          e.undone = true;
+          renderKanban();
+          renderHistory();
+        });
+      }
+      item.appendChild(ub);
+    } else { // revert
+      item.innerHTML = '<div class="histtop"><span class="histround">라운드 되돌림</span>' +
+        '<span class="histtime">' + escapeHtml(e.timeLabel) + '</span></div>' +
+        '<div class="hist-change">' + escapeHtml(e.label) + '</div>';
+    }
+    box.appendChild(item);
+  });
+  document.getElementById("round0Pill").innerHTML =
+    "초기 매칭 <b>" + ((cur && cur.trials) || []).length + "건</b> 생성";
+}
+function eligColKo(colKey){
+  return (ELIG_META[colKey] && ELIG_META[colKey].ko) || colKey;
+}
+// 스냅샷 복원: 라운드 반영 직전 상태(trials·questions·extended_record·답변·오버라이드)로 되돌림
+function revertRound(e){
+  if (!e.snapshot) return;
+  cur.trials = deepCopy(e.snapshot.trials);
+  cur.questions = deepCopy(e.snapshot.questions);
+  cur.extendedRecord = e.snapshot.extendedRecord;
+  cur.answered = deepCopy(e.snapshot.answered);
+  cur.overrides = deepCopy(e.snapshot.overrides);
+  cur.need = deepCopy(e.snapshot.need);
+  cur.followupNote = e.snapshot.followupNote || null;
+  e.reverted = true;
+  events.push({kind: "revert", seq: ++histSeq, timeLabel: nowLabel(),
+    label: "라운드 " + e.n + " 반영을 되돌림 — 답변 " + (e.qa || []).length + "건이 반영 전 상태로 복원됨"});
+  rankView.stale = true;
+  selectedPill = "ALL";
+  selectedQuestion = null;
+  renderAll();
+}
+
+// ---------------------------------------------------------------------------
+// 로드 + 전체 렌더
+// ---------------------------------------------------------------------------
+function renderAll(){
+  renderPatientBtn();
+  renderPatientMenu();
+  renderPatientDetail();
+  renderNeedStrip();
+  renderKanban();
+  renderChatAll();
+  renderRuleBox();
+  renderRanking(false);
+  var rankStatus = document.getElementById("rankStatus");
+  var n = roundsDone().length;
+  rankStatus.textContent = n > 0 ? "마지막 업데이트: 라운드 " + n + " 반영" : "마지막 업데이트: 초기 매칭 기준";
+  rankStatus.classList.remove("fresh");
+  rankView.round = n; rankView.stale = false;
+  renderHistory();
+  renderLiveStatus();
+  document.getElementById("boardLoadNote").style.display = "none";
+  document.getElementById("boardContent").style.display = "block";
+}
+function showLoadError(msg){
+  var note = document.getElementById("boardLoadNote");
+  note.style.display = "block";
+  note.textContent = "오류: " + msg;
+}
+function loadTrace(patientId){
+  var note = document.getElementById("boardLoadNote");
+  note.style.display = "block";
+  note.textContent = patientId + " 데이터를 불러오는 중입니다.";
+  fetch("/api/trace?patient_id=" + encodeURIComponent(patientId))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.error){ showLoadError(data.error); return; }
+      var p = patients.find(function(x){ return x.id === patientId; });
+      cur = {
+        id: data.patient_id || patientId,
+        condition: (p && p.condition) || "",
+        patientText: data.patient_text || "",
+        extraction: data.extraction || [],
+        trials: data.trials || [],
+        questions: data.questions || [],
+        need: data.patient_need || null,
+        ranking: data.ranking || null,
+        frozenOrder: data.frozen_rank_order || [],
+        extendedRecord: "",
+        answered: {},
+        overrides: {},
+        followupNote: null
+      };
+      events = [];
+      roundCounter = 0;
+      histSeq = 0;
+      selectedPill = "ALL";
+      selectedQuestion = null;
+      document.getElementById("round0Time").textContent = nowLabel();
+      renderAll();
+    })
+    .catch(function(e){ showLoadError(String(e)); });
+}
+function loadPatients(){
+  fetch("/api/patients")
+    .then(function(r){ return r.json(); })
+    .then(function(list){
+      patients = (list || []).map(function(p){
+        return {id: p.id, condition: p.condition || p.title || p.id};
+      });
+      renderPatientMenu();
+      if (patients.length) loadTrace(patients[0].id);
+      else showLoadError("등록된 환자가 없습니다");
+    })
+    .catch(function(e){ showLoadError(String(e)); });
+}
+loadPatients();
+</script>
+</body>
+</html>
