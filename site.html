@@ -237,15 +237,25 @@
   .question-card .answered-note{font-size:0.8rem;color:var(--accent-dark);font-weight:600;margin-top:6px;}
   .question-card .char-count{font-size:0.72rem;color:var(--ink-soft);margin-top:4px;}
 
-  .opt-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 6px;}
+  .opt-list{display:flex;flex-direction:column;gap:6px;margin:8px 0 6px;}
   .opt-item{
-    display:inline-flex;align-items:center;gap:6px;
-    border:1px solid var(--line);border-radius:8px;padding:5px 10px;
-    font-size:0.82rem;cursor:pointer;background:var(--bg);
+    display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;
+    border:1px solid var(--line);border-radius:8px;padding:6px 10px;
+    font-size:0.82rem;cursor:pointer;background:var(--bg);min-width:0;
   }
   .opt-item:hover{border-color:var(--accent);}
-  .opt-item input{margin:0;cursor:pointer;}
-  .opt-item:has(input:checked){background:var(--accent-soft);border-color:var(--accent);font-weight:600;}
+  .opt-item input{margin:0;cursor:pointer;flex:0 0 auto;}
+  .opt-item .opt-text{flex:1 1 200px;min-width:0;}
+  .opt-item:has(input:checked){background:var(--accent-soft);border-color:var(--accent);}
+  .opt-item:has(input:checked) .opt-text{font-weight:600;}
+  /* which trials this choice helps decide -- recomputed after every answer round */
+  .opt-tag{
+    flex:1 1 100%;min-width:0;max-width:100%;padding-left:21px;
+    font-size:0.7rem;color:var(--ink-soft);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .opt-tag b{color:var(--accent-dark);font-weight:600;}
+  .opt-tag.none{color:#b6bcc5;}
 
   .summary-strip{
     display:flex;flex-wrap:wrap;gap:18px;align-items:center;
@@ -415,6 +425,35 @@
     .rank-why,.basis-groups{padding-left:0;}
   }
 
+  /* ---- 추가 질문 (follow-ups generated after an answer round) ---- */
+  .q-divider{
+    display:flex;align-items:center;gap:10px;margin:16px 0 10px;
+    color:var(--ink-soft);font-size:0.8rem;font-weight:700;
+  }
+  .q-divider::before,.q-divider::after{content:"";flex:1 1 0;border-top:1px dashed var(--line);}
+  .question-card.followup{border-left-color:#6b4fa0;background:#fdfcff;}
+  .fu-badge{
+    display:inline-block;font-size:0.66rem;font-weight:700;padding:1px 7px;border-radius:99px;
+    background:#f2ecf9;color:#6b4fa0;margin-left:6px;vertical-align:1px;white-space:nowrap;
+  }
+  .followup-note{font-size:0.76rem;color:#9aa2ad;margin:0 0 8px;}
+
+  /* ---- 한 번에 반영: sticky batch bar (appears once anything is selected) ---- */
+  .batch-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;
+    background:var(--bg);border-top:1px solid var(--line);
+    box-shadow:0 -4px 18px rgba(31,41,55,0.10);
+  }
+  .batch-bar .bb-inner{
+    max-width:1200px;margin:0 auto;padding:10px 24px;
+    display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;
+  }
+  .batch-bar .bb-note{flex:1 1 240px;min-width:0;font-size:0.78rem;color:var(--ink-soft);}
+  .batch-bar .btn{margin-top:0;flex:0 0 auto;}
+  .batch-bar.pulse{animation:bbpulse 0.5s ease 2;}
+  @keyframes bbpulse{50%{box-shadow:0 -4px 22px rgba(15,110,90,0.45);}}
+  body.batch-open{padding-bottom:74px;}
+
   footer.disclaimer{
     max-width:1200px;margin:0 auto;padding:18px 24px 30px;border-top:1px solid var(--line);
     color:var(--ink-soft);font-size:0.78rem;
@@ -485,11 +524,18 @@
     </details>
     <div id="questionsDock" class="questions-dock" style="display:none;">
       <h2>확인 질문</h2>
-      <p class="stage-note" style="margin:0 0 12px;">위에 있는 질문일수록 답했을 때 다시 판정되는 기준이 많습니다. 답변은 그 답과 연결된 기준만 다시 판정합니다.</p>
+      <p class="stage-note" style="margin:0 0 12px;">위에 있는 질문일수록 답했을 때 다시 판정되는 기준이 많습니다. 답변은 그 답과 연결된 기준만 다시 판정합니다. 여러 질문에 걸쳐 답을 골라 두고, 아래 고정 버튼 한 번으로 모두 반영하세요 -- 다시 판정은 한 번만 실행됩니다.</p>
       <div id="questionsBody"></div>
       <div class="changelog" id="changelog"></div>
     </div>
   </main>
+</div>
+
+<div id="batchBar" class="batch-bar" style="display:none;">
+  <div class="bb-inner">
+    <span class="bb-note" id="batchNote">고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.</span>
+    <button class="btn" id="batchBtn" type="button">선택한 답변 모두 반영</button>
+  </div>
 </div>
 
 <footer class="disclaimer">
@@ -518,6 +564,10 @@ var currentNeed = null;
 var rounds = [];
 // The last round's cause-effect data, kept so the arrows can be redrawn on resize/toggle.
 var lastDagRound = null;
+// Batch answering: at most this many question cards land in one 반영 click (server cap).
+var MAX_BATCH_ANSWERS = 5;
+// One-line note when the server's follow-up generation failed (followup_error in the response).
+var lastFollowupError = null;
 
 // Korean labels for the ranking key's tiers. Mirrors ranking.FIT_LABEL_KO / ELIG_LABEL_KO so a
 // chip can never contradict the rank_reason sentence rendered beside it.
@@ -844,6 +894,8 @@ function resetView(){
   document.querySelectorAll(".agent-step").forEach(function(s){ s.classList.remove("done"); });
   answeredQuestions = {};
   extendedRecord = "";
+  lastFollowupError = null;
+  updateBatchBar();
 }
 
 function markAllStagesDone(){
@@ -1083,88 +1135,332 @@ function questionPriorityLine(q){
   return '<div class="qprio">' + line + "</div>";
 }
 
+// ---------------------------------------------------------------------------
+// Real-time option -> trial mapping (deterministic, zero network).
+// A port of action_policy.py's _STOPWORDS / _tokens / normalize_criterion_text: each answer
+// option is token-matched against the criteria still open (UNKNOWN/UNCERTAIN, on trials not
+// already blocked by a hard FAIL), so the answerer can see WHICH trials an option helps
+// decide before choosing it. Recomputed on every render -- criteria a round resolves drop
+// out of the tags immediately.
+// ---------------------------------------------------------------------------
+var TAG_STOPWORDS = (function(){
+  var words = ("the a an and or of to in on for with without any has have had is are was were " +
+    "be been at by as if it its this that these those no not than patient patients history " +
+    "prior current currently known presence evidence status study trial criteria criterion " +
+    "what when does do did their they she he you your").split(" ");
+  var o = {};
+  words.forEach(function(w){ o[w] = true; });
+  return o;
+})();
+
+// action_policy.normalize_criterion_text: lowercase, collapse whitespace, strip trailing punctuation.
+function normTagText(s){
+  var t = String(s == null ? "" : s).trim().toLowerCase().replace(/\s+/g, " ");
+  return t.replace(/[.,;:!?)\]}。，]+$/, "").trim();
+}
+
+// action_policy._tokens: latin/number tokens, stopwords out, keep length>=3 or digit-bearing.
+function tagTokens(s){
+  var out = {};
+  (normTagText(s).match(/[a-z0-9%.]+/g) || []).forEach(function(t){
+    if (TAG_STOPWORDS[t]) return;
+    if (t.length >= 3 || /[0-9]/.test(t)) out[t] = true;
+  });
+  return out;
+}
+
+function unionTokens(a, b){
+  var o = {}, k;
+  for (k in a) o[k] = true;
+  for (k in b) o[k] = true;
+  return o;
+}
+
+function overlapSize(a, b){
+  var n = 0;
+  for (var k in a){ if (b[k]) n += 1; }
+  return n;
+}
+
+// action_policy.trial_is_blocked: a hard FAIL (or INELIGIBLE) means further answers are moot.
+function trialIsBlocked(t){
+  if (!t) return true;
+  if (t.eligibility === "INELIGIBLE") return true;
+  return (t.criteria || []).some(function(c){ return getEffect(c) === "FAIL"; });
+}
+
+// The criteria an answer could still move: undecided, not on a blocked trial, not STOP.
+function collectOpenCriteria(trials){
+  var out = [];
+  (trials || []).forEach(function(t){
+    if (trialIsBlocked(t)) return;
+    (t.criteria || []).forEach(function(c){
+      var v = (c.verdict || "").toUpperCase();
+      if (v !== "UNKNOWN" && v !== "UNCERTAIN") return;
+      if (String(c.action || "").toUpperCase() === "STOP") return;
+      out.push({nct: t.nct_id, text: c.text || "", tokens: tagTokens(c.text || "")});
+    });
+  });
+  return out;
+}
+
+function matchOpenCriteria(tokens, openList){
+  var ncts = [], byNct = {}, count = 0;
+  (openList || []).forEach(function(oc){
+    if (!overlapSize(tokens, oc.tokens)) return;
+    count += 1;
+    if (!byNct[oc.nct]){ byNct[oc.nct] = 0; ncts.push(oc.nct); }
+    byNct[oc.nct] += 1;
+  });
+  return {ncts: ncts, byNct: byNct, count: count};
+}
+
+// "none of the above"-class options carry no clinical tokens of their own; they close the
+// same criteria the question itself maps to, and the tag says exactly that.
+var GENERIC_NEGATIVES = {
+  "해당 사항 없음": 1, "해당사항 없음": 1, "기록 없음/확인 불가": 1, "기록 없음": 1,
+  "확인 불가": 1, "모두 정상 범위": 1, "정상 범위": 1, "없음": 1
+};
+function isGenericNegative(t){ return !!GENERIC_NEGATIVES[normTagText(t)]; }
+
+function shortNct(n){
+  n = String(n || "");
+  return n.length > 9 ? n.slice(0, 9) + "…" : n;
+}
+
+// The small line under each option: which trials this choice helps decide, right now.
+// One line max -- overflow is ellipsized, the full mapping lives in the tooltip.
+function optionTagEl(optText, qTok, qMatch, openList){
+  var generic = isGenericNegative(optText);
+  var m = generic ? qMatch : matchOpenCriteria(unionTokens(tagTokens(optText), qTok), openList);
+  var tag = document.createElement("span");
+  if (!m.ncts.length){
+    tag.className = "opt-tag none";
+    tag.textContent = "현재 열린 기준과 직접 연결 없음";
+    tag.title = "이 항목의 답으로 지금 다시 판정될 미확정 기준이 없습니다.";
+    return tag;
+  }
+  tag.className = "opt-tag";
+  tag.appendChild(document.createTextNode("→ "));
+  var strong = document.createElement("b");
+  strong.textContent = m.ncts.length === 1 ? m.ncts[0] : "시험 " + m.ncts.length + "개";
+  tag.appendChild(strong);
+  var rest = m.ncts.length === 1
+    ? " 판정에 쓰임 · 기준 " + m.count + "개"
+    : " 판정에 쓰임 (" + m.ncts.map(shortNct).join(", ") + ") · 기준 " + m.count + "개";
+  if (generic) rest += " · 위 항목과 같은 기준을 닫습니다";
+  tag.appendChild(document.createTextNode(rest));
+  tag.title = "이 답이 판정에 쓰이는 시험: " + m.ncts.map(function(n){
+    return n + " (기준 " + m.byNct[n] + "개)";
+  }).join(", ");
+  return tag;
+}
+
+// Which Q/A pair of a batch round most plausibly moved a criterion (for the round graph's
+// question->criterion arrows). Same token space as the option tags; a single-pair round keeps
+// its one unambiguous arrow.
+function attributeQaEdge(qa, change){
+  if (!qa || !qa.length) return null;
+  if (qa.length === 1) return "dag-q-0";
+  var critTok = tagTokens(change.criterion || "");
+  var best = -1, bestN = 0;
+  qa.forEach(function(pair, i){
+    var n = overlapSize(tagTokens(pair.question + " " + pair.answer), critTok);
+    if (n > bestN){ bestN = n; best = i; }
+  });
+  return best >= 0 ? "dag-q-" + best : null;
+}
+
+// ---------------------------------------------------------------------------
+// Question cards. Selections accumulate locally across ALL cards (checkboxes + free text);
+// the ONE sticky bar at the bottom submits everything in a single POST -> a single
+// re-evaluation round. Enter still submits when exactly one question holds an answer.
+// ---------------------------------------------------------------------------
+function handleAnswerKeydown(ev){
+  if (ev.key !== "Enter" || answerInFlight) return;
+  var pending = collectPendingAnswers();
+  if (pending.length === 1){
+    submitBatch();
+  } else if (pending.length > 1){
+    // several questions hold answers: Enter alone is ambiguous, so point at the batch bar
+    var bar = document.getElementById("batchBar");
+    if (bar){ bar.classList.remove("pulse"); void bar.offsetWidth; bar.classList.add("pulse"); }
+  }
+}
+
+function buildQuestionCard(q, openList){
+  var card = el("div", "question-card" + (q.followup ? " followup" : ""));
+  card.dataset.question = q.question;
+  var isAnswered = answeredQuestions[q.question];
+  if (isAnswered) card.classList.add("answered");
+  var fuBadge = q.followup
+    ? '<span class="fu-badge" title="앞선 답변을 보고 시스템이 추가로 확인이 필요하다고 판단해 만든 질문입니다. 아래에서 똑같이 답을 고르고 함께 반영하면 됩니다.">추가 질문</span>'
+    : "";
+  card.innerHTML =
+    '<div class="field">' + escapeHtml(q.field || "") + '</div>' +
+    '<div class="q">' + escapeHtml(q.question) + fuBadge + '</div>' +
+    (q.why ? '<div class="why">' + escapeHtml(q.why) + '</div>' : "") +
+    questionPriorityLine(q);
+  if (isAnswered){
+    card.appendChild(el("div", "answered-note", "반영됨: " + escapeHtml(isAnswered)));
+    return card;
+  }
+  // Question-level mapping: the criteria ANY answer to this question would feed (the server
+  // re-matches by the question text, so this is the true scope of one answer).
+  var qTok = unionTokens(tagTokens(q.field || ""), tagTokens(q.question || ""));
+  var qMatch = matchOpenCriteria(qTok, openList);
+  if (q.options && q.options.length){
+    var optWrap = el("div", "opt-list");
+    q.options.forEach(function(optText){
+      var lab = el("label", "opt-item");
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = optText;
+      cb.addEventListener("change", updateBatchBar);
+      var span = el("span", "opt-text");
+      span.textContent = optText;
+      lab.appendChild(cb);
+      lab.appendChild(span);
+      lab.appendChild(optionTagEl(optText, qTok, qMatch, openList));
+      optWrap.appendChild(lab);
+    });
+    card.appendChild(optWrap);
+  }
+  var row = el("div", "answer-row");
+  var input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = (q.options && q.options.length)
+    ? "직접 입력 (선택 항목과 함께 반영됩니다)"
+    : "자유 서술로 입력 (검사 수치, 병력, 복용 약 등)";
+  input.maxLength = MAX_ANSWER_LEN;
+  input.addEventListener("input", updateBatchBar);
+  input.addEventListener("keydown", handleAnswerKeydown);
+  row.appendChild(input);
+  card.appendChild(row);
+  return card;
+}
+
 function renderQuestions(questions, trials){
   var dock = document.getElementById("questionsDock");
   var body = document.getElementById("questionsBody");
-  if (!questions || questions.length === 0){ dock.style.display = "none"; return; }
+  if (!questions || questions.length === 0){
+    dock.style.display = "none";
+    updateBatchBar();
+    return;
+  }
   dock.style.display = "block";
   body.innerHTML = "";
-  questions.forEach(function(q){
-    var card = el("div", "question-card");
-    var isAnswered = answeredQuestions[q.question];
-    if (isAnswered) card.classList.add("answered");
-    card.innerHTML =
-      '<div class="field">' + escapeHtml(q.field) + '</div>' +
-      '<div class="q">' + escapeHtml(q.question) + '</div>' +
-      '<div class="why">' + escapeHtml(q.why) + '</div>' + questionPriorityLine(q);
-    if (isAnswered){
-      card.appendChild(el("div", "answered-note", "반영됨: " + escapeHtml(isAnswered)));
-    } else {
-      // Multi-select first, free text underneath; both are joined into one answer string
-      // so the /api/answer contract is unchanged.
-      var boxes = [];
-      if (q.options && q.options.length){
-        var optWrap = el("div", "opt-list");
-        q.options.forEach(function(optText, oi){
-          var lab = el("label", "opt-item");
-          var cb = document.createElement("input");
-          cb.type = "checkbox";
-          cb.value = optText;
-          var span = document.createElement("span");
-          span.textContent = optText;
-          lab.appendChild(cb);
-          lab.appendChild(span);
-          optWrap.appendChild(lab);
-          boxes.push(cb);
-        });
-        card.appendChild(optWrap);
-      }
-
-      var row = el("div", "answer-row");
-      var input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = boxes.length
-        ? "직접 입력 (선택 항목과 함께 반영됩니다)"
-        : "자유 서술로 입력 (검사 수치, 병력, 복용 약 등) 후 Enter";
-      input.maxLength = MAX_ANSWER_LEN;
-      var btn = el("button", "btn btn-sm", "답변 반영");
-      btn.addEventListener("click", function(){
-        var picked = boxes.filter(function(b){ return b.checked; })
-                          .map(function(b){ return b.value; });
-        var typed = input.value.trim();
-        if (typed) picked.push(typed);
-        var val = picked.join("; ");
-        if (!val) return;
-        submitAnswer(q.question, val, card, input, btn);
-      });
-      input.addEventListener("keydown", function(ev){
-        if (ev.key === "Enter" && !btn.disabled) btn.click();
-      });
-      row.appendChild(input);
-      row.appendChild(btn);
-      card.appendChild(row);
-    }
-    body.appendChild(card);
-  });
+  var openList = collectOpenCriteria(trials);
+  var base = questions.filter(function(q){ return !q.followup; });
+  var fups = questions.filter(function(q){ return q.followup; });
+  base.forEach(function(q){ body.appendChild(buildQuestionCard(q, openList)); });
+  if (lastFollowupError){
+    body.appendChild(el("div", "followup-note",
+      "추가 질문 확인 실패: " + escapeHtml(lastFollowupError) + " -- 기존 질문만으로 계속 진행합니다"));
+  }
+  if (fups.length){
+    body.appendChild(el("div", "q-divider", "답변을 보고 추가로 확인이 필요해진 질문"));
+    fups.forEach(function(q){ body.appendChild(buildQuestionCard(q, openList)); });
+  }
+  updateBatchBar();
 }
 
 // One answer round at a time: concurrent POSTs would race, and whichever response landed
 // last would overwrite currentTrials/extendedRecord with state that ignores the other answer.
+// The lock covers the WHOLE batch: every checkbox, text input, and the batch button.
 var answerInFlight = false;
 
 function setAnswerControlsDisabled(disabled){
-  document.querySelectorAll(".question-card button, .question-card input").forEach(function(elm){
+  document.querySelectorAll(".question-card button, .question-card input, #batchBtn").forEach(function(elm){
     elm.disabled = disabled;
   });
 }
 
-function submitAnswer(question, answer, card, input, btn){
+// The answers currently held in the cards, in card (DOM) order -- 위에서부터.
+function collectPendingAnswers(){
+  var out = [];
+  document.querySelectorAll("#questionsBody .question-card").forEach(function(card){
+    var q = card.dataset.question;
+    if (!q || answeredQuestions[q]) return;
+    var picked = [];
+    card.querySelectorAll(".opt-item input:checked").forEach(function(cb){ picked.push(cb.value); });
+    var input = card.querySelector('input[type="text"]');
+    var typed = input ? input.value.trim() : "";
+    if (typed) picked.push(typed);
+    if (!picked.length) return;
+    out.push({question: q, answer: picked.join("; ")});
+  });
+  return out;
+}
+
+// Selections beyond the per-round cap survive the re-render, so nothing typed is lost.
+function captureSelections(){
+  var saved = {};
+  document.querySelectorAll("#questionsBody .question-card").forEach(function(card){
+    var q = card.dataset.question;
+    if (!q || answeredQuestions[q]) return;
+    var checked = [];
+    card.querySelectorAll(".opt-item input:checked").forEach(function(cb){ checked.push(cb.value); });
+    var input = card.querySelector('input[type="text"]');
+    var typed = input ? input.value : "";
+    if (checked.length || typed.trim()) saved[q] = {checked: checked, typed: typed};
+  });
+  return saved;
+}
+
+function restoreSelections(saved){
+  if (!saved) return;
+  document.querySelectorAll("#questionsBody .question-card").forEach(function(card){
+    var s = saved[card.dataset.question];
+    if (!s) return;
+    card.querySelectorAll('.opt-item input[type="checkbox"]').forEach(function(cb){
+      if (s.checked.indexOf(cb.value) >= 0) cb.checked = true;
+    });
+    var input = card.querySelector('input[type="text"]');
+    if (input && s.typed) input.value = s.typed;
+  });
+}
+
+var BATCH_BTN_DEFAULT = "선택한 답변 모두 반영";
+var BATCH_NOTE_DEFAULT = "고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.";
+
+function updateBatchBar(){
+  var bar = document.getElementById("batchBar");
+  var btn = document.getElementById("batchBtn");
+  var note = document.getElementById("batchNote");
+  if (!bar || !btn || !note || answerInFlight) return;
+  var pending = collectPendingAnswers();
+  if (!pending.length){
+    bar.style.display = "none";
+    document.body.classList.remove("batch-open");
+    return;
+  }
+  bar.style.display = "block";
+  document.body.classList.add("batch-open");
+  var n = Math.min(pending.length, MAX_BATCH_ANSWERS);
+  btn.textContent = BATCH_BTN_DEFAULT + " (질문 " + n + "개)";
+  var tooLong = pending.slice(0, MAX_BATCH_ANSWERS).some(function(p){ return p.answer.length > MAX_ANSWER_LEN; });
+  var msgs = [];
+  if (pending.length > MAX_BATCH_ANSWERS){
+    msgs.push("한 번에 질문 " + MAX_BATCH_ANSWERS + "개까지 반영됩니다 -- 위에서부터 " +
+      MAX_BATCH_ANSWERS + "개를 먼저 반영하고, 남은 선택은 그대로 두었다가 이어서 반영하세요");
+  }
+  if (tooLong) msgs.push("답변 하나가 " + MAX_ANSWER_LEN + "자를 넘습니다 -- 줄여 주세요");
+  note.textContent = msgs.length ? msgs.join(" · ") : BATCH_NOTE_DEFAULT;
+  btn.disabled = tooLong;
+}
+
+function submitBatch(){
   if (answerInFlight) return;
+  var pending = collectPendingAnswers().slice(0, MAX_BATCH_ANSWERS);
+  if (!pending.length) return;
+  if (pending.some(function(p){ return p.answer.length > MAX_ANSWER_LEN; })) return;
   answerInFlight = true;
   setAnswerControlsDisabled(true);
-  btn.disabled = true;
-  input.disabled = true;
-  btn.textContent = "재평가 중...";
+  var btn = document.getElementById("batchBtn");
+  var note = document.getElementById("batchNote");
+  if (btn){ btn.disabled = true; btn.textContent = "답변 반영 중"; }
+  if (note) note.textContent = "답변 반영 중 -- 관련 기준만 다시 판정합니다";
   // the verdict chip specifically: the first .badge in a row is the effect chip, whose text
   // is never UNKNOWN/UNCERTAIN.
   document.querySelectorAll(".crit-row").forEach(function(row){
@@ -1174,29 +1470,42 @@ function submitAnswer(question, answer, card, input, btn){
     }
   });
 
-  function recover(message){
+  function unlock(){
     answerInFlight = false;
     setAnswerControlsDisabled(false);
     document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
-    btn.textContent = message;
-    btn.disabled = false;
-    input.disabled = false;
   }
 
-  // without a deadline, a hung serverless call leaves the whole panel on "재평가 중..." forever
+  function recover(message){
+    unlock();
+    if (btn){ btn.disabled = false; btn.textContent = BATCH_BTN_DEFAULT + " (질문 " + pending.length + "개)"; }
+    if (note) note.textContent = message;
+  }
+
+  // without a deadline, a hung serverless call leaves the whole panel on "답변 반영 중" forever
   var aborter = new AbortController();
-  var deadline = setTimeout(function(){ aborter.abort(); }, 60000);
+  var deadline = setTimeout(function(){ aborter.abort(); }, 90000);
+
+  var payload = {
+    patient_id: currentPatientId,
+    trials: currentTrials,
+    extended_record: extendedRecord,
+    questions: (currentQuestionsCache || []).slice(0, 12)
+      .map(function(q){ return {field: q.field, question: q.question}; }),
+    // dedupe scope for the server's follow-up generator: everything already on the dock
+    asked_questions: (currentQuestionsCache || []).map(function(q){ return q.question; }),
+  };
+  if (pending.length === 1){
+    // single-question fallback path: the original {question, answer} form, unchanged
+    payload.question = pending[0].question;
+    payload.answer = pending[0].answer;
+  } else {
+    payload.answers = pending;
+  }
 
   fetch("/api/answer", {
-    method: "POST", headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      patient_id: currentPatientId,
-      question: question,
-      answer: answer,
-      trials: currentTrials,
-      extended_record: extendedRecord,
-      questions: (currentQuestionsCache || []).map(function(q){ return {field: q.field, question: q.question}; }),
-    }),
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload),
     signal: aborter.signal
   }).then(function(r){ return r.json(); }).then(function(data){
     clearTimeout(deadline);
@@ -1204,60 +1513,77 @@ function submitAnswer(question, answer, card, input, btn){
       recover("오류: " + data.error);
       return;
     }
-    answeredQuestions[question] = answer;
-    prevRanks = {};
-    // before/after snapshot per trial: feeds the rank-delta pill, the round graph, and history
-    var prevState = {};
-    currentTrials.forEach(function(t){
-      if (!t.nct_id) return;
-      if (t.rank) prevRanks[t.nct_id] = t.rank;
-      prevState[t.nct_id] = {rank: t.rank, eligibility: t.eligibility, title: t.title};
-    });
-    lastVerdictChanges = {};
-    (data.verdict_changes || []).forEach(function(c){
-      lastVerdictChanges[c.nct_id + "::" + c.criterion] = c.before + " → " + c.after;
-    });
-    currentTrials = data.trials || currentTrials;
-    extendedRecord = data.extended_record || extendedRecord;
-    // what actually moved at trial level this round (rank or eligibility)
-    var rankChanges = [];
-    currentTrials.forEach(function(t){
-      var p = prevState[t.nct_id];
-      if (!p) return;
-      if ((p.rank && t.rank && p.rank !== t.rank) || (p.eligibility !== t.eligibility)){
-        rankChanges.push({nct_id: t.nct_id, title: t.title || p.title || t.nct_id,
-                          rank_before: p.rank, rank_after: t.rank,
-                          eligibility_before: p.eligibility, eligibility_after: t.eligibility});
-      }
-    });
-    if (data.patient_need){ currentNeed = data.patient_need; renderNeedCard(currentNeed); }
-    // priority numbers recomputed server-side against the post-answer trials; merge by question text
-    if (Array.isArray(data.questions)){
-      var fresh = {};
-      data.questions.forEach(function(q){ if (q && q.question) fresh[q.question] = q; });
-      currentQuestionsCache.forEach(function(q){
-        var f = fresh[q.question];
-        if (f){ q.affects_trials = f.affects_trials; q.affects_criteria = f.affects_criteria; q.may_change_rank = f.may_change_rank; }
-      });
-    }
-    renderTrials(currentTrials);
-    renderSummary(currentTrials);
-    flashChanged(data.verdict_changes || []);
-    rounds.push({round: rounds.length + 1, question: question, answer: answer,
-                 verdict_changes: data.verdict_changes || [], rank_changes: rankChanges,
-                 note: data.note || null});
-    renderHistory();
-    renderDagRound({question: question, answer: answer,
-                    verdict_changes: data.verdict_changes || [],
-                    rank_changes: rankChanges, note: data.note || null});
-    renderQuestions(currentQuestionsCache, currentTrials);
-    answerInFlight = false;
-    setAnswerControlsDisabled(false);
-    document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });
+    applyAnswerResponse(pending, data);
+    unlock();
+    updateBatchBar();
   }).catch(function(err){
     clearTimeout(deadline);
-    recover(err && err.name === "AbortError" ? "시간 초과 (다시 시도)" : "오류: " + String(err));
+    recover(err && err.name === "AbortError" ? "시간 초과 -- 다시 시도해 주세요" : "오류: " + String(err));
   });
+}
+
+// ONE response -> ONE rendered round, however many Q/A pairs went in.
+function applyAnswerResponse(pending, data){
+  pending.forEach(function(p){ answeredQuestions[p.question] = p.answer; });
+  prevRanks = {};
+  // before/after snapshot per trial: feeds the rank-delta pill, the round graph, and history
+  var prevState = {};
+  currentTrials.forEach(function(t){
+    if (!t.nct_id) return;
+    if (t.rank) prevRanks[t.nct_id] = t.rank;
+    prevState[t.nct_id] = {rank: t.rank, eligibility: t.eligibility, title: t.title};
+  });
+  lastVerdictChanges = {};
+  (data.verdict_changes || []).forEach(function(c){
+    lastVerdictChanges[c.nct_id + "::" + c.criterion] = c.before + " → " + c.after;
+  });
+  currentTrials = data.trials || currentTrials;
+  extendedRecord = data.extended_record || extendedRecord;
+  // what actually moved at trial level this round (rank or eligibility)
+  var rankChanges = [];
+  currentTrials.forEach(function(t){
+    var p = prevState[t.nct_id];
+    if (!p) return;
+    if ((p.rank && t.rank && p.rank !== t.rank) || (p.eligibility !== t.eligibility)){
+      rankChanges.push({nct_id: t.nct_id, title: t.title || p.title || t.nct_id,
+                        rank_before: p.rank, rank_after: t.rank,
+                        eligibility_before: p.eligibility, eligibility_after: t.eligibility});
+    }
+  });
+  if (data.patient_need){ currentNeed = data.patient_need; renderNeedCard(currentNeed); }
+  // priority numbers recomputed server-side against the post-answer trials; merge by question text
+  if (Array.isArray(data.questions)){
+    var fresh = {};
+    data.questions.forEach(function(q){ if (q && q.question) fresh[q.question] = q; });
+    currentQuestionsCache.forEach(function(q){
+      var f = fresh[q.question];
+      if (f){ q.affects_trials = f.affects_trials; q.affects_criteria = f.affects_criteria; q.may_change_rank = f.may_change_rank; }
+    });
+  }
+  // Follow-ups: questions the server decided are NEWLY needed after these answers.
+  // An empty array means the existing questions suffice -- nothing is rendered then.
+  lastFollowupError = data.followup_error ? String(data.followup_error) : null;
+  (data.followup_questions || []).forEach(function(fq){
+    if (!fq || !fq.question) return;
+    var norm = normTagText(fq.question);
+    var dupe = (currentQuestionsCache || []).some(function(q){ return normTagText(q.question) === norm; });
+    if (dupe) return;
+    fq.followup = true;
+    currentQuestionsCache.push(fq);
+  });
+  renderTrials(currentTrials);
+  renderSummary(currentTrials);
+  flashChanged(data.verdict_changes || []);
+  rounds.push({round: rounds.length + 1, qa: pending,
+               verdict_changes: data.verdict_changes || [], rank_changes: rankChanges,
+               note: data.note || null});
+  renderHistory();
+  renderDagRound({qa: pending,
+                  verdict_changes: data.verdict_changes || [],
+                  rank_changes: rankChanges, note: data.note || null});
+  var saved = captureSelections();
+  renderQuestions(currentQuestionsCache, currentTrials);
+  restoreSelections(saved);
 }
 
 function flashChanged(changes){
@@ -1279,10 +1605,14 @@ function renderHistory(){
   var html = '<div class="rounds-head">변경 이력</div>';
   rounds.slice().reverse().forEach(function(r){
     var vc = r.verdict_changes || [], rc = r.rank_changes || [];
+    var qa = r.qa || [];
     html += '<div class="round-item">' +
-      '<div class="round-title">' + r.round + '회차 · 판정 바뀐 기준 ' + vc.length +
-      '건 · 순위/적격 변동 ' + rc.length + '건</div>' +
-      '<div class="round-qa"><b>Q</b> ' + escapeHtml(r.question) + '<br><b>A</b> ' + escapeHtml(r.answer) + '</div>';
+      '<div class="round-title">' + r.round + '회차 · 답변 ' + qa.length +
+      '건 · 판정 바뀐 기준 ' + vc.length +
+      '건 · 순위/적격 변동 ' + rc.length + '건</div>';
+    qa.forEach(function(pair){
+      html += '<div class="round-qa"><b>Q</b> ' + escapeHtml(pair.question) + '<br><b>A</b> ' + escapeHtml(pair.answer) + '</div>';
+    });
     if (r.note) html += '<div class="round-change">' + escapeHtml(r.note) + '</div>';
     vc.slice(0, 6).forEach(function(c){
       html += '<div class="round-change"><span class="delta-chip">' + escapeHtml(c.before) +
@@ -1394,7 +1724,7 @@ function renderDagRound(round){
   if (!vc.length && !rc.length){
     if (note){
       note.textContent = round.note ||
-        "이 답변으로 바뀐 판정이나 순위가 없습니다. 답과 연결되지 않은 기준은 재평가하지 않았습니다.";
+        "이번 답변으로 바뀐 판정이나 순위가 없습니다. 답과 연결되지 않은 기준은 재평가하지 않았습니다.";
       note.style.display = "block";
     }
     if (scroll) scroll.style.display = "none";
@@ -1408,17 +1738,19 @@ function renderDagRound(round){
   var tCol = grid.querySelector('[data-col="trial"]');
   var rCol = grid.querySelector('[data-col="rank"]');
 
-  // column 1: the answered question (one node)
-  var qCard = makeDagCard("dag-q", "질문", dagTruncate(round.question, 110));
-  var aCap = document.createElement("span");
-  aCap.className = "dag-card-cap";
-  aCap.textContent = "답";
-  qCard.appendChild(aCap);
-  var aText = document.createElement("div");
-  aText.className = "dag-card-text";
-  aText.appendChild(document.createTextNode(dagTruncate(round.answer, 110)));
-  qCard.appendChild(aText);
-  qCol.appendChild(qCard);
+  // column 1: every Q/A pair of this round (one batch click = one combined round)
+  (round.qa || []).forEach(function(pair, qi){
+    var qCard = makeDagCard("dag-q-" + qi, "질문", dagTruncate(pair.question, 110));
+    var aCap = document.createElement("span");
+    aCap.className = "dag-card-cap";
+    aCap.textContent = "답";
+    qCard.appendChild(aCap);
+    var aText = document.createElement("div");
+    aText.className = "dag-card-text";
+    aText.appendChild(document.createTextNode(dagTruncate(pair.answer, 110)));
+    qCard.appendChild(aText);
+    qCol.appendChild(qCard);
+  });
 
   // column 3 targets first, so criterion edges know which trials have nodes
   var trialNodeByNct = {};
@@ -1453,7 +1785,8 @@ function renderDagRound(round){
       });
     }
     cCol.appendChild(card);
-    dagEdgeList.push({from: "dag-q", to: id});
+    var fromId = attributeQaEdge(round.qa || [], c);
+    if (fromId) dagEdgeList.push({from: fromId, to: id});
     if (trialNodeByNct[c.nct_id]) dagEdgeList.push({from: id, to: trialNodeByNct[c.nct_id]});
   });
 
@@ -1527,6 +1860,11 @@ window.addEventListener("resize", function(){
   if (sec) sec.addEventListener("toggle", function(){
     if (sec.open) requestAnimationFrame(drawDagEdges);
   });
+})();
+
+(function(){
+  var bb = document.getElementById("batchBtn");
+  if (bb) bb.addEventListener("click", submitBatch);
 })();
 
 loadPatients();

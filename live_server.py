@@ -33,6 +33,7 @@ from pipeline import (
     apply_recommendation,
     rematch_affected_criteria,
     effect_of,
+    dedupe_followups,
     TRIALS_PER_PATIENT,
 )
 from action_policy import (
@@ -531,9 +532,12 @@ def eligibility_path(trial):
             "n_to_resolve": len(to_resolve), "n_satisfied": len(satisfied)}
 
 
-def handle_answers_batch(session, items):
+def handle_answers_batch(session, items, want_followups=True):
     """Apply several answers, then re-evaluate once. One snapshot covers the whole batch,
-    so a single revert undoes the batch the way the reviewer entered it."""
+    so a single revert undoes the batch the way the reviewer entered it. After a round that
+    actually rematched, a background follow-up check (detect_gaps + generate_questions over
+    the post-answer state) asks whether MORE questions are needed -- same behavior as the
+    deployed api/answer.py; want_followups=False skips it."""
     with session["lock"]:
         before = _snapshot(session)
         round_n = len(session.get("answer_rounds", [])) + 1
@@ -553,6 +557,9 @@ def handle_answers_batch(session, items):
                 if key not in seen:
                     seen.add(key)
                     affected_all.append(af)
+        # cost-guard parity with api/answer.py: one round never rematches more than
+        # MAX_AFFECTED_PER_ROUND criteria on the metered backend
+        affected_all = affected_all[:MAX_AFFECTED_PER_ROUND]
 
         if not applied:
             return {"error": "no usable answers"}
@@ -583,6 +590,50 @@ def handle_answers_batch(session, items):
             enrich_questions(session.get("questions", []), session.get("gaps") or [],
                              session["trials_out"])
 
+        # Follow-up check, only on a round that actually rematched: with the answers now in
+        # the record, are MORE questions needed for an accurate judgment? Same generation as
+        # api/answer.py: detect_gaps honors the blocked-trial gate via the effect fields and
+        # is_question_worthy via the action fields; the patient text is the vignette plus the
+        # grown extended record, so just-closed gaps do not resurface. Deduped (normalized
+        # text) against every question this session has shown AND this round's answers.
+        # 2 extra LLM calls; a failure here must never fail the answer round.
+        followup_questions, followup_error = [], None
+        if affected_all and want_followups:
+            try:
+                asked = ([q.get("question", "") for q in session.get("questions", [])]
+                         + [i["question"] for i in applied])
+                all_criteria_flat = [
+                    {"nct_id": t.get("nct_id"), "text": c.get("text", ""),
+                     "verdict": c.get("verdict"), "action": c.get("action"),
+                     "effect": c.get("effect")}
+                    for t in session["trials_out"] for c in t.get("criteria", [])
+                ]
+                patient_ext = {"patient_id": session["patient"]["patient_id"],
+                               "text": (session["patient"]["text"] + "\n"
+                                        + session.get("extended_record", "")).strip()}
+                fgaps = detect_gaps(patient_ext, all_criteria_flat)
+                if fgaps:
+                    followup_questions = dedupe_followups(
+                        generate_questions(patient_ext, fgaps), asked, cap=3)
+                    for q in followup_questions:
+                        q["followup"] = True
+                    enrich_questions(followup_questions, fgaps, session["trials_out"])
+                if followup_questions:
+                    # onto the session's question dock, flagged, so later answers to them run
+                    # through the same find_affected/answer flow as the original questions...
+                    session.setdefault("questions", []).extend(followup_questions)
+                    # ...and merge their fresh gap links so find_affected's field rung can
+                    # locate the criteria a follow-up answer resolves (append-only: existing
+                    # fields keep the links the original questions were built against).
+                    if isinstance(session.get("gaps"), list):
+                        have = {g.get("field") for g in session["gaps"]}
+                        session["gaps"].extend(
+                            g for g in fgaps if g.get("field") not in have)
+            except Exception as e:  # noqa: BLE001 - followups are best-effort by contract
+                print(f"[live_server] followup generation failed ({e})")
+                followup_questions = []
+                followup_error = "추가 질문 생성에 실패했습니다. 이번 반영 결과에는 영향이 없습니다."
+
         rank_changes = []
         for t in session["trials_out"]:
             prev = next((b for b in before["trials_out"] if b["nct_id"] == t["nct_id"]), None)
@@ -609,8 +660,13 @@ def handle_answers_batch(session, items):
             # refreshed priority numbers (stale until affected_all ran the recompute above,
             # unchanged and still correct when nothing was affected) -- lets the client render
             # the current dock straight from this response instead of a second round trip.
+            # Includes any just-generated follow-ups (flagged followup=true).
             "questions": session.get("questions", []),
+            # [] = the existing questions suffice (or no rematch ran / followups skipped)
+            "followup_questions": followup_questions,
         }
+        if followup_error:
+            out["followup_error"] = followup_error
         if not affected_all:  # same plain note the single-answer path returns
             out["note"] = "이 답변과 연결되는 미확정 기준이 없습니다."
         return out
@@ -663,93 +719,24 @@ def revert_last_round(session):
 
 
 def handle_answer(session, question_text, answer_text):
-    with session["lock"]:
-        before = _snapshot(session)
-        affected = find_affected(session, question_text)
-        round_n = len(session.get("answer_rounds", [])) + 1
-        session["extended_record"] = (
-            session.get("extended_record", "") + f"\n추가 문진 Q: {question_text} / A: {answer_text}"
-        ).strip()
-
-        if not affected:
-            session.setdefault("answer_rounds", []).append({
-                "round": round_n, "question": question_text, "answer": answer_text,
-                "verdict_changes": [], "_before": before,
-            })
-            return {
-                "verdict_changes": [], "affected": [],
-                "updated_trials": session["trials_out"],
-                "recommendation": _ranking(session["trials_out"]),
-                "round": round_n,
-                # true whether nothing is left open, OR open criteria exist but none link to
-                # this answer (find_affected found no link) -- same wording as api/answer.py.
-                "note": "이 답변과 연결되는 미확정 기준이 없습니다.",
-                # nothing changed, so the existing numbers are still correct -- served anyway
-                # so the client can read from this response instead of a stale local cache.
-                "questions": session.get("questions", []),
-            }
-
-        rematched = rematch_affected_criteria(session["patient"], session["extended_record"], affected)
-        verdict_changes = []
-        for r in rematched:
-            crit = session["trials_out"][r["trial_idx"]]["criteria"][r["crit_idx"]]
-            crit["verdict"] = r["after_verdict"]
-            crit["effect"] = effect_of(crit["type"], r["after_verdict"])
-            if r["after_evidence"]:
-                crit["evidence"] = r["after_evidence"]
-            crit["reasoning"] = r["after_reasoning"]
-            if r["after_verdict"] != r["before_verdict"]:
-                verdict_changes.append({
-                    "nct_id": r["nct_id"], "criterion": r["text"],
-                    "before": r["before_verdict"], "after": r["after_verdict"],
-                })
-
-        recs, session["patient_need"] = recommend(session["patient"], session["trials_out"],
-                                                  trust_attached=True)
-        apply_recommendation(session["trials_out"], recs)
-        apply_trial_level_actions(session["trials_out"])
-        # same refresh as the batch path: this answer resolved criteria, so the questions
-        # dock's numbers and sort order must reflect the new state, not the pre-answer one.
-        enrich_questions(session.get("questions", []), session.get("gaps") or [],
-                         session["trials_out"])
-
-        rank_changes = []
-        for t in session["trials_out"]:
-            prev = next((b for b in before["trials_out"] if b["nct_id"] == t["nct_id"]), None)
-            if prev and (prev.get("rank") != t.get("rank") or prev.get("eligibility") != t.get("eligibility")):
-                rank_changes.append({"nct_id": t["nct_id"], "title": t.get("title"),
-                                      "rank_before": prev.get("rank"), "rank_after": t.get("rank"),
-                                      "eligibility_before": prev.get("eligibility"),
-                                      "eligibility_after": t.get("eligibility")})
-
-        session.setdefault("answer_rounds", []).append({
-            "round": round_n, "question": question_text, "answer": answer_text,
-            "verdict_changes": verdict_changes, "rank_changes": rank_changes, "_before": before,
-        })
-        persist_session(session)
-
-        return {
-            "verdict_changes": verdict_changes,
-            "rank_changes": rank_changes,
-            "affected": [{"nct_id": a["nct_id"], "text": a["text"]} for a in affected],
-            "updated_trials": session["trials_out"],
-            "recommendation": _ranking(session["trials_out"]),
-            "round": round_n,
-            "questions": session.get("questions", []),
-        }
+    """Single answer = a batch of one. One code path (verifier finding 08-19: the two paths
+    had drifted -- the single path never ran the follow-up check). The response keeps the
+    single-path shape the client reads (note when nothing linked)."""
+    out = handle_answers_batch(session, [{"question": question_text, "answer": answer_text}])
+    if not out.get("affected"):
+        out.setdefault("note", "이 답변과 연결되는 미확정 기준이 없습니다.")
+    return out
 
 
-# ---------------------------------------------------------------------------
-# HTTP layer
-# ---------------------------------------------------------------------------
 ROUTE_SESSION = re.compile(r"^/api/session/([a-f0-9]{32})$")
 ROUTE_ANSWER = re.compile(r"^/api/session/([a-f0-9]{32})/answer$")
 ROUTE_ANSWER_BATCH = re.compile(r"^/api/session/([a-f0-9]{32})/answers$")
 ROUTE_REVERT = re.compile(r"^/api/session/([a-f0-9]{32})/revert$")
 
 
-# caps shared by the single-answer and batch endpoints -- both spend the paid key
-MAX_ANSWERS_PER_BATCH = 20
+
+MAX_ANSWERS_PER_BATCH = 5   # parity with api/answer.py
+MAX_AFFECTED_PER_ROUND = 12  # parity with api/answer.py MAX_AFFECTED
 MAX_ANSWER_CHARS = 600
 MAX_QUESTION_CHARS = 400
 
@@ -975,7 +962,9 @@ class Handler(BaseHTTPRequestHandler):
                     self._send_json({"error": f"session not ready (stage={session['stage']})"}, status=200)
                     return
                 try:
-                    self._send_json(handle_answers_batch(session, items))
+                    self._send_json(handle_answers_batch(
+                        session, items,
+                        want_followups=body.get("want_followups") is not False))
                 except Exception as e:
                     self._send_json({"error": str(e)}, status=200)
                 return

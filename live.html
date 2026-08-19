@@ -509,6 +509,13 @@
   .priority-pill.high{background:var(--met-bg);color:var(--met);}
   .priority-pill.med{background:var(--uncertain-bg);color:var(--uncertain);}
   .priority-pill.normal{background:var(--unknown-bg);color:var(--unknown);}
+  /* Marks a question the model generated in response to the answers just submitted
+     (followup_questions from /api/answer|/answers), so a reviewer can tell it apart
+     from the original question set at a glance. */
+  .followup-badge{
+    font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;
+    background:var(--accent-soft);color:var(--accent-dark);
+  }
   .question-card .q{font-weight:600;margin:2px 0 4px;font-size:0.9rem;}
   .question-card .why{font-size:0.78rem;color:var(--ink-soft);margin-bottom:8px;}
 
@@ -866,7 +873,8 @@ function submitBatch(){
 
   fetch("/api/session/" + currentSessionId + "/answers", {
     method: "POST", headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({answers: items}), signal: aborter.signal
+    body: JSON.stringify({answers: items, asked_questions: Object.keys(answeredQuestions)}),
+    signal: aborter.signal
   }).then(function(r){ return r.json(); }).then(function(data){
     clearTimeout(deadline);
     answerInFlight = false;
@@ -881,7 +889,8 @@ function submitBatch(){
     renderTrials(data.updated_trials, true);
     flashAffected(data.affected || []);
     if (data.questions && data.questions.length) currentQuestionsCache = data.questions;
-    renderQuestions(currentQuestionsCache, data.updated_trials);
+    mergeFollowupQuestions(data.followup_questions);
+    renderQuestions(currentQuestionsCache, data.updated_trials, true);
     refreshBatchButton();
     poll();
   }).catch(function(err){
@@ -1432,6 +1441,29 @@ function priorityForQuestion(q){
   return PRIORITY_LEVELS.normal;
 }
 
+// ---- follow-up questions: the model may decide, after an answer round actually re-matched
+// something, that the existing question set isn't enough for a confident judgment yet.
+// followup_questions arrives alongside the regular "questions" refresh; fold it into the same
+// cache (tagged so the card can show a "추가 질문" marker) instead of a separate list, so the
+// dock stays one place to look. Dedupe by normalized text -- a follow-up can legitimately repeat
+// a question already sitting in the cache if the round moved slower than the two responses.
+function normQuestionText(s){
+  var t = String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  return t.replace(/[.,;:!?)\]}]+$/, "").trim();
+}
+function mergeFollowupQuestions(followups){
+  if (!followups || !followups.length) return;
+  var seen = {};
+  currentQuestionsCache.forEach(function(q){ seen[normQuestionText(q.question)] = true; });
+  followups.forEach(function(fq){
+    var key = normQuestionText(fq.question);
+    if (!key || seen[key]) return;
+    seen[key] = true;
+    fq.followup = true;
+    currentQuestionsCache = currentQuestionsCache.concat([fq]);
+  });
+}
+
 var STOPWORDS = {"the":1,"a":1,"an":1,"of":1,"and":1,"or":1,"in":1,"on":1,"at":1,"to":1,
   "is":1,"are":1,"was":1,"were":1,"for":1,"this":1,"that":1,"with":1,"have":1,"has":1,
   "any":1,"does":1,"he":1,"she":1,"his":1,"her":1,"what":1,"when":1,"who":1,"which":1,
@@ -1577,6 +1609,7 @@ function renderQuestions(questions, trials, force){
     var main = el("div", "q-main");
     main.innerHTML =
       '<div class="field-row"><span class="priority-pill ' + pr.cls + '">' + pr.label + '</span>' +
+      (q.followup ? '<span class="followup-badge">추가 질문</span>' : '') +
       '<span class="field">' + escapeHtml(q.field) + '</span></div>' +
       '<div class="q">' + escapeHtml(q.question) + '</div>' +
       '<div class="why">' + escapeHtml(q.why) + '</div>';
@@ -1742,7 +1775,10 @@ function submitAnswer(question, answer, card, input, btn){
 
   fetch("/api/session/" + currentSessionId + "/answer", {
     method: "POST", headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({question: question, answer: answer}),
+    body: JSON.stringify({
+      question: question, answer: answer,
+      asked_questions: Object.keys(answeredQuestions)
+    }),
     signal: aborter.signal
   }).then(function(r){ return r.json(); }).then(function(data){
     clearTimeout(deadline);
@@ -1755,7 +1791,8 @@ function submitAnswer(question, answer, card, input, btn){
     flashAffected(data.affected || []);
     appendChangelog(data.round, data.verdict_changes || [], data.recommendation || [], data.note);
     if (data.questions && data.questions.length) currentQuestionsCache = data.questions;
-    renderQuestions(currentQuestionsCache, data.updated_trials);
+    mergeFollowupQuestions(data.followup_questions);
+    renderQuestions(currentQuestionsCache, data.updated_trials, true);
     answerInFlight = false;
     setAnswerControlsDisabled(false);
     document.querySelectorAll(".crit-row.spinning").forEach(function(row){ row.classList.remove("spinning"); });

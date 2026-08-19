@@ -39,6 +39,7 @@ from action_policy import (
     action_for,
     enrich_questions,
     is_question_worthy,
+    normalize_criterion_text,
     UNCERTAINTY_TYPES,
     criterion_id,
 )
@@ -553,6 +554,38 @@ Generate at most 3 clarifying questions per your instructions."""
         cleaned.append({"field": field, "question": question, "why": why,
                         "options": options})
     return cleaned
+
+
+def _norm_q(text):
+    """Question-text normalizer for followup dedupe: normalize_criterion_text can leave a
+    trailing space when whitespace collapse runs before punctuation strip ("surgery ?" ->
+    "surgery ") -- strip again so both layers compare clean. normalize_criterion_text itself
+    must NOT change (criterion_id stability)."""
+    return normalize_criterion_text(text).strip()
+
+
+def dedupe_followups(candidates, asked_texts, cap=3):
+    """Drop candidate follow-up questions already asked in this session, by normalized text.
+
+    Pure function (no LLM): both sides run through action_policy.normalize_criterion_text, so a
+    re-generated question that differs from an already-asked one only by case/whitespace/trailing
+    punctuation still counts as a duplicate (the same drift class as 지우's DAS28 link bug).
+    `asked_texts` is plain question strings; also dedupes candidates against each other.
+    Used by both followup callers (api/answer.py and live_server.handle_answers_batch) so their
+    dedupe rule cannot drift apart. Returns at most `cap` survivors, generation order kept.
+    """
+    seen = {_norm_q(t) for t in asked_texts or [] if t}
+    seen.discard("")
+    out = []
+    for q in candidates or []:
+        norm = _norm_q(q.get("question", ""))
+        if not norm or norm in seen:
+            continue
+        seen.add(norm)
+        out.append(q)
+        if len(out) >= cap:
+            break
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -1093,6 +1126,24 @@ def _selftest():
                                 "conditions": ["Lymphoma"], "eligibility_criteria_raw": ""}
     check(classify_trial_intent(unphased_interventional) == "therapeutic",
           "phase 1/2 study must classify as therapeutic")
+
+    # ---- follow-up dedupe (dedupe_followups) ----
+    cands = [
+        {"question": "HbA1c 수치가 얼마입니까?", "field": "hba1c"},
+        {"question": "최근 신장 기능 검사 결과가 있습니까?", "field": "renal"},
+        {"question": "  hba1c 수치가 얼마입니까?.  ", "field": "dup"},  # normalized dup of #1
+        {"question": "ECOG 수행 상태는 어떻습니까?", "field": "ecog"},
+    ]
+    kept = dedupe_followups(cands, ["HbA1c 수치가 얼마입니까?"])
+    kept_qs = [q["question"] for q in kept]
+    check("HbA1c 수치가 얼마입니까?" not in kept_qs,
+          "an already-asked question must be dropped (exact match)")
+    check(kept_qs == ["최근 신장 기능 검사 결과가 있습니까?", "ECOG 수행 상태는 어떻습니까?"],
+          f"dedupe keeps generation order of survivors, got {kept_qs}")
+    check(len(dedupe_followups(cands, [], cap=2)) == 2, "cap must bound the survivors")
+    check(dedupe_followups([], ["anything"]) == [], "no candidates -> no followups")
+    check(dedupe_followups([{"question": ""}, {"question": "   "}], []) == [],
+          "blank candidate questions are dropped, never emitted")
 
     if failures:
         print("FAIL:")

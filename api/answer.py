@@ -1,20 +1,33 @@
-"""POST /api/answer -> re-evaluate only the criteria a human answer affects, re-rank, return.
+"""POST /api/answer -> re-evaluate only the criteria the round's answers affect, re-rank, return.
 
 Serverless functions share no memory, so the browser holds the session state (the current
 trials array and the accumulated extended_record) and sends it back on every call. This module
-is a pure function of its request body: patient_id + question + answer + trials + extended_record
-in, updated trials + verdict_changes + extended_record out.
+is a pure function of its request body: patient_id + answers + trials + extended_record in,
+updated trials + verdict_changes + extended_record (+ follow-up questions) out.
+
+Two request forms, one re-evaluation round either way (Keonhee 08-19: multi-select across ALL
+questions gets ONE 반영 click and ONE round, never one loop per question):
+  single  {"question": ..., "answer": ...}            -- unchanged, back-compat
+  batch   {"answers": [{"question", "answer"}, ...]}  -- max 5; single fields ignored when present
+The per-question find_affected results are unioned (deduped by criterion, capped at
+MAX_AFFECTED) into ONE rematch_affected_criteria call and ONE recommend call.
 
 Reuses pipeline.py's rematch_affected_criteria/recommend/effect_of directly (same functions
-live_server.py uses locally) -- no matching logic duplicated here. The only new piece is
-find_affected(), a token-overlap heuristic standing in for live_server.py's gap-detector-based
-mapping, so this endpoint makes exactly two LLM calls (rematch, recommend) instead of three.
-When a question's tokens overlap nothing, find_affected returns [] and handle() short-circuits
-before either LLM call -- it must never fall back to resolving every open criterion (that
-silently re-evaluates the whole trace on the metered key; the exact defect this file's
-find_affected used to have, 지우 08-12).
+live_server.py uses locally) -- no matching logic duplicated here. find_affected() is a
+token-overlap heuristic standing in for live_server.py's gap-detector-based mapping. When no
+question's tokens overlap anything open, the union is [] and handle() short-circuits before
+any LLM call -- it must never fall back to resolving every open criterion (that silently
+re-evaluates the whole trace on the metered key; the exact defect this file's find_affected
+used to have, 지우 08-12).
+
+After a round that actually rematched, a background follow-up check (detect_gaps +
+generate_questions over the post-answer state) asks whether MORE questions are needed for an
+accurate judgment; if the existing questions suffice it returns []. 2 extra LLM calls, so it
+sits behind its own per-IP budget and want_followups=false skips it. A followup failure never
+fails the answer round.
 
 Never raises past do_POST: any failure comes back as HTTP 200 {"error": "..."}.
+Run `python3 api/answer.py` for the offline self-tests (no LLM calls, no server).
 """
 import json
 import os
@@ -37,7 +50,8 @@ import anthropic_client
 anthropic_client.CACHE_DIR = "/tmp/cache"
 
 from pipeline import (rematch_affected_criteria, recommend, apply_recommendation, effect_of,
-                      VALID_VERDICTS, classify_action, apply_evidence_sufficiency)
+                      VALID_VERDICTS, classify_action, apply_evidence_sufficiency,
+                      detect_gaps, generate_questions, dedupe_followups)
 from action_policy import trial_level_action, trial_is_blocked, enrich_questions, criterion_id, normalize_criterion_text
 from patient_need import classify_patient_need
 
@@ -89,20 +103,28 @@ MAX_BODY_BYTES = 128 * 1024      # real sessions serialize to a few KB
 MAX_TRIALS = 6                   # traces hold 4 per patient
 MAX_CRITERIA_PER_TRIAL = 16      # traces max is 13
 MAX_QUESTIONS = 12               # traces hold <= 5 per patient
+MAX_BATCH_ANSWERS = 5            # one 반영 click covers at most 5 question cards
+MAX_ASKED_QUESTIONS = 50         # dedupe list the client resends; text only, never a prompt
+FOLLOWUP_CAP = 3                 # same bound as the base question generator
 RATE_LIMIT_PER_MIN = 10          # per client IP, per warm instance (cheap brake, not a wall)
+FOLLOWUP_RATE_LIMIT_PER_MIN = 4  # follow-up generation adds 2 LLM calls/round on the metered
+                                 # key -- its own tighter per-IP budget, same mechanism
 
 _recent_calls = {}               # ip -> [monotonic-ish timestamps]
+_followup_calls = {}             # ip -> [timestamps], consumed only when followups would run
 
 
-def _rate_limited(ip):
+def _rate_limited(ip, store=None, limit=RATE_LIMIT_PER_MIN):
     import time
+    if store is None:
+        store = _recent_calls
     now = time.time()
-    window = [t for t in _recent_calls.get(ip, []) if now - t < 60]
-    if len(window) >= RATE_LIMIT_PER_MIN:
-        _recent_calls[ip] = window
+    window = [t for t in store.get(ip, []) if now - t < 60]
+    if len(window) >= limit:
+        store[ip] = window
         return True
     window.append(now)
-    _recent_calls[ip] = window
+    store[ip] = window
     return False
 
 
@@ -189,19 +211,104 @@ def find_affected(question_text, trials):
     return affected[:MAX_AFFECTED]
 
 
-def handle(body):
+def _extract_answer_pairs(body):
+    """Both request forms -> a validated list of (question, answer) pairs, or an error.
+
+    Batch form: {"answers": [{"question", "answer"}, ...]} -- max MAX_BATCH_ANSWERS items;
+    when "answers" is present the top-level question/answer fields are IGNORED. Single form:
+    the existing {"question", "answer"} pair, unchanged semantics and unchanged error strings.
+    Every item is held to the same length caps as the single form (each answer line is
+    interpolated into the rematch prompt on the metered key). Returns (pairs, error_or_None).
+    """
+    raw = body.get("answers")
+    if raw is not None:
+        if not isinstance(raw, list) or not raw:
+            return None, "answers must be a non-empty array"
+        if len(raw) > MAX_BATCH_ANSWERS:
+            return None, f"too many answers (max {MAX_BATCH_ANSWERS})"
+        pairs = []
+        for it in raw:
+            if not isinstance(it, dict):
+                return None, "each answers[] item must be an object"
+            q = str(it.get("question", "")).strip()
+            a = str(it.get("answer", "")).strip()
+            if not q or len(q) > MAX_QUESTION_LEN:
+                return None, "invalid question in answers[]"
+            if not a or len(a) > MAX_ANSWER_LEN:
+                return None, f"each answer must be 1-{MAX_ANSWER_LEN} characters"
+            pairs.append((q, a))
+        return pairs, None
+    q = str(body.get("question", "")).strip()
+    a = str(body.get("answer", "")).strip()
+    if not q or len(q) > MAX_QUESTION_LEN:
+        return None, "invalid question"
+    if not a or len(a) > MAX_ANSWER_LEN:
+        return None, "answer must be 1-600 characters"
+    return [(q, a)], None
+
+
+def union_affected(pairs_affected, cap=MAX_AFFECTED):
+    """Union the per-question find_affected results into ONE rematch worklist.
+
+    pairs_affected: [(question_text, affected_list), ...] in the order answered.
+    Dedupes by (trial_idx, crit_idx) -- two questions bearing on the same criterion re-evaluate
+    it once, on the combined extended record -- and applies `cap` to the UNION, so a batch can
+    never spend more of the metered key than a single answer was already allowed to.
+    Returns (union, sources): sources maps (trial_idx, crit_idx) -> [question_text, ...] (first-
+    seen order, unique), for attributing a verdict change to the question that triggered it.
+    Pure function, no LLM.
+    """
+    union, sources = [], {}
+    for question, affected in pairs_affected:
+        for af in affected:
+            key = (af["trial_idx"], af["crit_idx"])
+            if key not in sources:
+                sources[key] = []
+                union.append(af)
+            if question not in sources[key]:
+                sources[key].append(question)
+    union = union[:cap]
+    kept = {(af["trial_idx"], af["crit_idx"]) for af in union}
+    return union, {k: v for k, v in sources.items() if k in kept}
+
+
+def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_texts):
+    """The background 'do we need MORE questions?' check: 2 LLM calls over the POST-answer state.
+
+    Runs pipeline.detect_gaps (which honors is_question_worthy + the blocked-trial gate via the
+    effect fields on the flat list) then pipeline.generate_questions, with the patient text =
+    vignette + the grown extended record -- so a gap the answers just closed no longer surfaces,
+    and only still-open UNKNOWN/UNCERTAIN criteria on non-blocked trials can become questions.
+    Candidates are deduped against everything already asked (normalized text), capped at
+    FOLLOWUP_CAP, stamped followup=True, and enriched with the three priority numbers.
+    Returns [] when the existing questions suffice (no gaps, or every candidate is a repeat).
+    """
+    all_criteria_flat = [
+        {"nct_id": t.get("nct_id"), "text": c.get("text", ""), "verdict": c.get("verdict"),
+         "action": c.get("action"), "effect": c.get("effect")}
+        for t in trials_copy for c in t.get("criteria", [])
+    ]
+    patient_ext = {"patient_id": patient_id, "text": (vignette + "\n" + new_record).strip()}
+    gaps = detect_gaps(patient_ext, all_criteria_flat)
+    if not gaps:
+        return []
+    followups = dedupe_followups(generate_questions(patient_ext, gaps), asked_texts,
+                                 cap=FOLLOWUP_CAP)
+    for q in followups:
+        q["followup"] = True
+    return enrich_questions(followups, gaps, trials_copy)
+
+
+def handle(body, client_ip="?"):
     patient_id = str(body.get("patient_id", "")).strip()
-    question = str(body.get("question", "")).strip()
-    answer = str(body.get("answer", "")).strip()
     trials = body.get("trials")
     extended_record = str(body.get("extended_record", "")).strip()
 
     if patient_id not in KNOWN_IDS:
         return {"error": "unknown patient_id"}
-    if not question or len(question) > MAX_QUESTION_LEN:
-        return {"error": "invalid question"}
-    if not answer or len(answer) > MAX_ANSWER_LEN:
-        return {"error": "answer must be 1-600 characters"}
+    pairs, pairs_error = _extract_answer_pairs(body)
+    if pairs_error:
+        return {"error": pairs_error}
     if not isinstance(trials, list) or not trials:
         return {"error": "trials array required"}
     trials_error = _validate_trials(patient_id, trials)
@@ -227,8 +334,21 @@ def handle(body):
         questions_in = []
     questions_in = [{"field": str(q.get("field", ""))[:120], "question": str(q.get("question", ""))[:MAX_QUESTION_LEN]}
                     for q in questions_in[:MAX_QUESTIONS] if isinstance(q, dict) and q.get("question")]
-    affected = find_affected(question, trials_copy)
-    new_record = (extended_record + f"\n추가 문진 Q: {question} / A: {answer}").strip()
+    # already-asked question texts, resent by the client so follow-up generation never
+    # re-asks something from an earlier round. Text is only ever normalized and compared --
+    # it enters no prompt.
+    asked_in = body.get("asked_questions")
+    if not isinstance(asked_in, list):
+        asked_in = []
+    asked_in = [str(x)[:MAX_QUESTION_LEN] for x in asked_in[:MAX_ASKED_QUESTIONS]
+                if isinstance(x, str) and x.strip()]
+
+    # ONE round for the whole batch: per-question find_affected, then the union (deduped by
+    # criterion, capped) feeds a single rematch + a single recommend -- never one loop per
+    # question.
+    affected, sources = union_affected([(q, find_affected(q, trials_copy)) for q, _ in pairs])
+    new_record = (extended_record
+                  + "".join(f"\n추가 문진 Q: {q} / A: {a}" for q, a in pairs)).strip()
 
     if not affected:
         return {
@@ -240,10 +360,13 @@ def handle(body):
                 for t in trials_copy
             ],
             "questions": enrich_questions(questions_in, [], trials_copy) if questions_in else None,
+            # no rematch ran this round -> no follow-up check either (nothing changed that
+            # could warrant new questions); same key so the client reads one shape.
+            "followup_questions": [],
             "extended_record": new_record,
             # true whether there is nothing left open, OR open criteria exist but none of them
-            # relate to this specific answer (find_affected found no overlap) -- same wording
-            # in live_server.py's handle_answer for the identical case.
+            # relate to any answer in this round (find_affected found no overlap for the whole
+            # union) -- same wording in live_server.py's handle_answer for the identical case.
             "note": "이 답변과 연결되는 미확정 기준이 없습니다.",
         }
 
@@ -273,10 +396,16 @@ def handle(body):
             crit["evidence"] = r["after_evidence"]
         crit["reasoning"] = r.get("after_reasoning", crit.get("reasoning", ""))
         if after_verdict != r["before_verdict"]:
-            verdict_changes.append({
+            change = {
                 "nct_id": r["nct_id"], "criterion": r["text"],
                 "before": r["before_verdict"], "after": after_verdict,
-            })
+            }
+            # which answered question triggered this change -- only when exactly one
+            # question in the round linked to this criterion (else ambiguous: omitted)
+            srcs = sources.get((r["trial_idx"], r["crit_idx"]), [])
+            if len(srcs) == 1:
+                change["question"] = srcs[0]
+            verdict_changes.append(change)
 
     try:
         # trust_attached=False: trial_intent/coverage rode in on the client body -- the sort reads
@@ -294,7 +423,22 @@ def handle(body):
         for c in t.get("criteria", []):
             trial_level_action(c, t)
 
-    return {
+    # Background follow-up check: after the answers land, does a more accurate judgment need
+    # MORE questions? Generated only on a round that actually rematched (this branch), skippable
+    # by the client (want_followups=false), and behind its own per-IP budget because it spends
+    # 2 extra LLM calls on the metered key. A followup failure must never fail the answer round.
+    followup_questions, followup_error = [], None
+    if body.get("want_followups") is not False and not _rate_limited(
+            client_ip, _followup_calls, FOLLOWUP_RATE_LIMIT_PER_MIN):
+        try:
+            followup_questions = _generate_followups(
+                patient_id, patient["text"], new_record, trials_copy,
+                asked_in + [q for q, _ in pairs] + [q["question"] for q in questions_in])
+        except Exception:
+            followup_questions = []
+            followup_error = "추가 질문 생성에 실패했습니다. 이번 반영 결과에는 영향이 없습니다."
+
+    out = {
         "verdict_changes": verdict_changes,
         "patient_need": patient_need,
         "trials": trials_copy,
@@ -304,8 +448,13 @@ def handle(body):
         ],
         # priority numbers recomputed against the post-answer state (None when the client sent none)
         "questions": enrich_questions(questions_in, [], trials_copy) if questions_in else None,
+        # [] = the existing questions suffice (or followups were skipped/limited)
+        "followup_questions": followup_questions,
         "extended_record": new_record,
     }
+    if followup_error:
+        out["followup_error"] = followup_error
+    return out
 
 
 class handler(BaseHTTPRequestHandler):
@@ -320,7 +469,7 @@ class handler(BaseHTTPRequestHandler):
             else:
                 raw = self.rfile.read(length) if length > 0 else b"{}"
                 body = json.loads(raw.decode("utf-8"))
-                result = handle(body)
+                result = handle(body, client_ip=ip)
         except Exception as e:
             result = {"error": str(e)}
         out = json.dumps(result, ensure_ascii=False).encode("utf-8")
@@ -329,3 +478,108 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(out)))
         self.end_headers()
         self.wfile.write(out)
+
+
+# ---------------------------------------------------------------------------
+# self-tests -- run: python3 api/answer.py. Pure/offline: no LLM call, no server,
+# no network. The one handle() round exercised is the empty-union short-circuit,
+# which by design returns before any LLM call.
+# ---------------------------------------------------------------------------
+def _selftest():
+    failures = []
+
+    def check(cond, msg):
+        if not cond:
+            failures.append(msg)
+
+    # ---- _extract_answer_pairs: both request forms ----
+    pairs, err = _extract_answer_pairs({"question": "Q1?", "answer": "A1"})
+    check(err is None and pairs == [("Q1?", "A1")], "single form must yield one pair")
+    _, err = _extract_answer_pairs({"question": "", "answer": "A1"})
+    check(err == "invalid question", "single form keeps its exact error strings (question)")
+    _, err = _extract_answer_pairs({"question": "Q1?", "answer": ""})
+    check(err == "answer must be 1-600 characters", "single form keeps its exact error strings (answer)")
+
+    batch = {"answers": [{"question": "Q1?", "answer": "A1"}, {"question": "Q2?", "answer": "A2"}],
+             "question": "IGNORED", "answer": "IGNORED"}
+    pairs, err = _extract_answer_pairs(batch)
+    check(err is None and pairs == [("Q1?", "A1"), ("Q2?", "A2")],
+          "batch form must yield every pair in order and IGNORE the single fields")
+    _, err = _extract_answer_pairs({"answers": []})
+    check(err is not None, "empty answers[] must be rejected")
+    _, err = _extract_answer_pairs({"answers": [{"question": f"Q{i}?", "answer": "A"} for i in range(6)]})
+    check(err == f"too many answers (max {MAX_BATCH_ANSWERS})", "answers[] over the cap must be rejected")
+    _, err = _extract_answer_pairs({"answers": ["not-a-dict"]})
+    check(err is not None, "non-object answers[] item must be rejected")
+    _, err = _extract_answer_pairs({"answers": [{"question": "Q?", "answer": "x" * (MAX_ANSWER_LEN + 1)}]})
+    check(err is not None, "over-long batch answer must be rejected")
+    _, err = _extract_answer_pairs({"answers": [{"question": "q" * (MAX_QUESTION_LEN + 1), "answer": "A"}]})
+    check(err is not None, "over-long batch question must be rejected")
+
+    # ---- union_affected: dedupe by criterion, cap on the UNION, source attribution ----
+    af = lambda t_idx, c_idx: {"nct_id": f"NCT{t_idx}", "trial_idx": t_idx, "crit_idx": c_idx,  # noqa: E731
+                               "text": f"crit {t_idx}.{c_idx}", "type": "inclusion",
+                               "before_verdict": "UNKNOWN"}
+    a1, a2, a3 = af(0, 0), af(0, 1), af(1, 0)
+    union, sources = union_affected([("Q1?", [a1, a2]), ("Q2?", [a2, a3])])
+    check([(x["trial_idx"], x["crit_idx"]) for x in union] == [(0, 0), (0, 1), (1, 0)],
+          "union must dedupe the shared criterion and keep first-seen order")
+    check(sources[(0, 0)] == ["Q1?"] and sources[(1, 0)] == ["Q2?"],
+          "a criterion linked to one question attributes to that question")
+    check(sources[(0, 1)] == ["Q1?", "Q2?"],
+          "a criterion linked to two questions carries both (ambiguous -> no attribution)")
+    union_c, sources_c = union_affected([("Q1?", [a1, a2]), ("Q2?", [a2, a3])], cap=2)
+    check(len(union_c) == 2 and (1, 0) not in sources_c,
+          "cap applies to the UNION and sources are trimmed to the kept criteria")
+    union_same, _ = union_affected([("Q1?", [a1]), ("Q2?", [dict(a1)])])
+    check(len(union_same) == 1, "the same criterion found via two questions rematches once")
+
+    # ---- followup dedupe normalizer (shared helper; full tests in pipeline._selftest) ----
+    kept = dedupe_followups([{"question": "  ECOG 상태는?.  "}], ["ecog 상태는"])
+    check(kept == [], "normalized (case/whitespace/punctuation) duplicate must be dropped")
+
+    # ---- handle(): one offline batch round on a real patient, empty union short-circuit ----
+    pid = next(p for p in sorted(KNOWN_TRIALS)
+               if KNOWN_TRIALS[p] and all(len(t["criteria_texts"]) <= MAX_CRITERIA_PER_TRIAL
+                                          for t in KNOWN_TRIALS[p].values()))
+    trials = []
+    for nct in sorted(KNOWN_TRIALS[pid]):
+        texts = sorted(KNOWN_TRIALS[pid][nct]["criteria_texts"])
+        trials.append({"nct_id": nct,
+                       "criteria": [{"text": tx, "type": KNOWN_CRITERIA[pid][(nct, tx)],
+                                     "verdict": "MET"} for tx in texts]})
+    body = {"patient_id": pid, "trials": trials, "extended_record": "",
+            "answers": [{"question": "완전히 무관한 질문 zzz?", "answer": "예"},
+                        {"question": "역시 무관한 질문 yyy?", "answer": "아니오"}]}
+    res = handle(body)
+    check("error" not in res, f"offline batch round must not error, got {res.get('error')}")
+    check(res.get("verdict_changes") == [] and res.get("note"),
+          "no open criteria -> no changes + the plain no-link note")
+    check(res.get("followup_questions") == [],
+          "a round that ran no rematch must return followup_questions: [] (never generate)")
+    rec = res.get("extended_record", "")
+    check("추가 문진 Q: 완전히 무관한 질문 zzz? / A: 예" in rec
+          and "추가 문진 Q: 역시 무관한 질문 yyy? / A: 아니오" in rec
+          and rec.index("zzz") < rec.index("yyy"),
+          "extended_record must grow by EVERY Q/A pair, in answer order")
+
+    res_single = handle({"patient_id": pid, "trials": trials, "extended_record": "",
+                         "question": "완전히 무관한 질문 zzz?", "answer": "예"})
+    check("error" not in res_single and res_single.get("followup_questions") == [],
+          "single form still works and carries the followup_questions key")
+
+    res_bad = handle(dict(body, answers=[{"question": f"Q{i}?", "answer": "A"} for i in range(6)]))
+    check(res_bad.get("error") == f"too many answers (max {MAX_BATCH_ANSWERS})",
+          "handle() must reject an over-cap batch before any work")
+
+    if failures:
+        print("FAIL:")
+        for f in failures:
+            print("  -", f)
+        raise SystemExit(1)
+    print(f"api/answer self-tests passed (batch cap {MAX_BATCH_ANSWERS}, "
+          f"union cap {MAX_AFFECTED}, followup cap {FOLLOWUP_CAP}).")
+
+
+if __name__ == "__main__":
+    _selftest()
