@@ -635,6 +635,7 @@ var I18N = {
     goRank: "See the updated ranking",
     noPillQuestions: "No waiting questions are linked to this trial. try the All filter.",
     evHead: "Criteria this question re-checks",
+    evAllExcluded: "Every candidate trial is excluded for this patient, so there is nothing left to ask about. Each card's evidence shows which criterion blocked it.",
     evNone: "No clarifying questions are waiting. When you answer one, only its linked criteria are re-checked.",
     evNoLink: "No open criterion links to this question. answering it changes nothing.",
     evLinkUnmapped: "This question feeds the system's re-check (see the count above), but the exact criteria can't be highlighted here.",
@@ -833,6 +834,7 @@ var I18N = {
     goRank: "수정된 최종 순위 보기",
     noPillQuestions: "이 시험과 연결된 대기 질문이 없습니다. 전체 필을 선택해 보세요.",
     evHead: "이 질문이 다시 판정하는 기준",
+    evAllExcluded: "후보 시험이 모두 부적격이라 더 물어볼 것이 없습니다. 각 카드의 근거에서 어떤 기준이 막았는지 볼 수 있습니다.",
     evNone: "대기 중인 확인 질문이 없습니다. 질문에 답하면, 그 답과 연결된 기준만 다시 판정됩니다.",
     evNoLink: "이 질문과 직접 연결된 미확정 기준이 없습니다. 답해도 바뀌는 것이 없습니다.",
     evLinkUnmapped: "이 질문은 재판정에 반영되지만(위의 개수 참고), 어떤 기준인지 여기서는 하이라이트할 수 없습니다.",
@@ -1639,6 +1641,12 @@ function runLive(){
     fail(String(err && err.message || err));
   });
 }
+function allTrialsExcluded(){
+  // every candidate blocked = there is genuinely nothing left to ask about; the empty
+  // question tab should say that instead of reading like a loading failure.
+  var list = (cur && cur.trials) || [];
+  return list.length > 0 && list.every(function(t){ return t.eligibility === "INELIGIBLE"; });
+}
 function fetchLiveQuestions(text, trials, mySeq){
   var note = document.getElementById("batchNote");
   if (note) note.textContent = t("liveQLoading");
@@ -2376,7 +2384,7 @@ function renderEvidence(){
   var q = pendingQuestions().find(function(x){ return x.question === selectedQuestion; });
   if (!q){
     box.innerHTML = "<h3>" + escapeHtml(t("evHead")) + "</h3>" +
-      '<div class="evempty">' + escapeHtml(t("evNone")) + '</div>';
+      '<div class="evempty">' + escapeHtml(allTrialsExcluded() ? t("evAllExcluded") : t("evNone")) + '</div>';
     return;
   }
   var openList = collectOpenCriteria(cur.trials);
