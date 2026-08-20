@@ -15,6 +15,10 @@
     },
     "api/patients.py": {
       "includeFiles": "{patients*.json,traces_extra.json}"
+    },
+    "api/live.py": {
+      "includeFiles": "{pipeline.py,ranking.py,patient_need.py,action_policy.py,evidence.py,build_trial_intent.py,fetch_trials.py,*_client.py}",
+      "maxDuration": 60
     }
   }
 }

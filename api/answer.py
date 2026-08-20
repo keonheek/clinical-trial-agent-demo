@@ -103,7 +103,8 @@ MAX_ANSWER_LEN = 600
 MAX_QUESTION_LEN = 300
 MAX_AFFECTED = 12
 MAX_BODY_BYTES = 128 * 1024      # real sessions serialize to a few KB
-MAX_TRIALS = 6                   # traces hold 4 per patient
+MAX_TRIALS = 6
+MAX_LIVE_CRITERIA = 30           # live vignettes: the whitelist cannot apply, so cap hard
 MAX_CRITERIA_PER_TRIAL = 16      # traces max is 13
 MAX_QUESTIONS = 12               # traces hold <= 5 per patient
 MAX_BATCH_ANSWERS = 5            # one 반영 click covers at most 5 question cards
@@ -177,6 +178,8 @@ def _validate_trials(patient_id, trials):
 
 
 def _restore_server_fields(patient_id, trials):
+    if patient_id == "LIVE":
+        return trials  # nothing frozen to restore from; live trials came from api/live.py
     """Title and phase come from traces.json, never from the body -- phase is a ranking tier."""
     known_trials = KNOWN_TRIALS.get(patient_id, {})
     for t in trials:
@@ -330,19 +333,32 @@ def handle(body, client_ip="?"):
     trials = body.get("trials")
     extended_record = str(body.get("extended_record", "")).strip()
 
-    if patient_id not in KNOWN_IDS:
+    # LIVE = a vignette the reviewer typed in this session (api/live.py built it). Its criteria
+    # were never in the frozen whitelist, so the whitelist cannot be the guard here; the caps
+    # below (answer length, trial/criteria counts) and the per-IP rate limit are. The vignette
+    # itself is client text in live mode by definition -- that is the feature.
+    live_mode = patient_id == "LIVE"
+    if not live_mode and patient_id not in KNOWN_IDS:
         return {"error": "unknown patient_id"}
     pairs, pairs_error = _extract_answer_pairs(body)
     if pairs_error:
         return {"error": pairs_error}
     if not isinstance(trials, list) or not trials:
         return {"error": "trials array required"}
-    trials_error = _validate_trials(patient_id, trials)
+    trials_error = None if live_mode else _validate_trials(patient_id, trials)
     if trials_error:
         return {"error": trials_error}
+    if live_mode:
+        if len(trials) > MAX_TRIALS:
+            return {"error": "too many trials"}
+        for t in trials:
+            if len(t.get("criteria", [])) > MAX_LIVE_CRITERIA:
+                return {"error": "too many criteria"}
 
     # never trust the client for the vignette itself -- only the fixed 10 patients exist here.
-    patient = {"patient_id": patient_id, "text": PATIENTS_BY_ID[patient_id]["text"]}
+    patient = ({"patient_id": "LIVE", "text": str(body.get("patient_text", ""))[:1500]}
+               if live_mode else
+               {"patient_id": patient_id, "text": PATIENTS_BY_ID[patient_id]["text"]})
 
     # FOLLOW-UPS AS A SECOND REQUEST (08-20, measured): the core round (rematch + recommend) is
     # ~8s while the follow-up chain (detect_gaps -> generate_questions) adds ~9s of inherently

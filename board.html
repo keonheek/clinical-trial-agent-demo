@@ -87,6 +87,35 @@
   .pditem.sel{background:#EAF1FE;font-weight:700;}
   .pdsep{height:1px;background:var(--border);margin:0;}
   .pdgrouplabel{padding:8px 16px 4px;font-size:0.86rem;font-weight:700;letter-spacing:.05em;color:var(--ink-soft);text-transform:uppercase;}
+  /* "+ New patient" affordance -- 정원 mock (live-v2.html .pditem.new) reused verbatim */
+  .pditem.new{color:var(--secondary);font-weight:700;}
+  .pdnewbtn{border-left:1px solid rgba(255,255,255,.18);}
+
+  /* ===== Live input: type a patient in, run the real pipeline ===== */
+  .livepanel{display:none;background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;}
+  .livepanel.open{display:block;}
+  .livepanel-inner{max-width:720px;}
+  .livelabel{display:block;font-size:0.86rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .liveinput{width:100%;min-height:92px;border:1px solid var(--border);border-radius:4px;font-family:inherit;
+    font-size:0.9rem;padding:10px;resize:vertical;background:#fff;color:var(--ink);}
+  .liveactions{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap;}
+  .ex-wrap{position:relative;}
+  .ex-btn{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:9px 14px;font-size:0.86rem;
+    font-weight:600;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:6px;}
+  .ex-btn:hover{border-color:var(--secondary);}
+  .ex-menu{display:none;position:absolute;left:0;top:calc(100% + 4px);background:var(--card);border:1px solid var(--border);
+    border-radius:4px;box-shadow:0 14px 34px rgba(0,0,0,.14);width:300px;max-width:82vw;z-index:260;overflow:hidden auto;max-height:60vh;}
+  .ex-menu.open{display:block;}
+  .liverun-btn{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:11px 22px;font-weight:700;
+    font-size:0.88rem;cursor:pointer;}
+  .liverun-btn:hover:not(:disabled){background:#16307F;}
+  .liverun-btn:disabled{background:var(--border);color:var(--ink-soft);cursor:default;}
+  .livestage-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .livestage{font-size:0.86rem;border-radius:99px;padding:4px 12px;background:var(--bg);border:1px solid var(--border);color:var(--ink-soft);}
+  .livestage.active{background:#EAF1FE;border-color:var(--secondary);color:var(--secondary);font-weight:700;}
+  .livestage.done{background:var(--met-bg);border-color:var(--met-mid);color:var(--met);font-weight:700;}
+  .liveerror{margin-top:10px;font-size:0.9rem;color:var(--notmet);background:var(--notmet-bg);border-radius:4px;
+    padding:10px 12px;line-height:1.5;}
 
   .view{display:none;padding:24px;}
   .view.active{display:block;}
@@ -369,6 +398,7 @@
 <div class="tabbarouter">
   <div class="patient-dropdown" id="patientDropdown">
     <button class="pdbtn" id="pdBtn">Loading patients <span class="chev">▾</span></button>
+    <button class="pdbtn pdnewbtn" id="pdNewBtn" type="button">+ <span id="pdNewBtnLabel">New patient</span></button>
     <div class="pdmenu" id="pdMenu"></div>
   </div>
   <div class="tabbar" id="tabbar">
@@ -378,9 +408,26 @@
     <div class="tab" data-v="history">Change History</div>
   </div>
   <div class="livestatus" id="liveStatus">
-    
+
     <span class="statustext" id="statusText">Loading</span>
     <span class="statusgo" aria-hidden="true">→</span>
+  </div>
+</div>
+
+<!-- 실시간 환자 입력 -- api/live.py 3단계 파이프라인을 브라우저에서 상태 없이 이어붙인다 -->
+<div class="livepanel" id="livePanel">
+  <div class="livepanel-inner">
+    <label class="livelabel" id="liveLabel" for="liveText">New patient</label>
+    <textarea id="liveText" class="liveinput" placeholder="Paste or type a patient's presentation"></textarea>
+    <div class="liveactions">
+      <div class="ex-wrap">
+        <button type="button" class="ex-btn" id="liveExBtn">Examples <span class="chev">▾</span></button>
+        <div class="ex-menu" id="liveExMenu"></div>
+      </div>
+      <button type="button" class="liverun-btn" id="liveRunBtn">Run the matcher</button>
+    </div>
+    <div class="livestage-row" id="liveProgress" style="display:none;"></div>
+    <div class="liveerror" id="liveError" style="display:none;"></div>
   </div>
 </div>
 
@@ -485,7 +532,7 @@
 </div>
 
 <footer class="disclaimer" id="footerBox">
-  These results are for reference, not medical advice. When you submit an answer, a real decision-logic call re-evaluates only the criteria linked to it. This demo supports the pre-registered patients in the list only.
+  These results are for reference, not medical advice. When you submit an answer, a real decision-logic call re-evaluates only the criteria linked to it. Besides the patients in the list, New patient runs the same pipeline live on any patient you type in.
   <span class="compliance">Data source: ClinicalTrials.gov API v2 (US NLM/NIH, public domain) · Patients are synthetic vignettes provided by the challenge · LLM backend: Anthropic (challenge-sponsored credits)</span>
   <span class="doclinks">
     <a href="/agent_orchestration.html" target="_blank" rel="noopener">Agent architecture</a>
@@ -693,12 +740,29 @@ var I18N = {
     revertLabel: "Round {n} undone. {a} answers restored to their pre-round state",
     round0: "Round 0 · initial matching",
     round0Pill: "Initial matching: <b>{n} trials</b>",
-    footMain: "These results are for reference, not medical advice. When you submit an answer, a real decision-logic call re-evaluates only the criteria linked to it. This demo supports the pre-registered patients in the list only.",
+    footMain: "These results are for reference, not medical advice. When you submit an answer, a real decision-logic call re-evaluates only the criteria linked to it. Besides the patients in the list, New patient runs the same pipeline live on any patient you type in.",
     footCompliance: "Data source: ClinicalTrials.gov API v2 (US NLM/NIH, public domain) · Patients are synthetic vignettes provided by the challenge · LLM backend: Anthropic (challenge-sponsored credits)",
     footLinkAgents: "Agent architecture", footLinkGate: "Criteria gate map",
     rankNum: "#{n}",
     glossLabel: "Translation",
-    footGloss: "Text in grey italics under an original line is a machine-assisted translation of the trial's own wording, shown next to the source — never a substitute for it."
+    footGloss: "Text in grey italics under an original line is a machine-assisted translation of the trial's own wording, shown next to the source — never a substitute for it.",
+    pdNewBtnLabel: "New patient",
+    pdNewEntry: "+ New patient (type it in)",
+    pdLiveLabel: "New patient",
+    liveLabel: "New patient",
+    livePlaceholder: "Paste or type a patient's presentation",
+    liveExamples: "Examples",
+    liveRunBtn: "Run the matcher",
+    liveRunning: "Running",
+    liveStageRead: "Reading the patient",
+    liveStageFind: "Finding candidate trials",
+    liveStageJudge: "Judging trial {n} of {m}",
+    liveStageRank: "Ranking and writing questions",
+    liveTooShort: "Add a bit more detail (at least 40 characters), then run it.",
+    liveQLoading: "Writing the clarifying questions for this patient...",
+    liveQFailed: "Could not write clarifying questions for this patient; the ranking above still stands.",
+    liveNoTrials: "None of the candidate trials could be judged. Edit the patient and try again.",
+    liveNoResponse: "No response from the matcher. Edit the patient and try again."
   },
   ko: {
     tabBoard: "환자 & 임상시험 보드", tabChat: "확인 질문",
@@ -861,12 +925,29 @@ var I18N = {
     revertLabel: "라운드 {n} 반영을 되돌림. 답변 {a}건이 반영 전 상태로 복원됨",
     round0: "라운드 0 · 초기 매칭",
     round0Pill: "초기 매칭 <b>{n}건</b> 생성",
-    footMain: "본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 판정 로직 호출로 영향받는 기준만 재평가됩니다. 이 데모는 목록의 사전 등록된 환자만 지원합니다.",
+    footMain: "본 결과는 의학적 자문이 아닌 참고용입니다. 답변을 입력하면 실제 판정 로직 호출로 영향받는 기준만 재평가됩니다. 목록의 환자 외에도, '새 환자'로 직접 입력한 환자에게 동일한 판정 로직이 실시간으로 실행됩니다.",
     footCompliance: "데이터 출처 ClinicalTrials.gov API v2 (미국 NLM/NIH, 공공저작물) · 환자 = 대회 제공 합성 vignette · LLM 백엔드 = Anthropic (대회 지원 크레딧)",
     footLinkAgents: "에이전트 구성도", footLinkGate: "기준 게이트맵",
     rankNum: "{n}위",
     glossLabel: "번역",
-    footGloss: "원문 줄 아래 회색 기울임체는 시험 원문을 기계로 보조 번역한 것으로, 원문 옆에 참고용으로 표시됩니다 — 원문을 대신하지 않습니다."
+    footGloss: "원문 줄 아래 회색 기울임체는 시험 원문을 기계로 보조 번역한 것으로, 원문 옆에 참고용으로 표시됩니다 — 원문을 대신하지 않습니다.",
+    pdNewBtnLabel: "새 환자",
+    pdNewEntry: "+ 새 환자 (직접 입력)",
+    pdLiveLabel: "새 환자",
+    liveLabel: "새 환자",
+    livePlaceholder: "환자의 임상 소견을 붙여넣거나 입력하세요",
+    liveExamples: "예시",
+    liveRunBtn: "이 환자로 실행",
+    liveRunning: "실행 중",
+    liveStageRead: "환자 기록 읽는 중",
+    liveStageFind: "후보 임상시험 찾는 중",
+    liveStageJudge: "{m}개 중 {n}번째 시험 판정 중",
+    liveStageRank: "순위 정리 및 질문 작성 중",
+    liveTooShort: "조금 더 자세히 입력한 뒤(최소 40자) 실행해 주세요.",
+    liveQLoading: "이 환자에게 물어볼 확인 질문을 작성하는 중입니다...",
+    liveQFailed: "확인 질문을 만들지 못했습니다. 위의 추천 순위는 그대로 유효합니다.",
+    liveNoTrials: "후보 시험을 하나도 판정하지 못했습니다. 환자 정보를 수정한 뒤 다시 시도해 주세요.",
+    liveNoResponse: "매칭 결과를 받지 못했습니다. 환자 정보를 수정한 뒤 다시 시도해 주세요."
   }
 };
 function t(key, vars){
@@ -947,11 +1028,31 @@ function rankNum(n){ return t("rankNum", {n: n}); }
 var MAX_ANSWER_LEN = 600;
 var MAX_BATCH_ANSWERS = 5;
 
+// Five built-in vignettes for the "Examples" affordance on the live-input box (verbatim per
+// spec -- never edited, never machine-translated). label.en/ko are UI chrome (readable in both
+// language packs); text is always English, exactly as given to the matcher either way.
+var EXAMPLE_VIGNETTES = [
+  {id: "A", label: {en: "Rheumatoid arthritis", ko: "류마티스 관절염"},
+   text: "A 34-year-old woman with a 6-month history of symmetric joint pain and morning stiffness lasting over an hour in both wrists and MCP joints. Anti-CCP is strongly positive and CRP is elevated. She has taken methotrexate for 3 months with an inadequate response."},
+  {id: "B", label: {en: "Metastatic prostate cancer", ko: "전이성 전립선암"},
+   text: "A 61-year-old man with newly diagnosed metastatic castration-resistant prostate cancer. PSA is rising on androgen deprivation therapy, bone scan shows multiple vertebral metastases, and he reports increasing back pain. ECOG performance status is 1."},
+  {id: "C", label: {en: "Renal mass", ko: "신장 종괴"},
+   text: "A 47-year-old woman found to have a 1.8 cm solid renal mass on CT performed for flank pain. No biopsy has been done. Creatinine is normal and she has no history of malignancy."},
+  {id: "D", label: {en: "Heart failure", ko: "심부전"},
+   text: "A 72-year-old man with heart failure with reduced ejection fraction (LVEF 28%) on optimal guideline-directed therapy, NYHA class III, hospitalized twice in the past year for decompensation. He remains short of breath climbing one flight of stairs."},
+  {id: "E", label: {en: "Type 1 diabetes", ko: "제1형 당뇨병"},
+   text: "A 9-year-old boy with newly diagnosed type 1 diabetes three weeks ago, currently on multiple daily injections. HbA1c at diagnosis was 11.2%. His parents are asking about ways to preserve remaining beta-cell function."},
+  {id: "F", label: {en: "Advanced cancer, comfort focus", ko: "말기 암 · 완화 중심"},
+   text: "A 78-year-old woman with advanced non-small cell lung cancer progressing after two lines of therapy. She has persistent breathlessness and fatigue, ECOG 3, and she and her family wish to focus on comfort and quality of life rather than further anticancer treatment."},
+  {id: "G", label: {en: "Stable hypertension, follow-up", ko: "안정된 고혈압 · 경과 관찰"},
+   text: "A 58-year-old man with well-controlled hypertension on amlodipine for six years. Blood pressure is stable at home readings, no target-organ damage on last year's screening, and he is interested in contributing to long-term cardiovascular research."},
+];
+
 // ---------------------------------------------------------------------------
 // 상태 — 서버는 무상태(stateless): trials + extended_record를 클라이언트가 들고 라운드마다 재전송
 // ---------------------------------------------------------------------------
 var patients = [];
-var cur = null;          // {id, condition, patientText, extraction, trials, questions, need, gloss, ranking, extendedRecord, answered{}, overrides{}, followupNote}
+var cur = null;          // {id, condition, patientText, extraction, trials, questions, need, gloss, ranking, extendedRecord, answered{}, overrides{}, followupNote, isLive}
 var events = [];         // 이력: {kind:'round'|'override'|'revert', seq, ...}. 라운드는 snapshot(반영 직전 상태) 보유
 var histSeq = 0;
 var selectedPill = "ALL";
@@ -960,6 +1061,9 @@ var selectedQuestion = null; // question text
 var answerInFlight = false;
 var rankView = {order: [], round: 0, stale: false};
 var currentModalNct = null;
+var liveRunning = false; // a live matcher run is in flight
+var liveRunSeq = 0;      // bumped on every new run AND every patient switch -- a stale run's
+                          // async callbacks compare against this and no-op if it moved on
 
 function nowLabel(){
   var d = new Date();
@@ -1244,6 +1348,12 @@ function applyStaticI18n(){
     document.getElementById("batchBtn").textContent = t("batchBtn", {n: 0});
     document.getElementById("rankStatus").textContent = t("rankStatusInit");
   }
+  document.getElementById("pdNewBtnLabel").textContent = t("pdNewBtnLabel");
+  document.getElementById("liveLabel").textContent = t("liveLabel");
+  liveText.placeholder = t("livePlaceholder");
+  liveExBtn.innerHTML = escapeHtml(t("liveExamples")) + ' <span class="chev">▾</span>';
+  if (!liveRunning) liveRunBtn.textContent = t("liveRunBtn");
+  renderLiveExamplesMenu();
   applyDraggable();
 }
 function setLang(lang){
@@ -1302,11 +1412,254 @@ function renderPatientMenu(){
     });
     pdMenu.appendChild(item);
   });
+  // "+ New patient" -- the menu a judge opens to find a patient is where they'll look for this
+  // too (spec req.); appended last, after the S/E groups, matching 정원's mock (live-v2.html).
+  pdMenu.appendChild(el("div", "pdsep"));
+  var newItem = el("div", "pditem new");
+  newItem.textContent = t("pdNewEntry");
+  newItem.addEventListener("click", function(e){
+    e.stopPropagation();
+    pdMenu.classList.remove("open");
+    openLivePanel();
+  });
+  pdMenu.appendChild(newItem);
 }
 function renderPatientBtn(){
   if (!cur){ pdBtn.innerHTML = escapeHtml(t("pdSelect")) + ' <span class="chev">▾</span>'; return; }
+  if (cur.isLive){
+    var liveLbl = t("pdLiveLabel") + (cur.condition ? " – " + cur.condition : "");
+    pdBtn.innerHTML = escapeHtml(liveLbl) + ' <span class="chev">▾</span>';
+    return;
+  }
   pdBtn.innerHTML = escapeHtml(cur.id) + ' <span class="pdmeta">' + escapeHtml(cur.condition || "") + '</span> <span class="chev">▾</span>';
 }
+
+// ---------------------------------------------------------------------------
+// 실시간 환자 입력 — api/live.py의 3단계(start/match/finish)를 브라우저가 무상태로 이어붙인다.
+// Vercel 호출 하나가 60초 한도라 서버에 세션이 없다: match는 후보 시험마다 병렬로 쏘고, finish에
+// 넘기는 trials[]는 여기서 candidates(1단계) + criteria(2단계)를 합쳐 조립한다. 성공하면 cur를
+// loadTrace()가 만드는 것과 같은 모양으로 채워 기존 renderAll() 경로를 그대로 태운다 — 실시간
+// 환자도 캐시된 환자와 화면·동작이 완전히 같아야 한다.
+// ---------------------------------------------------------------------------
+var liveText = document.getElementById("liveText");
+var livePanel = document.getElementById("livePanel");
+var liveRunBtn = document.getElementById("liveRunBtn");
+var liveProgress = document.getElementById("liveProgress");
+var liveError = document.getElementById("liveError");
+var liveExBtn = document.getElementById("liveExBtn");
+var liveExMenu = document.getElementById("liveExMenu");
+var LIVE_STAGE_KEYS = ["liveStageRead", "liveStageFind", "liveStageJudge", "liveStageRank"];
+
+function openLivePanel(){
+  livePanel.classList.add("open");
+  liveText.focus();
+}
+function closeLivePanel(){
+  livePanel.classList.remove("open");
+  liveExMenu.classList.remove("open");
+}
+function showLiveError(msg){
+  liveError.textContent = msg;
+  liveError.style.display = "block";
+}
+function hideLiveError(){
+  liveError.style.display = "none";
+  liveError.textContent = "";
+}
+function hideLiveProgress(){
+  liveProgress.style.display = "none";
+  liveProgress.innerHTML = "";
+}
+// stageIdx: which of LIVE_STAGE_KEYS is the current (or last completed, if run is done) stage.
+// judgeDone/judgeTotal only matter for the "judge" chip's live count.
+function renderLiveProgress(stageIdx, judgeDone, judgeTotal){
+  liveProgress.style.display = "flex";
+  liveProgress.innerHTML = LIVE_STAGE_KEYS.map(function(key, i){
+    var cls = i < stageIdx ? "done" : (i === stageIdx ? "active" : "");
+    var label = (key === "liveStageJudge")
+      ? t(key, {n: judgeDone, m: judgeTotal})
+      : t(key);
+    return '<span class="livestage ' + cls + '">' + escapeHtml(label) + '</span>';
+  }).join("");
+}
+function renderLiveExamplesMenu(){
+  liveExMenu.innerHTML = "";
+  EXAMPLE_VIGNETTES.forEach(function(v){
+    var item = el("div", "pditem");
+    item.textContent = (LANG === "en" ? v.label.en : v.label.ko);
+    item.addEventListener("click", function(e){
+      e.stopPropagation();
+      liveText.value = v.text;
+      liveExMenu.classList.remove("open");
+      hideLiveError();
+      liveText.focus();
+    });
+    liveExMenu.appendChild(item);
+  });
+}
+function postLive(body, timeoutMs){
+  var aborter = new AbortController();
+  var timer = setTimeout(function(){ aborter.abort(); }, timeoutMs || 60000);
+  return fetch("/api/live", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body), signal: aborter.signal
+  }).then(function(r){ clearTimeout(timer); return r.json(); })
+    .catch(function(err){
+      clearTimeout(timer);
+      throw (err && err.name === "AbortError") ? new Error(t("errTimeout")) : err;
+    });
+}
+// Attach coverage {parsed, raw_estimated} and trial_intent onto each finished trial from step
+// 1's maps -- the finish step already round-trips trial_intent (we attach it before finish, see
+// runLive), this is the belt-and-suspenders fallback plus the coverage number, which finish
+// never carries (it is a render-time fact, not a ranking input for the sidecar-less live path).
+function attachLiveTrialFacts(trials, coverageMap, intentMap){
+  return (trials || []).map(function(tr){
+    var out = Object.assign({}, tr);
+    if (!out.trial_intent && intentMap && intentMap[out.nct_id]) out.trial_intent = intentMap[out.nct_id];
+    var rawN = coverageMap ? coverageMap[out.nct_id] : null;
+    if (typeof rawN === "number" && rawN > 0){
+      out.coverage = {parsed: (out.criteria || []).length, raw_estimated: rawN};
+    }
+    return out;
+  });
+}
+function buildLiveCur(text, startData, finishData){
+  var trials = attachLiveTrialFacts(finishData.trials, startData.coverage, startData.intent);
+  return {
+    id: "LIVE", isLive: true,
+    condition: startData.query_used || "",
+    patientText: text,
+    extraction: startData.extraction || [],
+    trials: trials,
+    questions: finishData.questions || [],
+    need: finishData.patient_need || startData.patient_need || null,
+    gloss: {},                    // no bilingual sidecar exists for text nobody pre-translated
+    ranking: finishData.ranking || null,
+    frozenOrder: trials.map(function(t2){ return t2.nct_id; }),
+    extendedRecord: "",
+    answered: {},
+    overrides: {},
+    followupNote: null
+  };
+}
+function applyLiveResult(text, startData, finishData){
+  cur = buildLiveCur(text, startData, finishData);
+  events = []; roundCounter = 0; histSeq = 0; selectedPill = "ALL"; selectedQuestion = null;
+  document.getElementById("round0Time").textContent = nowLabel();
+  hideLiveError();
+  hideLiveProgress();
+  closeLivePanel();
+  renderAll();
+}
+function runLive(){
+  if (liveRunning) return;
+  var text = liveText.value.trim();
+  if (text.length < 40){ showLiveError(t("liveTooShort")); return; }
+  liveRunning = true;
+  var mySeq = ++liveRunSeq;
+  hideLiveError();
+  liveExMenu.classList.remove("open");
+  liveRunBtn.disabled = true;
+  liveRunBtn.textContent = t("liveRunning");
+  var judgeDone = 0, judgeTotal = 0;
+  renderLiveProgress(0, 0, 0);
+  // Stage 0->1 label swap: step="start" does extraction THEN the ct.gov search in ONE network
+  // call (Vercel 60s ceiling -- see api/live.py), so the browser cannot observe that internal
+  // boundary. This timer narrates it (both phases really do run, in this order, inside the one
+  // request that's genuinely in flight) rather than leaving the first chip frozen the whole
+  // time -- it never claims a step finished before its real response says so.
+  var subStageTimer = setTimeout(function(){
+    if (mySeq !== liveRunSeq) return;
+    renderLiveProgress(1, 0, 0);
+  }, 1200);
+
+  function finishRun(){
+    liveRunning = false;
+    liveRunBtn.disabled = false;
+    liveRunBtn.textContent = t("liveRunBtn");
+  }
+  function fail(msg){
+    if (mySeq !== liveRunSeq) return;
+    clearTimeout(subStageTimer);
+    finishRun();
+    hideLiveProgress();
+    showLiveError(msg);
+  }
+
+  postLive({step: "start", text: text}).then(function(startData){
+    clearTimeout(subStageTimer);
+    if (mySeq !== liveRunSeq) return;
+    if (!startData || typeof startData !== "object"){ fail(t("liveNoResponse")); return; }
+    if (startData.error){ fail(startData.error); return; }
+    var candidates = startData.candidates || [];
+    if (!candidates.length){ fail(t("liveNoTrials")); return; }
+    judgeTotal = candidates.length;
+    renderLiveProgress(2, 0, judgeTotal);
+    // FIRE ALL CANDIDATES IN PARALLEL -- the whole point of the start/match/finish split is
+    // that each match call runs concurrently in the browser, not queued one after another.
+    var matchPromises = candidates.map(function(trial){
+      return postLive({step: "match", text: text, extraction: startData.extraction, trial: trial})
+        .then(function(res){ return {trial: trial, res: res}; })
+        .catch(function(err){ return {trial: trial, res: {error: String(err && err.message || err)}}; })
+        .then(function(pair){
+          if (mySeq === liveRunSeq){ judgeDone += 1; renderLiveProgress(2, judgeDone, judgeTotal); }
+          return pair;
+        });
+    });
+    return Promise.all(matchPromises).then(function(results){
+      if (mySeq !== liveRunSeq) return;
+      var trials = [], firstErr = null;
+      results.forEach(function(r){
+        if (!r.res || r.res.error){
+          if (!firstErr) firstErr = (r.res && r.res.error) || t("liveNoResponse");
+          return;
+        }
+        trials.push({
+          nct_id: r.trial.nct_id, title: r.trial.title, phase: r.trial.phase,
+          conditions: r.trial.conditions, criteria: r.res.criteria || [],
+          trial_intent: (startData.intent || {})[r.trial.nct_id]
+        });
+      });
+      if (!trials.length){ fail(firstErr || t("liveNoTrials")); return; }
+      renderLiveProgress(3, judgeTotal, judgeTotal);
+      return postLive({step: "finish", text: text, extraction: startData.extraction, trials: trials})
+        .then(function(finishData){
+          if (mySeq !== liveRunSeq) return;
+          if (!finishData || typeof finishData !== "object"){ fail(t("liveNoResponse")); return; }
+          if (finishData.error){ fail(finishData.error); return; }
+          finishRun();
+          applyLiveResult(text, startData, finishData);
+          // Clarifying questions are their own step: the ranking (the required deliverable)
+          // is on screen first, and the retry-prone question chain runs behind it.
+          fetchLiveQuestions(text, finishData.trials || trials, mySeq);
+        });
+    });
+  }).catch(function(err){
+    fail(String(err && err.message || err));
+  });
+}
+function fetchLiveQuestions(text, trials, mySeq){
+  var note = document.getElementById("batchNote");
+  if (note) note.textContent = t("liveQLoading");
+  postLive({step: "questions", text: text, trials: trials}).then(function(data){
+    if (mySeq !== liveRunSeq || !cur || !cur.isLive) return;   // patient switched or re-run
+    if (note) note.textContent = t("batchNote");
+    if (!data || data.error || data.questions_error){
+      cur.followupNote = (data && (data.questions_error || data.error)) || t("liveQFailed");
+    } else {
+      cur.questions = (data.questions || []).slice(0, 12);
+    }
+    renderChatAll(); renderLiveStatus(); renderHistory();
+  }).catch(function(){
+    if (note) note.textContent = t("batchNote");
+  });
+}
+document.getElementById("pdNewBtn").addEventListener("click", function(e){ e.stopPropagation(); openLivePanel(); });
+liveRunBtn.addEventListener("click", runLive);
+liveExBtn.addEventListener("click", function(e){ e.stopPropagation(); liveExMenu.classList.toggle("open"); });
+document.addEventListener("click", function(){ liveExMenu.classList.remove("open"); });
+liveText.addEventListener("click", function(e){ e.stopPropagation(); });
 
 // ---------------------------------------------------------------------------
 // 환자 상세 그리드 — trace.extraction([{name,value,evidence_quote}])을 쉬운 말 그룹으로 매핑
@@ -2167,6 +2520,10 @@ function submitBatch(){
   // measured 08-20: the round itself is ~8s, the follow-up check adds ~9s. The reviewer sees
   // what their answer did first; follow-ups arrive in a second request moments later.
   payload.want_followups = false;
+  // LIVE patient: api/answer.py's live branch reads the vignette from patient_text (there is no
+  // server-side PATIENTS_BY_ID entry for "LIVE" to fall back to) -- never trust the client for a
+  // known patient's own text, but for LIVE the vignette IS client text by definition.
+  if (cur.isLive) payload.patient_text = cur.patientText;
   fetch("/api/answer", {
     method: "POST", headers: {"Content-Type": "application/json"},
     body: JSON.stringify(payload),
@@ -2220,7 +2577,8 @@ function fetchFollowups(patientId, pending){
     trials: cur.trials,
     extended_record: cur.extendedRecord,
     asked_questions: (cur.questions || []).map(function(q){ return q.question; }),
-    answers: pending
+    answers: pending,
+    patient_text: cur.isLive ? cur.patientText : undefined
   };
   fetch("/api/answer", {
     method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)
@@ -2676,6 +3034,15 @@ function showLoadError(msg){
   note.textContent = t("errPrefix") + msg;
 }
 function loadTrace(patientId){
+  // A cached-patient pick, mid a live run or right after one, must never inherit live state:
+  // bump the guard so any in-flight live callback becomes a no-op, and close the live box.
+  liveRunSeq++;
+  liveRunning = false;
+  liveRunBtn.disabled = false;
+  liveRunBtn.textContent = t("liveRunBtn");
+  hideLiveError();
+  hideLiveProgress();
+  closeLivePanel();
   var note = document.getElementById("boardLoadNote");
   note.style.display = "block";
   note.textContent = t("loadingDataFor", {id: patientId});
@@ -2686,6 +3053,7 @@ function loadTrace(patientId){
       var p = patients.find(function(x){ return x.id === patientId; });
       cur = {
         id: data.patient_id || patientId,
+        isLive: false,
         condition: (p && p.condition) || "",
         patientText: data.patient_text || "",
         extraction: data.extraction || [],

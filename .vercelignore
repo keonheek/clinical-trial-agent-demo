@@ -15,7 +15,6 @@ eval_results.json
 eval_worksheet.json
 eval_worksheet_sample.json
 assert_traces.py
-fetch_trials.py
 make_eval_worksheet.py
 trials_raw.json
 patients_all10.json
