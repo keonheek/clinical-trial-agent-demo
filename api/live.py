@@ -165,6 +165,10 @@ def step_finish(body):
     # a client that forgot them silently produced "purpose unconfirmed" on every live trial.
     coverage_in = body.get("coverage") if isinstance(body.get("coverage"), dict) else {}
     for t in trials:
+        if not t.get("criteria"):
+            # a failed/rate-limited match step lands here: say so instead of ranking a trial
+            # nobody read (decide_eligibility now refuses to call it eligible either)
+            t["unread"] = True
         if not isinstance(t.get("trial_intent"), dict):
             t["trial_intent"] = classify_trial_intent(t)
         raw = coverage_in.get(t.get("nct_id"))

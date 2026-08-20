@@ -613,6 +613,12 @@ def decide_eligibility(criteria):
     """
     fails = [c for c in criteria if c.get("effect") == "FAIL"]
     reviews = [c for c in criteria if c.get("effect") == "REVIEW"]
+    if not criteria:
+        # No criteria read = nothing was checked. Never ELIGIBLE: an empty list has no FAIL and
+        # no REVIEW, so the plain hierarchy below would call a trial we never opened "eligible"
+        # and rank it FIRST. Caught 2026-08-20 on the live path, where a failed parse/match step
+        # produced exactly this (two unread trials ranked #1 and #2 as ELIGIBLE, "unresolved 0/0").
+        return "UNCERTAIN", [], []
     if fails:
         eligibility = "INELIGIBLE"
     elif reviews:
@@ -1100,6 +1106,13 @@ def _selftest():
     check(verdict == "UNCERTAIN" and utype == "INSUFFICIENT_EVIDENCE" and action == "VERIFY"
           and effect_of("exclusion", verdict) == "REVIEW",
           "merge-shape simulation: §6 worked example demotes MET -> UNCERTAIN/VERIFY/REVIEW")
+
+    # ---- safety: a trial whose criteria were never read is never "eligible" ----
+    elig, f2, r2 = decide_eligibility([])
+    check(elig == "UNCERTAIN" and not f2 and not r2,
+          f"empty criteria must be UNCERTAIN, never ELIGIBLE (got {elig})")
+    elig_ok, _, _ = decide_eligibility([{"effect": "PASS"}])
+    check(elig_ok == "ELIGIBLE", "a trial whose criteria all pass is still ELIGIBLE")
 
     # ---- trial-intent classification ----
     supportive_trial = {"title": "A Quality of Life and Symptom Management Study", "phase": "NA",

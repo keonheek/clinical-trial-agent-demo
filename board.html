@@ -174,6 +174,7 @@
     border:1px solid var(--border);border-radius:99px;padding:1px 8px;color:var(--ink);}
   .kcard .rankchip.sysrank{opacity:.5;}
   .kcard .ovr{font-size:0.86rem;font-weight:700;color:var(--accent);background:#F1EAFE;border-radius:99px;padding:2px 8px;}
+  .cardunread{font-size:0.78rem;font-weight:600;color:var(--notmet);background:var(--notmet-bg);border-radius:4px;padding:5px 8px;margin-top:6px;}
   .carddigest{font-size:0.9rem;color:var(--uncertain);margin-top:5px;}
   .kcard .reason{font-size:0.86rem;color:var(--ink-soft);margin-top:6px;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.45;}
   /* 3칼럼 컬러 = 정원의 met/uncertain/notmet 토큰 재사용 */
@@ -760,6 +761,8 @@ var I18N = {
     liveStageJudge: "Judging trial {n} of {m}",
     liveStageRank: "Ranking and writing questions",
     liveTooShort: "Add a bit more detail (at least 40 characters), then run it.",
+    trialUnread: "This trial's criteria could not be read, so nothing about it was checked. Treat it as unjudged, not as a match.",
+    liveMatchFailed: "{n} of {m} trials could not be read and are shown as unjudged.",
     liveQLoading: "Writing the clarifying questions for this patient...",
     liveQFailed: "Could not write clarifying questions for this patient; the ranking above still stands.",
     liveNoTrials: "None of the candidate trials could be judged. Edit the patient and try again.",
@@ -946,6 +949,8 @@ var I18N = {
     liveStageJudge: "{m}개 중 {n}번째 시험 판정 중",
     liveStageRank: "순위 정리 및 질문 작성 중",
     liveTooShort: "조금 더 자세히 입력한 뒤(최소 40자) 실행해 주세요.",
+    trialUnread: "이 시험의 기준을 읽지 못해 아무것도 확인하지 못했습니다. 적합하다는 뜻이 아니라 판정 자체를 못 한 상태입니다.",
+    liveMatchFailed: "시험 {m}개 중 {n}개는 기준을 읽지 못해 판정하지 못했습니다.",
     liveQLoading: "이 환자에게 물어볼 확인 질문을 작성하는 중입니다...",
     liveQFailed: "확인 질문을 만들지 못했습니다. 위의 추천 순위는 그대로 유효합니다.",
     liveNoTrials: "후보 시험을 하나도 판정하지 못했습니다. 환자 정보를 수정한 뒤 다시 시도해 주세요.",
@@ -1624,6 +1629,8 @@ function runLive(){
         });
       });
       if (!trials.length){ fail(firstErr || t("liveNoTrials")); return; }
+      // some candidates were dropped: say so rather than quietly showing a shorter board
+      liveDropped = results.length - trials.length;
       renderLiveProgress(3, judgeTotal, judgeTotal);
       return postLive({step: "finish", text: text, extraction: startData.extraction, trials: trials})
         .then(function(finishData){
@@ -1632,6 +1639,9 @@ function runLive(){
           if (finishData.error){ fail(finishData.error); return; }
           finishRun();
           applyLiveResult(text, startData, finishData);
+          if (liveDropped > 0){
+            cur.followupNote = t("liveMatchFailed", {n: liveDropped, m: liveDropped + (finishData.trials || []).length});
+          }
           // Clarifying questions are their own step: the ranking (the required deliverable)
           // is on screen first, and the retry-prone question chain runs behind it.
           fetchLiveQuestions(text, finishData.trials || trials, mySeq);
@@ -1647,6 +1657,7 @@ function allTrialsExcluded(){
   var list = (cur && cur.trials) || [];
   return list.length > 0 && list.every(function(t){ return t.eligibility === "INELIGIBLE"; });
 }
+var liveDropped = 0;
 function fetchLiveQuestions(text, trials, mySeq){
   var note = document.getElementById("batchNote");
   if (note) note.textContent = t("liveQLoading");
@@ -1821,6 +1832,7 @@ function renderKanban(){
           escapeHtml(rankNum(trial.rank || "?")) + '</span>' +
         '<span class="nct mono">' + nctLinkHtml(trial.nct_id) + '</span>' + ovr + '</div>' +
         (reasonLine ? '<div class="reason" title="' + escapeHtml(reasonLine) + '">' + escapeHtml(reasonLine) + '</div>' : "") +
+        (trial.unread ? '<div class="cardunread">' + escapeHtml(t("trialUnread")) + '</div>' : "") +
         actionDigestHtml(trial);
       card.addEventListener("click", function(e){
         if (dragged) return;
