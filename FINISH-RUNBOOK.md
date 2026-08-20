@@ -6,7 +6,7 @@ Watcher biub4sm39 wakes the session on process exit.
 
 Chain (execute in order, verify each on the artifact):
 1. Pipeline exited? -> python3 -c "import json;t=json.load(open('traces.json'));print(len(t),sum(1 for x in t if 'reeval' in x))"
-   Expect 10/10. Run: python3 assert_traces.py (must pass). If process died early: rerun `python3 pipeline.py` (idempotent).
+   Expect 10/10. Run: python3 assert_traces.py (must pass). If process died early: rerun `python3 pipeline.py --generate` (idempotent).
 2. Eval: python3 make_eval_worksheet.py -> dispatch ONE sonnet agent to blind-label eval_labels.json
    (per eval.py docstring), run eval.py, write real eval_results.js (window.EVAL={accuracy,n,confusion}).
 3. Verify viewer: demo.html?selftest=1 via Playwright -> expect 11/11 PASS.

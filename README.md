@@ -115,7 +115,7 @@ re-run because every call is cached to disk (`cache/`, keyed on role+model+promp
 ```bash
 cd projects/sdic-trial-demo
 python3 fetch_trials.py     # re-pulls live trial data (skip if trials_raw.json is fine)
-python3 pipeline.py         # runs the 6-role pipeline, writes traces.json + traces.js
+python3 pipeline.py --generate   # runs the 6-role pipeline, writes traces.json + traces.js
 python3 assert_traces.py    # verifies traces, actions, and the golden ranking order
 python3 ranking.py          # ranking self-tests; --golden checks expected_ranking.json
 python3 action_policy.py    # uncertainty/action self-tests

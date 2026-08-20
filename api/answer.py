@@ -29,9 +29,12 @@ fails the answer round.
 Never raises past do_POST: any failure comes back as HTTP 200 {"error": "..."}.
 Run `python3 api/answer.py` for the offline self-tests (no LLM calls, no server).
 """
+import copy
 import json
 import os
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 from http.server import BaseHTTPRequestHandler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -109,6 +112,22 @@ FOLLOWUP_CAP = 3                 # same bound as the base question generator
 RATE_LIMIT_PER_MIN = 10          # per client IP, per warm instance (cheap brake, not a wall)
 FOLLOWUP_RATE_LIMIT_PER_MIN = 4  # follow-up generation adds 2 LLM calls/round on the metered
                                  # key -- its own tighter per-IP budget, same mechanism
+
+# Wall-clock budget for the whole serverless round (spec step 2). vercel.json gives this
+# function maxDuration=60; rematch alone can already run several seconds, so a round that
+# also ran recommend + a 2-call followup chain could brush the ceiling on a slow day and
+# 504 in front of judges. Not a hard cutoff mid-call (that would abandon an in-flight LLM
+# call with no way to get its result back) -- a START gate: if the budget is already spent
+# by the time the followup lane would begin, skip starting it and say so. Env-overridable
+# for load testing without a redeploy.
+ROUND_BUDGET_S = float(os.environ.get("ROUND_BUDGET_S", "45"))
+
+# A/B switch (2026-08-20 latency work): both the sequential and concurrent lanes for
+# recommend()/followups live in this file behind this flag, so the identity assertion in
+# _selftest can run the SAME stubbed round both ways and diff the served output byte-for-byte
+# -- not just eyeball two separate scripts. Default on; ANSWER_PARALLEL=0 reverts to the
+# original sequential order (kept only as a rollback switch, not a maintained second path).
+ANSWER_PARALLEL = os.environ.get("ANSWER_PARALLEL", "1") != "0"
 
 _recent_calls = {}               # ip -> [monotonic-ish timestamps]
 _followup_calls = {}             # ip -> [timestamps], consumed only when followups would run
@@ -274,8 +293,17 @@ def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_tex
     vignette + the grown extended record -- so a gap the answers just closed no longer surfaces,
     and only still-open UNKNOWN/UNCERTAIN criteria on non-blocked trials can become questions.
     Candidates are deduped against everything already asked (normalized text), capped at
-    FOLLOWUP_CAP, stamped followup=True, and enriched with the three priority numbers.
-    Returns [] when the existing questions suffice (no gaps, or every candidate is a repeat).
+    FOLLOWUP_CAP, stamped followup=True.
+
+    Returns (followups, gaps) UNENRICHED -- the caller attaches the three priority numbers
+    (action_policy.enrich_questions) itself, once trials_copy carries the post-recommend()
+    eligibility/rank (2026-08-20: this lane can now run concurrently with recommend(), on its
+    own trials_copy snapshot that predates apply_recommendation -- enrich_questions'
+    may_change_rank reads t.get('eligibility'), so enriching here on a copy that never gets
+    that field would silently compute a wrong number; enriching happens after both lanes join
+    instead, against the real, fully-decided trials_copy, exactly reproducing the sequential
+    order's result). ([], []) when the existing questions suffice (no gaps, or every candidate
+    is a repeat) -- enrich_questions on an empty list is a no-op either way.
     """
     all_criteria_flat = [
         {"nct_id": t.get("nct_id"), "text": c.get("text", ""), "verdict": c.get("verdict"),
@@ -285,15 +313,19 @@ def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_tex
     patient_ext = {"patient_id": patient_id, "text": (vignette + "\n" + new_record).strip()}
     gaps = detect_gaps(patient_ext, all_criteria_flat)
     if not gaps:
-        return []
+        return [], []
     followups = dedupe_followups(generate_questions(patient_ext, gaps), asked_texts,
                                  cap=FOLLOWUP_CAP)
     for q in followups:
         q["followup"] = True
-    return enrich_questions(followups, gaps, trials_copy)
+    return followups, gaps
 
 
 def handle(body, client_ip="?"):
+    # Wall-clock budget starts here, not at the first LLM call -- validation/parsing above is
+    # sub-millisecond, but the clock a Vercel invocation is actually judged against starts at
+    # the top of the handler, so this is the honest zero point.
+    t_start = time.monotonic()
     patient_id = str(body.get("patient_id", "")).strip()
     trials = body.get("trials")
     extended_record = str(body.get("extended_record", "")).strip()
@@ -401,36 +433,119 @@ def handle(body, client_ip="?"):
                 change["question"] = srcs[0]
             verdict_changes.append(change)
 
-    try:
-        # trust_attached=False: trial_intent/coverage rode in on the client body -- the sort reads
-        # only the server-side sidecars (ranking.resolve_intent), so a crafted POST cannot rig it.
-        # recommend classifies the need itself from the same server-side text (deterministic, so
-        # it always matches the patient_need computed above).
-        recs, patient_need = recommend(patient, trials_copy, trust_attached=False)
-    except Exception as e:
-        return {"error": f"추천 호출 실패: {e}"}
+    # Trial-level action context, hoisted here (2026-08-20 latency work; used to run after
+    # apply_recommendation below): once a trial carries a hard FAIL, asking about its
+    # remaining undecided criteria is moot -> STOP (same class of rule as effect_of; no model
+    # involved). Safe to hoist because trial_is_blocked's operative branch here depends only
+    # on `effect`, already finalized by the verdict_changes loop above -- decide_eligibility
+    # (inside recommend(), below) uses the exact same effect-based rule, so this is
+    # output-identical to running it after apply_recommendation for any eligibility the
+    # SERVER decides.
+    #
+    # It must NOT read `t["eligibility"]` here, though: trial_is_blocked also has an
+    # eligibility=="INELIGIBLE" branch, and unlike after apply_recommendation runs (the old
+    # position), trials_copy's `eligibility` at this point can still be whatever the CLIENT
+    # posted -- _validate_trials never checks that field and _restore_server_fields only
+    # restores title/phase. Feeding trial_is_blocked a criteria-only view keeps this
+    # server-truth-only, closing the same class of gap as the adversarial review that added
+    # trial_level_action itself (08-16): a forged eligibility must not be able to STOP a
+    # trial's undecided criteria and suppress its follow-up questions.
+    #
+    # This must run BEFORE the two lanes below (not after recommend(), like the old
+    # sequential order): the follow-up lane may now run concurrently with recommend() and
+    # needs to see the same STOP-gated `action` fields the sequential code always gave it.
+    for t in trials_copy:
+        _blocked_view = {"criteria": t.get("criteria", [])}   # never the posted eligibility
+        for c in t.get("criteria", []):
+            trial_level_action(c, _blocked_view)
+
+    def _run_recommend():
+        # trust_attached=False: trial_intent/coverage rode in on the client body -- the sort
+        # reads only the server-side sidecars (ranking.resolve_intent), so a crafted POST
+        # cannot rig it. recommend classifies the need itself from the same server-side text
+        # (deterministic, so it always matches the patient_need computed above). Runs on its
+        # OWN deep copy: recommend() only READS trials_copy's criteria (verdict/effect/type)
+        # and never mutates trials_copy itself -- the actual mutation is apply_recommendation,
+        # called on the real trials_copy below, sequentially, after both lanes have joined --
+        # but a deep copy makes that true by construction instead of by reading recommend()'s
+        # implementation, so it stays true if recommend() ever changes.
+        return recommend(patient, copy.deepcopy(trials_copy), trust_attached=False)
+
+    def _run_followups():
+        # Background follow-up check: after the answers land, does a more accurate judgment
+        # need MORE questions? Generated only on a round that actually rematched (this
+        # branch), skippable by the client (want_followups=false), and behind its own per-IP
+        # budget because it spends 2 extra LLM calls on the metered key. A followup failure
+        # (or skip) must never fail the answer round -- always returns a (questions, gaps,
+        # error) triple, never raises.
+        if body.get("want_followups") is False:
+            return [], [], None
+        if _rate_limited(client_ip, _followup_calls, FOLLOWUP_RATE_LIMIT_PER_MIN):
+            return [], [], None
+        if time.monotonic() - t_start >= ROUND_BUDGET_S:
+            # spec step 2: never let this endpoint quietly run past Vercel's maxDuration.
+            # rematch alone can already run several seconds; if the round's budget is spent
+            # before this lane would even start, skip it outright instead of risking a 504 in
+            # front of judges. Reused key, not a new one: followup_error is the field
+            # board.html already renders immediately next to the questions (the `.funote`
+            # div) -- verified by reading its fetch handler, not assumed -- so a budget skip
+            # is exactly as visible to a judge as a followup failure always was. The
+            # empty-affected branch's top-level "note" key is history-tab-only (verified the
+            # same way); reusing it here would make a skip silently invisible in the live
+            # round, the exact failure mode this budget exists to prevent. Flagged for 정원 in
+            # the handoff notes as worth its own UI treatment later.
+            return [], [], "시간 제한으로 이번 라운드에서는 추가 질문을 생성하지 않았습니다."
+        try:
+            followups, gaps = _generate_followups(
+                patient_id, patient["text"], new_record, copy.deepcopy(trials_copy),
+                asked_in + [q for q, _ in pairs] + [q["question"] for q in questions_in])
+            return followups, gaps, None
+        except Exception:
+            return [], [], "추가 질문 생성에 실패했습니다. 이번 반영 결과에는 영향이 없습니다."
+
+    if ANSWER_PARALLEL:
+        # recommend() and the follow-up chain (detect_gaps -> generate_questions) do not
+        # depend on each other's output -- each runs on its OWN deepcopy of trials_copy
+        # (never a shared mutable trial dict across threads), and neither writes trials_copy
+        # itself; the real mutations (apply_recommendation, then enrich_questions against the
+        # now-decided state) happen sequentially below, after both lanes have joined.
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            fut_recommend = ex.submit(_run_recommend)
+            fut_followups = ex.submit(_run_followups)
+            try:
+                recs, patient_need = fut_recommend.result()
+            except Exception as e:
+                # The follow-up lane already started -- a running thread can't be un-started
+                # -- so on a recommend() failure this concurrent version sometimes spends the
+                # follow-up lane's 2 LLM calls where the old sequential code spent none (it
+                # never reached this line). Accepted cost of genuinely running independent
+                # work in parallel; exiting the `with` block below still waits for
+                # fut_followups before this function actually returns (same total wall time),
+                # its result is simply discarded here rather than fetched.
+                return {"error": f"추천 호출 실패: {e}"}
+            followup_questions, followup_gaps, followup_error = fut_followups.result()
+    else:
+        # Rollback path (ANSWER_PARALLEL=0): the original strictly-sequential order, kept only
+        # as an escape hatch and for the parallel-vs-sequential identity assertion in
+        # _selftest -- not a maintained second implementation.
+        try:
+            recs, patient_need = _run_recommend()
+        except Exception as e:
+            return {"error": f"추천 호출 실패: {e}"}
+        followup_questions, followup_gaps, followup_error = _run_followups()
 
     apply_recommendation(trials_copy, recs)
-    # Trial-level action context: once a trial carries a hard FAIL, asking about its remaining
-    # undecided criteria is moot -> STOP (same class of rule as effect_of; no model involved).
-    for t in trials_copy:
-        for c in t.get("criteria", []):
-            trial_level_action(c, t)
-
-    # Background follow-up check: after the answers land, does a more accurate judgment need
-    # MORE questions? Generated only on a round that actually rematched (this branch), skippable
-    # by the client (want_followups=false), and behind its own per-IP budget because it spends
-    # 2 extra LLM calls on the metered key. A followup failure must never fail the answer round.
-    followup_questions, followup_error = [], None
-    if body.get("want_followups") is not False and not _rate_limited(
-            client_ip, _followup_calls, FOLLOWUP_RATE_LIMIT_PER_MIN):
+    # Priority numbers for any followup questions, now that trials_copy carries the decided
+    # eligibility/rank -- see _generate_followups' docstring for why this can't happen inside
+    # the (possibly concurrent) follow-up lane itself.
+    if followup_questions:
+        # Same soft-degrade rule as the rest of the follow-up lane: a follow-up problem must
+        # never discard a round whose real work (rematch + recommend) already succeeded.
         try:
-            followup_questions = _generate_followups(
-                patient_id, patient["text"], new_record, trials_copy,
-                asked_in + [q for q, _ in pairs] + [q["question"] for q in questions_in])
-        except Exception:
+            enrich_questions(followup_questions, followup_gaps, trials_copy)
+        except Exception as e:  # noqa: BLE001
             followup_questions = []
-            followup_error = "추가 질문 생성에 실패했습니다. 이번 반영 결과에는 영향이 없습니다."
+            followup_error = f"추가 질문 정리 실패: {e}"
 
     out = {
         "verdict_changes": verdict_changes,
@@ -565,6 +680,49 @@ def _selftest():
     res_bad = handle(dict(body, answers=[{"question": f"Q{i}?", "answer": "A"} for i in range(6)]))
     check(res_bad.get("error") == f"too many answers (max {MAX_BATCH_ANSWERS})",
           "handle() must reject an over-cap batch before any work")
+
+    # The concurrency claim, actually exercised (verifier 08-20: the comment promised this
+    # assertion and it did not exist). Stub the backend so a full rematch+recommend+followup
+    # round runs offline, then diff the served JSON parallel vs sequential.
+    import copy as _copy
+    import json as _json
+    import pipeline as _pl
+    _real_call = _pl.call_groq
+    def _stub(role, sys_prompt, user_prompt, **kw):
+        if role == "reeval-matcher":
+            return {"matches": [{"index": 1, "verdict": "MET", "uncertainty_type": None,
+                                 "evidence": "stub", "reasoning": "stub", "evidence_meta": None}]}
+        if role == "recommender":
+            return {"rationales": []}
+        if role == "gap-detector":
+            return {"gaps": [{"field": "stub_field", "why_needed": "stub", "related_criteria": []}]}
+        if role == "question-generator":
+            return {"questions": [{"field": "stub_field", "question": "Stub follow-up?", "why": "stub"}]}
+        return {}
+    pid = next(iter(KNOWN_TRIALS))
+    body_trials = []
+    for nct, meta in list(KNOWN_TRIALS[pid].items()):
+        crits = [{"text": txt, "type": KNOWN_CRITERIA[pid][(nct, txt)], "verdict": "UNKNOWN"}
+                 for (n2, txt) in KNOWN_CRITERIA[pid] if n2 == nct]
+        body_trials.append({"nct_id": nct, "title": meta["title"], "phase": meta["phase"],
+                            "eligibility": "UNCERTAIN", "criteria": crits})
+    q_text = body_trials[0]["criteria"][0]["text"]
+    base_body = {"patient_id": pid, "answers": [{"question": q_text, "answer": "yes, documented"}],
+                 "trials": body_trials, "extended_record": "", "questions": [], "asked_questions": []}
+    _pl.call_groq = _stub
+    globals()["rematch_affected_criteria"] = _pl.rematch_affected_criteria
+    outs = {}
+    try:
+        for mode in (True, False):
+            globals()["ANSWER_PARALLEL"] = mode
+            _followup_calls.clear()
+            outs[mode] = _json.dumps(handle(_copy.deepcopy(base_body), client_ip="selftest"),
+                                     sort_keys=True, ensure_ascii=False, default=str)
+    finally:
+        _pl.call_groq = _real_call
+        globals()["ANSWER_PARALLEL"] = os.environ.get("ANSWER_PARALLEL", "1") != "0"
+    check(outs[True] == outs[False],
+          "parallel and sequential rounds return byte-identical output on a stubbed round")
 
     if failures:
         print("FAIL:")

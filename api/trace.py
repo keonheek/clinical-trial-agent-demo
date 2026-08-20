@@ -2,6 +2,7 @@
 
 Reads traces.json only. Zero LLM calls, instant.
 """
+import hashlib
 import json
 import os
 import sys
@@ -100,6 +101,77 @@ try:
 except FileNotFoundError:
     pass
 
+# Bilingual gloss sidecar (gen_gloss.py), same sidecar pattern as coverage/trial_intent above:
+# {sha1(source.strip())[:12]: {"src", "ko"/"en"}}, built once by a separate offline script and
+# never touched here. gen_gloss.py may still be mid-write (it writes the whole file on every
+# batch) -- a missing file or a torn/partial JSON read must degrade to "no glosses", never crash
+# the endpoint. json.JSONDecodeError is the concrete failure mode of reading a file mid-write.
+try:
+    with open(os.path.join(ROOT, "gloss.json"), encoding="utf-8") as f:
+        _GLOSS = json.load(f)
+    if not isinstance(_GLOSS, dict):
+        _GLOSS = {}
+except (FileNotFoundError, json.JSONDecodeError):
+    _GLOSS = {}
+
+
+def _gloss_key(text):
+    # Mirrors gen_gloss.key_of exactly: sha1 of the UTF-8 bytes, first 12 hex chars.
+    # selftest: _gloss_key("Age >= 18 years") == "b0367dda91e9" (verified against
+    # gen_gloss.key_of("Age >= 18 years") at the Python prompt).
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
+
+
+def _trace_gloss_strings(tr):
+    """Every distinct LLM-authored string THIS trace shows -- same field list as
+    gen_gloss.collect_sources, scoped to one patient so the served payload stays small."""
+    out = set()
+    for f in tr.get("extraction", []) or []:
+        v = f.get("value") or f.get("text") or ""
+        if v:
+            out.add(str(v))
+    for t in tr.get("trials", []) or []:
+        if t.get("title"):
+            out.add(t["title"])
+        if t.get("rationale"):
+            out.add(t["rationale"])
+        for c in t.get("criteria", []) or []:
+            if c.get("text"):
+                out.add(c["text"])
+            if c.get("reasoning"):
+                out.add(c["reasoning"])
+    for q in tr.get("questions", []) or []:
+        if q.get("question"):
+            out.add(q["question"])
+        if q.get("why"):
+            out.add(q["why"])
+        for o in q.get("options", []) or []:
+            if o:
+                out.add(o)
+    return out
+
+
+def build_trace_gloss(tr):
+    """{sha1key: {"ko"/"en": text}} for exactly the strings this trace needs -- not the
+    whole GLOSS store, so a patient with 40 criteria never ships another patient's glosses."""
+    out = {}
+    for s in _trace_gloss_strings(tr):
+        s = s.strip()
+        if not s or len(s) <= 1:
+            continue
+        entry = _GLOSS.get(_gloss_key(s))
+        if not entry:
+            continue
+        g = {}
+        if entry.get("ko"):
+            g["ko"] = entry["ko"]
+        if entry.get("en"):
+            g["en"] = entry["en"]
+        if g:
+            out[_gloss_key(s)] = g
+    return out
+
+
 # Stable criterion_id (added for the question-criterion linking fix): sha1(nct_id + normalized
 # text)[:10], attached here IN MEMORY only -- traces.json on disk never carries it. Lets a
 # client-round-tripped criterion be matched back to the exact one served, independent of any
@@ -152,6 +224,13 @@ for _trace in TRACES:
     # over the trace (action_policy.enrich_questions); frozen traces carry no gap links, so it
     # uses the token-overlap fallback. Also orders the questions most-impactful first.
     _trace["questions"] = enrich_questions(_trace.get("questions", []), _trace.get("gaps", []), _trials)
+
+# Gloss map, last: built after every field above has taken its final served shape (title,
+# rationale, criteria text/reasoning, question text/why/options) so nothing enrichment-added
+# is missed. Per-trace and small on purpose -- a family reading S001 never downloads glosses
+# for the other nine patients.
+for _trace in TRACES:
+    _trace["gloss"] = build_trace_gloss(_trace)
 
 
 class handler(BaseHTTPRequestHandler):

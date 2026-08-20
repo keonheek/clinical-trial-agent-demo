@@ -24,6 +24,7 @@ import hashlib
 import json
 import os
 import re
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -67,6 +68,28 @@ PRICING = {
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
 
 _stats = {"api_calls": 0, "cache_hits": 0, "in_tokens": 0, "out_tokens": 0, "usd": 0.0}
+# api/answer.py and live_server.py now fire calls from a ThreadPoolExecutor (latency work,
+# 2026-08-20) -- plain `_stats[k] += 1` is not atomic across threads under free-threaded
+# Python (and is a correctness smell even under the GIL), so every mutation goes through
+# this lock. Cheap: it's only ever held for a few dict writes, never around network I/O.
+_stats_lock = threading.Lock()
+
+# Anthropic prompt caching (2026-08-20 latency work): mark the system prompt as a cacheable
+# block so repeated calls with the SAME role (criteria-parser x4, matcher x4 in one live
+# vignette build) can reuse it server-side instead of re-billing full input price. Basic
+# `cache_control: {"type": "ephemeral"}` is GA -- no beta header -- verified against the
+# claude-api skill's cached docs (2026-06-24), not memory.
+#
+# IMPORTANT CAVEAT, verified not assumed: Anthropic's documented minimum cacheable prefix is
+# ~1024 tokens; every system prompt in this file's caller (pipeline.py) measures 170-434
+# tokens (CRITERIA_PARSER_SYS ~216, MATCHER_SYS ~394, QUESTION_GENERATOR_SYS ~434, ...) --
+# all comfortably under the floor. A prefix under the floor silently does not cache (no
+# error, cache_read_input_tokens stays 0); it is not a win at today's prompt sizes. The flag
+# exists so the wiring is correct and ready the day a system prompt crosses ~1024 tokens
+# (e.g. MATCHER_SYS growing with more few-shot examples), and so it can be measured directly
+# via stats()/response usage rather than assumed. Default ON per spec; set
+# ANTHROPIC_PROMPT_CACHE=0 to disable.
+PROMPT_CACHE_ENABLED = os.environ.get("ANTHROPIC_PROMPT_CACHE", "1") != "0"
 
 _FENCE_RE = re.compile(r"```(?:json)?\s*|```", re.IGNORECASE)
 
@@ -132,43 +155,63 @@ def _extract_json(text):
     return obj
 
 
+def _system_field(system_prompt, use_cache):
+    """Plain string (unchanged wire shape) when caching is off; a one-block content list with
+    cache_control when on. See PROMPT_CACHE_ENABLED's comment for the caveat: below the ~1024
+    token floor this silently does not cache -- it does not error, it just does nothing."""
+    if not use_cache:
+        return system_prompt
+    return [{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}]
+
+
 def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=True,
-             max_retries=5):
-    """Returns the parsed JSON object. Signature matches groq_client.call_groq."""
+             max_retries=5, use_cache=None):
+    """Returns the parsed JSON object. Signature matches groq_client.call_groq.
+    use_cache=None defers to the module-level PROMPT_CACHE_ENABLED flag; pass True/False to
+    override per call (tests do this to exercise both wire shapes without touching env)."""
     os.makedirs(CACHE_DIR, exist_ok=True)
     key = _cache_key(role, model, system_prompt, user_prompt)
     path = _cache_path(key)
     if os.path.exists(path):
         with open(path) as f:
-            _stats["cache_hits"] += 1
+            with _stats_lock:
+                _stats["cache_hits"] += 1
             return json.load(f)
 
-    body = {
-        "model": model,
-        "max_tokens": 8000,
-        "system": system_prompt,
-        "messages": [{"role": "user", "content": user_prompt}],
-    }
-    # output_config.effort and the thinking toggle are only accepted by the frontier models
-    # (Sonnet 5, Opus 4.6+). Haiku 4.5 rejects both with HTTP 400, so gate on capability
-    # rather than sending them unconditionally.
-    if _supports_effort(model):
-        body["output_config"] = {"effort": "medium" if role in THINKING_ROLES else "low"}
-        if role not in THINKING_ROLES:
-            # Structured extraction does not benefit from deliberation; skip it and pay less.
-            body["thinking"] = {"type": "disabled"}
-
-    data = json.dumps(body).encode("utf-8")
+    use_cache = PROMPT_CACHE_ENABLED if use_cache is None else use_cache
     headers = {
         "content-type": "application/json",
         "x-api-key": _get_api_key(),
         "anthropic-version": API_VERSION,
     }
+    # Connection reuse was evaluated and declined: urllib.request.HTTPHandler opens a fresh
+    # connection per urlopen() call regardless of whether the caller reuses a build_opener()
+    # instance -- reusing an opener does NOT pool TCP/TLS state, so it would be a no-op
+    # dressed up as an optimization. Real pooling needs a hand-held http.client.HTTPSConnection,
+    # which is not thread-safe and would need threading.local() now that calls run from a
+    # ThreadPoolExecutor -- real complexity for one TLS handshake (~50-150ms) against calls
+    # that run multi-second. Not worth it; left as one urlopen() per call, as before.
 
     delay = 2.0
     last_err = None
     result = None
     for attempt in range(max_retries):
+        body = {
+            "model": model,
+            "max_tokens": 8000,
+            "system": _system_field(system_prompt, use_cache),
+            "messages": [{"role": "user", "content": user_prompt}],
+        }
+        # output_config.effort and the thinking toggle are only accepted by the frontier models
+        # (Sonnet 5, Opus 4.6+). Haiku 4.5 rejects both with HTTP 400, so gate on capability
+        # rather than sending them unconditionally.
+        if _supports_effort(model):
+            body["output_config"] = {"effort": "medium" if role in THINKING_ROLES else "low"}
+            if role not in THINKING_ROLES:
+                # Structured extraction does not benefit from deliberation; skip it and pay less.
+                body["thinking"] = {"type": "disabled"}
+        data = json.dumps(body).encode("utf-8")
+
         try:
             req = urllib.request.Request(API_URL, data=data, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=180) as resp:
@@ -176,6 +219,15 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
         except urllib.error.HTTPError as e:
             detail = e.read().decode("utf-8", "replace")[:200]
             last_err = f"HTTP {e.code}: {detail}"
+            # Graceful fallback (spec step 3): if some deployment/model combo ever rejects
+            # cache_control, drop it and retry immediately -- never let a caching experiment
+            # break a call that would otherwise succeed. Consumes one retry slot, same as any
+            # other retry; cheap since it costs no sleep.
+            if e.code == 400 and use_cache and "cache_control" in detail.lower():
+                use_cache = False
+                print(f"    [anthropic] {role}: cache_control rejected (HTTP 400), "
+                      f"retrying without it")
+                continue
             if e.code in (429, 500, 502, 503, 529) and attempt < max_retries - 1:
                 print(f"    [anthropic] {role}: HTTP {e.code}, retrying in {delay:.0f}s "
                       f"(attempt {attempt + 1}/{max_retries})")
@@ -196,10 +248,11 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
         in_tok = usage.get("input_tokens", 0)
         out_tok = usage.get("output_tokens", 0)
         price_in, price_out = _price_for(model)
-        _stats["api_calls"] += 1
-        _stats["in_tokens"] += in_tok
-        _stats["out_tokens"] += out_tok
-        _stats["usd"] += (in_tok * price_in + out_tok * price_out) / 1_000_000
+        with _stats_lock:
+            _stats["api_calls"] += 1
+            _stats["in_tokens"] += in_tok
+            _stats["out_tokens"] += out_tok
+            _stats["usd"] += (in_tok * price_in + out_tok * price_out) / 1_000_000
 
         # A safety classifier can decline with HTTP 200; content is then empty. A refusal is
         # deterministic -- retrying just burns tokens on the same decline -- so fail loudly now.
@@ -231,10 +284,20 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
     else:
         raise RuntimeError(f"anthropic call failed for {role}: {last_err}")
 
-    with open(path, "w") as f:
+    # Write-then-rename, not write-in-place: a truncated write (process killed, or two
+    # threads racing the same cache key mid-write under the ThreadPoolExecutor callers added
+    # 2026-08-20) must never leave a partial file that a later json.load() on this path
+    # explodes on. os.replace is atomic on the same filesystem, so any reader always sees
+    # either the old (absent) or the new (complete) file, never a half-written one. The
+    # per-thread suffix means two threads computing the SAME key concurrently write to two
+    # different temp names and the second os.replace just overwrites with identical content.
+    tmp_path = f"{path}.tmp.{os.getpid()}.{threading.get_ident()}"
+    with open(tmp_path, "w") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, path)
     return result
 
 
 def stats():
-    return dict(_stats)
+    with _stats_lock:  # same discipline as the writers (thread-pool callers since 08-20)
+        return dict(_stats)

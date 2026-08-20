@@ -23,7 +23,7 @@ script after the first successful build makes ZERO new LLM calls. Switching back
 NOT reuse another backend's answers: the model name is part of the cache key.
 
 Run:
-    python3 pipeline.py
+    python3 pipeline.py --generate
 Writes:
     traces.json   (plain JSON)
     traces.js     (window.TRACES = [...]; consumed by demo.html)
@@ -1156,5 +1156,15 @@ def _selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         _selftest()
-    else:
+    elif "--generate" in sys.argv:
         main()
+    else:
+        # A bare `python3 pipeline.py` used to run main() -- a full paid generation run that
+        # rewrites traces.json. Two agents tripped this in one day looking for a selftest,
+        # so the destructive path now needs to be asked for by name (08-20).
+        print("pipeline.py does nothing by default.\n"
+              "  python3 pipeline.py --selftest   offline self-tests, no API calls\n"
+              "  python3 pipeline.py --generate   FULL regeneration: spends the API key and\n"
+              "                                   rewrites traces.json/traces.js (relabelling\n"
+              "                                   required afterwards -- see EVAL-NOTES.md)")
+        raise SystemExit(2)

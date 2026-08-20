@@ -14,12 +14,14 @@ Reuses pipeline.py's agent functions directly -- no logic duplicated here.
 Python 3 stdlib only. Run: python3 live_server.py  (serves http://localhost:8765)
 """
 import copy
+import hashlib
 import json
 import os
 import re
 import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pipeline
@@ -157,6 +159,81 @@ try:
                 _tr["coverage"] = {"parsed": len(_tr.get("criteria", [])), "raw_estimated": _raw_n}
 except FileNotFoundError:
     pass
+
+# Bilingual gloss sidecar (gen_gloss.py), same sidecar pattern as coverage/trial_intent above and
+# identical to api/trace.py's block: {sha1(source.strip())[:12]: {"src", "ko"/"en"}}, built once
+# by a separate offline script and never touched here. gen_gloss.py may still be mid-write (it
+# writes the whole file on every batch) -- a missing file or a torn/partial JSON read must
+# degrade to "no glosses", never crash the server. json.JSONDecodeError is the concrete failure
+# mode of reading a file mid-write.
+try:
+    with open(os.path.join(HERE, "gloss.json"), encoding="utf-8") as f:
+        _GLOSS = json.load(f)
+    if not isinstance(_GLOSS, dict):
+        _GLOSS = {}
+except (FileNotFoundError, json.JSONDecodeError):
+    _GLOSS = {}
+
+
+def _gloss_key(text):
+    # Mirrors gen_gloss.key_of exactly: sha1 of the UTF-8 bytes, first 12 hex chars.
+    # selftest: _gloss_key("Age >= 18 years") == "b0367dda91e9" (verified against
+    # gen_gloss.key_of("Age >= 18 years") at the Python prompt).
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
+
+
+def _trace_gloss_strings(tr):
+    """Every distinct LLM-authored string THIS trace shows -- same field list as
+    gen_gloss.collect_sources, scoped to one patient so the served payload stays small."""
+    out = set()
+    for f in tr.get("extraction", []) or []:
+        v = f.get("value") or f.get("text") or ""
+        if v:
+            out.add(str(v))
+    for t in tr.get("trials", []) or []:
+        if t.get("title"):
+            out.add(t["title"])
+        if t.get("rationale"):
+            out.add(t["rationale"])
+        for c in t.get("criteria", []) or []:
+            if c.get("text"):
+                out.add(c["text"])
+            if c.get("reasoning"):
+                out.add(c["reasoning"])
+    for q in tr.get("questions", []) or []:
+        if q.get("question"):
+            out.add(q["question"])
+        if q.get("why"):
+            out.add(q["why"])
+        for o in q.get("options", []) or []:
+            if o:
+                out.add(o)
+    return out
+
+
+def build_trace_gloss(tr):
+    """{sha1key: {"ko"/"en": text}} for exactly the strings this trace needs -- not the whole
+    GLOSS store, so a patient with 40 criteria never ships another patient's glosses."""
+    out = {}
+    for s in _trace_gloss_strings(tr):
+        s = s.strip()
+        if not s or len(s) <= 1:
+            continue
+        entry = _GLOSS.get(_gloss_key(s))
+        if not entry:
+            continue
+        g = {}
+        if entry.get("ko"):
+            g["ko"] = entry["ko"]
+        if entry.get("en"):
+            g["en"] = entry["en"]
+        if g:
+            out[_gloss_key(s)] = g
+    return out
+
+
+for _t in TRACES:
+    _t["gloss"] = build_trace_gloss(_t)
 
 # Stable criterion_id (added for the question-criterion linking fix): sha1(nct_id + normalized
 # text)[:10], attached here IN MEMORY only -- traces.json on disk never carries it. Lets a
@@ -338,6 +415,8 @@ def build_session_precomputed(session, trace):
         # level re-rank used); recompute only if a trace somehow predates that block.
         session["patient_need"] = trace.get("patient_need") or classify_patient_need(
             trace.get("patient_text", ""))
+        # precomputed at module load (build_trace_gloss), from this same trace's own strings.
+        session["gloss"] = trace.get("gloss") or {}
         session["stage"] = "extract"
         session["extraction"] = trace["extraction"]
         time.sleep(0.35)
@@ -365,6 +444,33 @@ def build_session_precomputed(session, trace):
         persist_session(session)
 
 
+def _build_one_trial_live(patient, fields, t):
+    """One candidate trial's parse -> match -> intent-classify, run inside a ThreadPoolExecutor
+    worker by build_session_live. Pure function of its args: `patient`/`fields` are read-only
+    (shared across every worker, never written), and everything returned is freshly built here
+    -- no shared mutable trial dict crosses threads. Returns (trial_out_dict, flat_criteria_list)
+    so the caller assembles trials_out/all_criteria_flat itself, in candidate order."""
+    criteria = parse_criteria(t)
+    matched = match_trial(patient, fields, criteria, nct_id=t["nct_id"])
+    flat = [{"nct_id": t["nct_id"], "text": c["text"], "verdict": c["verdict"],
+             "action": c.get("action"), "effect": c.get("effect")} for c in matched]
+    _intent = classify_trial_intent(t)
+    trial_out = {
+        "nct_id": t["nct_id"], "title": t["title"], "phase": t.get("phase", "NA"),
+        "criteria": matched,
+        # recency: how fresh the eligibility criteria are. Trial criteria on
+        # ClinicalTrials.gov change over time; a coordinator needs to know the
+        # screening was run against criteria fetched on this date, not "current".
+        "criteria_fetched_at": t.get("fetched_at"),
+        "criteria_source": t.get("source"),
+        # therapeutic/supportive/care_delivery/observational -- classified live since
+        # `t` here is the raw trial record (title/phase/conditions/eligibility text
+        # all present), same rule-based classifier the sidecar uses for frozen traces.
+        "trial_intent": {"intent": _intent["intent"], "confidence": _intent["confidence"]},
+    }
+    return trial_out, flat
+
+
 def build_session_live(session):
     try:
         patient = session["patient"]
@@ -375,6 +481,9 @@ def build_session_live(session):
         # waits ~8 LLM calls before the anchor of the whole screen appears. recommend() will
         # recompute the same value later (same pure function) -- no divergence possible.
         session["patient_need"] = classify_patient_need(patient["text"])
+        # live-generated text (pasted vignette / stress patient) isn't in gen_gloss.py's source
+        # set (it only scans the frozen TRACES) -- no glosses to offer, ever, not just "not yet".
+        session["gloss"] = {}
         persist_session(session)
 
         # A stress patient is scored against ITS OWN trials (the ones the human answer key
@@ -386,33 +495,43 @@ def build_session_live(session):
         session["trials_total"] = len(candidates)
         session["trials_done"] = 0
 
-        trials_out = []
-        all_criteria_flat = []
+        # Per-trial parse+match run concurrently (2026-08-20 latency work): each candidate's
+        # criteria-parser + matcher calls are independent of every other trial's -- 4 trials
+        # sequential (8 LLM calls back to back) becomes 4 trials in parallel, bounded by
+        # max_workers. `patient`/`fields` are read-only across every worker; each worker
+        # returns its own new dicts (never mutates a shared trial dict), so there is nothing
+        # to race on.
+        #
+        # trials_out is assigned ONCE, fully populated and in CANDIDATE order (not completion
+        # order) -- not progressively appended as each trial lands, unlike the old sequential
+        # loop. A partial list with placeholder entries would break session_snapshot's
+        # eligibility_path() call over every trial on any poll landing mid-build; verified no
+        # shipped page needs the old progressive reveal (grepped every *.html/*.js in the repo
+        # for this server's port/session routes -- none call it, the live-vignette path has no
+        # wired frontend yet). trials_done still climbs in real time under session["lock"], so
+        # a future poller's progress bar (X/4 loaded) stays truthful throughout the build even
+        # though trials_out itself only reveals once everything is ready.
+        session["stage"] = "match"  # parse+match now run fused inside one worker per trial;
+        # "match" stands in for the whole concurrent span -- nothing reads the finer-grained
+        # "parse" vs "match" distinction today (same grep as above).
+        lock = session["lock"]
+        results = [None] * len(candidates)
+        with ThreadPoolExecutor(max_workers=4) as ex:
+            futures = {ex.submit(_build_one_trial_live, patient, fields, t): i
+                       for i, t in enumerate(candidates)}
+            for fut in as_completed(futures):
+                i = futures[fut]
+                # a worker's exception re-raises here, propagates past the executor's
+                # __exit__ (which first waits out the remaining in-flight workers -- same
+                # total wall time as letting them finish, no behavior change) and lands in
+                # this function's own try/except below, same as the old sequential loop.
+                results[i] = fut.result()
+                with lock:
+                    session["trials_done"] += 1
+
+        trials_out = [r[0] for r in results]
+        all_criteria_flat = [item for r in results for item in r[1]]
         session["trials_out"] = trials_out
-        for t in candidates:
-            session["stage"] = "parse"
-            criteria = parse_criteria(t)
-            session["stage"] = "match"
-            matched = match_trial(patient, fields, criteria, nct_id=t["nct_id"])
-            for c in matched:
-                all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],
-                                           "verdict": c["verdict"], "action": c.get("action"),
-                                           "effect": c.get("effect")})
-            _intent = classify_trial_intent(t)
-            trials_out.append({
-                "nct_id": t["nct_id"], "title": t["title"], "phase": t.get("phase", "NA"),
-                "criteria": matched,
-                # recency: how fresh the eligibility criteria are. Trial criteria on
-                # ClinicalTrials.gov change over time; a coordinator needs to know the
-                # screening was run against criteria fetched on this date, not "current".
-                "criteria_fetched_at": t.get("fetched_at"),
-                "criteria_source": t.get("source"),
-                # therapeutic/supportive/care_delivery/observational -- classified live since
-                # `t` here is the raw trial record (title/phase/conditions/eligibility text
-                # all present), same rule-based classifier the sidecar uses for frozen traces.
-                "trial_intent": {"intent": _intent["intent"], "confidence": _intent["confidence"]},
-            })
-            session["trials_done"] += 1
 
         session["stage"] = "gaps"
         gaps = detect_gaps(patient, all_criteria_flat)
@@ -775,6 +894,7 @@ def _session_snapshot_locked(session):
             "extraction": session.get("extraction", []),
             "trials": session.get("trials_out", []),
             "questions": session.get("questions", []),
+            "gloss": session.get("gloss", {}),
             "extended_record": session.get("extended_record", ""),
             # _before holds a deep copy for revert; it is internal and must not be shipped
             "answer_rounds": [{k: v for k, v in r.items() if k != "_before"}
