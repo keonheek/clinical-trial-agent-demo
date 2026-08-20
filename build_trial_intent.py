@@ -102,11 +102,22 @@ def _matches(haystack, keywords):
     return [kw for kw in keywords if kw in haystack]
 
 
+# Title-only therapeutic patterns: safe in a TITLE (a trial named "Thyroidectomy for
+# Graves' Disease" is a surgical-treatment trial) but never scanned in eligibility text,
+# where "no prior surgery"-class clauses made them fire falsely (08-20 persona catch:
+# the thyroidectomy trial was classified observational and its benefit line claimed
+# "does not treat").
+THERAPEUTIC_TITLE_ONLY_KEYWORDS = THERAPEUTIC_KEYWORDS + [
+    "ectomy for", "surgery for", "surgical treatment", "surgical management", "transplantation for",
+    "efficacy of", "efficacy and safety", "treatment of", "therapy for", "-guided treatment",
+]
+
+
 def _title_hits_by_category(title_text):
     """Rule 1's scan -- title is the strong signal, so care_delivery gets its extra
     generic title patterns here (they are NOT safe for the eligibility-text tiebreak)."""
     return {
-        "therapeutic": _matches(title_text, THERAPEUTIC_KEYWORDS),
+        "therapeutic": _matches(title_text, THERAPEUTIC_TITLE_ONLY_KEYWORDS),
         "supportive": _matches(title_text, SUPPORTIVE_KEYWORDS),
         "care_delivery": _matches(title_text, CARE_DELIVERY_TITLE_ONLY_KEYWORDS),
         "observational": _matches(title_text, OBSERVATIONAL_KEYWORDS),
@@ -421,8 +432,20 @@ def _selftest():
     print(f"build_trial_intent self-tests passed ({len(failures)} failures).")
 
 
+def _selftest_title_therapeutic():
+    t = classify_trial_intent({"title": "Thyroidectomy for Graves' Disease or Amiodarone-induced Thyrotoxicosis",
+                               "phase": "NA", "conditions": ["Graves Disease"], "eligibility_criteria_raw": ""})
+    assert t["intent"] == "therapeutic", t
+    # eligibility-text "no prior surgery" must still NOT flip an NA registry
+    r = classify_trial_intent({"title": "Registry of Diabetes Outcomes", "phase": "NA", "conditions": ["Diabetes"],
+                               "eligibility_criteria_raw": "Exclusion: prior surgery for obesity"})
+    assert r["intent"] != "therapeutic", r
+    print("  PASS title-only therapeutic (ectomy/surgery-for) + eligibility-text immunity")
+
+
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
+        _selftest_title_therapeutic()
         _selftest()
     else:
         build()

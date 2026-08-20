@@ -211,26 +211,35 @@ def rank_key(trial, intent=None, raw_estimated=None, need=None):
     return (gate, help_group, sure)
 
 
-def _help_sentence(nname, need_conf, score, known_intent, phase_txt):
-    """The 도움 part of rank_reason, plain Korean."""
+def _help_sentence(nname, need_conf, score, known_intent, phase_txt, guess_intent=None):
+    """The 도움 part of rank_reason, plain Korean. Phase NA carries no information for
+    non-interventional trials, so an empty phase_txt is simply omitted (08-20 UI review);
+    when the intent is only a low-confidence guess, say the guess instead of claiming the
+    system has no opinion (the chip next to the sentence shows the guess)."""
+    def paren(fit_ko=None):
+        parts = [x for x in (f"{fit_ko} 시험" if fit_ko else None, phase_txt or None) if x]
+        return f" ({', '.join(parts)})" if parts else ""
     if nname in pn.VALID_NEEDS:
         need_ko = pn.NEED_KO[nname]
         if known_intent is None:
-            txt = f"{need_ko} 필요인데 시험 목적 미확인 ({phase_txt})"
+            if guess_intent in FIT_LABEL_KO:
+                txt = f"{need_ko} 필요, 시험 목적 미확정 (추정: {FIT_LABEL_KO[guess_intent]}{', ' + phase_txt if phase_txt else ''})"
+            else:
+                txt = f"{need_ko} 필요인데 시험 목적 미확인{paren()}"
         else:
             fit_ko = FIT_LABEL_KO[known_intent]
             if score == 2:
-                txt = f"{need_ko} 필요와 부합 ({fit_ko} 시험, {phase_txt})"
+                txt = f"{need_ko} 필요와 부합{paren(fit_ko)}"
             elif score == 1:
-                txt = f"{need_ko} 필요에 부분적 도움 ({fit_ko} 시험, {phase_txt})"
+                txt = f"{need_ko} 필요에 부분적 도움{paren(fit_ko)}"
             else:
-                txt = f"{need_ko} 필요와 무관 ({fit_ko} 시험, {phase_txt})"
+                txt = f"{need_ko} 필요와 무관{paren(fit_ko)}"
         if need_conf == "low":
             txt += ", 필요 분류는 확신 낮음"
         return txt
     if known_intent is None:
-        return f"환자 필요 미산출, 시험 목적도 미확인 ({phase_txt})"
-    return f"환자 필요 미산출 → 시험 목적 순 ({FIT_LABEL_KO[known_intent]} 시험, {phase_txt})"
+        return f"환자 필요 미산출, 시험 목적도 미확인{paren()}"
+    return f"환자 필요 미산출 → 시험 목적 순{paren(FIT_LABEL_KO[known_intent])}"
 
 
 def rank_basis(trial, intent=None, raw_estimated=None, need=None):
@@ -278,7 +287,10 @@ def rank_basis(trial, intent=None, raw_estimated=None, need=None):
 
     # -- rank_reason: the three questions in one plain-Korean line --
     join_txt = ELIG_LABEL_KO.get(elig, elig) + (f" (차단 기준 {fails}건)" if fails else "")
-    help_txt = _help_sentence(nname, need_conf, score, known_intent, phase_label(trial.get("phase")))
+    _ph = phase_label(trial.get("phase"))
+    _guess = intent.get("intent") if isinstance(intent, dict) and str(intent.get("confidence", "")).lower() == "low" else None
+    help_txt = _help_sentence(nname, need_conf, score, known_intent,
+                              "" if _ph == "Phase NA" else _ph, guess_intent=_guess)
     sure_txt = f"미해결 {reviews}/{n}"
     if cov is not None:
         # parsed can exceed the line-count estimate (multi-clause bullets split into atomic

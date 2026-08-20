@@ -1,0 +1,1780 @@
+{
+ "NCT06401577": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "Dexcom Continuous Glucose Monitor (CGM)",
+    "description": "Dexcom Continuous Glucose Monitor which measures and records a participant's serum glucose level"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "pre-diabetes mellitus following an episode of acute pancreatitis",
+    "timeframe": "any time during the 36-month longitudinal follow-up period"
+   },
+   {
+    "measure": "diabetes mellitus following an episode of acute pancreatitis",
+    "timeframe": "any time during the 36-month longitudinal follow-up period"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT07144917": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DIAGNOSTIC_TEST",
+    "name": "mHLA-DR analysis",
+    "description": "mHLA-DR analysis will be realized on Cyto-Chex® BCT anticoagulant tubes (5mL). Each sample will be transported and centralized at the Immunology Laboratory of Edouard Herriot Hospital and analyzed by flow cytometry.\n\nSamples will be collected :\n\n* The day of surgery before intervention\n* The day of surgery after intervention\n* At postoperative day one\n* At postoperative day two\n* At postoperative "
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "mHLA-DR expressed by numbers of antibody per cells (Ab/C)",
+    "timeframe": "mHLA-DR will be assessed during 7 first days - The day of surgery right before intervention (Pre-Op) - The day of surger"
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT06179459": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "PROCEDURE",
+    "name": "Endoscopic management of pancreatic fluid collections",
+    "description": "Patients with pancreatic fluid collections will be undergoing EUS-guided drainage and/or endoscopic necrosectomy"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Treatment outcomes in patients undergoing endoscopic treatment of pancreatic fluid collections according to timing of treatment.",
+    "timeframe": "6 months"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06113419": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "PROCEDURE",
+    "name": "Laparoscopic cholecystectomy",
+    "description": "Laparoscopic cholecystectomy will be performed using the standard American 4-port technique, insufflation will be achieved using CO2 to 15mmHg of pressure. Calot's triangle will be dissected until the critical view of safety is reached, being careful to dissect above the R4U line. After reaching the critical view of safety, two proximal and one distal clip will be placed on both the cystic conduct"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Major complications (rates)",
+    "timeframe": "90 days"
+   },
+   {
+    "measure": "Major complications (rates)",
+    "timeframe": "90 days"
+   },
+   {
+    "measure": "Major complications (rates)",
+    "timeframe": "90 days"
+   }
+  ],
+  "countries": [
+   "Colombia"
+  ]
+ },
+ "NCT07308392": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "HRS-7249 injection set",
+    "description": "HRS-7249 injection set"
+   },
+   {
+    "type": "DRUG",
+    "name": "SHR-1918 injection set",
+    "description": "SHR-1918 injection set"
+   },
+   {
+    "type": "DRUG",
+    "name": "HRS-7249 injection placebo set",
+    "description": "HRS-7249 injection placebo set"
+   },
+   {
+    "type": "DRUG",
+    "name": "SHR-1918 injection placebo set",
+    "description": "SHR-1918 injection placebo set"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Percentage change in mean TG from baseline at weeks 44 and 48 of treatment",
+    "timeframe": "at 44＆48 weeks after the start of administration"
+   },
+   {
+    "measure": "Proportion of subjects experiencing AP during the double-blind treatment period",
+    "timeframe": "within 48 weeks after the start of administration"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT07153809": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "PROCEDURE",
+    "name": "FMT",
+    "description": "FMT bacterial solution will be injected through a nasojejunal nutrition tube once a day for five days."
+   },
+   {
+    "type": "PROCEDURE",
+    "name": "Placebo",
+    "description": "Physiological saline placebo will be injected through a nasojejunal nutrition tube once a day for five days."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Pancreatic infectious complications",
+    "timeframe": "through study completion, an average of 1 year"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT05461820": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Methimazole",
+    "description": "Methimazole used in this study was produced by Merck, Germany, and its trade name is Thyrozol. The specification of this drug is 10mg/ tablet, and its validity period is 36 months. It was approved by FDA in 2009 and listed in China in 2011."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Cumulative recurrence rate between conventional treatment group and intensive treatment group after two years of withdrawal.",
+    "timeframe": "Up to 2 years after drug withdrawal"
+   },
+   {
+    "measure": "Number of patients with no adverse reactions during the treatment of Graves' disease",
+    "timeframe": "Within the treatment period (average 2 years)"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT05678374": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "Identifying autoantibodies targeting antigens occurring in the brain that are higher in Graves' disease complicated by mental fatigue than in Graves' disease not complicated by mental fatigue",
+    "timeframe": "Patients and controls will be examined at one occasion, for patients 15-60 months after diagnosis of Graves' disease."
+   }
+  ],
+  "countries": [
+   "Sweden"
+  ]
+ },
+ "NCT06963203": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "Complications",
+    "timeframe": "Day 0= intraoperative until last follow-up postoperatively (e.g. for the recovery from a nerve palsy)= through study com"
+   }
+  ],
+  "countries": [
+   "Belgium",
+   "France",
+   "Greece",
+   "Spain",
+   "Switzerland"
+  ]
+ },
+ "NCT06392906": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "RADIATION",
+    "name": "Short course radiation therapy",
+    "description": "5 daily radiation treatments"
+   },
+   {
+    "type": "RADIATION",
+    "name": "Standard course radiation therapy",
+    "description": "10 daily radiation treatments"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Clinical Activity Score (CAS) change",
+    "timeframe": "6 months after initiation of IVMP"
+   }
+  ],
+  "countries": [
+   "Thailand"
+  ]
+ },
+ "NCT07333677": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "BIOLOGICAL",
+    "name": "In Vivo CAR-T Therapy",
+    "description": "Participants will receive 3 to 5 intravenous administrations of HN2301, given once every 2 days, according to the study dosing regimen."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Incidence and severity of Adverse Events (AEs)",
+    "timeframe": "From baseline to 3 months after infusion of HN2301"
+   },
+   {
+    "measure": "Remission of Graves' disease",
+    "timeframe": "From baseline to 12 months after infusion of HN2301"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT06334692": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DIAGNOSTIC_TEST",
+    "name": "In-house ELISA, and ELISA kits from \"DBA Italy\" (Abbexa).",
+    "description": "\"Nunc MaxiSorp\" ELISA plates will be coated with recombinant extracellular domain of human nephrin. Patient serum samples will be added in appropriate dilution. Plates will be then incubated with biotin-conjugated anti human IgG antibody followed by incubation with horseradish peroxidase (HRP)-avidin conjugate. Then tetramethylbenzidine substrate will be added, and absorbance read at 450 nm."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Levels of circulating anti-nephrin autoantibodies",
+    "timeframe": "At 1 year. Given the retrospective nature of the study, the indicated time frame refers to the time required to perform "
+   }
+  ],
+  "countries": [
+   "Italy"
+  ]
+ },
+ "NCT06162546": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Registry",
+    "description": "Registry Participation, providing data and clinical specimen"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Obtaining real world data on practice patterns and outcomes in resistant nephrotic syndrome",
+    "timeframe": "up to 20 years"
+   },
+   {
+    "measure": "Enable networking between patients, families, and clinicians affected by resistant nephrotic syndrome",
+    "timeframe": "up to 20 years"
+   },
+   {
+    "measure": "Establish a patient base for facilitated recruitment in studies of drugs, medical devices, and products on resistant nephrotic syndrome",
+    "timeframe": "up to 20 years"
+   },
+   {
+    "measure": "Development of a Biobank to enable research of potential biomarkers and therapy or disease courses",
+    "timeframe": "up to 20 years"
+   }
+  ],
+  "countries": [
+   "Austria"
+  ]
+ },
+ "NCT06607991": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Blinatumomab Treatment",
+    "description": "Blinatumomab treatment for CNI-resistant/Intolerant pediatric steriod-resistant nephrotic syndrome Patients will receive two 5-day cycles of Blinatumomab (5 µg/m²/day, maximum dose 9 µg/day), administered intravenously. The second cycle will begin on the first day of the third week following the first cycle."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Effectiveness and safety of Blinatumomab",
+    "timeframe": "with 24 weeks of Blinatumomab treatment"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT04571658": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Communication",
+    "description": "The NEPTUNE Match study includes an interdisciplinary Communication Team that will translate findings from the Molecular Nephrology Board (MNB) to inform patients of the matching assessment with ongoing clinical trials. This team has considerable experience with conveying complex biomedical research information to patients and families and includes experts in precision nephrology, nephrology patie"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Matched participants with at least one clinical trial receive a MNB assessment",
+    "timeframe": "0-4 weeks"
+   },
+   {
+    "measure": "Efficacy of communication methods at time of communication visit, measured by Teach Back 1 summary score",
+    "timeframe": "12 weeks"
+   },
+   {
+    "measure": "Kidney health endpoints that are specific to each individual trial",
+    "timeframe": "0-60 months"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT01016613": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT04885179": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "no intervention",
+    "description": "No interventions are involved in this observational study."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Survival",
+    "timeframe": "0-99 years"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06493370": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Intravenous ascorbic acid/vitamin C",
+    "description": "A dose escalation regimen will be initiated for each participant at a single dose of 25 g, titrated to up target peak plasma concentration. Once established, IVC will be administered intravenously 2 times per week for the remaining cycles"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Post treatment pathological staging",
+    "timeframe": "Approximately 10 to 12 weeks"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT04916990": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "BEHAVIORAL",
+    "name": "CARES Intervention",
+    "description": "Nurse navigators and masters levels counselors will meet with participants up to 10 times each (10 navigation and 10 counseling) over a 6 month period. The number of sessions will be determined by the length of the patient's treatment. The timing of each session will be guided by a regular assessment to reduce the time from diagnosis to initiation of treatment and the time between subsequent treat"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Time to care",
+    "timeframe": "From study start to study end (6 months)"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06709196": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Pivmecillinam",
+    "description": "Orally administered pivmecillinam 400mg"
+   },
+   {
+    "type": "DRUG",
+    "name": "Pivmecillinam",
+    "description": "Orally administered targeted antimicrobial prophylaxis based on a urine culture."
+   },
+   {
+    "type": "DRUG",
+    "name": "Amoxicillin clavulanic acid",
+    "description": "Orally administered targeted antimicrobial prophylaxis based on a urine culture."
+   },
+   {
+    "type": "DRUG",
+    "name": "Amoxicillin",
+    "description": "Orally administered targeted antimicrobial prophylaxis based on a urine culture."
+   },
+   {
+    "type": "DRUG",
+    "name": "Cefuroxime",
+    "description": "Orally administered targeted antimicrobial prophylaxis based on a urine culture."
+   },
+   {
+    "type": "DRUG",
+    "name": "Ciprofloxacin",
+    "description": "Orally administered targeted antimicrobial prophylaxis based on a urine culture."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Infection-related readmission rate",
+    "timeframe": "90 days after surgery"
+   }
+  ],
+  "countries": [
+   "Denmark"
+  ]
+ },
+ "NCT05944237": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "HTL0039732 Capsules",
+    "description": "HTL0039732 Capsules will be administered orally to fasted participants, although an exploration of food effects may be performed as a single dose at Cycle 0. A single dose will be administered between 3 and 9 days prior to commencement of Cycle 1. From Cycle 1 Day 1, HTL0039732 will be administered on a once daily (QD) schedule. Each administration cycle will consist of 21 days with no break betwe"
+   },
+   {
+    "type": "DRUG",
+    "name": "HTL0039732 Capsules and atezolizumab infusion",
+    "description": "HTL0039732 Capsules will be administered orally on a QD schedule to participants starting on Cycle 1 Day 1. Each administration cycle will consist of 21 days with no break between cycles. Participants will also receive 1200 mg atezolizumab as an IV infusion on Day1 of each cycle (i.e. every 3 weeks). Participants may initially receive up to 18 cycles of HTL0039732 but may continue for a further 18"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Maximum tolerated dose (MTD; Dose Escalation Phase)",
+    "timeframe": "From first dose of HTL0039732 up to the end of Cycle 1, a time frame of up to 30 days."
+   },
+   {
+    "measure": "RP2D (Dose Escalation Phase)",
+    "timeframe": "From first dose of HTL0039732 up to the off-study visit (maximum 115 weeks)."
+   },
+   {
+    "measure": "Number of Adverse Events (AEs) Related to HTL0039732 (Dose Escalation and Expansion Phase)",
+    "timeframe": "Safety data will be collected from the time of informed consent until 28 days after the last dose of HTL0039732. The ave"
+   },
+   {
+    "measure": "Number of AEs Related to Atezolizumab (Dose Escalation and Expansion Phase)",
+    "timeframe": "Safety data will be collected from the time of informed consent until 90 days after the last dose of atezolizumab. The a"
+   }
+  ],
+  "countries": [
+   "United Kingdom"
+  ]
+ },
+ "NCT04947059": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Gemcitabine Hydrochloride combined with continuous saline irrigation",
+    "description": "Immediate single intravesical instillation with gemcitabine combined with continuous saline irrigation in bladder cancer patients who are treated with a transurethral resection of the tumor"
+   },
+   {
+    "type": "DRUG",
+    "name": "Epirubicin Hydrochloride combined with continuous saline irrigation",
+    "description": "Immediate single intravesical instillation with epirubicin combined with continuous saline irrigation in bladder cancer patients who are treated with a transurethral resection of the tumor"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Bladder cancer recurrence",
+    "timeframe": "At 3 months after the transurethral resection of a bladder tumor"
+   },
+   {
+    "measure": "Bladder cancer progression",
+    "timeframe": "At 3 months after the transurethral resection of a bladder tumor"
+   },
+   {
+    "measure": "Bladder cancer recurrence",
+    "timeframe": "At 12 months after the transurethral resection of a bladder tumor"
+   },
+   {
+    "measure": "Bladder cancer progression",
+    "timeframe": "At 12 months after the transurethral resection of a bladder tumor"
+   }
+  ],
+  "countries": [
+   "Greece"
+  ]
+ },
+ "NCT07402954": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "Cadwell Cascade 32 PRO",
+    "description": "Cascade 32 PRO will be to gently deliver electrical pulses."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Safety of Bipolar external carotid artery circulation Stimulation",
+    "timeframe": "Measured Perioperative/Periprocedural and through the immediate post-procedural period (up to 24 hours)."
+   },
+   {
+    "measure": "Feasibility of Bipolar external carotid artery circulation Stimulation",
+    "timeframe": "Measured Perioperative/Periprocedural and through the immediate post-procedural period (up to 24 hours)."
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06995729": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Zavegepant",
+    "description": "Zavegepant 5 mg or 10 mg (dose is weight-dependent)"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Maximum Observed Plasma Concentration (Cmax)",
+    "timeframe": "Day 1: 0 hour, 1.25 hours, 3.5 hours; Day 2: 18 hours"
+   },
+   {
+    "measure": "Time to Reach Maximum Observed Plasma Concentration (Tmax)",
+    "timeframe": "Day 1: 0 hour, 1.25 hours, 3.5 hours; Day 2: 18 hours"
+   },
+   {
+    "measure": "Area Under the Curve From Time Zero to infinity.",
+    "timeframe": "Day 1: 0 hour, 1.25 hours, 3.5 hours; Day 2: 18 hours"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06788977": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "external Trigeminal Nerve Stimulation",
+    "description": "External trigeminal nerve stimulation (e-TNS) is a non-invasive, nondrug option for the acute and preventative treatment of migraine. The device is marketed under the trade name CEFALY and has received clearance from the US Food and Drug Administration (FDA) for the acute and preventative treatment of migraine.\n\nThe CEFALY device provides transcutaneous stimulation of the supraorbital and supratro"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Rate of miscarriage per trimester",
+    "timeframe": "through study completion average 2 years"
+   },
+   {
+    "measure": "Postpartum Bonding according to the Maternal-to-Infant Bonding Scale",
+    "timeframe": "through study completion average 2 years"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06785129": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "Thermal stimuli",
+    "description": "The Thermal Sensory Analyzer (TSA-II or PATHWAY platform - Medoc, Ramat Yishai, Israel) will be used to safely deliver heat and cold stimuli. These devices can deliver relatively complex stimuli via computer control. All targeted stimulus temperatures will be less than 50°C, and participants will be free to remove their arm or leg at any time from the thermode. Noxious cold stimuli will also be de"
+   },
+   {
+    "type": "DEVICE",
+    "name": "Pressure stimuli",
+    "description": "Pressure stimuli will be applied by using a handheld algometer (Wagner Instruments) or the Pressure Algometer (Medoc, Ramat Yishai, Israel). These devices have a round probe that allows quantifying the amount of pressure that is being applied. The Pressure Algometer allows a real-time visual feedback to control and monitor applied pressure rates. Pressure will be applied to the lower leg, volar fo"
+   },
+   {
+    "type": "BEHAVIORAL",
+    "name": "Pain ratings",
+    "description": "Pain intensity and pain unpleasantness ratings will be assessed."
+   },
+   {
+    "type": "BEHAVIORAL",
+    "name": "Conditioned pain modulation (CPM) response",
+    "description": "The CPM paradigm assesses endogenous inhibitory pain modulation efficiency. CPM testing includes the application of a \"test\" stimulus without conditioning (control run, pressure pain thresholds) and a subsequent application of the same test stimulus together with a conditioning stimulus (conditioning run, a 60 second of foot immersion in cold water). The CPM response is the difference in the press"
+   },
+   {
+    "type": "BIOLOGICAL",
+    "name": "Hormonal assessment",
+    "description": "Blood samples (approximately 2 tablespoons) and/or saliva and/or urine will be collected for analyses of sex hormone levels (e.g., prolactin, testosterone, estradiol)."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Conditioned pain modulation (CPM) response",
+    "timeframe": "Baseline"
+   },
+   {
+    "measure": "Sex Hormones",
+    "timeframe": "baseline"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06670053": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Testosterone",
+    "description": "Clinical testosterone therapy\n\nNo research interventions will be used as a part of the study since the research is observational. Testosterone treatment will be prescribed and followed by participant's clinical physician."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Change in headache burden",
+    "timeframe": "Over the two years of the study"
+   },
+   {
+    "measure": "Amygdala volume",
+    "timeframe": "At the end of the two years of study"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT06440915": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Theraputic drug monitoring",
+    "description": "High Performance Liquid Chromatography (HPLC) is used to determine the plasma concentrations of isavuconazole"
+   },
+   {
+    "type": "DRUG",
+    "name": "Isavuconazole",
+    "description": "Isavuconazole"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Plasma concentrations of isavuconazole",
+    "timeframe": "30 minutes before next dosing"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT05406037": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "BIOLOGICAL",
+    "name": "Venous sample",
+    "description": "at Day 0, Day 3, Day 7, Day 14, Day 28 (7 ml blood sample collecting on dry tube) D0 = Diagnostic day"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Values of the biomarker studied in the patient group versus control groups, expressed as Optical density (OD).",
+    "timeframe": "at Day 0"
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT07654647": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "PROCEDURE",
+    "name": "Patient-specific titanium implants for facial reconstruction",
+    "description": "Patient-specific 3D-printed titanium implants will be used for reconstruction of facial bone defects and correction of facial deformities. Each implant will be individually designed based on high-resolution computed tomography (CT) imaging and three-dimensional virtual surgical planning (VSP) using computer-aided design (CAD) software to accurately match the patient's anatomical defect.\n\nThe impla"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Postoperative Complication Rate",
+    "timeframe": "From surgery up to 6 months postoperatively"
+   },
+   {
+    "measure": "Outcome Measure Title: Implant Geometric Accuracy Assessed by 3D Deviation Analysis",
+    "timeframe": "Immediately after laser-based 3D printing of the implant and before surgical implantation."
+   },
+   {
+    "measure": "Aesthetic Improvement Score",
+    "timeframe": "3 months after surgery"
+   }
+  ],
+  "countries": [
+   "Syria"
+  ]
+ },
+ "NCT07339800": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "Death rate in patients with probable or proven invasive Mucorales infection",
+    "timeframe": "Day 15 after infection"
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT07185503": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "liposomal amphotericin B (3-5 mg/kg/day) combined with posaconazole/isavuconazole",
+    "description": "The intervention in this study is a tailored antifungal regimen combining liposomal amphotericin B (L-AmB) (3-5 mg/kg/day IV) with posaconazole or isavuconazole (300 mg/200 mg daily, oral or IV), designed to optimize efficacy and safety in immunocompromised adults with blood cancers and mucormycosis. Dosing and duration are personalized based on clinical response, immune recovery, and organ functi"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Composite Response Rate at End of liposomal amphotericin B (L-AmB) (3-5 mg/kg/day IV) Therapy",
+    "timeframe": "Assessed immediately after discontinuation of liposomal amphotericin B therapy."
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT06031025": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Questionnaire, clinical examination",
+    "description": "At each follow up visit, a clinical examination and anthropometric evaluation will be performed. Parents will fill a structured questionnaire to describe the occurrence and characteristics of functional gastrointestinal disorders."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Prevalence of FGID",
+    "timeframe": "3, 6, 12, 24 months of corrected age"
+   },
+   {
+    "measure": "Frequency of FGID",
+    "timeframe": "3, 6, 12, 24 months of corrected age"
+   },
+   {
+    "measure": "Severity of FGID",
+    "timeframe": "3, 6, 12, 24 months of corrected age"
+   }
+  ],
+  "countries": [
+   "Italy"
+  ]
+ },
+ "NCT06687564": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "PROCEDURE",
+    "name": "Biopsy",
+    "description": "A skin biopsy and a blood sample will be taken to culture the iPS cells and intestinal organoids."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Description of the transcriptional impact of R178, R257, R40 or A136 variants of the ACTG2 gene",
+    "timeframe": "At different stages of their experimental ex vivo development (mesenchymal progenitors, determined smooth muscle cells, "
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT04515251": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DIAGNOSTIC_TEST",
+    "name": "Ultrasound measurements",
+    "description": "ultrasound measurement at the level of the left renal vein on a sagittal plane according to age"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Define the normal range of values of the SMA angle",
+    "timeframe": "1 day"
+   }
+  ],
+  "countries": [
+   "Switzerland"
+  ]
+ },
+ "NCT05535361": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "Distraction Enterogenesis in Adult Patients with Short Bowel Syndrome",
+    "description": "The surgeon verifies the intestinal diameter and selects the appropriate device diameter size. The device is introduced into the lumen of the intestine and advanced about 5-10cm. The surgeon uses 4-0 chromic sutures placed in the seromuscular layer to secure the XL1 Coil within the intestine. The surgeon places metal clips on proximal and distal sutures and in the mesentery adjacent to the XL1 Coi"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Device and procedure related adverse events",
+    "timeframe": "4 to 6 months"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT05879835": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "KiteLock 4% Sterile Catheter Lock Solution",
+    "description": "KiteLock™ is a clear, colorless, and sterile 4% (40 mg/ml) tetrasodium EDTA solution that contains no preservatives, latex, antibiotics, or ethanol and is nonpyrogenic. Tetrasodium salt of EDTA has been shown to disrupt in vivo and ex vivo-generated biofilms by destabilizing the structural integrity of micro-organisms at the cellular level."
+   },
+   {
+    "type": "DEVICE",
+    "name": "Heparin Lock Solution",
+    "description": "Nonpyrogenic, hypertonic preparation of heparin sodium injection, USP with sodium chloride in water for injection."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Incidence of catheter occlusions",
+    "timeframe": "52 weeks"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT05674994": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Methylprednisone/Prednisone",
+    "description": "Patients will be enrolled during their hospitalization in pneumology department, as part of current practice, within 7 days of the screening visit. The investigator will perform randomization by connecting to the eCRF, randomization be stratified for the severity of IPF and the treatment with antifibrotic therapy (Nintedanib or Pirfenidone) (yes/no).\n\nIf patient is randomized in Glucocorticoids Gr"
+   },
+   {
+    "type": "OTHER",
+    "name": "Placebo",
+    "description": "Patients will be enrolled during their hospitalization in pneumology department, as part of current practice, within 7 days of the screening visit. The investigator will perform randomization by connecting to the eCRF, randomization be stratified for the severity of IPF and the treatment with antifibrotic therapy (Nintedanib or Pirfenidone) (yes/no).\n\nIf patient is randomized in Placebo Group:\n\nDa"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Efficacy of glucocorticoids compared to placebo on mortality",
+    "timeframe": "Day 30"
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT07299695": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Intravenous immunoglobulin (IVIG)",
+    "description": "Total dose of 1 g/kg, divided over three consecutive days. The infusion will start at a rate of 0.5 mg/kg/hour for the first 15 minutes and, if no adverse reaction occurs, the rate will then be gradually increased step-wise as tolerated. Premedication with acetaminophen and levocetirizine.\n\nUsual treatment will be co-administered, as described."
+   },
+   {
+    "type": "DRUG",
+    "name": "Usual treatment",
+    "description": "1. Corticosteroids:\n\n   A pulse regimen of IV methylprednisolone at 250 mg daily (days 1 to 3), with no additional corticosteroids thereafter.\n2. Antibiotics:\n\n   Empirical broad-spectrum antibiotics starting from the first 24 hours of hospitalization - respiratory quinolone and/or an antipseudomonal penicillin. Duration or escalation of antibiotics may be adjusted based on available antibiograms "
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "All-cause in-hospital mortality or intubation",
+    "timeframe": "From date of randomization until the outcome mesure - the date of death from any cause or the date of endotracheal intub"
+   }
+  ],
+  "countries": [
+   "Greece"
+  ]
+ },
+ "NCT03297775": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "Presence of interstitial lung disease on high resolution CT (HRCT) chest imaging",
+    "timeframe": "3-5 years"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT07447102": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "BC006",
+    "description": "A 1.0 mg/kg or 0.3 mg/kg IV infusion of BC006 based on the patients weight will be administered Q2W to Week 24."
+   },
+   {
+    "type": "DRUG",
+    "name": "Placebo",
+    "description": "lacebo matching BC006 will be administered by IV infusion on Days 1, 3 and 5, followed by infusions Q4W to Week 48."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Adverse Events (AE), Serious Adverse Events (SAE), Adverse Events of Special Interest (AESI), as well as vital signs, physical examination, 12-lead ECG, and laboratory tests, etc.",
+    "timeframe": "From Baseline up to Week 24"
+   },
+   {
+    "measure": "Absolute change in FVC (mL) from baseline in week 24",
+    "timeframe": "Week 24"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT06589219": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "CMR316",
+    "description": "CMR316 administered via nebulization at single or multiple dose(s) assigned by cohort"
+   },
+   {
+    "type": "DRUG",
+    "name": "Placebo",
+    "description": "Placebo administered via nebulization at single or multiple dose(s) to match CMR316 administration"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Number of participants with adverse events",
+    "timeframe": "Part 1: Day 1 through Day 15; Part 2: Day 1 through Day 36; Part 3: Day 1 through Day 50"
+   },
+   {
+    "measure": "Number of participants with clinically significant abnormal physical exam and vital signs",
+    "timeframe": "Part 1: Day 1 through Day 15; Part 2: Day 1 through Day 36; Part 3: Day 1 through Day 50"
+   },
+   {
+    "measure": "Number of patients with reduced pulmonary function",
+    "timeframe": "Part 1: Day 1 through Day 15; Part 2: Day 1 through Day 36; Part 3: Day 1 through Day 50"
+   },
+   {
+    "measure": "Number of participants with abnormal electrocardiogram readings",
+    "timeframe": "Part 1: Day 1 through Day 15; Part 2: Day 1 through Day 36; Part 3: Day 1 through Day 50"
+   },
+   {
+    "measure": "Number of participants with clinically significant abnormal laboratory test results",
+    "timeframe": "Part 1: Day 1 through Day 15; Part 2: Day 1 through Day 36; Part 3: Day 1 through Day 50"
+   }
+  ],
+  "countries": [
+   "Germany"
+  ]
+ },
+ "NCT05778006": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "Phenotyping ME/CFS: Medical History",
+    "timeframe": "30 years"
+   },
+   {
+    "measure": "Assessment of routine physical examination findings",
+    "timeframe": "30 years"
+   },
+   {
+    "measure": "Number of participants with abnormal laboratory tests results",
+    "timeframe": "30 years"
+   },
+   {
+    "measure": "Number of participants with abnormal technical exam results",
+    "timeframe": "30 years"
+   }
+  ],
+  "countries": [
+   "Germany"
+  ]
+ },
+ "NCT06005246": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "Extensive Phenotyping of ME/CFS Patients",
+    "timeframe": "5 years"
+   }
+  ],
+  "countries": [
+   "Germany"
+  ]
+ },
+ "NCT00032513": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "The primary goal of this study is to identify genetic mutations responsible for CAEBV.",
+    "timeframe": "ongoing"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT05127980": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Data collection: Participant characteristics (Illness course, complications of primary EBV infection and provided treatments)",
+    "description": "Data collection: Participant characteristics (Illness course, complications of primary EBV infection and provided treatments) during 12 months (baseline visit and follow-up visits at 3, 6 and 12 months)."
+   },
+   {
+    "type": "OTHER",
+    "name": "Data collection: blood samples (analysed for EBV serology, auto-antibody-testing/biobanking, RNA expression analyses, procalcitonin)",
+    "description": "Data collection: blood samples (analysed for EBV serology, auto-antibody-testing/biobanking, RNA expression analyses, procalcitonin) during 12 months (baseline visit and follow-up visits at 3, 6 and 12 months)."
+   },
+   {
+    "type": "OTHER",
+    "name": "Data collection: Patient reported outcome (Fatigue questionnaires)",
+    "description": "Data collection: Patient reported outcome (Fatigue questionnaires) at 6 and 12 months."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Change in occurrence of antibodies cross-reacting with autoantigens in patients with primary EBV infection",
+    "timeframe": "at Visit 2 (day 1 (+ 1 day)), Visit 3 (3 months +/- 21 days), Visit 4 (6 months +/- 1 month) and Visit 5 (12 months +/-2"
+   }
+  ],
+  "countries": [
+   "Switzerland"
+  ]
+ },
+ "NCT06908096": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "BIOLOGICAL",
+    "name": "EBV gp350-ferritin vaccine with ALFQ adjuvant",
+    "description": "The adjuvanted gH/gL/gp42-ferritin nanoparticle vaccine is given with gp350-ferritin intramuscularly into the deltoid muscle at 0, 1, and 4 months."
+   },
+   {
+    "type": "BIOLOGICAL",
+    "name": "EBV gH/gL/gp42-ferritin nanoparticle vaccine with ALFQ adjuvant",
+    "description": "The adjuvanted gH/gL/gp42-ferritin nanoparticle vaccine is given with gp350-ferritin intramuscularly into the deltoid muscle at 0, 1, and 4 months."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Local and systemic reactogenicity signs and symptoms during the 7-day period after each vaccination. Unsolicited AEs up to 30 days after each vaccination and SAEs through Day 150.",
+    "timeframe": "Through Day 150"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT07228091": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "UNITY VCS",
+    "description": "UNITY® VCS is a CE-marked, FDA-approved ophthalmic microsurgical system that is indicated for both anterior segment (i.e., phacoemulsification and removal of cataracts) and posterior segment (i.e., vitreoretinal) ophthalmic surgery. The focus of this study will be on combined anterior-posterior segments surgery (phacovitrectomy)."
+   },
+   {
+    "type": "DEVICE",
+    "name": "CONSTELLATION",
+    "description": "CONSTELLATION is a CE-marked, FDA-approved ophthalmic microsurgical system that is indicated for both anterior segment (i.e., phacoemulsification and removal of cataracts) and posterior segment (i.e., vitreoretinal) ophthalmic surgery. The focus of this study will be on combined anterior-posterior segments surgery (phacovitrectomy)."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Proportion of surgeons replying \"efficient\" or \"very efficient\" to the question, \"How would you rate overall OR (operating room) efficiency of the console for the combined phaco-vitrectomy surgery (in",
+    "timeframe": "Up to Day 1 post completion of the surgery"
+   }
+  ],
+  "countries": [
+   "United Kingdom"
+  ]
+ },
+ "NCT06587945": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DIETARY_SUPPLEMENT",
+    "name": "Nicotinamide Riboside",
+    "description": "Oral Nicotinamide Riboside, 2g daily for 4 weeks followed by 1g daily for 16 weeks"
+   },
+   {
+    "type": "OTHER",
+    "name": "Placebo",
+    "description": "Matched placebo"
+   },
+   {
+    "type": "PROCEDURE",
+    "name": "Vitrectomy and Gas tamponade",
+    "description": "Standard of care Vitrectomy surgery for retinal reattachment"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Best-corrected Visual Acuity",
+    "timeframe": "20 weeks postoperatively"
+   },
+   {
+    "measure": "Microperimetry",
+    "timeframe": "20 weeks postoperatively"
+   },
+   {
+    "measure": "Contrast sensitivity",
+    "timeframe": "20 weeks postoperatively"
+   }
+  ],
+  "countries": [
+   "Australia"
+  ]
+ },
+ "NCT07081945": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "hAM",
+    "description": "The hAM stands for human amniotic membrane, which was used to seal inferior retinal breaks after complete vitrectomy."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Retinal reattachment rate",
+    "timeframe": "From enrollment to the end of the 6-month follow-up period."
+   },
+   {
+    "measure": "Visual acuity improvement",
+    "timeframe": "From enrollment to the end of the 6-month follow-up period."
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT07346560": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "PROCEDURE",
+    "name": "Primary ILM peeling",
+    "description": "ILM peeling during the 1st surgical intervention for rRD"
+   },
+   {
+    "type": "PROCEDURE",
+    "name": "Secondary ILM peeling",
+    "description": "ILM peeling is delayed for the time of silicon oil extraction"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Incidence of complications",
+    "timeframe": "From enrollment till 3 months postoperative"
+   }
+  ],
+  "countries": [
+   "Egypt"
+  ]
+ },
+ "NCT06294847": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Ursolvan",
+    "description": "single dose of Ursolvan® (10mg/kg) orally within 24 hours before the surgical intervention, followed by a daily dose of 10mg/kg in two divided doses for 30 days."
+   },
+   {
+    "type": "DRUG",
+    "name": "Placebo",
+    "description": "Patients will receive a single dose of placebo orally within 24 hours before the surgical intervention, followed by two doses per day for 30 days"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Difference in visual recovery (difference between preoperative and postoperative visual acuity) at 3 months postoperative (after a successful reapplication procedure) of at least 6 letters (ETDRS scal",
+    "timeframe": "3 months"
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT04565483": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Benralizumab Prefilled Syringe",
+    "description": "Patients receive BENRALIZUMAB if they meet the criteria for inclusion and non-inclusion at the inclusion visit. Injections take place at the inclusion visit, at 1 month, 2 months, 4 months, 6 months, 8 months, 10 months and 12 months."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Predictive value of early blood gene expression signature of Benralizumab",
+    "timeframe": "12 months"
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT07214753": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "BIOLOGICAL",
+    "name": "benralizumab",
+    "description": "30mg s.c. as per SmPC"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Number and percentage of patients achieving clinical remission, partial and complete, as per SANI Definition",
+    "timeframe": "24 months"
+   }
+  ],
+  "countries": [
+   "Italy"
+  ]
+ },
+ "NCT07323654": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "KT-621",
+    "description": "Oral drug"
+   },
+   {
+    "type": "OTHER",
+    "name": "Placebo",
+    "description": "Oral placebo matched to KT-621"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Change from baseline in pre-bronchodilator FEV1",
+    "timeframe": "From baseline to Week 12"
+   }
+  ],
+  "countries": [
+   "United States",
+   "Argentina",
+   "Germany",
+   "Poland",
+   "Romania",
+   "Serbia",
+   "Slovakia",
+   "South Korea"
+  ]
+ },
+ "NCT06862206": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "benralizumab",
+    "description": "non-interventional"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "asthma control questionnaire",
+    "timeframe": "Week 8"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT00001160": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "68-Gallium Dotatate",
+    "description": "For evaluation risk/benefit evaluation"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Evaluation of thyroid cancer",
+    "timeframe": "As clinically indicated"
+   },
+   {
+    "measure": "Evaluation of thyroid disorders",
+    "timeframe": "As clinically indicated"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT03676647": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Diagnostic DNA Methylation Signature",
+    "description": "Undergo collection of tissue samples"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Sensitivity of the diagnostic deoxyribonucleic acid (DNA) methylation signature (DDMS)",
+    "timeframe": "Up to 5 years"
+   },
+   {
+    "measure": "Specificity of DDMS",
+    "timeframe": "Up to 5 years"
+   },
+   {
+    "measure": "Positive predictive value (PPV)",
+    "timeframe": "Up to 5 years"
+   },
+   {
+    "measure": "Negative predictive value (NPV)",
+    "timeframe": "Up to 5 years"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT05726981": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "PROCEDURE",
+    "name": "Fine needle aspiration biopsy (FNAB)",
+    "description": "Thyroid FNAB is a minimally invasive procedure performed routinely by an experienced sonographer.\n\nIt is a safe and brief procedure, performed with a 27G or 25G (very fine) needle (3 needles, i.e. 1 needle per pass)"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Cytological change after thermoablation, as described by the 2017 Bethesda classification in six classes, scale ranging from I to VI.",
+    "timeframe": "Day of the Fine Needle Aspiration Biopsy"
+   }
+  ],
+  "countries": [
+   "France"
+  ]
+ },
+ "NCT06984991": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DIAGNOSTIC_TEST",
+    "name": "fine needle aspiration",
+    "description": "Different needle sizes will be used in FNA sampling ; 5ml syringe with 21G needle, 3ml syringe with 23G needle or 22G Quincke tip spinal needle will be used for FNA. Needle insertion will be directed either trans-isthmic or lateral cervical approach. Aspirations will be conducted at different angles and within different nodule regions using a to-and-fro motion till getting blood stain in the needl"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "rate of sample adequacy",
+    "timeframe": "Day 1"
+   }
+  ],
+  "countries": [
+   "Egypt"
+  ]
+ },
+ "NCT03549754": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "1. Age of particpants",
+    "timeframe": "At Baseline"
+   },
+   {
+    "measure": "2. Percentage of Participants by Sex",
+    "timeframe": "At baseline"
+   },
+   {
+    "measure": "3. Percentage of Participants by Ethnicity",
+    "timeframe": "At Baseline"
+   },
+   {
+    "measure": "4. Percentage of Participants by Education Level",
+    "timeframe": "At Baseline"
+   },
+   {
+    "measure": "5. Percentage of Participants by Marital Status",
+    "timeframe": "At Baseline"
+   }
+  ],
+  "countries": [
+   "Brazil",
+   "Chile",
+   "Costa Rica",
+   "Côte d’Ivoire",
+   "Egypt",
+   "Georgia",
+   "Ghana",
+   "Hong Kong"
+  ]
+ },
+ "NCT05770687": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "SGLT2 inhibitor",
+    "description": "Patients started on SGLT2 inhibitors after PCI for AMI"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Major adverse cardiac and cerebrovascular events",
+    "timeframe": "2 years"
+   }
+  ],
+  "countries": [
+   "South Korea"
+  ]
+ },
+ "NCT06487130": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "N/A Observational Registry",
+    "description": "Registry participants may select to be contacted for future research and/or embedded clinical trials. Such interventions will require associated ethics review \\& approval."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Australian peri-/menopause experience as measured by qualitative self-report generated via participation & feedback of a critical mass of at least 10,000 registry participants, broadly representative ",
+    "timeframe": "Through input completion per participant, an average of 4 years"
+   }
+  ],
+  "countries": [
+   "Australia"
+  ]
+ },
+ "NCT06305208": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "Endoscopic gastric suturing",
+    "description": "Endoscopic suturing of the stomach to reduce volume and promote weight loss with either the Apollo Overstitch or Overstitch Sx system."
+   },
+   {
+    "type": "DEVICE",
+    "name": "Endoscopic gastric plication",
+    "description": "Endoscopic plication of the stomach to reduce volume and promote weight loss with either the POSE or Endomina system."
+   },
+   {
+    "type": "DEVICE",
+    "name": "Revisional gastroplasty",
+    "description": "Endoscopic suturing or plication of the stomach among patients who have previously undergone gastroplasty, sleeve gastrectomy, or Roux-en-Y gastric bypass to restrict the stomach and promote weight loss"
+   },
+   {
+    "type": "DEVICE",
+    "name": "Transoral outlet reduction endoscopy (TORe)",
+    "description": "Reduction of the size of the gastro-jejunal anastomosis among patients who have previously undergone Roux-en-Y gastric bypass to promote weight loss. A variety of techniques may be used alone or in isolation including suturing (Apollo Overstitch), plication (POSE), argon photocoagulation, and endoscopic submucosal resection/dissection."
+   },
+   {
+    "type": "DEVICE",
+    "name": "Duodenal mucosal resurfacing (DMR)",
+    "description": "Endoscopic ablation of the post-ampullary duodenal mucosal to enhance improvement in glycaemic control among patients with type 2 diabetes."
+   },
+   {
+    "type": "DEVICE",
+    "name": "Intragastric balloon(s)",
+    "description": "The insertion of an intragastric implant into the stomach, which is subsequently filled with air or water to promote weight loss. Several intragastric balloons are available including Allurion, Heliosphere, Obalon, Orbera, and Spatz."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Total body weight loss percentage (TBWL%)",
+    "timeframe": "6-months, 1-, 2-, 3-, 5-years"
+   },
+   {
+    "measure": "Change in glycated haemoglobin (HbA1c; mmol/mol)",
+    "timeframe": "6-months, 1-, 2-, 3-, 5-years"
+   },
+   {
+    "measure": "Change in the number and dose of anti-diabetic medications",
+    "timeframe": "6-months, 1-, 2-, 3-, 5-years"
+   }
+  ],
+  "countries": [
+   "United Kingdom"
+  ]
+ },
+ "NCT06328751": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DEVICE",
+    "name": "Case group",
+    "description": "Meditation will be taught through a video played on a Samsung® gear VR virtual reality glasses with monitoring of the patient's vital signs by the Samsung® smart watch to promote better quality of life and control cancer pain in patients treated at the Pain Therapy and Palliative Care Service."
+   },
+   {
+    "type": "BEHAVIORAL",
+    "name": "Active control group",
+    "description": "Meditation will be taught through a video played on a Samsung® cell phone with monitoring of the patient's vital signs by the Samsung® smart watch to promote better quality of life and control cancer pain in patients treated at the Pain Therapy and Palliative Care Service."
+   },
+   {
+    "type": "BEHAVIORAL",
+    "name": "Passive control group",
+    "description": "Meditation will be taught through a audio played on a Samsung® cell phone with monitoring of the patient's vital signs by the Samsung® smart watch to promote better quality of life and control cancer pain in patients treated at the Pain Therapy and Palliative Care Service."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Brief Pain Inventory (Reduced version)",
+    "timeframe": "six months"
+   },
+   {
+    "measure": "McGill Quality of Life Questionnaire",
+    "timeframe": "six months"
+   }
+  ],
+  "countries": [
+   "Brazil"
+  ]
+ },
+ "NCT07009886": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Communication",
+    "description": "Participants meet with clinician"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Safety and Adverse Events (AEs)",
+    "timeframe": "Through study completion; an average of 1 year"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ },
+ "NCT07319039": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [
+   {
+    "type": "OTHER",
+    "name": "Cerebral fMRI",
+    "description": "Neuroimaging data will be collected using a 3T Siemens Prisma MRI scanner (Prisma; Siemens, Erlangen, Germany) equipped with a 64-channel head coil. Functional T2\\*-weighted images will be acquired during the resting-state protocol. The sequences used will be gradient-echo planar imaging. Additionally, a single-band reference volume will be obtained prior to the functional acquisition, using the s"
+   },
+   {
+    "type": "OTHER",
+    "name": "Immersive virtual reality",
+    "description": "In collaboration with HypnoVR (HypnoVR, Strasbourg, France), patients will subsequently be provided with a visual immersion in a virtual world along with a scripted hypnotic voice track. HypnoVR's solution is certified as a medical device and has been studied in various medical contexts. The program will be adapted to run on its own dedicated PC instead of a (non-MRI compatible) HMD. As described "
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Feasibility of the study",
+    "timeframe": "18 months after the beginning of the study"
+   }
+  ],
+  "countries": [
+   "Switzerland"
+  ]
+ },
+ "NCT06040801": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "BEHAVIORAL",
+    "name": "Frailty intervention measures",
+    "description": "Providing management and recommendations based on the specific impairment domain.\n\nAssessment domain:\n\n* Functional status\n* Nutrition\n* Comorbidity\n* Mobility/Falls\n* Mood\n* Cognition\n* Polypharmacy\n* Social support."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Examine the completion rate of chemotherapy in frail and non-frail patient groups three months after treatment initiation to assess whether frailty affects tolerance.",
+    "timeframe": "After completion 3 months chemotherapy treatment."
+   },
+   {
+    "measure": "Utilize CTCAE v5.0 to assess the grade and frequency of adverse events and treatment-related toxicity in frail and non-frail patient groups, and compare the differences between the two.",
+    "timeframe": "After completion 3 months chemotherapy treatment."
+   },
+   {
+    "measure": "Assess the level of quality of life in frail and non-frail patient groups before and after treatment using EORTC QLQ-C30 v3 and EORTC QLQ-ELD14.",
+    "timeframe": "After completion 3 months chemotherapy treatment."
+   }
+  ],
+  "countries": [
+   "Taiwan"
+  ]
+ },
+ "NCT06636656": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "BI 3032950 intravenous (Part A)",
+    "description": "BI 3032950 intravenous (Part A)"
+   },
+   {
+    "type": "DRUG",
+    "name": "BI 3032950 subcutaneous (Part B)",
+    "description": "BI 3032950 subcutaneous (Part B)"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Proportion of patients with clinical remission defined by the modified Mayo Score [mSC] with mSC of 0 to 2, including stool frequency subscore [SFS] of 0 or 1, rectal bleeding subscore [RBS] of 0, and",
+    "timeframe": "Up to Week 12"
+   }
+  ],
+  "countries": [
+   "United States",
+   "Belgium",
+   "Czechia",
+   "Poland",
+   "Serbia",
+   "Slovakia"
+  ]
+ },
+ "NCT07184996": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Duvakitug",
+    "description": "Pharmaceutical form:Solution for Injection-Route of administration:SC injection"
+   },
+   {
+    "type": "DRUG",
+    "name": "Placebo",
+    "description": "Pharmaceutical form:Solution for injection-Route of administration:SC injection"
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "Proportion of participants achieving clinical remission.",
+    "timeframe": "Week 12"
+   }
+  ],
+  "countries": [
+   "United States",
+   "Bulgaria",
+   "Canada",
+   "China",
+   "Czechia",
+   "France",
+   "Georgia",
+   "Germany"
+  ]
+ },
+ "NCT07261826": {
+  "study_type": "OBSERVATIONAL",
+  "interventions": [],
+  "primary_outcomes": [
+   {
+    "measure": "8-Week Clinical Cure of Recurrent CDI",
+    "timeframe": "8 weeks after the final FMT treatment"
+   },
+   {
+    "measure": "Treatment Response in Chronic Constipation at 8 Weeks",
+    "timeframe": "8 weeks after the final FMT treatment"
+   },
+   {
+    "measure": "Corticosteroid-Free Clinical Remission in IBD at 8 Weeks",
+    "timeframe": "8 weeks after the final FMT treatment"
+   },
+   {
+    "measure": "Symptom Relief in IBS at 3 Months",
+    "timeframe": "3 months after the final FMT treatment"
+   },
+   {
+    "measure": "Treatment Response in Autism at 12 Weeks",
+    "timeframe": "12 weeks after the final FMT treatment"
+   }
+  ],
+  "countries": [
+   "China"
+  ]
+ },
+ "NCT07258771": {
+  "study_type": "INTERVENTIONAL",
+  "interventions": [
+   {
+    "type": "DRUG",
+    "name": "Oral Upadacitinib",
+    "description": "Doses start at 45milligrams (mg) during acute induction and post-acute induction phase (total of 8 weeks).\n\nDuring the Dose Optimization Maintenance Phase, unrescued participants not undergoing colectomy will continue upadacitinib therapy through week 48, with dosage (45 mg, 30 mg, or 15 mg) titrated based on clinical symptoms and inflammatory biomarkers."
+   },
+   {
+    "type": "DRUG",
+    "name": "Intravenous Methylprednisolone",
+    "description": "Intravenous (IV) given 60mg daily (in divided or full doses). Inpatients will receive this in the hospital. Outpatient participants can get this at an infusion center.\n\nFollowing completion of the Acute Induction Phase (inpatient cohort: 0-10 days ending at discharge; outpatient cohort: 5 days), participants will be placed on a tapering dose of prednisone."
+   },
+   {
+    "type": "DRUG",
+    "name": "Oral Upadacitinib Placebo",
+    "description": "The placebo will be discontinued at discharge for the inpatient cohort and after day 5 for the outpatient cohort."
+   },
+   {
+    "type": "DRUG",
+    "name": "Oral prednisolone Taper",
+    "description": "Following completion of the Acute Induction Phase (inpatient cohort: 0-10 days ending at discharge; outpatient cohort: 5 days), participants will be placed on a tapering dose of prednisone.\n\nParticipants randomized to the corticosteroid arm will be placed on prednisone at a dose 40mg to be tapered by 5mg/week.\n\nParticipants randomized to the upadacitinib and corticosteroid arm will be placed on 2 "
+   },
+   {
+    "type": "DRUG",
+    "name": "Oral Prednisone - Hospital Dose Steroids",
+    "description": "Oral Prednisone 75mg daily can be given for 5 days to participants enrolled in the Outpatient Cohort as an alternative to getting IV methylprednisolone 60mg in an infusion center. Following completion of the Acute Induction Phase, participants will be placed on a tapering dose of prednisone."
+   }
+  ],
+  "primary_outcomes": [
+   {
+    "measure": "The proportion of participants with an initial clinical response without rescue therapy or colectomy by treatment Day 5 after initiating induction therapy in the upadacitinib and corticosteroid arm co",
+    "timeframe": "Treatment 5 days"
+   }
+  ],
+  "countries": [
+   "United States"
+  ]
+ }
+}

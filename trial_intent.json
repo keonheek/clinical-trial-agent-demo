@@ -100,8 +100,8 @@
     "confidence": "high",
     "intent": "therapeutic",
     "signals": [
-      "phase:PHASE3 (interventional)",
-      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+      "title-keyword:treatment of->therapeutic",
+      "phase:PHASE3 (interventional)"
     ]
   },
   "NCT05678374": {
@@ -126,6 +126,7 @@
     "signals": [
       "title-keyword:pembrolizumab->therapeutic",
       "title-keyword:radiation therapy->therapeutic",
+      "title-keyword:therapy for->therapeutic",
       "phase:PHASE 2 (interventional)"
     ]
   },
@@ -311,8 +312,8 @@
     "confidence": "high",
     "intent": "therapeutic",
     "signals": [
-      "phase:PHASE 4 (interventional)",
-      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+      "title-keyword:treatment of->therapeutic",
+      "phase:PHASE 4 (interventional)"
     ]
   },
   "NCT06908096": {
@@ -324,19 +325,19 @@
     ]
   },
   "NCT06963203": {
-    "confidence": "low",
-    "intent": "observational",
+    "confidence": "high",
+    "intent": "therapeutic",
     "signals": [
-      "phase:NA (non-interventional, against therapeutic but not decisive)",
-      "no keyword signal; NA/non-interventional phase-only default -> observational"
+      "title-keyword:ectomy for->therapeutic",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
     ]
   },
   "NCT06995729": {
     "confidence": "high",
     "intent": "therapeutic",
     "signals": [
-      "phase:PHASE1 (interventional)",
-      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+      "title-keyword:treatment of->therapeutic",
+      "phase:PHASE1 (interventional)"
     ]
   },
   "NCT07081945": {
@@ -372,11 +373,11 @@
     ]
   },
   "NCT07185503": {
-    "confidence": "low",
-    "intent": "observational",
+    "confidence": "high",
+    "intent": "therapeutic",
     "signals": [
-      "phase:NA (non-interventional, against therapeutic but not decisive)",
-      "no keyword signal; NA/non-interventional phase-only default -> observational"
+      "title-keyword:efficacy and safety->therapeutic",
+      "phase:NA (non-interventional, against therapeutic but not decisive)"
     ]
   },
   "NCT07214727": {
@@ -399,16 +400,16 @@
     "confidence": "high",
     "intent": "therapeutic",
     "signals": [
-      "phase:PHASE3 (interventional)",
-      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+      "title-keyword:treatment of->therapeutic",
+      "phase:PHASE3 (interventional)"
     ]
   },
   "NCT07308392": {
     "confidence": "high",
     "intent": "therapeutic",
     "signals": [
-      "phase:PHASE2 (interventional)",
-      "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+      "title-keyword:efficacy and safety->therapeutic",
+      "phase:PHASE2 (interventional)"
     ]
   },
   "NCT07333677": {

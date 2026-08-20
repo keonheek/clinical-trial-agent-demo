@@ -31,7 +31,6 @@ Run `python3 api/answer.py` for the offline self-tests (no LLM calls, no server)
 """
 import json
 import os
-import re
 import sys
 from http.server import BaseHTTPRequestHandler
 
@@ -52,7 +51,8 @@ anthropic_client.CACHE_DIR = "/tmp/cache"
 from pipeline import (rematch_affected_criteria, recommend, apply_recommendation, effect_of,
                       VALID_VERDICTS, classify_action, apply_evidence_sufficiency,
                       detect_gaps, generate_questions, dedupe_followups)
-from action_policy import trial_level_action, trial_is_blocked, enrich_questions, criterion_id, normalize_criterion_text
+from action_policy import (trial_level_action, trial_is_blocked, enrich_questions,
+                           criterion_id)
 from patient_need import classify_patient_need
 
 with open(os.path.join(ROOT, "patients.json"), encoding="utf-8") as f:
@@ -167,17 +167,11 @@ def _restore_server_fields(patient_id, trials):
             t["phase"] = k["phase"]
     return trials
 
-STOPWORDS = set(
-    "the a an of and or in on at to is are was were for this that with have has any does "
-    "he she his her what when who which been from as by".split()
-)
-
-
-def _tokens(text):
-    return set(
-        w for w in re.findall(r"[a-z0-9%.]+", normalize_criterion_text(text))
-        if w not in STOPWORDS and len(w) > 2
-    )
+# One token set for the whole system: action_policy's list includes the generic clinical words
+# ("patient", "history", "evidence", ...) that this local list lacked -- the gap let an
+# acute-exacerbation answer flip an unrelated consent criterion via the token "patient"
+# (PI-persona catch, 08-20). Same normalization, same stopwords, everywhere.
+from action_policy import _tokens  # noqa: E402
 
 
 def find_affected(question_text, trials):

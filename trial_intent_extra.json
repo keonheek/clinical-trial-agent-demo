@@ -142,8 +142,8 @@
   "intent": "therapeutic",
   "confidence": "high",
   "signals": [
-   "phase:PHASE3 (interventional)",
-   "no title signal; phase-only default -> therapeutic (eligibility-text keywords ignored here: they describe patient history/exclusions, never the trial's own intervention)"
+   "title-keyword:efficacy and safety->therapeutic",
+   "phase:PHASE3 (interventional)"
   ]
  },
  "NCT07261826": {

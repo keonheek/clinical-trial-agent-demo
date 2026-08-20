@@ -11,7 +11,7 @@
       "maxDuration": 60
     },
     "api/trace.py": {
-      "includeFiles": "{traces*.json,coverage_map*.json,trial_intent*.json,question_options.json,action_policy.py,ranking.py,patient_need.py}"
+      "includeFiles": "{traces*.json,coverage_map*.json,trial_intent*.json,question_options.json,action_policy.py,ranking.py,patient_need.py,trial_design.json}"
     },
     "api/patients.py": {
       "includeFiles": "{patients*.json,traces_extra.json}"

@@ -108,6 +108,14 @@ try:
 except FileNotFoundError:
     pass
 
+# Patient-facing design facts (what a joiner receives + what is measured), fetched by
+# gen_design.py from ClinicalTrials.gov v2 -- same sidecar pattern, never touches trials_raw.
+try:
+    with open(os.path.join(HERE, "trial_design.json"), encoding="utf-8") as f:
+        _TRIAL_DESIGN = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    _TRIAL_DESIGN = {}
+
 # Trial-intent enrichment for the frozen demo traces, same sidecar pattern (see build_trial_intent.py
 # and api/trace.py's identical block): the trace's trial entries carry only nct_id/title/phase, not
 # enough to classify from, so the precomputed {intent, confidence} comes from trial_intent.json.
@@ -125,6 +133,9 @@ try:
             _intent = _TRIAL_INTENT.get(_tr["nct_id"])
             if _intent:
                 _tr["trial_intent"] = {"intent": _intent["intent"], "confidence": _intent["confidence"]}
+            _d = _TRIAL_DESIGN.get(_tr["nct_id"])
+            if _d:
+                _tr["design"] = _d
 except FileNotFoundError:
     pass
 

@@ -54,6 +54,14 @@ try:
 except FileNotFoundError:
     pass  # coverage is an enrichment, never a reason for the trace endpoint to fail
 
+# Patient-facing design facts (what a joiner receives + what is measured), fetched by
+# gen_design.py from ClinicalTrials.gov v2 -- same sidecar pattern, never touches trials_raw.
+try:
+    with open(os.path.join(ROOT, "trial_design.json"), encoding="utf-8") as f:
+        _TRIAL_DESIGN = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    _TRIAL_DESIGN = {}
+
 # Trial-intent enrichment (therapeutic/supportive/care_delivery/observational), same sidecar
 # pattern: build_trial_intent.py classifies every trial in trials_raw.json + trials_stress.json
 # from its own raw fields (title/phase/conditions/eligibility text) into trial_intent.json
@@ -73,6 +81,11 @@ try:
             intent = _TRIAL_INTENT.get(_t["nct_id"])
             if intent:
                 _t["trial_intent"] = {"intent": intent["intent"], "confidence": intent["confidence"]}
+                _d = _TRIAL_DESIGN.get(_t["nct_id"])
+
+                if _d:
+
+                    _t["design"] = _d
 except FileNotFoundError:
     pass  # trial_intent is an enrichment, never a reason for the trace endpoint to fail
 
