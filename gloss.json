@@ -7034,5 +7034,573 @@
  "31278751db2b": {
   "src": "Intravenous immunoglobulin (IVIG)",
   "ko": "정맥 면역글로불린(IVIG)"
+ },
+ "853482ceab22": {
+  "src": "Isavuconazole",
+  "ko": "이사부코나졸"
+ },
+ "76996d8fc3f9": {
+  "src": "KT-621",
+  "ko": "KT-621"
+ },
+ "ea94ea5fd794": {
+  "src": "Kidney health endpoints that are specific to each individual trial",
+  "ko": "각 개별 시험에 특정한 신장 건강 평가변수"
+ },
+ "5be9bfbfb263": {
+  "src": "Laparoscopic cholecystectomy",
+  "ko": "복강경 담낭절제술"
+ },
+ "77ec3a112008": {
+  "src": "Laparoscopic cholecystectomy will be performed using the standard American 4-port technique, insufflation will be achieved using CO2 to 15mmHg of pressure. Calot's triangle will be dissected until the critical view of safety is reached, being careful to dissect above the R4U line. After reaching the critical view of safety, two proximal and one distal clip will be placed on both the cystic conduct",
+  "ko": "복강경 담낭절제술은 표준 미국식 4포트 기법을 사용하여 시행하며, CO2를 이용해 15mmHg 압력까지 기복을 형성합니다. Calot 삼각을 R4U 선 위쪽을 조심스럽게 박리하면서 안전 확인 시야(critical view of safety)에 도달할 때까지 박리합니다. 안전 확인 시야에 도달한 후, 담낭관에 근위부 클립 2개와 원위부 클립 1개를 겹니다"
+ },
+ "ca57af714564": {
+  "src": "Levels of circulating anti-nephrin autoantibodies",
+  "ko": "순환 항네프린 자가항체 수치"
+ },
+ "f6973f2d2ecd": {
+  "src": "Major adverse cardiac and cerebrovascular events",
+  "ko": "주요 심혈관 및 뇌혈관 부작용 사건"
+ },
+ "44b9eaef3c0d": {
+  "src": "Major complications (rates)",
+  "ko": "주요 합병증(비율)"
+ },
+ "96a8f2d9a18f": {
+  "src": "Matched participants with at least one clinical trial receive a MNB assessment",
+  "ko": "적어도 하나의 임상시험과 매칭된 참가자는 MNB 평가를 받습니다"
+ },
+ "ec2e3e44695d": {
+  "src": "Matched placebo",
+  "ko": "매칭된 위약"
+ },
+ "c35463420764": {
+  "src": "Maximum Observed Plasma Concentration (Cmax)",
+  "ko": "최대 관찰 혈장 농도(Cmax)"
+ },
+ "8fafd8089de8": {
+  "src": "Maximum tolerated dose (MTD; Dose Escalation Phase)",
+  "ko": "최대 내약 용량(MTD; 용량 증량 단계)"
+ },
+ "dcfceeb23f75": {
+  "src": "McGill Quality of Life Questionnaire",
+  "ko": "McGill 삶의 질 설문지"
+ },
+ "17e8e4d5f9ec": {
+  "src": "Meditation will be taught through a audio played on a Samsung® cell phone with monitoring of the patient's vital signs by the Samsung® smart watch to promote better quality of life and control cancer pain in patients treated at the Pain Therapy and Palliative Care Service.",
+  "ko": "통증 치료 및 완화 치료 서비스를 받는 환자의 삶의 질 향상과 암 통증 조절을 위해, Samsung® 스마트워치로 환자의 활력징후를 모니터링하면서 Samsung® 휴대폰으로 재생되는 오디오를 통해 명상을 교육할 것입니다."
+ },
+ "9a9afe8b13bc": {
+  "src": "Meditation will be taught through a video played on a Samsung® cell phone with monitoring of the patient's vital signs by the Samsung® smart watch to promote better quality of life and control cancer pain in patients treated at the Pain Therapy and Palliative Care Service.",
+  "ko": "통증 치료 및 완화 치료 서비스를 받는 환자의 삶의 질 향상과 암 통증 조절을 위해, Samsung® 스마트워치로 환자의 활력징후를 모니터링하면서 Samsung® 휴대폰으로 재생되는 영상을 통해 명상을 교육할 것입니다."
+ },
+ "6ad42ba8a62e": {
+  "src": "Meditation will be taught through a video played on a Samsung® gear VR virtual reality glasses with monitoring of the patient's vital signs by the Samsung® smart watch to promote better quality of life and control cancer pain in patients treated at the Pain Therapy and Palliative Care Service.",
+  "ko": "통증 치료 및 완화 치료 서비스를 받는 환자의 삶의 질 향상과 암 통증 조절을 위해, Samsung® 스마트워치로 환자의 활력징후를 모니터링하면서 Samsung® 기어 VR 가상현실 안경으로 재생되는 영상을 통해 명상을 교육할 것입니다."
+ },
+ "bf40927fa48c": {
+  "src": "Methimazole",
+  "ko": "메티마졸"
+ },
+ "67df28d69879": {
+  "src": "Methimazole used in this study was produced by Merck, Germany, and its trade name is Thyrozol. The specification of this drug is 10mg/ tablet, and its validity period is 36 months. It was approved by FDA in 2009 and listed in China in 2011.",
+  "ko": "이 연구에 사용된 메티마졸은 독일 Merck사에서 생산되었으며, 제품명은 Thyrozol입니다. 이 약물의 규격은 정당 10mg이며, 유효기간은 36개월입니다. 2009년 FDA 승인을 받았고 2011년 중국에 등재되었습니다."
+ },
+ "8abdd78381ab": {
+  "src": "Methylprednisone/Prednisone",
+  "ko": "메틸프레드니손/프레드니손"
+ },
+ "4451a5f9e9ec": {
+  "src": "Microperimetry",
+  "ko": "미세시야계 검사(Microperimetry)"
+ },
+ "927bc6fcd88c": {
+  "src": "N/A Observational Registry",
+  "ko": "해당 없음, 관찰 레지스트리"
+ },
+ "0fa957afe4f8": {
+  "src": "Negative predictive value (NPV)",
+  "ko": "음성 예측도(NPV)"
+ },
+ "f9fb052dc995": {
+  "src": "Neuroimaging data will be collected using a 3T Siemens Prisma MRI scanner (Prisma; Siemens, Erlangen, Germany) equipped with a 64-channel head coil. Functional T2\\*-weighted images will be acquired during the resting-state protocol. The sequences used will be gradient-echo planar imaging. Additionally, a single-band reference volume will be obtained prior to the functional acquisition, using the s",
+  "ko": "신경영상 데이터는 64채널 헤드코일이 장착된 3T Siemens Prisma MRI 스캐너(Prisma; Siemens, 독일 에를랑겐)를 사용하여 수집됩니다. 휴지기 프로토콜 동안 기능적 T2* 강조 영상이 획득됩니다. 사용되는 시퀀스는 그래디언트 에코 평면 영상법입니다. 또한 기능적 영상 획득에 앞서 단일 밴드 기준 볼륨이 획득됩니다."
+ },
+ "f33d3d17fa7a": {
+  "src": "Nicotinamide Riboside",
+  "ko": "니코틴아마이드 리보사이드"
+ },
+ "e2e5fcee2e70": {
+  "src": "Number and percentage of patients achieving clinical remission, partial and complete, as per SANI Definition",
+  "ko": "SANI 정의에 따라 부분 및 완전 임상 관해에 도달한 환자 수 및 비율"
+ },
+ "13e1591b0d18": {
+  "src": "Number of AEs Related to Atezolizumab (Dose Escalation and Expansion Phase)",
+  "ko": "아테졸리주맙과 관련된 이상반응(AE) 수 (용량 증량 및 확장 단계)"
+ },
+ "1d5ff0ea0265": {
+  "src": "Number of Adverse Events (AEs) Related to HTL0039732 (Dose Escalation and Expansion Phase)",
+  "ko": "HTL0039732와 관련된 이상반응(AE) 수 (용량 증량 및 확장 단계)"
+ },
+ "9fa4f6bda920": {
+  "src": "Number of participants with abnormal laboratory tests results",
+  "ko": "비정상 검사실 검사 결과를 보인 참가자 수"
+ },
+ "a9254dc249c9": {
+  "src": "Number of participants with abnormal technical exam results",
+  "ko": "비정상 기술 검사 결과를 보인 참가자 수"
+ },
+ "f04c40213073": {
+  "src": "Number of patients with no adverse reactions during the treatment of Graves' disease",
+  "ko": "그레이브스병 치료 중 이상반응이 없었던 환자 수"
+ },
+ "b8edcbbb34b2": {
+  "src": "Nurse navigators and masters levels counselors will meet with participants up to 10 times each (10 navigation and 10 counseling) over a 6 month period. The number of sessions will be determined by the length of the patient's treatment. The timing of each session will be guided by a regular assessment to reduce the time from diagnosis to initiation of treatment and the time between subsequent treat",
+  "ko": "간호 내비게이터와 석사 학위 상담사는 6개월 동안 참가자와 최대 10회씩(내비게이션 10회, 상담 10회) 만나게 됩니다. 세션 횟수는 환자의 치료 기간에 따라 결정됩니다. 각 세션의 시기는 진단부터 치료 시작까지의 시간과 이후 치료 사이의 시간을 줄이기 위한 정기적인 평가에 따라 결정됩니다."
+ },
+ "7e81462163c2": {
+  "src": "Obtaining real world data on practice patterns and outcomes in resistant nephrotic syndrome",
+  "ko": "저항성 신증후군에서 실제 임상 진료 양상 및 결과에 대한 실제 임상 데이터(real world data) 확보"
+ },
+ "acabe822b9ac": {
+  "src": "Oral Nicotinamide Riboside, 2g daily for 4 weeks followed by 1g daily for 16 weeks",
+  "ko": "경구 니코틴아마이드 리보사이드, 4주간 하루 2g 복용 후 16주간 하루 1g 복용"
+ },
+ "61ca86ab4e70": {
+  "src": "Oral Prednisone - Hospital Dose Steroids",
+  "ko": "경구 프레드니손 - 입원 용량 스테로이드"
+ },
+ "955db1194aca": {
+  "src": "Oral Prednisone 75mg daily can be given for 5 days to participants enrolled in the Outpatient Cohort as an alternative to getting IV methylprednisolone 60mg in an infusion center. Following completion of the Acute Induction Phase, participants will be placed on a tapering dose of prednisone.",
+  "ko": "외래 코호트에 등록된 참가자에게는 정맥주사 메틸프레드니솔론 60mg을 주입센터에서 투여받는 대신 경구 프레드니손 75mg을 하루 1회 5일간 투여할 수 있습니다. 급성 유도 단계 완료 후 참가자는 프레드니손 용량을 점차 줄여가는 테이퍼링 요법을 받게 됩니다."
+ },
+ "1d2cfd49925e": {
+  "src": "Oral Upadacitinib",
+  "ko": "경구 우파다시티닙"
+ },
+ "8b35e3471aba": {
+  "src": "Oral Upadacitinib Placebo",
+  "ko": "경구 우파다시티닙 위약"
+ },
+ "7c1bfcf7fd6e": {
+  "src": "Oral drug",
+  "ko": "경구 약물"
+ },
+ "90f133470f7d": {
+  "src": "Oral placebo matched to KT-621",
+  "ko": "KT-621과 일치시킨 경구 위약"
+ },
+ "56faf8af6347": {
+  "src": "Oral prednisolone Taper",
+  "ko": "경구 프레드니솔론 테이퍼링"
+ },
+ "692e385ced0d": {
+  "src": "Orally administered pivmecillinam 400mg",
+  "ko": "경구용 피브메실리남 400mg"
+ },
+ "61e19bcb45af": {
+  "src": "Orally administered targeted antimicrobial prophylaxis based on a urine culture.",
+  "ko": "소변 배양 검사 결과에 기반한 경구용 표적 항균 예방요법"
+ },
+ "e56654807388": {
+  "src": "Outcome Measure Title: Implant Geometric Accuracy Assessed by 3D Deviation Analysis",
+  "ko": "결과 측정 지표 제목: 3차원 편차 분석을 통한 임플란트 기하학적 정확도 평가"
+ },
+ "8f994b565f05": {
+  "src": "Pain intensity and pain unpleasantness ratings will be assessed.",
+  "ko": "통증 강도 및 통증 불쾌감 정도를 평가할 것입니다."
+ },
+ "5272a8fbffea": {
+  "src": "Pain ratings",
+  "ko": "통증 평가"
+ },
+ "d41dbe4742c9": {
+  "src": "Participants meet with clinician",
+  "ko": "참가자가 임상의를 만납니다"
+ },
+ "9e21dd4d58fe": {
+  "src": "Passive control group",
+  "ko": "소극적 대조군"
+ },
+ "590547c3e48a": {
+  "src": "Patient-specific 3D-printed titanium implants will be used for reconstruction of facial bone defects and correction of facial deformities. Each implant will be individually designed based on high-resolution computed tomography (CT) imaging and three-dimensional virtual surgical planning (VSP) using computer-aided design (CAD) software to accurately match the patient's anatomical defect.\n\nThe impla",
+  "ko": "환자 맞춤형 3D 프린팅 티타늄 임플란트가 안면골 결손 재건 및 안면 기형 교정에 사용될 것입니다. 각 임플란트는 고해상도 컴퓨터단층촬영(CT) 영상과 컴퓨터 지원 설계(CAD) 소프트웨어를 이용한 3차원 가상 수술 계획(VSP)에 기반하여 개별적으로 설계되어 환자의 해부학적 결손 부위와 정확히 일치하도록 제작됩니다.\n\n임플란"
+ },
+ "7287102df652": {
+  "src": "Patient-specific titanium implants for facial reconstruction",
+  "ko": "안면 재건을 위한 환자 맞춤형 티타늄 임플란트"
+ },
+ "eaba8618f55d": {
+  "src": "Patients receive BENRALIZUMAB if they meet the criteria for inclusion and non-inclusion at the inclusion visit. Injections take place at the inclusion visit, at 1 month, 2 months, 4 months, 6 months, 8 months, 10 months and 12 months.",
+  "ko": "환자는 등록 방문 시 포함 및 비포함 기준을 충족하는 경우 벤랄리주맙을 투여받습니다. 주사는 등록 방문 시, 그리고 1개월, 2개월, 4개월, 6개월, 8개월, 10개월, 12개월 시점에 이루어집니다."
+ },
+ "2dfc712770a0": {
+  "src": "Patients started on SGLT2 inhibitors after PCI for AMI",
+  "ko": "급성 심근경색(AMI)에 대한 경피적 관상동맥중재술(PCI) 이후 SGLT2 억제제를 시작한 환자"
+ },
+ "148619f58016": {
+  "src": "Patients will be enrolled during their hospitalization in pneumology department, as part of current practice, within 7 days of the screening visit. The investigator will perform randomization by connecting to the eCRF, randomization be stratified for the severity of IPF and the treatment with antifibrotic therapy (Nintedanib or Pirfenidone) (yes/no).\n\nIf patient is randomized in Glucocorticoids Gr",
+  "ko": "환자는 현재 진료 관행에 따라 선별검사 방문 후 7일 이내에 호흡기내과 입원 중 등록됩니다. 연구자는 eCRF에 접속하여 무작위 배정을 시행하며, 무작위 배정은 특발성 폐섬유증(IPF)의 중증도와 항섬유화 치료(닌테다닙 또는 피르페니돈) 여부(예/아니오)에 따라 층화됩니다.\n\n환자가 글루코코르티코이드 군에 무작위 배정된 경우"
+ },
+ "6d40ad8fbec0": {
+  "src": "Patients will be enrolled during their hospitalization in pneumology department, as part of current practice, within 7 days of the screening visit. The investigator will perform randomization by connecting to the eCRF, randomization be stratified for the severity of IPF and the treatment with antifibrotic therapy (Nintedanib or Pirfenidone) (yes/no).\n\nIf patient is randomized in Placebo Group:\n\nDa",
+  "ko": "환자는 현재 진료 관행에 따라 선별검사 방문 후 7일 이내에 호흡기내과 입원 중 등록됩니다. 연구자는 eCRF에 접속하여 무작위 배정을 시행하며, 무작위 배정은 특발성 폐섬유증(IPF)의 중증도와 항섬유화 치료(닌테다닙 또는 피르페니돈) 여부(예/아니오)에 따라 층화됩니다.\n\n환자가 위약 군에 무작위 배정된 경우:\n\n용량"
+ },
+ "318865188f84": {
+  "src": "Patients with pancreatic fluid collections will be undergoing EUS-guided drainage and/or endoscopic necrosectomy",
+  "ko": "췌장액 저류가 있는 환자는 초음파 내시경(EUS) 유도 배액술 및/또는 내시경적 괴사조직제거술을 받게 됩니다"
+ },
+ "a8d26b099b0a": {
+  "src": "Pharmaceutical form:Solution for Injection-Route of administration:SC injection",
+  "ko": "제형: 주사용 용액 - 투여 경로: 피하(SC) 주사"
+ },
+ "e4b55825641a": {
+  "src": "Pharmaceutical form:Solution for injection-Route of administration:SC injection",
+  "ko": "제형: 주사용 용액 - 투여 경로: 피하(SC) 주사"
+ },
+ "ee3a78597ff7": {
+  "src": "Phenotyping ME/CFS: Medical History",
+  "ko": "근육통성뇌척수염/만성피로증후군(ME/CFS) 표현형 분석: 병력"
+ },
+ "01a7c0d8700b": {
+  "src": "Pivmecillinam",
+  "ko": "피브메실리남"
+ },
+ "19bf56b95c95": {
+  "src": "Placebo",
+  "ko": "위약"
+ },
+ "1d0df02f09a5": {
+  "src": "Plasma concentrations of isavuconazole",
+  "ko": "이사부코나졸의 혈장 농도"
+ },
+ "1c85e81230a9": {
+  "src": "Positive predictive value (PPV)",
+  "ko": "양성 예측도(PPV)"
+ },
+ "a6b54c7262d8": {
+  "src": "Post treatment pathological staging",
+  "ko": "치료 후 병리학적 병기"
+ },
+ "9a17840d0220": {
+  "src": "Postoperative Complication Rate",
+  "ko": "수술 후 합병증 발생률"
+ },
+ "41b85f2ebc55": {
+  "src": "Postpartum Bonding according to the Maternal-to-Infant Bonding Scale",
+  "ko": "Maternal-to-Infant Bonding Scale에 따른 산후 유대감"
+ },
+ "3da15c3bf9fb": {
+  "src": "Predictive value of early blood gene expression signature of Benralizumab",
+  "ko": "Benralizumab의 초기 혈액 유전자 발현 시그니처의 예측 값"
+ },
+ "f26174cdb644": {
+  "src": "Presence of interstitial lung disease on high resolution CT (HRCT) chest imaging",
+  "ko": "흉부 고해상도 CT(HRCT) 영상에서 간질성 폐질환의 존재"
+ },
+ "205b60eed3b7": {
+  "src": "Pressure stimuli",
+  "ko": "압력 자극"
+ },
+ "f67b5032b85c": {
+  "src": "Pressure stimuli will be applied by using a handheld algometer (Wagner Instruments) or the Pressure Algometer (Medoc, Ramat Yishai, Israel). These devices have a round probe that allows quantifying the amount of pressure that is being applied. The Pressure Algometer allows a real-time visual feedback to control and monitor applied pressure rates. Pressure will be applied to the lower leg, volar fo",
+  "ko": "압력 자극은 휴대용 압력계(Wagner Instruments) 또는 압력 통각계(Medoc, Ramat Yishai, Israel)를 사용하여 가해집니다. 이 장치들은 가해지는 압력의 양을 정량화할 수 있는 둥근 탐침을 가지고 있습니다. 압력 통각계는 가해지는 압력 속도를 통제하고 모니터링할 수 있도록 실시간 시각적 피드백을 제공합니다. 압력은 하퇴부, 손바닥쪽"
+ },
+ "bcf855342b21": {
+  "src": "Prevalence of FGID",
+  "ko": "FGID(기능성 위장관 질환)의 유병률"
+ },
+ "0e325f2ea449": {
+  "src": "Primary ILM peeling",
+  "ko": "1차 내경계막(ILM) 박리"
+ },
+ "55fc26d78951": {
+  "src": "Proportion of participants achieving clinical remission.",
+  "ko": "임상적 관해에 도달한 참가자의 비율"
+ },
+ "b290c6c923de": {
+  "src": "Proportion of patients with clinical remission defined by the modified Mayo Score [mSC] with mSC of 0 to 2, including stool frequency subscore [SFS] of 0 or 1, rectal bleeding subscore [RBS] of 0, and",
+  "ko": "수정 메이요 점수(mSC)로 정의된 임상적 관해를 보이는 환자의 비율. mSC 0~2점, 배변 횟수 하위 점수(SFS) 0 또는 1점, 직장 출혈 하위 점수(RBS) 0점 포함"
+ },
+ "99609b9f2eb6": {
+  "src": "Proportion of surgeons replying \"efficient\" or \"very efficient\" to the question, \"How would you rate overall OR (operating room) efficiency of the console for the combined phaco-vitrectomy surgery (in",
+  "ko": "\"복합 백내장-유리체절제술을 위한 콘솔의 전반적인 수술실(OR) 효율성을 어떻게 평가하시겠습니까?\"라는 질문에 \"효율적\" 또는 \"매우 효율적\"이라고 응답한 외과의사의 비율"
+ },
+ "5640dd8904aa": {
+  "src": "Providing management and recommendations based on the specific impairment domain.\n\nAssessment domain:\n\n* Functional status\n* Nutrition\n* Comorbidity\n* Mobility/Falls\n* Mood\n* Cognition\n* Polypharmacy\n* Social support.",
+  "ko": "특정 장애 영역에 근거한 관리 및 권고 제공.\n\n평가 영역:\n\n* 기능 상태\n* 영양\n* 동반질환\n* 이동성/낙상\n* 기분\n* 인지\n* 다약제 복용\n* 사회적 지지"
+ },
+ "332aacca4ac0": {
+  "src": "Questionnaire, clinical examination",
+  "ko": "설문지, 임상 검사"
+ },
+ "84d3ed2796fa": {
+  "src": "RP2D (Dose Escalation Phase)",
+  "ko": "권장 2상 용량(RP2D)(용량 증량 단계)"
+ },
+ "2d60a8fd9944": {
+  "src": "Rate of miscarriage per trimester",
+  "ko": "삼분기별 유산율"
+ },
+ "19f0af317648": {
+  "src": "Reduction of the size of the gastro-jejunal anastomosis among patients who have previously undergone Roux-en-Y gastric bypass to promote weight loss. A variety of techniques may be used alone or in isolation including suturing (Apollo Overstitch), plication (POSE), argon photocoagulation, and endoscopic submucosal resection/dissection.",
+  "ko": "이전에 체중 감량을 위해 루와이 위우회술을 받은 환자에서 위공장 문합부 크기의 축소. 봉합술(Apollo Overstitch), 주름형성술(POSE), 아르곤 광응고술, 내시경적 점막하 절제/박리 등 다양한 기법이 단독 또는 병용으로 사용될 수 있습니다."
+ },
+ "1fd6a805dae7": {
+  "src": "Registry",
+  "ko": "레지스트리"
+ },
+ "feb295670714": {
+  "src": "Registry Participation, providing data and clinical specimen",
+  "ko": "레지스트리 참여, 데이터 및 임상 검체 제공"
+ },
+ "c7fd30077c7b": {
+  "src": "Registry participants may select to be contacted for future research and/or embedded clinical trials. Such interventions will require associated ethics review \\& approval.",
+  "ko": "레지스트리 참가자는 향후 연구 및/또는 부속 임상시험을 위해 연락받는 것을 선택할 수 있습니다. 이러한 중재에는 관련 윤리 검토 및 승인이 필요합니다."
+ },
+ "c4a474ded28f": {
+  "src": "Retinal reattachment rate",
+  "ko": "망막 재부착률"
+ },
+ "6fad69a82d1d": {
+  "src": "Revisional gastroplasty",
+  "ko": "재수술 위형성술(Revisional gastroplasty)"
+ },
+ "81d7493e9700": {
+  "src": "SGLT2 inhibitor",
+  "ko": "SGLT2 억제제"
+ },
+ "787dd3018cf2": {
+  "src": "Safety and Adverse Events (AEs)",
+  "ko": "안전성 및 이상반응(AEs)"
+ },
+ "5513af5fe52b": {
+  "src": "Safety of Bipolar external carotid artery circulation Stimulation",
+  "ko": "양극성 외경동맥 순환 자극의 안전성"
+ },
+ "79ee34be168b": {
+  "src": "Secondary ILM peeling",
+  "ko": "이차 내경계막(ILM) 박리술"
+ },
+ "1fe4e3c0b9d2": {
+  "src": "Sensitivity of the diagnostic deoxyribonucleic acid (DNA) methylation signature (DDMS)",
+  "ko": "진단용 데옥시리보핵산(DNA) 메틸화 시그니처(DDMS)의 민감도"
+ },
+ "31da38fa07f2": {
+  "src": "Severity of FGID",
+  "ko": "FGID의 중증도"
+ },
+ "aa30198e462d": {
+  "src": "Sex Hormones",
+  "ko": "성호르몬"
+ },
+ "89cee32c78b3": {
+  "src": "Short course radiation therapy",
+  "ko": "단기 방사선 치료"
+ },
+ "6fe81da16619": {
+  "src": "Specificity of DDMS",
+  "ko": "DDMS의 특이도"
+ },
+ "8738b87d411e": {
+  "src": "Standard course radiation therapy",
+  "ko": "표준 방사선 치료"
+ },
+ "c1eeb9ae63b1": {
+  "src": "Standard of care Vitrectomy surgery for retinal reattachment",
+  "ko": "망막 재부착을 위한 표준 치료 유리체절제술"
+ },
+ "652f64f65871": {
+  "src": "Symptom Relief in IBS at 3 Months",
+  "ko": "3개월 시점의 IBS 증상 완화"
+ },
+ "95ff41018aae": {
+  "src": "The CPM paradigm assesses endogenous inhibitory pain modulation efficiency. CPM testing includes the application of a \"test\" stimulus without conditioning (control run, pressure pain thresholds) and a subsequent application of the same test stimulus together with a conditioning stimulus (conditioning run, a 60 second of foot immersion in cold water). The CPM response is the difference in the press",
+  "ko": "CPM 패러다임은 내인성 억제성 통증 조절 효율을 평가합니다. CPM 검사는 조건화 없이 '테스트' 자극(대조 시행, 압력 통증 역치)을 적용한 후, 동일한 테스트 자극과 조건화 자극(조건화 시행, 60초간 발을 찬물에 담그기)을 함께 적용하는 것을 포함합니다. CPM 반응은 압력의 차이입니다"
+ },
+ "51aee1b2146f": {
+  "src": "The NEPTUNE Match study includes an interdisciplinary Communication Team that will translate findings from the Molecular Nephrology Board (MNB) to inform patients of the matching assessment with ongoing clinical trials. This team has considerable experience with conveying complex biomedical research information to patients and families and includes experts in precision nephrology, nephrology patie",
+  "ko": "NEPTUNE Match 연구에는 분자신장학위원회(MNB)의 연구 결과를 진행 중인 임상시험과의 매칭 평가에 대해 환자에게 알리기 위해 번역하는 다학제 커뮤니케이션 팀이 포함되어 있습니다. 이 팀은 복잡한 생의학 연구 정보를 환자 및 가족에게 전달하는 데 상당한 경험을 보유하고 있으며, 정밀 신장학, 신장학 환자"
+ },
+ "41d7f5d424ae": {
+  "src": "The Thermal Sensory Analyzer (TSA-II or PATHWAY platform - Medoc, Ramat Yishai, Israel) will be used to safely deliver heat and cold stimuli. These devices can deliver relatively complex stimuli via computer control. All targeted stimulus temperatures will be less than 50°C, and participants will be free to remove their arm or leg at any time from the thermode. Noxious cold stimuli will also be de",
+  "ko": "온열 감각 분석기(TSA-II 또는 PATHWAY 플랫폼 - Medoc, Ramat Yishai, Israel)를 사용하여 열 및 냉 자극을 안전하게 전달합니다. 이 장치는 컴퓨터 제어를 통해 비교적 복잡한 자극을 전달할 수 있습니다. 목표로 하는 모든 자극 온도는 50°C 미만이며, 참가자는 언제든지 온열판(thermode)에서 팔이나 다리를 뗄 수 있습니다. 유해한 냉자극 또한 전달될"
+ },
+ "826fe4987725": {
+  "src": "The hAM stands for human amniotic membrane, which was used to seal inferior retinal breaks after complete vitrectomy.",
+  "ko": "hAM은 인간 양막(human amniotic membrane)을 의미하며, 완전 유리체절제술 후 하방 망막열공을 봉합하는 데 사용되었습니다."
+ },
+ "c2c3b19cb1e0": {
+  "src": "The insertion of an intragastric implant into the stomach, which is subsequently filled with air or water to promote weight loss. Several intragastric balloons are available including Allurion, Heliosphere, Obalon, Orbera, and Spatz.",
+  "ko": "체중 감량을 촉진하기 위해 위 안에 삽입한 후 공기 또는 물로 채우는 위내 삽입물의 시술입니다. Allurion, Heliosphere, Obalon, Orbera, Spatz 등 여러 위내 풍선이 사용 가능합니다."
+ },
+ "4727342f793a": {
+  "src": "The placebo will be discontinued at discharge for the inpatient cohort and after day 5 for the outpatient cohort.",
+  "ko": "위약은 입원 환자군의 경우 퇴원 시, 외래 환자군의 경우 5일째 이후 중단됩니다."
+ },
+ "49fbafa9420f": {
+  "src": "The primary goal of this study is to identify genetic mutations responsible for CAEBV.",
+  "ko": "이 연구의 주요 목표는 CAEBV의 원인이 되는 유전자 돌연변이를 밝히는 것입니다."
+ },
+ "274e7bb45e97": {
+  "src": "The proportion of participants with an initial clinical response without rescue therapy or colectomy by treatment Day 5 after initiating induction therapy in the upadacitinib and corticosteroid arm co",
+  "ko": "유파다시티닙 및 코르티코스테로이드 투여군에서 유도 치료 시작 후 치료 5일째까지 구조요법이나 대장절제술 없이 초기 임상 반응을 보인 참가자의 비율"
+ },
+ "c264eb1154ca": {
+  "src": "The surgeon verifies the intestinal diameter and selects the appropriate device diameter size. The device is introduced into the lumen of the intestine and advanced about 5-10cm. The surgeon uses 4-0 chromic sutures placed in the seromuscular layer to secure the XL1 Coil within the intestine. The surgeon places metal clips on proximal and distal sutures and in the mesentery adjacent to the XL1 Coi",
+  "ko": "외과의가 장의 직경을 확인하고 적절한 직경 크기의 기구를 선택합니다. 기구는 장의 내강으로 삽입되어 약 5-10cm 전진됩니다. 외과의는 장막근층에 4-0 크로믹 봉합사를 사용하여 XL1 코일을 장 내에 고정합니다. 외과의는 근위부 및 원위부 봉합 부위와 XL1 코일에 인접한 장간막에 금속 클립을 배치합니다."
+ },
+ "bccd120177f7": {
+  "src": "Theraputic drug monitoring",
+  "ko": "치료약물 모니터링"
+ },
+ "f5f405c05cb5": {
+  "src": "Thermal stimuli",
+  "ko": "온열 자극"
+ },
+ "7484a0c9ac1f": {
+  "src": "Thyroid FNAB is a minimally invasive procedure performed routinely by an experienced sonographer.\n\nIt is a safe and brief procedure, performed with a 27G or 25G (very fine) needle (3 needles, i.e. 1 needle per pass)",
+  "ko": "갑상선 세침흡인생검(FNAB)은 숙련된 초음파 검사자가 일상적으로 시행하는 최소 침습적 시술입니다.\n\n이는 27G 또는 25G(매우 가는) 바늘로(바늘 3개, 즉 1회 삽입당 바늘 1개) 시행되는 안전하고 짧은 시술입니다."
+ },
+ "cb16924a1f1c": {
+  "src": "Time to Reach Maximum Observed Plasma Concentration (Tmax)",
+  "ko": "최고 혈장 농도 도달 시간 (Tmax)"
+ },
+ "f9907d03f52f": {
+  "src": "Time to care",
+  "ko": "치료까지 걸리는 시간"
+ },
+ "2c77c5b6fd1c": {
+  "src": "Total body weight loss percentage (TBWL%)",
+  "ko": "총 체중 감소율 (TBWL%)"
+ },
+ "ff93a160b3de": {
+  "src": "Total dose of 1 g/kg, divided over three consecutive days. The infusion will start at a rate of 0.5 mg/kg/hour for the first 15 minutes and, if no adverse reaction occurs, the rate will then be gradually increased step-wise as tolerated. Premedication with acetaminophen and levocetirizine.\n\nUsual treatment will be co-administered, as described.",
+  "ko": "총 용량 1 g/kg을 3일 연속으로 나누어 투여합니다. 주입은 처음 15분 동안 0.5 mg/kg/시간의 속도로 시작하며, 이상반응이 없으면 이후 견딜 수 있는 만큼 단계적으로 속도를 점진적으로 증가시킵니다. 아세트아미노펜과 레보세티리진으로 전처치합니다.\n\n기술된 바와 같이 통상적인 치료가 병행됩니다."
+ },
+ "0d79b62f021d": {
+  "src": "Transoral outlet reduction endoscopy (TORe)",
+  "ko": "경구 출구 축소 내시경술 (TORe)"
+ },
+ "f4eaaed6bd6d": {
+  "src": "Treatment Response in Autism at 12 Weeks",
+  "ko": "12주째 자폐증 치료 반응"
+ },
+ "e909143fae66": {
+  "src": "Treatment Response in Chronic Constipation at 8 Weeks",
+  "ko": "8주째 만성 변비 치료 반응"
+ },
+ "08a0cefaba20": {
+  "src": "Treatment outcomes in patients undergoing endoscopic treatment of pancreatic fluid collections according to timing of treatment.",
+  "ko": "췌장액 저류에 대한 내시경 치료 시기에 따른 치료 결과."
+ },
+ "3347c9437ab9": {
+  "src": "UNITY VCS",
+  "ko": "UNITY VCS"
+ },
+ "cdaee0eb8607": {
+  "src": "UNITY® VCS is a CE-marked, FDA-approved ophthalmic microsurgical system that is indicated for both anterior segment (i.e., phacoemulsification and removal of cataracts) and posterior segment (i.e., vitreoretinal) ophthalmic surgery. The focus of this study will be on combined anterior-posterior segments surgery (phacovitrectomy).",
+  "ko": "UNITY® VCS는 전안부(즉, 백내장 초음파유화술 및 제거)와 후안부(즉, 유리체망막) 안과 수술 모두에 적응증을 가진 CE 마크 및 FDA 승인 안과 미세수술 시스템입니다. 이 연구는 전안부-후안부 복합 수술(백내장-유리체절제술 병행수술, phacovitrectomy)에 초점을 맞춥니다."
+ },
+ "133740e020d2": {
+  "src": "Ultrasound measurements",
+  "ko": "초음파 측정"
+ },
+ "23268fac8828": {
+  "src": "Undergo collection of tissue samples",
+  "ko": "조직 검체 채취"
+ },
+ "6d9a41b1c4b7": {
+  "src": "Usual treatment",
+  "ko": "통상적인 치료"
+ },
+ "f43e8ffb7fda": {
+  "src": "Utilize CTCAE v5.0 to assess the grade and frequency of adverse events and treatment-related toxicity in frail and non-frail patient groups, and compare the differences between the two.",
+  "ko": "CTCAE v5.0을 사용하여 노쇠 환자군과 비노쇠 환자군에서 이상반응 및 치료 관련 독성의 등급과 빈도를 평가하고, 두 군 간 차이를 비교한다."
+ },
+ "7d31d2e4b813": {
+  "src": "Values of the biomarker studied in the patient group versus control groups, expressed as Optical density (OD).",
+  "ko": "환자군과 대조군에서 연구된 바이오마커의 값으로, 광학 밀도(OD)로 표시함."
+ },
+ "44e00f449418": {
+  "src": "Venous sample",
+  "ko": "정맥 검체"
+ },
+ "4cef7f3f45aa": {
+  "src": "Visual acuity improvement",
+  "ko": "시력 개선"
+ },
+ "c1f737158f5b": {
+  "src": "Vitrectomy and Gas tamponade",
+  "ko": "유리체절제술 및 가스 충전술"
+ },
+ "cb4f3346c0dd": {
+  "src": "Zavegepant",
+  "ko": "자베게판트"
+ },
+ "1131e84ddb6e": {
+  "src": "Zavegepant 5 mg or 10 mg (dose is weight-dependent)",
+  "ko": "자베게판트 5mg 또는 10mg (용량은 체중에 따라 다름)"
+ },
+ "9b9f05ed6727": {
+  "src": "asthma control questionnaire",
+  "ko": "천식 조절 설문지"
+ },
+ "98faa5d7c8bf": {
+  "src": "at Day 0, Day 3, Day 7, Day 14, Day 28 (7 ml blood sample collecting on dry tube) D0 = Diagnostic day",
+  "ko": "0일차, 3일차, 7일차, 14일차, 28일차에 (건조 튜브에 7ml 혈액 채취) D0 = 진단일"
+ },
+ "978a76d01c02": {
+  "src": "benralizumab",
+  "ko": "벤랄리주맙"
+ },
+ "a2b98a16b4c0": {
+  "src": "diabetes mellitus following an episode of acute pancreatitis",
+  "ko": "급성 췌장염 발생 후의 당뇨병"
+ },
+ "903fb3385980": {
+  "src": "external Trigeminal Nerve Stimulation",
+  "ko": "외부 삼차신경 자극술"
+ },
+ "d8796fd683ad": {
+  "src": "fine needle aspiration",
+  "ko": "미세침흡인검사"
+ },
+ "9aed04b41cae": {
+  "src": "hAM",
+  "ko": "hAM"
+ },
+ "00142f725299": {
+  "src": "lacebo matching BC006 will be administered by IV infusion on Days 1, 3 and 5, followed by infusions Q4W to Week 48.",
+  "ko": "BC006과 짝지어진 위약은 1일차, 3일차, 5일차에 정맥 주입으로 투여되며, 이후 48주차까지 4주마다 주입한다."
+ },
+ "11a9556deb56": {
+  "src": "mHLA-DR analysis",
+  "ko": "mHLA-DR 분석"
+ },
+ "927b7205d40a": {
+  "src": "mHLA-DR analysis will be realized on Cyto-Chex® BCT anticoagulant tubes (5mL). Each sample will be transported and centralized at the Immunology Laboratory of Edouard Herriot Hospital and analyzed by flow cytometry.\n\nSamples will be collected :\n\n* The day of surgery before intervention\n* The day of surgery after intervention\n* At postoperative day one\n* At postoperative day two\n* At postoperative",
+  "ko": "mHLA-DR 분석은 Cyto-Chex® BCT 항응고 튜브(5mL)를 사용하여 실시한다. 각 검체는 Edouard Herriot 병원 면역학 검사실로 운반, 집중 관리되어 유세포분석으로 분석된다.\n\n검체는 다음과 같이 채취된다:\n\n* 수술 당일 시술 전\n* 수술 당일 시술 후\n* 수술 후 1일째\n* 수술 후 2일째\n* 수술 후"
+ },
+ "1e8acdcf0553": {
+  "src": "mHLA-DR expressed by numbers of antibody per cells (Ab/C)",
+  "ko": "mHLA-DR을 세포당 항체 수(Ab/C)로 표시함"
+ },
+ "809389e1f80b": {
+  "src": "non-interventional",
+  "ko": "비중재적"
+ },
+ "5f0b73a4fe8b": {
+  "src": "pre-diabetes mellitus following an episode of acute pancreatitis",
+  "ko": "급성 췌장염 발생 후의 당뇨병전단계"
+ },
+ "2b9100d6ad61": {
+  "src": "rate of sample adequacy",
+  "ko": "검체 적절성 비율"
+ },
+ "ebf3f18077e1": {
+  "src": "ultrasound measurement at the level of the left renal vein on a sagittal plane according to age",
+  "ko": "나이에 따라 시상면에서 좌측 신정맥 높이에서 측정한 초음파 측정치"
  }
 }

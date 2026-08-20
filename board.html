@@ -630,6 +630,7 @@ var I18N = {
     pvMeasured: "What is measured (the results they and their doctor get)",
     pvNote: "Source: the trial's own registration on ClinicalTrials.gov, shown as registered (English).",
     sysRankTip: "System rank, unchanged. You moved this card as a review note.",
+    fuChecking: "Checking whether your answers open any new questions...",
     pvWhere: "Where it runs",
     pvAbroad: "This trial has no Korean site. Travel, residency and language requirements may make joining impossible even if the criteria fit.",
     mgJoin: "Join",
@@ -810,6 +811,7 @@ var I18N = {
     pvMeasured: "측정하는 것 (환자와 의료진이 받게 되는 결과)",
     pvNote: "출처: ClinicalTrials.gov에 등록된 시험 정보 원문 (영문 그대로 표시).",
     sysRankTip: "시스템 순위는 그대로입니다. 이 카드는 검토 의견으로 옮겨진 상태입니다.",
+    fuChecking: "답변으로 새로 확인할 것이 생겼는지 살펴보는 중입니다...",
     pvWhere: "시행 국가",
     pvAbroad: "국내 시행 기관이 없는 시험입니다. 기준이 맞아도 이동·거주·언어 요건 때문에 실제 참여가 어려울 수 있습니다.",
     mgJoin: "참여",
@@ -2162,6 +2164,9 @@ function submitBatch(){
   } else {
     payload.answers = pending;
   }
+  // measured 08-20: the round itself is ~8s, the follow-up check adds ~9s. The reviewer sees
+  // what their answer did first; follow-ups arrive in a second request moments later.
+  payload.want_followups = false;
   fetch("/api/answer", {
     method: "POST", headers: {"Content-Type": "application/json"},
     body: JSON.stringify(payload),
@@ -2174,6 +2179,7 @@ function submitBatch(){
     applyAnswerResponse(pending, data);
     unlock();
     updateBatchBar();
+    fetchFollowups(payload.patient_id, pending);
   }).catch(function(err){
     clearTimeout(deadline);
     recover(err && err.name === "AbortError" ? t("errTimeout") : t("errPrefix") + String(err));
@@ -2182,6 +2188,52 @@ function submitBatch(){
 document.getElementById("batchBtn").addEventListener("click", submitBatch);
 
 // 응답 1건 = 라운드 1건. 반영 직전 상태를 스냅샷으로 보관해 '이 라운드 되돌리기'를 지원.
+// Second request: "does this answer open new questions?" Runs after the round is already on
+// screen, so its ~9s never sits in front of the reviewer's own result.
+function mergeFollowups(list){
+  var added = 0;
+  (list || []).forEach(function(fq){
+    if (!fq || !fq.question) return;
+    var norm = normTagText(fq.question);
+    if ((cur.questions || []).some(function(q){ return normTagText(q.question) === norm; })) return;
+    fq.followup = true;
+    cur.questions.push(fq);
+    added += 1;
+  });
+  if (added){
+    var last = events.filter(function(e){ return e.kind === "round" && !e.reverted; }).pop();
+    if (last) last.followupCount = (last.followupCount || 0) + added;  // history stays truthful
+  }
+  return added;
+}
+function showFollowupError(msg){
+  cur.followupNote = String(msg);
+  renderChatAll();
+}
+function fetchFollowups(patientId, pending){
+  if (!cur || cur.id !== patientId) return;
+  var note = document.getElementById("batchNote");
+  if (note) note.textContent = t("fuChecking");
+  var body = {
+    patient_id: patientId,
+    followups_only: true,
+    trials: cur.trials,
+    extended_record: cur.extendedRecord,
+    asked_questions: (cur.questions || []).map(function(q){ return q.question; }),
+    answers: pending
+  };
+  fetch("/api/answer", {
+    method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)
+  }).then(function(r){ return r.json(); }).then(function(data){
+    if (!cur || cur.id !== patientId) return;            // patient switched while we waited
+    if (note) note.textContent = t("batchNote");
+    var fresh = mergeFollowups(data.followup_questions || []);
+    if (data.followup_error) showFollowupError(data.followup_error);
+    if (fresh){ renderChatAll(); renderLiveStatus(); renderHistory(); }
+  }).catch(function(){
+    if (note) note.textContent = t("batchNote");         // silent: the round itself succeeded
+  });
+}
 function applyAnswerResponse(pending, data){
   var snapshot = {
     trials: deepCopy(cur.trials), questions: deepCopy(cur.questions),

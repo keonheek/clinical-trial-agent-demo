@@ -343,6 +343,32 @@ def handle(body, client_ip="?"):
 
     # never trust the client for the vignette itself -- only the fixed 10 patients exist here.
     patient = {"patient_id": patient_id, "text": PATIENTS_BY_ID[patient_id]["text"]}
+
+    # FOLLOW-UPS AS A SECOND REQUEST (08-20, measured): the core round (rematch + recommend) is
+    # ~8s while the follow-up chain (detect_gaps -> generate_questions) adds ~9s of inherently
+    # sequential work. Making the reviewer wait through it before seeing their own answer's
+    # effect is the wrong trade, so the client now fires the round with want_followups=false
+    # and asks for follow-ups here, separately, with the post-answer trials it just received.
+    if body.get("followups_only") is True:
+        if _rate_limited(client_ip, _followup_calls, FOLLOWUP_RATE_LIMIT_PER_MIN):
+            return {"followup_questions": [], "followup_error": "추가 질문 확인 요청이 너무 잦습니다."}
+        trials_copy = [dict(t, criteria=[dict(c) for c in t.get("criteria", [])]) for t in trials]
+        _restore_server_fields(patient_id, trials_copy)
+        for t in trials_copy:
+            for c in t.get("criteria", []):
+                c["criterion_id"] = criterion_id(t.get("nct_id"), c.get("text", ""))
+        _asked = body.get("asked_questions")
+        _asked = _asked if isinstance(_asked, list) else []
+        asked_texts = [str(x)[:MAX_QUESTION_LEN] for x in _asked[:MAX_ASKED_QUESTIONS]
+                       if isinstance(x, str) and x.strip()] + [q for q, _ in pairs]
+        try:
+            followups, gaps = _generate_followups(
+                patient_id, patient["text"], extended_record, trials_copy, asked_texts)
+            if followups:
+                enrich_questions(followups, gaps, trials_copy)
+            return {"followup_questions": followups}
+        except Exception as e:  # noqa: BLE001 -- never fail the (already delivered) round
+            return {"followup_questions": [], "followup_error": f"추가 질문 생성 실패: {e}"}
     # the patient's need, from the server-side vignette (deterministic rules, no LLM) -- the
     # same classification recommend() applies inside the ranking; attached for the UI.
     patient_need = classify_patient_need(patient["text"])
