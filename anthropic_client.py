@@ -97,7 +97,10 @@ _FENCE_RE = re.compile(r"```(?:json)?\s*|```", re.IGNORECASE)
 # ANTHROPIC_NEW_KEY first: the original ANTHROPIC_API_KEY authenticates but carries a zero
 # credit balance, so every call it makes dies with "credit balance is too low" AFTER passing
 # auth -- which looks like a working key right up until the request fails. Prefer the funded one.
-KEY_NAMES = ("ANTHROPIC_NEW_KEY", "ANTHROPIC_API_KEY")
+# The challenge's own funded key comes first (2026-08-20, his instruction): this project bills
+# to ANTHROPIC_AI_HEALTHCARE_API_KEY, not the general account keys. The others stay as fallbacks
+# so a local run still works if the project key is not in the environment.
+KEY_NAMES = ("ANTHROPIC_AI_HEALTHCARE_API_KEY", "ANTHROPIC_NEW_KEY", "ANTHROPIC_API_KEY")
 
 
 def _get_api_key():
