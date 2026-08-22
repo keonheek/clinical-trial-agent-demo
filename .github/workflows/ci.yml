@@ -41,6 +41,9 @@ jobs:
           python build_trial_intent.py --selftest
           python ranking.py
           python ranking.py --golden
+          python patient_need.py
+          python pipeline.py --selftest
+          python api/answer.py
 
       - name: Frozen-trace integrity + ranking invariants (assert_traces.py, node-backed)
         run: python assert_traces.py
