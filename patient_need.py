@@ -17,8 +17,8 @@ classify_patient_need(text) -> one of four needs, from the vignette alone:
   treatment  (치료)     -- needs an intervention to change the course of illness
   diagnosis  (진단 확정) -- needs confirmation before anything else can be decided (a
                            workup/confirmation step is the blocker)
-  monitoring (관리)     -- needs a known, stable condition tracked over time
-  comfort    (지지)     -- needs symptom relief / quality of life, not a cure
+  monitoring (추적관찰) -- needs a known, stable condition tracked over time
+  comfort    (증상 완화) -- needs symptom relief / quality of life, not a cure
 
 helps(need, trial_intent) -> does a trial of a given trial_intent (build_trial_intent.py's
 therapeutic | supportive | care_delivery | observational) serve that need? 2 = direct match,
@@ -54,7 +54,8 @@ import sys
 
 NEED_VERSION = "2026-08-18"
 VALID_NEEDS = {"treatment", "diagnosis", "monitoring", "comfort"}
-NEED_KO = {"treatment": "치료", "diagnosis": "진단 확정", "monitoring": "관리", "comfort": "지지"}
+NEED_KO = {"treatment": "치료", "diagnosis": "진단 확정", "monitoring": "추적관찰",
+           "comfort": "증상 완화"}
 # Rule 1 -- comfort. Checked first (safety property, see module docstring).
 COMFORT_KEYWORDS = [
     "palliative", "hospice", "comfort care", "comfort measures", "comfort-focused", "end-of-life", "end of life",
@@ -107,7 +108,7 @@ ESTABLISHED_TREATMENT_PHRASES = [
     "history of treatment with", "status post", "s/p ",
 ]
 
-RULE_KO = ("완화 목적 언급 → 지지 | 안정·추적 관찰 언급 → 관리 | "
+RULE_KO = ("완화 목적 언급 → 증상 완화 | 안정·추적 관찰 언급 → 추적관찰 | "
            "확진 전 단계(의심 소견/영상 소견만 있고 조직 확진 없음) → 진단 확정 | "
            "급성 증상 호소이고 기존 치료 언급 없음 → 치료 | 아무 규칙도 안 걸리면 → 치료(확신 낮음)")
 
@@ -132,8 +133,8 @@ def classify_patient_need(vignette_text, extraction_fields=None):
     hits = _find_any(text, COMFORT_KEYWORDS)
     if hits:
         return {"need": "comfort", "need_ko": NEED_KO["comfort"], "confidence": "high",
-                "reasons": [f"완화·증상 완화 목적의 표현이 있어 치료 목적이 아닌 편안함 지원이 필요한 상태로"
-                            f" 판단 (근거 문구: '{hits[0]}')"]}
+                "reasons": [f"완화 목적 기술 있음 → 근치적 치료가 아닌 증상 완화 요구로 분류"
+                            f" (근거 문구 '{hits[0]}')"]}
 
     hits = _find_any(text, MONITORING_KEYWORDS)
     if hits:
@@ -141,11 +142,11 @@ def classify_patient_need(vignette_text, extraction_fields=None):
         # context -- the presenting problem defines the need, not the comorbidity line.
         if _find_any(text, ACTIVE_SYMPTOM_PHRASES):
             return {"need": "treatment", "need_ko": NEED_KO["treatment"], "confidence": "low",
-                    "reasons": [f"안정·추적 표현과 현재 증상 호소가 함께 있어, 지금의 문제(증상)를 우선해"
-                                f" 치료 필요로 판단 (확신 낮음, 사람 검토 권장; 근거 문구: '{hits[0]}')"]}
+                    "reasons": [f"추적관찰 기술과 활동성 증상 동시 존재 → 주호소 우선하여 치료 요구로 분류"
+                                f" (확신 낮음, 검토 권장; 근거 문구 '{hits[0]}')"]}
         return {"need": "monitoring", "need_ko": NEED_KO["monitoring"], "confidence": "high",
-                "reasons": [f"이미 알려진 상태를 지속적으로 지켜보는 문구가 있어 새로운 개입보다 관리·추적이"
-                            f" 필요한 상태로 판단 (근거 문구: '{hits[0]}')"]}
+                "reasons": [f"기지 질환의 경과 관찰 기술 있음 → 신규 개입보다 추적관찰 요구로 분류"
+                            f" (근거 문구 '{hits[0]}')"]}
 
     suspected = _find_any(text, DIAGNOSIS_SUSPECTED_PHRASES)
     imaging = _find_any(text, IMAGING_UNCONFIRMED_PHRASES)
@@ -153,21 +154,19 @@ def classify_patient_need(vignette_text, extraction_fields=None):
     if suspected or (imaging and not tissue):
         phrase = (suspected or imaging)[0]
         return {"need": "diagnosis", "need_ko": NEED_KO["diagnosis"], "confidence": "high",
-                "reasons": [f"확진(조직 검사 등)으로 확인된 근거 없이 의심 소견이나 영상 소견만 있어, 다음"
-                            f" 단계로 넘어가기 전에 진단을 확정하는 것이 우선 필요한 상태로 판단"
-                            f" (근거 문구: '{phrase}')"]}
+                "reasons": [f"조직학적 확진 근거 없이 의심 소견·영상 소견만 존재 → 진단 확정 선행 요구로"
+                            f" 분류 (근거 문구 '{phrase}')"]}
 
     active = _find_any(text, ACTIVE_SYMPTOM_PHRASES)
     established = _find_any(text, ESTABLISHED_TREATMENT_PHRASES)
     if active and not established:
         return {"need": "treatment", "need_ko": NEED_KO["treatment"], "confidence": "high",
-                "reasons": [f"현재 진행 중인 증상을 호소하고 있고 이미 받고 있는 치료에 대한 언급이 없어,"
-                            f" 개입(치료)이 필요한 상태로 판단 (근거 문구: '{active[0]}')"]}
+                "reasons": [f"활동성 증상 있고 현행 치료 기록 없음 → 치료적 개입 요구로 분류"
+                            f" (근거 문구 '{active[0]}')"]}
 
     return {"need": "treatment", "need_ko": NEED_KO["treatment"], "confidence": "low",
-            "reasons": ["편안함 지원, 관리, 진단 확정 중 어느 것도 해당하는 문구를 찾지 못함 -- 급성으로"
-                        " 상태를 알려온 환자는 지켜보기보다 도움을 원할 가능성이 더 높다고 보아 기본값으로"
-                        " 치료 필요로 분류 (확신 낮음, 사람 검토 권장)"]}
+            "reasons": ["증상 완화·추적관찰·진단 확정 중 해당 기술 없음 → 급성 제시 환자는 개입 요구"
+                        " 가능성이 높다고 보아 기본값 치료 요구로 분류 (확신 낮음, 검토 권장)"]}
 
 
 # ---------------------------------------------------------------------------

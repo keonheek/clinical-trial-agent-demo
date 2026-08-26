@@ -28,12 +28,16 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --primary:#1E40AF; --secondary:#3B82F6; /* LOCKED from Concept A */
-    --bg:#F1F3F7; --ink:#181B22; --ink-soft:#6B7280;
-    --border:#DDE1E9; --card:#FFFFFF; --accent:#7C3AED; --orange:#C2410C; --orange-bg:#FFF1E8;
-    --met:#087F5B; --met-bg:#D9F4EB; --met-mid:#70B9A3; --notmet:#C0362C; --notmet-bg:#FBE3E1; --notmet-mid:#DD8C86;
-    --uncertain:#9A6700; --uncertain-bg:#FCEFCB; --uncertain-mid:#CBAB65; --unknown:#6B7280; --unknown-bg:#E7E9EE; --unknown-mid:#A9ADB7;
-    --up:#0F9D58; --down:#D93025;
+    /* 임상 문서 팔레트 (08-25 재설계). 보라색 accent(#7C3AED)를 걷어냈다 — 임상 화면에서
+       채도 높은 보라는 제품을 소비자 앱처럼 보이게 하고, 의미를 가진 색이 아니다.
+       색은 판정(적격/미확정/부적격)에만 쓰고, 나머지는 잉크와 괘선으로 위계를 만든다. */
+    --primary:#12539C; --secondary:#12539C;
+    --bg:#F4F6F8; --ink:#11161C; --ink-soft:#4D5967; --ink-faint:#818D9B;
+    --border:#E7EBEF; --rule:#D4DAE1; --card:#FFFFFF; --accent:#12539C;
+    --orange:#8A6110; --orange-bg:#FBF0DA;
+    --met:#136C46; --met-bg:#E6F2EC; --met-mid:#7FB39A; --notmet:#A32620; --notmet-bg:#FBE9E7; --notmet-mid:#D79A92;
+    --uncertain:#8A6110; --uncertain-bg:#FBF0DA; --uncertain-mid:#C9AC6B; --unknown:#818D9B; --unknown-bg:#EEF1F4; --unknown-mid:#AEB6BF;
+    --up:#136C46; --down:#A32620;
   }
   *{box-sizing:border-box;}
   /* 오프라인 행사장 대비: IBM Plex를 못 받아와도 시스템 한글 폰트로 자연 강등 */
@@ -52,9 +56,9 @@
     text-align:right;line-height:1.35;max-width:150px;}
 
   .livestatus{flex:0 0 auto;display:flex;align-items:center;gap:10px;margin:12px 24px 12px auto;padding:7px 14px 7px 10px;
-    border-radius:4px;background:var(--bg);box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+    border-radius:4px;background:var(--bg);
     cursor:pointer;transition:box-shadow .15s;}
-  .livestatus:hover{box-shadow:0 2px 4px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.1);}
+  .livestatus:hover{}
   /* 상태 점 — 방송 코스프레 없는 진행 상태 표시. 미해결 질문 있음 = uncertain 토큰, 완료 = met 토큰 */
   .statusgo{font-size:0.86rem;color:var(--ink-soft);}
   .statustext{font-size:0.98rem;font-weight:600;color:var(--ink);transition:color .15s;white-space:nowrap;}
@@ -117,7 +121,7 @@
   .liveerror{margin-top:10px;font-size:0.9rem;color:var(--notmet);background:var(--notmet-bg);border-radius:4px;
     padding:10px 12px;line-height:1.5;}
 
-  .view{display:none;padding:24px;}
+  .view{display:none;padding:24px 28px;max-width:1240px;margin:0 auto;}
   .view.active{display:block;}
   @media (max-width:480px){ .view{padding:16px 12px;} }
 
@@ -148,8 +152,30 @@
   .needstrip{background:var(--card);border:1px solid var(--border);border-radius:4px;
     padding:16px 20px;margin-bottom:24px;}
   .needstrip .ns-label{font-size:0.9rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700;}
-  .needstrip .ns-need{font-size:1.25rem;font-weight:700;color:var(--accent);margin:4px 0 6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .fitreq{margin:8px 0 4px;padding:8px 10px;border:1px solid var(--line,#e2e6ea);
+    border-radius:8px;background:var(--card-bg,#fbfcfd);}
+  .fit-head{font-size:0.78rem;font-weight:700;color:var(--ink-soft);margin-bottom:6px;
+    letter-spacing:.02em;}
+  .fit-group{margin-top:6px;padding-left:9px;border-left:2px solid var(--line,#d8dde3);}
+  .fit-group.inc{border-left-color:#2f6f4f;}
+  .fit-group.exc{border-left-color:#c0392b;}
+  .fit-label{font-size:0.76rem;color:var(--ink-soft);margin-bottom:2px;}
+  .fit-item{display:flex;gap:8px;align-items:baseline;padding:1px 0;font-size:0.84rem;
+    color:var(--ink);line-height:1.45;}
+  .fit-nct{flex:0 0 auto;font-size:0.72rem;color:var(--ink-soft);white-space:nowrap;}
+  .fit-text{flex:1 1 auto;}
+  .fit-more{font-size:0.76rem;color:var(--ink-soft);}
+  .needstrip .ns-need{margin:4px 0 6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  .needstrip .ns-opt{font-size:1.05rem;font-weight:600;color:var(--ink-soft);opacity:.5;}
+  .needstrip .ns-opt.on{font-size:1.25rem;font-weight:700;color:var(--accent);opacity:1;
+    border-bottom:2px solid var(--accent);padding-bottom:1px;}
+  .needstrip .ns-sep{color:var(--ink-soft);opacity:.4;}
+  .needstrip .ns-hedgerow{margin:0 0 6px;}
   .needstrip .ns-hedge{font-size:0.9rem;font-weight:700;background:var(--uncertain-bg);color:var(--uncertain);border-radius:99px;padding:3px 10px;}
+  .needstrip .ns-cov{font-size:0.92rem;font-weight:600;margin:2px 0 6px;padding:5px 9px;
+    border-radius:4px;display:inline-block;}
+  .needstrip .ns-cov.cov-none{background:var(--uncertain-bg);color:var(--uncertain);}
+  .needstrip .ns-cov.cov-some{background:var(--met-bg);color:var(--met);}
   .needstrip .ns-reason{font-size:0.88rem;color:var(--ink-soft);line-height:1.5;}
   .needstrip .ns-link{font-size:0.88rem;color:var(--ink-soft);margin-top:8px;}
 
@@ -214,6 +240,26 @@
   .patientview .pv-warn{margin-top:6px;font-size:0.84rem;font-weight:600;color:var(--orange);background:var(--orange-bg);border-radius:4px;padding:7px 10px;}
   .patientview .pv-note{font-size:0.78rem;color:var(--ink-soft);margin-top:8px;}
   .pathline{margin-top:10px;font-size:0.9rem;color:var(--ink-soft);line-height:1.5;}
+  .pathhead{font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .path-group{margin-top:8px;padding-left:10px;border-left:2px solid var(--line,#d8dde3);}
+  .path-group.blocking{border-left-color:var(--notmet);}
+  .path-group.resolve{border-left-color:var(--uncertain);}
+  .path-group-label{font-size:0.78rem;letter-spacing:.02em;text-transform:none;
+    color:var(--ink-soft);margin-bottom:3px;}
+  .path-item{display:flex;gap:10px;align-items:baseline;padding:4px 6px 4px 0;font-size:0.86rem;
+    color:var(--ink);width:100%;text-align:left;background:none;border:0;border-radius:2px;
+    font-family:inherit;cursor:pointer;line-height:1.45;}
+  .path-item:hover{background:var(--unknown-bg);}
+  .path-item .path-text{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;}
+  .path-group:not(.expanded) .path-extra{display:none;}
+  .path-more{background:none;border:0;font-family:inherit;font-size:0.78rem;color:var(--accent);
+    cursor:pointer;padding:3px 0;text-decoration:underline;}
+  .critflash{outline:2px solid var(--accent);outline-offset:2px;background:#F2F7FD;}
+  .path-text{flex:1 1 auto;}
+  .path-tag{flex:0 0 auto;font-size:0.72rem;color:var(--ink-soft);white-space:nowrap;}
+
+  .path-need{margin-top:8px;font-size:0.84rem;color:var(--ink);font-weight:500;}
   /* 환자-편익 한 줄 — ct.gov 링크보다 먼저 읽히는 자리. accent 토큰 재사용 */
   .benefitline{margin:6px 0 4px;padding:2px 0;
     font-size:0.88rem;font-weight:500;color:var(--ink);line-height:1.5;}
@@ -250,9 +296,11 @@
     display:inline-flex;align-items:center;justify-content:center;padding:0 4px;font-family:"IBM Plex Sans KR","Apple SD Gothic Neo",sans-serif;}
   .trialpill.sel .pillcount{background:var(--primary);}
 
-  .splitwrap{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr);gap:0;height:calc(100vh - 270px);min-height:480px;
-    border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
-  @media (max-width:860px){ .splitwrap{grid-template-columns:1fr;height:auto;min-height:0;} }
+  /* 좌측 근거 패널을 걷어내고 1열로. 두 열이 같은 내용을 말하고 있었다. */
+  .splitwrap{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:0;
+    height:calc(100vh - 270px);min-height:480px;
+    border:1px solid var(--border);border-radius:0;overflow:hidden;background:var(--card);}
+  @media (max-width:860px){ .splitwrap{height:auto;min-height:0;} }
   .evidencepane{border-right:1px solid var(--border);overflow-y:auto;padding:22px 24px;min-height:0;}
   @media (max-width:860px){ .evidencepane{border-right:none;border-bottom:1px solid var(--border);max-height:44vh;} }
   .evidencepane h3{font-size:0.86rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:0 0 14px;}
@@ -274,7 +322,7 @@
   .roundblock.done .roundlabel{color:var(--met);}
   .roundlabel .progress{font-weight:600;color:var(--secondary);text-transform:none;letter-spacing:0;}
   .roundlabel.fu{color:var(--accent);}
-  .qitem{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-bottom:10px;}
+  .qitem{border-radius:0;border-left:2px solid var(--rule);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-bottom:10px;}
   .qitem.sel{border-color:var(--secondary);box-shadow:0 0 0 1px var(--secondary);}
   .qitem .qfield{font-size:0.86rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:4px;}
   .qitem .qtext{font-size:0.9rem;font-weight:600;line-height:1.5;}
@@ -287,8 +335,16 @@
   .opt-item input{margin-top:3px;width:15px;height:15px;flex:0 0 auto;cursor:pointer;accent-color:var(--secondary);}
   .opt-body{flex:1;min-width:0;}
   .opt-text{font-size:0.9rem;line-height:1.45;}
-  .opt-tag{display:block;font-size:0.88rem;color:var(--secondary);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .opt-tag{display:table;font-size:0.76rem;font-weight:700;margin:5px 0 0;padding:2px 8px;
+    border-radius:99px;white-space:nowrap;letter-spacing:.01em;}
   .opt-tag.none{color:var(--ink-soft);}
+  .opt-tag.incl{background:var(--met-bg);color:var(--met);}
+  .opt-tag.excl{background:var(--notmet-bg);color:var(--notmet);}
+  .opt-tag.mixed{background:var(--unknown-bg);color:var(--ink-soft);}
+  /* 선택지 행 자체에 방향 표시 — 체크하면 자격이 어느 쪽으로 가는지 훑어서 보이게 */
+  .opt-list .opt-item.opt-incl{border-left:2px solid var(--met);}
+  .opt-list .opt-item.opt-excl{border-left:2px solid var(--notmet);}
+  .opt-list .opt-item.opt-mixed{border-left:2px solid var(--unknown-mid);}
   /* Bilingual gloss lines: same quiet tone as .pv-tf/.opt-tag, always original-first/gloss-second,
      never inside a verbatim-evidence quote (.critevidence). Italic marks "this is a translation,
      not the source text" without repeating the word on every line. */
@@ -313,7 +369,14 @@
   .submit-btn:disabled{background:var(--border);color:var(--ink-soft);cursor:default;}
 
   /* ===== TAB: ranking ===== */
-  .rulebox{max-width:560px;margin:0 auto 18px;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:16px 20px;}
+  .rulebox{margin:0 0 16px;background:var(--card);border:1px solid var(--border);border-radius:0;
+    padding:0;}
+  .rulebox > summary{cursor:pointer;list-style:none;padding:11px 16px;font-size:0.86rem;
+    font-weight:600;color:var(--ink-soft);display:flex;align-items:center;gap:7px;}
+  .rulebox > summary::-webkit-details-marker{display:none;}
+  .rulebox > summary::before{content:"▸";font-size:0.72rem;display:inline-block;transition:transform .12s;}
+  .rulebox[open] > summary::before{transform:rotate(90deg);}
+  .rulebox > .rulebody{padding:0 16px 14px;}
   .rulebox h2{font-size:0.9rem;margin:0 0 8px;}
   .rulebox .rule{font-size:0.9rem;color:var(--ink-soft);margin:3px 0;line-height:1.55;}
   .rulebox .rule b{color:var(--ink);}
@@ -324,15 +387,16 @@
   .stalechip button{background:var(--secondary);color:#fff;border:0;border-radius:99px;padding:8px 18px;font-size:0.9rem;font-weight:600;cursor:pointer;}
   .guarantee{display:inline-block;margin-top:8px;background:var(--met-bg);color:var(--met);border-radius:99px;padding:4px 12px;
     font-size:0.86rem;font-weight:700;cursor:help;}
-  .ranknote{max-width:560px;margin:0 auto 12px;font-size:0.9rem;color:var(--ink-soft);line-height:1.5;}
+  .ranknote{margin:0 0 12px;font-size:0.9rem;color:var(--ink-soft);line-height:1.5;}
   .ranknote.obs{background:var(--uncertain-bg);color:var(--uncertain);border-radius:4px;padding:10px 14px;font-weight:600;}
-  .rankhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;max-width:560px;margin-left:auto;margin-right:auto;}
+  .rankhead{display:flex;justify-content:space-between;align-items:center;margin:0 0 16px;flex-wrap:wrap;gap:12px;}
   .rankhead .status{font-size:0.86rem;color:var(--ink-soft);}
   .rankhead .status.fresh{color:var(--met);font-weight:700;}
   .refresh-btn{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:11px 22px;font-weight:700;cursor:pointer;font-size:0.86rem;
     display:inline-flex;align-items:center;gap:8px;}
   .refresh-btn.done{background:var(--met);}
-  .ranklist{display:flex;flex-direction:column;gap:10px;max-width:560px;margin:0 auto;}
+  .ranklist{display:flex;flex-direction:column;gap:1px;margin:0;}
+  .rankrow:hover{border-color:var(--accent);}
   .rankrow{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:16px 20px;display:flex;align-items:flex-start;gap:14px;transition:box-shadow .8s ease,border-color .8s ease,background .8s ease;}
   .rankrow.flash{border-color:var(--secondary);box-shadow:0 0 0 3px rgba(59,130,246,.2);background:#F5F9FF;}
   .rankrow .rnum{width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;
@@ -373,6 +437,41 @@
   .hist-causal{font-size:0.9rem;color:var(--ink-soft);margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere;}
   .hist-causal b{color:var(--ink);}
   .hist-more{font-size:0.86rem;color:var(--ink-soft);margin:4px 0;}
+  .roundsteps{display:flex;gap:0;margin:0 0 16px;border-bottom:1px solid var(--rule);flex-wrap:wrap;}
+  .rstep{padding:7px 14px;font-size:0.86rem;color:var(--ink-faint);border-bottom:2px solid transparent;
+    cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+  .rstep.done{color:var(--ink-soft);}
+  .rstep.done:hover{color:var(--ink);}
+  .rstep.on{color:var(--ink);font-weight:600;border-bottom-color:var(--accent);cursor:default;}
+  .rstep .sn{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.78rem;color:var(--ink-faint);}
+  .rstep-undo{background:none;border:1px solid var(--border);border-radius:2px;padding:1px 7px;
+    font-family:inherit;font-size:0.76rem;color:var(--ink-soft);cursor:pointer;}
+  .rstep-undo:hover{border-color:var(--notmet);color:var(--notmet);}
+  /* 순위 + 이력을 한 화면에. 좁으면 이력이 아래로 내려간다. */
+  .rankspilt{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start;}
+  @media (max-width:1100px){ .rankspilt{grid-template-columns:1fr;} }
+  .rankside{border:1px solid var(--border);background:var(--card);max-height:70vh;overflow-y:auto;}
+  .rankside-head{font-size:0.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+    font-weight:700;padding:11px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;
+    background:var(--card);}
+  .rankside-body{padding:6px 12px 12px;}
+  .rankside-body .histitem{border:0;border-bottom:1px solid var(--border);border-radius:0;
+    padding:11px 2px;margin:0;}
+  .rankside-body .histitem:last-child{border-bottom:0;}
+  .rankside-body .critdetail,.rankside-body .histqa{display:none;}
+  .rankside-empty{font-size:0.84rem;color:var(--ink-faint);padding:14px 2px;}
+  .minichips{margin-top:8px;display:flex;flex-direction:column;gap:3px;}
+  .mrow{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;align-items:baseline;
+    font-size:0.84rem;line-height:1.45;}
+  .mkey{text-align:left;}
+  .mkey{color:var(--ink-faint);font-size:0.76rem;letter-spacing:.04em;text-transform:uppercase;
+    font-weight:600;}
+  .mvals{color:var(--ink-soft);}
+  .mval.warn{color:var(--notmet);font-weight:600;}
+  .msep{color:var(--ink-faint);margin:0 6px;}
+  .ghost-btn{background:none;border:1px solid var(--accent);color:var(--accent);border-radius:2px;
+    padding:8px 16px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;margin-right:10px;}
+  .ghost-btn:hover{background:var(--accent);color:#fff;}
   .revert-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:7px 16px;cursor:pointer;color:var(--ink);font-size:0.86rem;font-weight:600;}
   .revert-btn:hover:not(:disabled){border-color:var(--secondary);color:var(--secondary);}
   .revert-btn:disabled{opacity:.4;cursor:default;}
@@ -474,12 +573,12 @@
 <div class="view" id="v-chat">
   <div class="trialpills" id="trialPills"></div>
   <div class="splitwrap">
-    <div class="evidencepane" id="evidencepane"></div>
     <div class="chatpane">
       <div class="chathead" id="chatHead">Clarifying Questions</div>
       <div class="chatscroll" id="chatscroll"></div>
       <div class="chatbar" id="chatbar">
         <span class="bb-note" id="batchNote">Checked answers are applied in one batch. re-evaluation runs once.</span>
+        <button class="ghost-btn" id="toRankBtn" style="display:none;">최종 순위 보기 →</button>
         <button class="submit-btn" id="batchBtn" disabled>Apply selected answers (0 questions)</button>
       </div>
     </div>
@@ -488,15 +587,22 @@
 
 <!-- ===== TAB 3: 최종 순위 추천 ===== -->
 <div class="view" id="v-ranking">
-  <div class="rulebox" id="rulebox"></div>
+  <details class="rulebox" id="rulebox"></details>
   <div class="rankhead">
     <div class="status" id="rankStatus">Last updated: initial matching</div>
     <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+    <button class="refresh-btn" id="exportBtn" title="">CSV</button>
   </div>
   <div class="stalechip" id="staleChip"><button id="staleChipBtn"></button></div>
   <div class="ranknote" id="rankNeedNote" style="display:none;"></div>
   <div class="ranknote obs" id="rankObsNote" style="display:none;"></div>
-  <div class="ranklist" id="ranklist"></div>
+  <div class="rankspilt">
+    <div class="ranklist" id="ranklist"></div>
+    <aside class="rankside" id="rankSide">
+      <div class="rankside-head" id="rankSideHead">변경 이력</div>
+      <div class="rankside-body" id="rankSideBody"></div>
+    </aside>
+  </div>
 </div>
 
 <!-- ===== TAB 4: 변경 이력 ===== -->
@@ -565,9 +671,9 @@ var I18N = {
   en: {
     tabBoard: "Patient & Trial Board", tabChat: "Clarifying Questions",
     tabRank: "Final Ranking", tabHist: "Change History",
-    colELIGIBLE: "Eligible", colUNCERTAIN: "Uncertain", colINELIGIBLE: "Excluded",
+    colELIGIBLE: "Eligible", colUNCERTAIN: "Undetermined", colINELIGIBLE: "Excluded",
     colTipELIGIBLE: "Trials where every criterion is resolved and the patient can join",
-    colTipUNCERTAIN: "Trials with criteria still to confirm. participation not yet decided",
+    colTipUNCERTAIN: "Not a judgement about the trial. the patient record lacks the information needed to decide these criteria",
     colTipINELIGIBLE: "Trials ruled out by a confirmed blocking criterion",
     loading: "Loading", liveWaiting: "{n} questions waiting", liveWaitingOne: "1 question waiting",
     liveDone: "All questions resolved · ranking ready",
@@ -593,7 +699,10 @@ var I18N = {
     needWhyDiagnosis: "Why: a suspicious finding without a confirmed diagnosis yet",
     needWhyMonitoring: "Why: a stable, known condition in long-term follow-up",
     needWhyPhrase: " (phrase: “{q}”)",
-    needLink: "The ranking's “does it help” question matches this need against each trial's purpose.",
+    needCovNone: "This patient needs {need}, and none of the {total} candidate trials does that. Widen the search.",
+    needCovPartial: "This patient needs {need}. {n} of {total} candidates are related, but none does it directly.",
+    needCovSome: "{n} of {total} candidate trials directly provide the {need} this patient needs.",
+    needLink: "Drives the ranking's “does it help” question.",
     statusTip: "Where this case stands. click to go to the next step",
     benefitObs: "For this patient: this study does not treat. it follows patients like them to improve future care.",
     benefitCare: "For this patient: does not treat the illness. studies how care is organized and delivered.",
@@ -616,10 +725,21 @@ var I18N = {
     actionTip: "Why this is uncertain, and the next step the system suggests",
     trialLevelSuffix: " (trial-level)",
     causeUnknown: "cause unclassified",
-    pathClosed: "Path to enrollment: closed. {n} blocking criteria",
-    pathClosedOne: "Path to enrollment: closed. 1 blocking criterion",
-    pathOpen: "Path to enrollment: {b} blocking · {o} to confirm. answering the linked questions can settle them",
-    pathClear: "Path to enrollment: clear. nothing blocking, nothing left to confirm",
+    pathClosed: "Not enrollable · {n} blocking criteria",
+    pathClosedOne: "Not enrollable · 1 blocking criterion",
+    pathOpen: "{b} blocking · {o} unresolved. answering the queries settles them",
+    pathBlockingLabel: "Blocking criteria",
+    pathResolveLabel: "Still open",
+    pathNeedLead: "To qualify —",
+    pathNeedBlocking: "clear {b} blockers",
+    pathNeedBlockingOne: "clear 1 blocker",
+    pathNeedResolve: "confirm {o} open",
+    pathNeedResolveOne: "confirm 1 open",
+    pathNeedJoin: ", and ",
+    pathMore: "and {n} more",
+    polExcl: "exclusion met",
+    polIncl: "inclusion not met",
+    pathClear: "Enrollable · no unresolved criteria",
     pillAll: "All", chatHead: "Clarifying Questions",
     roundDone: "✓ Round {n} · applied",
     roundPending: "Round {n} · clarifying questions",
@@ -643,6 +763,11 @@ var I18N = {
     prioNone: "Answering changes nothing right now. no open criterion links to this item (low priority)",
     prioLead: "Answering:",
     prioCrit: "re-checks {c} criteria", prioCritTrials: " ({t} trials)", prioCritTrialsOne: " (1 trial)",
+    fitInclusion: "inclusion criterion",
+    optIncl: "bears on {n} inclusion",
+    optExcl: "bears on {n} exclusion",
+    optMixed: "{i} inclusion · {e} exclusion",
+    fitExclusion: "exclusion criterion",
     prioCritList: "re-checks {c} criteria in {t} trials ({list})",
     prioCritListOne: "re-checks {c} criteria in 1 trial ({list})",
     prioTrialsOnly: "feeds {t} trials",
@@ -658,6 +783,10 @@ var I18N = {
     phWithOptions: "Type your own (applied together with the checked options)",
     phFree: "Free-text answer (labs, history, medications …)",
     batchBtn: "Apply selected answers ({n} questions)",
+    exportCsvEn: "", sideHist: "Change history", sideNoRounds: "No rounds yet. answers appear here once applied.",
+    sideVerdicts: "{n} verdict changes", sideMoves: "{n} rank moves",
+    toRank: "See final ranking →", exportCsv: "Export CSV",
+    exportTip: "Download the current on-screen screening state (per-criterion rows). The signed GCP record is produced offline by export_report.py.",
     batchNote: "Checked answers are applied in one batch. re-evaluation runs once.",
     batchBusyBtn: "Applying answers",
     batchBusyNote: "Applying. only the criteria linked to your answers are re-checked",
@@ -689,7 +818,7 @@ var I18N = {
     rankStatusRound: "Last updated: round {n} applied",
     rankStatusStale: "Showing the order before round {n}",
     refresh: "↻ Refresh", refreshDone: "✓ Updated",
-    eligBadgeTip: "Trial-level eligibility: can this patient join",
+    eligBadgeTip: "Trial-level eligibility — whether this patient can join, not whether the trial works",
     mgHelp: "Help", mgSure: "Sure",
     rankNeedNote: "Ordered for this patient's need: {need}",
     rankObsNote: "Note: none of the current matches treats this patient's condition. they observe or track patients to improve future care.",
@@ -732,6 +861,8 @@ var I18N = {
     histMore: "+{n} more",
     causalCrit: "{n} criteria re-checked", causalCritOne: "1 criterion re-checked",
     causalIndirect: "moved by changes to other trials",
+    rankRowTip: "Open criterion-level basis",
+    stepRound: "Round {n}", stepCurrent: "Current · {n} open", stepUndo: "↩ undo",
     revertBtn: "↩ Undo this round", revertedBtn: "Reverted",
     revertOrderTip: "Rounds must be undone newest-first",
     ovrTitle: "Human review override",
@@ -773,7 +904,7 @@ var I18N = {
     tabRank: "최종 순위 추천", tabHist: "변경 이력",
     colELIGIBLE: "적격", colUNCERTAIN: "미확정", colINELIGIBLE: "부적격",
     colTipELIGIBLE: "모든 기준이 해소되어 참여할 수 있다고 판정된 시험",
-    colTipUNCERTAIN: "아직 확인이 필요한 기준이 남아 참여 여부가 정해지지 않은 시험",
+    colTipUNCERTAIN: "시험의 효과·위해에 대한 판단이 아님. 환자 기록에 정보가 없어 해당 기준을 판정하지 못한 상태",
     colTipINELIGIBLE: "참여를 막는 기준이 확정되어 탈락한 시험",
     loading: "불러오는 중", liveWaiting: "확인 질문 {n}개 대기중", liveWaitingOne: "확인 질문 1개 대기중",
     liveDone: "확인 질문 모두 해결됨 · 순위 확인 가능",
@@ -790,18 +921,21 @@ var I18N = {
     emptyCol: "해당하는 시험 없음",
     ovrChip: "사람 검토 이동",
     ovrTip: "사람이 드래그로 옮긴 표시 위치입니다. 판정 로직의 결과({v})는 바뀌지 않았습니다.",
-    needLabel: "이 환자에게 지금 필요한 것",
-    hedge: "확신 낮음. 검토 권장",
-    hedgeTip: "환자 기록의 단서가 약해 분류 확신이 낮습니다. 사람이 한 번 확인하는 것이 안전합니다.",
-    needWhy: "왜? {q}",
-    needLink: "추천 순위의 “도움이 되는가”는 이 필요와 각 시험의 목적을 맞춰 본 결과입니다.",
+    needLabel: "환자 임상 요구",
+    hedge: "확신 낮음 · 검토 권장",
+    hedgeTip: "기록상 근거가 불충분하여 분류 확신이 낮음. 검토자 확인 권장.",
+    needWhy: "분류 근거 · {q}",
+    needCovNone: "이 환자에게 필요한 것은 {need}인데, 후보 시험 {total}건 중 이를 직접 수행하는 시험이 없습니다. 후보군 확대 필요.",
+    needCovPartial: "이 환자에게 필요한 것은 {need}입니다. 후보 시험 {total}건 중 {n}건이 부분적으로 관련되나, 이를 직접 수행하는 시험은 없습니다.",
+    needCovSome: "이 환자에게 필요한 {need}을(를) 직접 수행하는 시험이 후보 {total}건 중 {n}건 있습니다.",
+    needLink: "우선순위 산정의 “도움” 축 기준값.",
     statusTip: "현재 진행 상태. 누르면 다음 단계로 이동합니다",
-    benefitObs: "이 환자에게: 치료는 하지 않습니다. 비슷한 환자를 추적 관찰해 앞으로의 치료를 개선하려는 연구입니다.",
-    benefitCare: "이 환자에게: 병을 치료하지는 않습니다. 진료 방식과 관리 체계를 연구합니다.",
-    benefitTherHelp: "이 환자에게: 지금 필요한 {need}를 직접 시험하는 연구입니다.",
-    benefitTherNoHelp: "이 환자에게: 치료를 시험하지만, 지금 가장 필요한 것({need})과는 방향이 다릅니다.",
-    benefitSuppHelp: "이 환자에게: 병 자체를 치료하지는 않지만, 지금 원하는 통증·증상 완화를 직접 겨냥한 연구입니다.",
-    benefitSuppNoHelp: "이 환자에게: 지지·완화 중심 연구로, 지금의 주된 필요({need})와는 다릅니다.",
+    benefitObs: "치료하지 않는 관찰 연구입니다. 비슷한 환자를 추적해 앞으로의 치료를 개선합니다.",
+    benefitCare: "병을 치료하지 않습니다. 진료 방식과 관리 체계를 연구합니다.",
+    benefitTherHelp: "지금 필요한 {need}{eul} 직접 시험하는 연구입니다.",
+    benefitTherNoHelp: "치료를 시험하지만 지금 필요한 것({need})과 방향이 다릅니다.",
+    benefitSuppHelp: "병을 치료하지는 않지만, 지금 필요한 통증·증상 완화를 겨냥한 연구입니다.",
+    benefitSuppNoHelp: "지지·완화 중심 연구로, 지금 필요한 것({need})과 다릅니다.",
     benefitGuess: " (시험 목적은 추정입니다. 원문 확인 필요)",
     bannerLbl: "시험 단위 적격성",
     close: "닫기",
@@ -817,10 +951,21 @@ var I18N = {
     actionTip: "불확실한 이유와, 시스템이 제안하는 다음 단계",
     trialLevelSuffix: " (시험 단위)",
     causeUnknown: "원인 미분류",
-    pathClosed: "참여까지 남은 것: 막힘. 탈락 사유 기준 {n}건",
-    pathClosedOne: "참여까지 남은 것: 막힘. 탈락 사유 기준 1건",
-    pathOpen: "참여까지 남은 것: 탈락 사유 {b}건 · 확인 필요 {o}건. 연결된 질문에 답하면 좁혀집니다",
-    pathClear: "참여까지 남은 것: 없음. 막는 기준도, 확인할 기준도 없습니다",
+    pathClosed: "등록 불가 · 부적격 사유 {n}건",
+    pathClosedOne: "등록 불가 · 부적격 사유 1건",
+    pathOpen: "부적격 사유 {b}건 · 미확정 {o}건. 질의 응답 시 판정 확정",
+    pathBlockingLabel: "부적격 사유",
+    pathResolveLabel: "미확정 기준",
+    pathNeedLead: "적격 조건 —",
+    pathNeedBlocking: "탈락 {b}건 해제",
+    pathNeedBlockingOne: "탈락 1건 해제",
+    pathNeedResolve: "미확인 {o}건 확인",
+    pathNeedResolveOne: "미확인 1건 확인",
+    pathNeedJoin: ", ",
+    pathMore: "외 {n}건",
+    polExcl: "배제 기준 충족",
+    polIncl: "포함 기준 미충족",
+    pathClear: "등록 가능 · 미해결 기준 없음",
     pillAll: "전체", chatHead: "확인 질문",
     roundDone: "✓ 라운드 {n} · 반영 완료",
     roundPending: "라운드 {n} · 확인 질문",
@@ -844,6 +989,11 @@ var I18N = {
     prioNone: "답해도 바뀌는 것 없음 · 지금 열려 있는 기준과 직접 연결된 항목이 없습니다 (우선순위 낮음)",
     prioLead: "답하면 바뀌는 것:",
     prioCrit: "기준 {c}개 다시 판정", prioCritTrials: " (시험 {t}개)", prioCritTrialsOne: " (시험 1개)",
+    fitInclusion: "선정기준",
+    optIncl: "선정기준 {n}건 관련",
+    optExcl: "제외기준 {n}건 관련",
+    optMixed: "선정 {i} · 제외 {e}",
+    fitExclusion: "제외기준",
     prioCritList: "시험 {t}개({list})의 기준 {c}개 다시 판정",
     prioCritListOne: "시험 1개({list})의 기준 {c}개 다시 판정",
     prioTrialsOnly: "시험 {t}개에 반영",
@@ -859,6 +1009,10 @@ var I18N = {
     phWithOptions: "직접 입력 (선택 항목과 함께 반영됩니다)",
     phFree: "자유 서술로 입력 (검사 수치, 병력, 복용 약 등)",
     batchBtn: "선택한 답변 모두 반영 (질문 {n}개)",
+    sideHist: "변경 이력", sideNoRounds: "아직 반영된 라운드 없음. 응답을 반영하면 여기에 쌓입니다.",
+    sideVerdicts: "판정 변경 {n}건", sideMoves: "순위 이동 {n}건",
+    toRank: "최종 순위 보기 →", exportCsv: "CSV 내보내기",
+    exportTip: "현재 화면의 스크리닝 상태를 기준 단위로 내려받습니다. 서명용 GCP 기록은 export_report.py로 별도 생성합니다.",
     batchNote: "고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.",
     batchBusyBtn: "답변 반영 중",
     batchBusyNote: "답변 반영 중. 답과 연결된 기준만 다시 판정합니다",
@@ -890,7 +1044,7 @@ var I18N = {
     rankStatusRound: "마지막 업데이트: 라운드 {n} 반영",
     rankStatusStale: "라운드 {n} 반영 전 순위를 표시 중",
     refresh: "↻ 최신화", refreshDone: "✓ 반영 완료",
-    eligBadgeTip: "시험 단위 적격성: 이 환자가 참여할 수 있는가",
+    eligBadgeTip: "시험 단위 적격성 — 이 환자가 참여 가능한가에 대한 판정이며, 시험의 효과 판단이 아님",
     mgHelp: "도움", mgSure: "확실",
     rankNeedNote: "이 환자의 필요({need}) 기준으로 정렬됨",
     rankObsNote: "참고: 현재 후보 중 이 환자의 질환을 치료하는 시험은 없습니다. 모두 관찰·추적 연구입니다.",
@@ -920,6 +1074,8 @@ var I18N = {
     histMore: "외 {n}건",
     causalCrit: "기준 {n}개 다시 판정", causalCritOne: "기준 1개 다시 판정",
     causalIndirect: "다른 시험의 변화로 이동",
+    rankRowTip: "기준별 판정 근거 보기",
+    stepRound: "라운드 {n}", stepCurrent: "진행 중 · 질의 {n}건", stepUndo: "↩ 되돌리기",
     revertBtn: "↩ 이 라운드 되돌리기", revertedBtn: "되돌려짐",
     revertOrderTip: "가장 최근 라운드부터 순서대로 되돌릴 수 있습니다",
     ovrTitle: "사람 검토 오버라이드",
@@ -968,7 +1124,7 @@ function t(key, vars){
 
 var ELIG_META = {
   ELIGIBLE:   {ko: "적격",   en: "Eligible",  badge: "b-met",       banner: "verdict-met",       col: "ELIGIBLE"},
-  UNCERTAIN:  {ko: "미확정", en: "Uncertain", badge: "b-uncertain",  banner: "verdict-uncertain", col: "UNCERTAIN"},
+  UNCERTAIN:  {ko: "미확정", en: "Undetermined", badge: "b-uncertain",  banner: "verdict-uncertain", col: "UNCERTAIN"},
   INELIGIBLE: {ko: "부적격", en: "Excluded",  badge: "b-notmet",     banner: "verdict-notmet",    col: "INELIGIBLE"}
 };
 function eligMeta(v){ return ELIG_META[v] || ELIG_META.UNCERTAIN; }
@@ -1021,6 +1177,31 @@ function fitLabel(v){
 }
 var NEED_KEY = {treatment: "needTreatment", diagnosis: "needDiagnosis",
                 monitoring: "needMonitoring", comfort: "needComfort"};
+// 환자 필요 — 네 가지 분류 중 하나로 보여준다.
+// 08-23 리뷰: "그냥 띵 '치료'라고 하면 '당연히 치료해야지' 같은 느낌" — 단어 하나만 크게
+// 띄우면 동어반복으로 읽힌다. 정보는 단어가 아니라 "네 가지 중 이것"이라는 선택에 있으므로,
+// 네 후보를 모두 보여주고 고른 것만 강조한다.
+var NEED_ORDER = ["treatment", "diagnosis", "monitoring", "comfort"];
+// 받침 유무로 조사를 고른다. 네 라벨 중 "진단 확정"만 받침으로 끝나서, 조사를 문자열에
+// 박아 두면 그 하나만 "진단 확정를"로 깨진다 (ranking.py _josa와 같은 규칙).
+function josa(word, withFinal, withoutFinal){
+  if (!word) return withFinal;
+  var c = word.trim().charCodeAt(word.trim().length - 1);
+  if (c < 0xAC00 || c > 0xD7A3) return withFinal;
+  return ((c - 0xAC00) % 28) ? withFinal : withoutFinal;
+}
+function needChoiceHtml(need){
+  var picked = need && need.need;
+  var items = NEED_ORDER.map(function(n){
+    var on = n === picked;
+    return '<span class="ns-opt' + (on ? " on" : "") + '">' +
+      escapeHtml(needLabelByName(n)) + '</span>';
+  }).join('<span class="ns-sep">·</span>');
+  return '<div class="ns-need">' + items + '</div>';
+}
+function hedge_wrap(hedge){
+  return hedge ? '<div class="ns-hedgerow">' + hedge + '</div>' : "";
+}
 function needLabel(need){
   // need = the served patient_need object; EN from the English enum, KO from the served gloss
   if (!need) return "";
@@ -1340,6 +1521,19 @@ function applyStaticI18n(){
   document.getElementById("round0Label").textContent = t("round0");
   document.getElementById("chatHead").textContent = t("chatHead");
   document.getElementById("refreshBtn").textContent = t("refresh");
+  var _ex0 = document.getElementById("exportBtn");
+  if (_ex0 && !_ex0.dataset.wired){
+    _ex0.dataset.wired = "1";
+    _ex0.addEventListener("click", exportCurrentCsv);
+  }
+  var _tr0 = document.getElementById("toRankBtn");
+  if (_tr0 && !_tr0.dataset.wired){
+    _tr0.dataset.wired = "1";
+    _tr0.addEventListener("click", function(){
+      var tabEl = document.querySelector('.tab[data-v="ranking"]');
+      if (tabEl) tabEl.click();
+    });
+  }
   document.getElementById("footerBox").innerHTML =
     escapeHtml(t("footMain")) +
     '<span class="compliance">' + escapeHtml(t("footCompliance")) + '</span>' +
@@ -1352,6 +1546,12 @@ function applyStaticI18n(){
     pdBtn.innerHTML = escapeHtml(t("pdLoading")) + ' <span class="chev">▾</span>';
     document.getElementById("boardLoadNote").textContent = t("loadingData");
     document.getElementById("batchNote").textContent = t("batchNote");
+    var _tr = document.getElementById("toRankBtn");
+    if (_tr) _tr.textContent = t("toRank");
+    var _sh = document.getElementById("rankSideHead");
+    if (_sh) _sh.textContent = t("sideHist");
+    var _ex = document.getElementById("exportBtn");
+    if (_ex){ _ex.textContent = t("exportCsv"); _ex.title = t("exportTip"); }
     document.getElementById("batchBtn").textContent = t("batchBtn", {n: 0});
     document.getElementById("rankStatus").textContent = t("rankStatusInit");
   }
@@ -1739,6 +1939,27 @@ function renderPatientDetail(){
   html += '<div class="pdetail-tag">' + escapeHtml(t("extractionTag")) + '</div>';
   box.innerHTML = html;
 }
+// 후보 전체가 이 필요를 얼마나 겨냥하는지 한 줄. 08-25 리뷰: 필요는 "치료"라고 크게 떠 있는데
+// 카드 넷이 전부 "방향 다름"이면, 사용자가 카드를 하나씩 읽고 직접 합산해야 그 사실을 안다.
+// 시스템은 이미 알고 있으므로(rank_basis의 help score) 그냥 말해 준다. 후보 중 필요를 겨냥한
+// 시험이 0건이라는 것은 임상적으로 의미 있는 결론이다 — 후보군을 넓혀야 한다는 신호.
+function needCoverageHtml(){
+  var trials = (cur && cur.trials) || [];
+  if (!trials.length) return "";
+  var direct = 0, partial = 0;
+  trials.forEach(function(tr){
+    var h = basisByKey(tr).help;
+    var sc = h && typeof h.score === "number" ? h.score : 0;
+    if (sc === 2) direct += 1; else if (sc === 1) partial += 1;
+  });
+  var cls = direct ? "cov-some" : "cov-none";
+  var nlab = needLabel(cur && cur.need) || "";
+  var msg = direct
+    ? t("needCovSome", {n: direct, total: trials.length, need: nlab})
+    : (partial ? t("needCovPartial", {n: partial, total: trials.length, need: nlab})
+               : t("needCovNone", {total: trials.length, need: nlab}));
+  return '<div class="ns-cov ' + cls + '">' + escapeHtml(msg) + '</div>';
+}
 function renderNeedStrip(){
   var box = document.getElementById("needstrip");
   var need = cur.need;
@@ -1770,7 +1991,8 @@ function renderNeedStrip(){
   }
   box.innerHTML =
     '<span class="ns-label">' + escapeHtml(t("needLabel")) + '</span>' +
-    '<div class="ns-need">' + escapeHtml(needLabel(need)) + hedge + '</div>' +
+    needChoiceHtml(need) + hedge_wrap(hedge) +
+    needCoverageHtml() +
     reasonHtml +
     '<div class="ns-link">' + escapeHtml(t("needLink")) + '</div>';
   box.style.display = "block";
@@ -1939,6 +2161,69 @@ function pathLineText(trial){
   if (pc.open > 0) return t("pathOpen", {b: pc.blocking, o: pc.open});
   return t("pathClear");
 }
+// 탈락 사유를 글로 — 08-23 팀 리뷰: 건수만으로는 어느 기준 때문에 부적격인지 알 수 없다.
+// 극성(배제 충족 / 포함 미충족)은 verdict가 아니라 type에서 읽는다. verdict=MET은 배제에서는
+// FAIL, 포함에서는 PASS라서, verdict로 라벨을 붙이면 두 층 구조가 막으려던 반전 버그가 그대로
+// 돌아온다. 서버 rank_basis의 blocking/to_resolve 칩과 같은 규칙 (ranking._blocking_detail).
+// 기준 텍스트 → 안정적인 앵커 id. 경로 패널 항목을 누르면 본문의 그 기준으로 이동한다.
+function critAnchorId(text){
+  var t0 = String(text || "");
+  var h = 0;
+  for (var i = 0; i < t0.length; i++){ h = ((h << 5) - h + t0.charCodeAt(i)) | 0; }
+  return "c" + Math.abs(h).toString(36);
+}
+function focusCriterion(text){
+  var node = document.getElementById("crit-" + critAnchorId(text));
+  if (!node) return;
+  node.scrollIntoView({block: "center", behavior: "smooth"});
+  node.classList.add("critflash");
+  setTimeout(function(){ node.classList.remove("critflash"); }, 1400);
+}
+function pathRows(trial){
+  var blocking = [], resolve = [];
+  (trial.criteria || []).forEach(function(c){
+    var txt = c.text || "";
+    if (!txt) return;
+    if (getEffect(c) === "FAIL"){
+      blocking.push({text: txt, label: c.type === "exclusion" ? t("polExcl") : t("polIncl")});
+      return;
+    }
+    var v = (c.verdict || "").toUpperCase();
+    if (v === "UNKNOWN" || v === "UNCERTAIN") resolve.push({text: txt, label: ""});
+  });
+  return {blocking: blocking, resolve: resolve};
+}
+function pathGroupHtml(items, cls, label){
+  if (!items.length) return "";
+  var rows = items.map(function(r, i){
+    return '<button type="button" class="path-item' + (i >= 4 ? ' path-extra' : '') +
+      '" data-crit="' + escapeHtml(r.text) + '">' +
+      '<span class="path-text">' + escapeHtml(r.text) + '</span>' +
+      (r.label ? '<span class="path-tag">' + escapeHtml(r.label) + '</span>' : '') + '</button>';
+  }).join("");
+  if (items.length > 4){
+    rows += '<button type="button" class="path-more">' + t("pathMore", {n: items.length - 4}) + '</button>';
+  }
+  return '<div class="path-group ' + cls + '"><div class="path-group-label">'
+    + escapeHtml(label) + '</div>' + rows + '</div>';
+}
+function pathPanelHtml(trial){
+  var pr = pathRows(trial);
+  var html = '<div class="pathhead">' + escapeHtml(pathLineText(trial)) + '</div>';
+  html += pathGroupHtml(pr.blocking, "blocking", t("pathBlockingLabel"));
+  html += pathGroupHtml(pr.resolve, "resolve", t("pathResolveLabel"));
+  // 적격이 되려면 무엇이 필요한가 — 조합 탐색이 아니라 뒤집혀야 할 것들의 목록.
+  // 0건인 쪽은 문장에서 빼야 한다 ("탈락 사유 0건이 해당되지 않아야" 는 말이 안 됨).
+  var parts = [];
+  if (pr.blocking.length) parts.push(pr.blocking.length === 1
+    ? t("pathNeedBlockingOne") : t("pathNeedBlocking", {b: pr.blocking.length}));
+  if (pr.resolve.length) parts.push(pr.resolve.length === 1
+    ? t("pathNeedResolveOne") : t("pathNeedResolve", {o: pr.resolve.length}));
+  if (parts.length){
+    html += '<div class="path-need">' + escapeHtml(t("pathNeedLead") + " " + parts.join(t("pathNeedJoin"))) + '</div>';
+  }
+  return html;
+}
 // 환자-편익 한 줄 — ct.gov 링크보다 먼저 읽히는 정직한 문장. 서버 필드로만 조립:
 // trial_intent(intent+confidence, rank_basis fit 폴백) + rank_basis help score + patient_need.
 function benefitLineText(trial){
@@ -1954,7 +2239,9 @@ function benefitLineText(trial){
   else if (intent === "care_delivery"){ line = t("benefitCare"); }
   else if (intent === "therapeutic"){
     if (!needTxt) return "";
-    line = helpScore === 2 ? t("benefitTherHelp", {need: needTxt}) : t("benefitTherNoHelp", {need: needTxt});
+    line = helpScore === 2
+      ? t("benefitTherHelp", {need: needTxt, eul: josa(needTxt, "을", "를")})
+      : t("benefitTherNoHelp", {need: needTxt});
   } else if (intent === "supportive"){
     if (helpScore === 2){ line = t("benefitSuppHelp"); }
     else { if (!needTxt) return ""; line = t("benefitSuppNoHelp", {need: needTxt}); }
@@ -2044,7 +2331,18 @@ function openModal(nct){
     : em.ko + " · " + (trial.eligibility || "UNCERTAIN");
   document.getElementById("verdictSummary").innerHTML =
     escapeHtml(trial.rationale || "") + glossLineHtml(trial.rationale, modalGloss);
-  document.getElementById("pathLine").textContent = pathLineText(trial);
+  var _pl = document.getElementById("pathLine");
+  _pl.innerHTML = pathPanelHtml(trial);
+  _pl.querySelectorAll(".path-item").forEach(function(btn){
+    btn.addEventListener("click", function(){ focusCriterion(btn.dataset.crit); });
+  });
+  _pl.querySelectorAll(".path-more").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var g = btn.parentNode;
+      g.classList.add("expanded");
+      btn.remove();
+    });
+  });
   var body = document.getElementById("modalCriteria");
   body.innerHTML = "";
   var incN = 0, excN = 0;
@@ -2052,6 +2350,7 @@ function openModal(nct){
     var isInc = c.type === "inclusion";
     var tag = (isInc ? t("incTag") : t("excTag")) + " " + String(isInc ? ++incN : ++excN).padStart(2, "0");
     var row = el("div", "critdetail " + (isInc ? "inc" : "exc"));
+    row.id = "crit-" + critAnchorId(c.text);
     var evHtml = c.evidence
       ? '<div class="critevidence">"' + escapeHtml(c.evidence) + '"</div>'
       : '<div class="critevidence">' + escapeHtml(t("noEvidence")) + '</div>';
@@ -2173,26 +2472,79 @@ function sameMatch(a, b){
 function optionTagEl(optText, qTok, qMatch, openList){
   var generic = isGenericNegative(optText);
   var m = generic ? qMatch : matchOpenCriteria(unionTokens(tagTokens(optText), qTok), openList);
-  // one identical line repeated under every option is boilerplate: the question-level line
-  // (rendered once on the card) already says it -- tag an option only when it DIFFERS.
-  if (sameMatch(m, qMatch)) return null;
+  if (!m.items || !m.items.length) return null;
+  // 이 태그는 "이 답을 고르면 적격/탈락"을 주장하지 않는다. 연결은 토큰 겹침이라
+  // "경구 섭취 가능"과 "경구 섭취 불가능"이 같은 기준에 걸린다 — 서로 반대인 답이 같은
+  // 방향을 가리키게 되므로 방향 주장은 반드시 틀린다 (08-25 확인). 그래서 기준의 종류만
+  // 말한다. 실제 판정은 Apply 후 재평가가 한다.
+  var inc = 0, exc = 0;
+  m.items.forEach(function(oc){
+    if (oc.crit && oc.crit.type === "exclusion") exc += 1; else inc += 1;
+  });
   var tag = document.createElement("span");
-  if (!m.ncts.length){
-    tag.className = "opt-tag none";
-    tag.textContent = t("optNone");
-    tag.title = t("optNoneTip");
-    return tag;
-  }
-  tag.className = "opt-tag";
-  var txt = m.ncts.length === 1
-    ? t("optUsedOne", {nct: m.ncts[0], c: m.count})
-    : t("optUsedMany", {n: m.ncts.length, list: m.ncts.map(shortNct).join(", "), c: m.count});
-  if (generic) txt += t("optGeneric");
-  tag.textContent = txt;
-  tag.title = t("optTipLead") + m.ncts.map(function(n){
-    return t("optTipItem", {nct: n, c: m.byNct[n]});
-  }).join(", ");
+  tag.className = "opt-tag " + (exc && !inc ? "excl" : (inc && !exc ? "incl" : "mixed"));
+  tag.textContent = exc && !inc ? t("optExcl", {n: exc})
+    : (inc && !exc ? t("optIncl", {n: inc}) : t("optMixed", {i: inc, e: exc}));
+  tag.title = t("optTipLead") + m.items.map(function(oc){
+    return shortNct(oc.nct) + " " + (oc.crit && oc.crit.type === "exclusion"
+      ? t("fitExclusion") : t("fitInclusion")) + ": " + oc.text;
+  }).join(" · ");
   return tag;
+}
+// 라운드 스텝 — 어디까지 왔고 어디로 되돌릴 수 있는지. 되돌리기 자체는 이미 있던
+// revertRound()를 그대로 쓴다 (스냅샷 복원). 최신 라운드만 되돌릴 수 있는 규칙도 그대로.
+// 현재 화면 상태를 CSV로. 답변 라운드로 판정이 바뀐 뒤의 상태를 그대로 내보낸다.
+function csvCell(v){
+  v = (v == null) ? "" : String(v);
+  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function exportCurrentCsv(){
+  if (!cur || !cur.trials) return;
+  var rows = [["patient_id","nct_id","trial_title","phase","eligibility","rank",
+               "criterion_type","criterion_text","verdict","effect","evidence","reasoning"]];
+  (cur.trials || []).slice().sort(function(a,b){
+    return (a.rank || 99) - (b.rank || 99);
+  }).forEach(function(tr){
+    (tr.criteria || []).forEach(function(c){
+      rows.push([cur.id, tr.nct_id, tr.title, tr.phase || "NA",
+                 tr.eligibility, tr.rank, c.type, c.text, c.verdict,
+                 getEffect(c), c.evidence || "", c.reasoning || ""]);
+    });
+  });
+  var csv = "\ufeff" + rows.map(function(r){ return r.map(csvCell).join(","); }).join("\r\n");
+  var blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "screening_" + cur.id + ".csv";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+function buildRoundStrip(){
+  var done = roundsDone();
+  var strip = el("div", "roundsteps");
+  var last = done.length ? done[done.length - 1] : null;
+  done.forEach(function(e){
+    var st = el("div", "rstep done");
+    st.innerHTML = '<span class="sn">' + String(e.n || "").padStart(2, "0") + '</span>' +
+      escapeHtml(t("stepRound", {n: e.n}));
+    if (e === last){
+      var ub = el("button", "rstep-undo", t("stepUndo"));
+      ub.addEventListener("click", function(ev){ ev.stopPropagation(); revertRound(e); });
+      st.appendChild(ub);
+    } else {
+      st.title = t("revertOrderTip");
+    }
+    st.addEventListener("click", function(){
+      var tabEl = document.querySelector('.tab[data-v="history"]');
+      if (tabEl) tabEl.click();
+    });
+    strip.appendChild(st);
+  });
+  var cur_ = el("div", "rstep on");
+  cur_.innerHTML = '<span class="sn">' + String(done.length + 1).padStart(2, "0") + '</span>' +
+    escapeHtml(t("stepCurrent", {n: pendingQuestions().length}));
+  strip.appendChild(cur_);
+  return strip;
 }
 function buildPendingCard(q, openList, glossState){
   var card = el("div", "qitem");
@@ -2241,7 +2593,12 @@ function buildPendingCard(q, openList, glossState){
       var optGlossHtml = glossLineHtml(String(optText), glossState);
       if (optGlossHtml) bodyDiv.insertAdjacentHTML("beforeend", optGlossHtml);
       var _tag = optionTagEl(String(optText), qTok, qMatch, openList);
-      if (_tag) bodyDiv.appendChild(_tag);
+      if (_tag){
+        bodyDiv.appendChild(_tag);
+        // 태그만으로는 훑어볼 때 안 보인다 — 행 자체에 방향을 칠한다.
+        lab.classList.add("opt-" + (_tag.classList.contains("excl") ? "excl"
+          : _tag.classList.contains("incl") ? "incl" : "mixed"));
+      }
       lab.appendChild(cb);
       lab.appendChild(bodyDiv);
       optWrap.appendChild(lab);
@@ -2336,6 +2693,7 @@ function renderChat(){
   var fups = pend.filter(function(q){ return q.followup; });
   var roundNo = roundsDone().length + 1;
   // 선택지(options)는 시스템이 한국어로 생성한 원문 — EN 모드에서 한 번만 라벨 (기계번역 금지)
+  box.appendChild(buildRoundStrip());
   var optNoteText = t("optNote");
   if (optNoteText && pend.some(function(q){ return Array.isArray(q.options) && q.options.length; })){
     box.appendChild(el("div", "optnote", escapeHtml(optNoteText)));
@@ -2390,9 +2748,11 @@ function renderChat(){
     box.scrollTop = box.scrollHeight;
   }
   updateBatchBar();
+  syncFlowButtons();
 }
 function renderEvidence(){
   var box = document.getElementById("evidencepane");
+  if (!box) return;  // 패널 제거됨 — 호출부를 전부 고치는 대신 여기서 무해하게 빠진다
   var q = pendingQuestions().find(function(x){ return x.question === selectedQuestion; });
   if (!q){
     box.innerHTML = "<h3>" + escapeHtml(t("evHead")) + "</h3>" +
@@ -2480,6 +2840,10 @@ function restoreSelections(saved){
     var input = card.querySelector('input[type="text"]');
     if (input && s.typed) input.value = s.typed;
   });
+}
+function syncFlowButtons(){
+  var tr = document.getElementById("toRankBtn");
+  if (tr) tr.style.display = pendingQuestions().length === 0 ? "" : "none";
 }
 function updateBatchBar(){
   var btn = document.getElementById("batchBtn");
@@ -2746,7 +3110,7 @@ function renderRuleBox(){
   var r = cur.ranking || {};
   // 규칙 문장: 언어별 클라이언트 상수 (서버 rule_ko와 의미 동일 — ranking.RANKING_RULE_KO 미러)
   var rule = LANG === "ko" ? (r.rule_ko || t("rule")) : t("rule");
-  var html = "<h2>" + escapeHtml(t("ruleTitle")) + "</h2>";
+  var html = "<summary>" + escapeHtml(t("ruleTitle")) + "</summary><div class=\"rulebody\">";
   var parts = rule.split(" · ");
   if (parts.length === 3){
     html += parts.map(function(p, i){
@@ -2760,7 +3124,7 @@ function renderRuleBox(){
   if (holds){
     html += '<span class="guarantee" title="' + escapeHtml(t("guaranteeTip")) + '">' + escapeHtml(t("guarantee")) + '</span>';
   }
-  box.innerHTML = html;
+  box.innerHTML = html + "</div>";
 }
 function miniChipsHtml(trial){
   if (!Array.isArray(trial.rank_basis) || !trial.rank_basis.length) return "";
@@ -2797,13 +3161,18 @@ function miniChipsHtml(trial){
       sure.push({text: t("chipOpen", {v: b.value}), title: t("chipOpenTip")});
     }
   });
-  function chips(label, list){
+  // 라벨과 알약을 한 줄에 섞어 흘리면 줄바꿈이 제멋대로 생겨 읽을 수 없다 (08-26 확인).
+  // 세 질문을 각각 한 행으로 두고, 값은 쉼표로 잇는 평문으로.
+  function row(label, list){
     if (!list.length) return "";
-    return '<span class="mgroup">' + escapeHtml(label) + '</span>' + list.map(function(c){
-      return '<span class="mchip' + (c.warn ? " warn" : "") + '" title="' + escapeHtml(c.title) + '">' + escapeHtml(c.text) + '</span>';
-    }).join("");
+    var vals = list.map(function(c){
+      return '<span class="mval' + (c.warn ? " warn" : "") + '" title="' +
+        escapeHtml(c.title) + '">' + escapeHtml(c.text) + '</span>';
+    }).join('<span class="msep">·</span>');
+    return '<div class="mrow"><span class="mkey">' + escapeHtml(label) + '</span>' +
+      '<span class="mvals">' + vals + '</span></div>';
   }
-  var html = chips(t("mgJoin"), join) + chips(t("mgHelp"), help) + chips(t("mgSure"), sure);
+  var html = row(t("mgJoin"), join) + row(t("mgHelp"), help) + row(t("mgSure"), sure);
   return html ? '<div class="minichips">' + html + '</div>' : "";
 }
 // 시트 단위 진실 (S001류): 살아남은 후보 전원이 치료하지 않는 연구(관찰/의료전달, help 0)면
@@ -2849,12 +3218,23 @@ function renderRanking(withDeltas){
     }
     var dirClass = d > 0 ? "up" : d < 0 ? "down" : "same";
     var arrow = d > 0 ? "▲" : d < 0 ? "▼" : ".";
-    var dtext = d === 0 ? "." : arrow + Math.abs(d);
+    var dtext = d === 0 ? "" : arrow + Math.abs(d);
     var changed = withDeltas && d !== 0;
     var em = eligMeta(trial.eligibility);
     var row = el("div", "rankrow" + (changed ? " flash" : ""));
     row.dataset.nct = trial.nct_id;
-    var benefit = benefitLineText(trial); // ct.gov 링크보다 먼저: 이 시험이 이 환자에게 뭘 해주나
+    // 08-25: 랭킹에서 바로 "왜 이 판정인지"로 들어가야 한다. 보드 카드에만 있던 진입점을
+    // 랭킹 행에도 연다 (같은 모달, 같은 근거).
+    row.tabIndex = 0;
+    row.style.cursor = "pointer";
+    row.title = t("rankRowTip");
+    row.addEventListener("click", function(){ openModal(trial.nct_id); });
+    row.addEventListener("keydown", function(ev){
+      if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); openModal(trial.nct_id); }
+    });
+    // 목록 위 한 줄(rankObsNote)이 "후보 전원이 치료하지 않는 연구"라고 이미 말했으면
+    // 카드마다 같은 문장을 되풀이하지 않는다 (08-26: 네 카드에 같은 문장이 네 번).
+    var benefit = allMatchesNonTreating() ? "" : benefitLineText(trial);
     row.innerHTML =
       '<div class="rnum">' + (trial.rank || i + 1) + '</div>' +
       '<div class="rinfo"><div class="rname">' + escapeHtml(trial.title || trial.nct_id) + '</div>' +
@@ -2867,6 +3247,7 @@ function renderRanking(withDeltas){
     list.appendChild(row);
   });
   rankView.order = sorted.map(function(trial){ return trial.nct_id; });
+  renderRankSideHistory();
 }
 function renderRankStatusText(){
   var rankStatus = document.getElementById("rankStatus");
@@ -2937,6 +3318,33 @@ function causalLinesHtml(e){
     html += '<div class="hist-causal">' + line + '</div>';
   });
   return html;
+}
+// 순위 탭 사이드 이력 — 라운드 헤더만 요약해서 (전체 이력은 이력 탭)
+function renderRankSideHistory(){
+  var box = document.getElementById("rankSideBody");
+  if (!box) return;
+  box.innerHTML = "";
+  var done = roundsDone();
+  if (!done.length){
+    box.appendChild(el("div", "rankside-empty", t("sideNoRounds")));
+    return;
+  }
+  done.slice().reverse().forEach(function(e){
+    var it = el("div", "histitem");
+    var moves = (e.rankChanges || []).length, vc = (e.verdictChanges || []).length;
+    it.innerHTML = '<div class="histtop"><span class="histround">' +
+      escapeHtml(t("histRound", {n: e.n})) + '</span><span class="histtime">' +
+      escapeHtml(e.timeLabel || "") + '</span></div>' +
+      '<div class="histstats"><span class="histpill">' +
+      escapeHtml(t("sideVerdicts", {n: vc})) + '</span><span class="histpill">' +
+      escapeHtml(t("sideMoves", {n: moves})) + '</span></div>';
+    it.style.cursor = "pointer";
+    it.addEventListener("click", function(){
+      var tabEl = document.querySelector('.tab[data-v="history"]');
+      if (tabEl) tabEl.click();
+    });
+    box.appendChild(it);
+  });
 }
 function renderHistory(){
   var box = document.getElementById("dynamicHistory");

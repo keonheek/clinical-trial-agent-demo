@@ -288,10 +288,21 @@ def priority_numbers(question, gaps, trials):
     )
     may_change_rank = bool(pairs) and (touches_uncertain_trial or n_trials >= 2)
 
+    # The pairs themselves, not just how many. 08-25 review: "which ones need to be exercised
+    # for the patient to be a fit candidate" cannot be read off a count. Split by polarity so
+    # the card can say what must HOLD (inclusion) and what must NOT apply (exclusion).
+    #
+    # Deliberately NOT predicted per answer option: which option flips which verdict is the
+    # re-evaluation's judgment, and precomputing it here would state a clinical conclusion the
+    # system has not actually reached.
+    detail = [{"nct_id": t.get("nct_id"), "text": c.get("text", ""), "type": c.get("type"),
+               "verdict": c.get("verdict"), "eligibility": t.get("eligibility")}
+              for t, c in pairs]
     return {
         "affects_criteria": n_criteria,
         "affects_trials": n_trials,
         "may_change_rank": may_change_rank,
+        "affected_detail": detail,
     }
 
 

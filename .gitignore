@@ -15,3 +15,7 @@ handoff/
 cache/bakeoff/
 model_bakeoff_results.json
 model_bakeoff_full.json
+
+# 생성물 — traces.json에서 언제든 재생성 (export_report.py)
+screening.db
+screening_*.csv

@@ -20,7 +20,7 @@ a code-derived count, or the deterministic patient_need classifier -- never a mo
      hedged guess never lifts a trial). Sub-key inside the help group: Phase 부담 (PHASE4 best
      ... PHASE1/EARLY worst, NA mid -- a later phase means a better-characterized intervention,
      lower burden/uncertainty for the patient). When the patient's need was not computed
-     (need=None) the help group falls back to intent-only order (치료 < 지지 < 관리 < 관찰,
+     (need=None) the help group falls back to intent-only order (치료 < 증상 완화 < 추적관찰 < 관찰,
      low-confidence demoted) and rank_reason flags it: "환자 필요 미산출".
   Q3 확실 (sure)  "How sure are we?"
      ELIGIBLE before UNCERTAIN, then coverage penalty (parsed/raw < 50% sinks below fully-read
@@ -60,12 +60,12 @@ LOW_COVERAGE_CUTOFF = 0.5
 # One-line statement of the executed rule, for the UI and the deck. Must match rank_key.
 # The three questions, in plain words -- no technical term without a plain-word label.
 RANKING_RULE_KO = ("참여할 수 있는가 -- 부적격(탈락) 시험은 항상 맨 아래 · "
-                   "도움이 되는가 -- 환자에게 필요한 것(치료/진단 확정/관리/지지)과 시험의 목적이 맞는 순, "
+                   "도움이 되는가 -- 환자 임상 요구(치료/진단 확정/추적관찰/증상 완화)와 시험 목적이 부합하는 순, "
                    "같으면 검증이 더 된 후기 단계(Phase 4→1) 먼저 · "
                    "얼마나 확실한가 -- 적격 확정이 미확정보다 먼저, 원문을 절반도 못 읽었으면 감점, "
                    "미해결 기준이 적은 순")
 
-FIT_LABEL_KO = {"therapeutic": "치료 목적", "supportive": "지지·완화", "care_delivery": "의료전달·관리",
+FIT_LABEL_KO = {"therapeutic": "치료 목적", "supportive": "증상 완화", "care_delivery": "의료전달",
                 "observational": "관찰 연구"}
 ELIG_LABEL_KO = {"ELIGIBLE": "적격", "UNCERTAIN": "미확정", "INELIGIBLE": "부적격"}
 
@@ -147,6 +147,47 @@ def _counts(criteria):
     return n, fails, reviews
 
 
+def _blocking_detail(criteria):
+    """The FAIL criteria as UI-ready rows: the criterion's own text plus a polarity label.
+
+    A count answers "how many", which the 08-23 team review found unusable: a clinician who
+    picked criteria 1 and 3 instead of 1 and 2 sees 부적격 and cannot tell which criterion did
+    it. The text was never discarded -- every criterion in traces.json carries text/type/
+    verdict/effect/evidence/reasoning -- it just never reached the rank surface.
+
+    Polarity is read off `type`, never off `verdict`: the two-layer model means verdict=MET is
+    a FAIL on an exclusion and a PASS on an inclusion, so labelling from the verdict is exactly
+    the inverted-display bug the two layers exist to prevent.
+    """
+    out = []
+    for c in criteria or []:
+        if c.get("effect") != "FAIL":
+            continue
+        excl = c.get("type") == "exclusion"
+        out.append({
+            "text": c.get("text") or "",
+            "type": c.get("type"),
+            "label_ko": "배제 기준 충족" if excl else "포함 기준 미충족",
+            "label_en": "exclusion met" if excl else "inclusion not met",
+            "reasoning": c.get("reasoning") or "",
+            "evidence": c.get("evidence") or "",
+        })
+    return out
+
+
+def _resolvable_detail(criteria):
+    """The REVIEW criteria -- the ones that are still open and could still settle the verdict.
+
+    Item 2 of the review ("what would make this patient 적격") in its answerable form: the path
+    is 'these FAILs would have to not hold, and these REVIEWs need confirming'. The transcript's
+    other reading -- enumerate the optimal passing combination -- is combinatorial, and the team
+    flagged 변수가 많다 in the same breath, so it is deliberately not attempted here.
+    """
+    return [{"text": c.get("text") or "", "type": c.get("type"),
+             "action": c.get("action"), "action_scope": c.get("action_scope")}
+            for c in criteria or [] if c.get("effect") == "REVIEW"]
+
+
 def _load_sidecars():
     """trial_intent.json + coverage_map.json from the repo root, cached. Missing files -> {}."""
     if _SIDECARS:
@@ -211,34 +252,52 @@ def rank_key(trial, intent=None, raw_estimated=None, need=None):
     return (gate, help_group, sure)
 
 
+def _josa(word, with_final, without_final):
+    """받침 유무에 따라 조사를 고른다 — "진단 확정를"처럼 틀린 조사가 붙는 걸 막는다.
+
+    네 가지 요구 라벨(치료·진단 확정·추적관찰·증상 완화) 중 "진단 확정"만 받침으로 끝나서, 조사를
+    고정으로 박아 두면 그 하나만 어색해진다.
+    """
+    if not word:
+        return with_final
+    last = word.strip()[-1]
+    if not ("가" <= last <= "힣"):
+        return with_final
+    return with_final if (ord(last) - 0xAC00) % 28 else without_final
+
+
 def _help_sentence(nname, need_conf, score, known_intent, phase_txt, guess_intent=None):
     """The 도움 part of rank_reason, plain Korean. Phase NA carries no information for
     non-interventional trials, so an empty phase_txt is simply omitted (08-20 UI review);
     when the intent is only a low-confidence guess, say the guess instead of claiming the
     system has no opinion (the chip next to the sentence shows the guess)."""
     def paren(fit_ko=None):
-        parts = [x for x in (f"{fit_ko} 시험" if fit_ko else None, phase_txt or None) if x]
+        # 라벨이 이미 "연구"로 끝나면 "시험"을 덧붙이지 않는다 ("관찰 연구 시험"은 중복).
+        parts = [x for x in (fit_ko or None, phase_txt or None) if x]
         return f" ({', '.join(parts)})" if parts else ""
     if nname in pn.VALID_NEEDS:
         need_ko = pn.NEED_KO[nname]
         if known_intent is None:
             if guess_intent in FIT_LABEL_KO:
-                txt = f"{need_ko} 필요, 시험 목적 미확정 (추정: {FIT_LABEL_KO[guess_intent]}{', ' + phase_txt if phase_txt else ''})"
+                txt = (f"{need_ko} 필요, 시험 목적 미확정 "
+                       f"(추정: {FIT_LABEL_KO[guess_intent]}{', ' + phase_txt if phase_txt else ''})")
             else:
-                txt = f"{need_ko} 필요인데 시험 목적 미확인{paren()}"
+                txt = f"{need_ko} 필요, 시험 목적 미확인{paren()}"
         else:
             fit_ko = FIT_LABEL_KO[known_intent]
+            # 명사만 쌓으면 기계가 뱉은 문장처럼 읽힌다 (08-23 리뷰: "띵 치료라고 하면
+            # 당연히 치료해야지"). 필요와 시험 목적의 관계를 문장으로 드러낸다.
             if score == 2:
-                txt = f"{need_ko} 필요와 부합{paren(fit_ko)}"
+                txt = f"{need_ko} 필요에 맞음{paren(fit_ko)}"
             elif score == 1:
-                txt = f"{need_ko} 필요에 부분적 도움{paren(fit_ko)}"
+                txt = f"{need_ko} 필요에 일부 도움{paren(fit_ko)}"
             else:
-                txt = f"{need_ko} 필요와 무관{paren(fit_ko)}"
+                txt = f"{need_ko} 필요와 방향 다름{paren(fit_ko)}"
         if need_conf == "low":
-            txt += ", 필요 분류는 확신 낮음"
+            txt += " · 필요 분류 확신 낮음"
         return txt
     if known_intent is None:
-        return f"환자 필요 미산출, 시험 목적도 미확인{paren()}"
+        return f"환자 필요·시험 목적 모두 미확인{paren()}"
     return f"환자 필요 미산출 → 시험 목적 순{paren(FIT_LABEL_KO[known_intent])}"
 
 
@@ -261,7 +320,13 @@ def rank_basis(trial, intent=None, raw_estimated=None, need=None):
     # -- chips, grouped by the three questions (tier kept numeric for stable UI sort order) --
     basis = [{"key": "eligibility", "label": "참여", "value": elig, "group": "join", "tier": 0}]
     if fails:
-        basis.append({"key": "blocking", "label": "차단 기준", "value": fails, "group": "join", "tier": 0})
+        basis.append({"key": "blocking", "label": "차단 기준", "value": fails,
+                      "texts": _blocking_detail(trial.get("criteria")),
+                      "group": "join", "tier": 0})
+    if reviews:
+        basis.append({"key": "to_resolve", "label": "확인 필요", "value": reviews,
+                      "texts": _resolvable_detail(trial.get("criteria")),
+                      "group": "join", "tier": 0})
     if nname in pn.VALID_NEEDS:
         basis.append({"key": "need", "label": "환자 필요", "value": pn.NEED_KO[nname], "need": nname,
                       "confidence": need_conf, "group": "help", "tier": 1})
@@ -491,6 +556,24 @@ def _selftest():
     groups = {b.get("group") for b in trials[0]["rank_basis"]}
     check(groups <= {"join", "help", "sure"} and {"join", "help", "sure"} <= groups,
           "rank_basis chips carry group join/help/sure")
+
+    # 11b. the blocking chip carries the criterion TEXT, polarity-labelled off `type` (the
+    # 08-23 review: a count cannot tell a clinician WHICH criterion closed the path).
+    ct = [{"effect": "FAIL", "type": "exclusion", "text": "활동성 감염", "reasoning": "r1", "evidence": "e1"},
+          {"effect": "FAIL", "type": "inclusion", "text": "ECOG 0-1", "reasoning": "r2", "evidence": "e2"},
+          {"effect": "REVIEW", "type": "inclusion", "text": "간기능 수치", "action": "ASK"},
+          {"effect": "PASS", "type": "inclusion", "text": "연령 19세 이상"}]
+    b, _ = rank_basis({"criteria": ct, "eligibility": "INELIGIBLE", "phase": "PHASE2"})
+    blk = next(x for x in b if x["key"] == "blocking")
+    check(blk["value"] == 2 and [t["text"] for t in blk["texts"]] == ["활동성 감염", "ECOG 0-1"],
+          "blocking chip carries both FAIL criterion texts")
+    check([t["label_ko"] for t in blk["texts"]] == ["배제 기준 충족", "포함 기준 미충족"],
+          "blocking polarity label is read off type, not verdict")
+    res = next(x for x in b if x["key"] == "to_resolve")
+    check(res["value"] == 1 and res["texts"][0]["text"] == "간기능 수치",
+          "to_resolve chip carries the REVIEW criterion text (the path to 적격)")
+    check(all(x["key"] != "blocking" for x in rank_basis({"criteria": ct[2:]})[0]),
+          "no blocking chip when nothing FAILs")
 
     # 12. deterministic on the frozen demo traces + safety property on all 10 patients
     if os.path.exists(os.path.join(_HERE, "traces.json")):
