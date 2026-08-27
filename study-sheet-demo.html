@@ -1,0 +1,531 @@
+<!--
+  Meeting Study Sheet (8/27 14:00) 데모 워크스루.
+  데모·목업 문서다. S001 관련 데이터(비네트·추출·기준 판정·질문·답변·순위·근거 문장)는 전부
+  frozen traces.json(2026-07-08)에서 발췌한 실제 파이프라인 산출물이고, 시험 4건은 ClinicalTrials.gov의
+  실제 모집중 시험이다. [PLACEHOLDER]로 표시된 항목만 미확정 — 8/27 미팅에서 결정한다.
+  디자인 토큰/타이포는 정원 확정본(Concept A, ui-concepts/g-board.html)을 그대로 따른다. 수정 없음.
+  라이브 UI(site.html/board.html)와 연동되어 있지 않다 — 스냅샷은 전부 정적 목업이다.
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trial-Match Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Concept A tokens — LOCKED (ui-concepts/g-board.html). 이 문서는 라이트 단일 테마로 확정. */
+  :root{
+    --primary:#1E40AF; --secondary:#3B82F6;
+    --bg:#F1F3F7; --ink:#181B22; --ink-soft:#6B7280;
+    --border:#DDE1E9; --card:#FFFFFF; --accent:#7C3AED;
+    --orange:#C2410C; --orange-bg:#FFF1E8;
+    --met:#087F5B; --met-bg:#D9F4EB;
+    --notmet:#C0362C; --notmet-bg:#FBE3E1;
+    --uncertain:#9A6700; --uncertain-bg:#FCEFCB;
+    --unknown:#6B7280; --unknown-bg:#E7E9EE;
+    --sans:"IBM Plex Sans KR",-apple-system,"Segoe UI",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  .mono{font-family:var(--mono);}
+  a{color:var(--primary);}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- header ---------- */
+  header.hero{background:var(--card);border-bottom:1px solid var(--border);padding:44px 0 0;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-weight:600;}
+  h1{font-size:clamp(24px,3.4vw,34px);line-height:1.28;margin:10px 0 8px;font-weight:700;text-wrap:balance;}
+  .hero-sub{color:var(--ink-soft);max-width:64ch;margin:0 0 20px;}
+  .notice{display:flex;gap:10px;align-items:flex-start;background:var(--orange-bg);border:1px solid #F3C9AE;border-radius:8px;padding:12px 14px;font-size:13.5px;color:#7A3413;max-width:820px;margin-bottom:24px;}
+  .notice b{color:var(--orange);}
+  .statstrip{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--border);}
+  .stat{flex:1 1 150px;padding:14px 18px 16px;border-right:1px solid var(--border);}
+  .stat:last-child{border-right:none;}
+  .stat .n{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--primary);font-variant-numeric:tabular-nums;}
+  .stat .l{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+  /* ---------- step nav ---------- */
+  nav.steps{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--border);box-shadow:0 1px 0 rgba(24,27,34,.02);}
+  nav.steps .inner{display:flex;gap:2px;overflow-x:auto;padding:8px 24px;max-width:1080px;margin:0 auto;}
+  nav.steps a{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:6px;font-size:13px;color:var(--ink-soft);text-decoration:none;white-space:nowrap;border:1px solid transparent;}
+  nav.steps a .num{font-family:var(--mono);font-size:11px;font-weight:600;width:18px;height:18px;border-radius:50%;background:var(--unknown-bg);color:var(--unknown);display:inline-flex;align-items:center;justify-content:center;}
+  nav.steps a.on{color:var(--primary);background:#EDF2FE;border-color:#C7D6F8;font-weight:600;}
+  nav.steps a.on .num{background:var(--primary);color:#fff;}
+
+  /* ---------- frames ---------- */
+  section.frame{padding:52px 0 12px;scroll-margin-top:64px;}
+  .frame-grid{display:grid;grid-template-columns:300px 1fr;gap:32px;align-items:start;}
+  @media (max-width:860px){ .frame-grid{grid-template-columns:1fr;} }
+  .rail .stepnum{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--primary);}
+  .rail h2{font-size:21px;margin:6px 0 2px;line-height:1.35;}
+  .rail .en{font-size:13px;color:var(--ink-soft);font-style:normal;margin-bottom:12px;}
+  .rail p{font-size:14px;color:#3E4350;margin:10px 0;}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+  .tag{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--ink-soft);}
+  .tag.real{border-color:#9AD6C0;background:var(--met-bg);color:var(--met);font-weight:500;}
+  .tag.ph{border:1.5px dashed #D9A441;background:var(--uncertain-bg);color:var(--uncertain);font-weight:500;}
+
+  /* browser-chrome mock */
+  .shot{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(24,27,34,.06);}
+  .chrome{display:flex;align-items:center;gap:10px;background:#E9EBF1;border-bottom:1px solid var(--border);padding:8px 12px;}
+  .dots{display:flex;gap:5px;}
+  .dots i{width:9px;height:9px;border-radius:50%;background:#C6CAD4;}
+  .urlbar{flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);padding:4px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .shot-caption{font-size:12.5px;color:var(--ink-soft);padding:10px 4px 0;}
+  .pad{padding:18px;}
+
+  /* chips (기준 단위 어휘 — 보드 칼럼에는 쓰지 않는다) */
+  .chip{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;letter-spacing:.03em;}
+  .chip.met{background:var(--met-bg);color:var(--met);}
+  .chip.notmet{background:var(--notmet-bg);color:var(--notmet);}
+  .chip.unknown{background:var(--unknown-bg);color:var(--unknown);}
+  .chip.uncertain{background:var(--uncertain-bg);color:var(--uncertain);}
+  .chip.action{background:#EDF2FE;color:var(--primary);}
+  .chip.stop{background:var(--notmet-bg);color:var(--notmet);}
+  .ph-inline{font-size:12px;border:1.5px dashed #D9A441;background:var(--uncertain-bg);color:var(--uncertain);border-radius:5px;padding:2px 8px;font-weight:500;white-space:nowrap;}
+
+  table.t{width:100%;border-collapse:collapse;font-size:13px;}
+  table.t th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);text-align:left;padding:6px 10px;border-bottom:1.5px solid var(--border);font-weight:600;}
+  table.t td{padding:8px 10px;border-bottom:1px solid #ECEEF3;vertical-align:top;}
+  table.t tr:last-child td{border-bottom:none;}
+  .q{font-family:var(--mono);background:#FDF8E7;border-bottom:1.5px solid #E7CE77;padding:0 2px;font-size:12.5px;}
+  .scrollx{overflow-x:auto;}
+
+  /* frame 1 patient card */
+  .pt-card{border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:14px;background:#FAFBFD;}
+  .pt-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .pt-id{font-family:var(--mono);font-weight:600;background:var(--primary);color:#fff;border-radius:5px;padding:2px 8px;font-size:12px;}
+  .pt-cond{font-size:13px;color:var(--ink-soft);}
+  .vignette{font-size:13.5px;color:#2A2E38;border-left:3px solid var(--secondary);padding-left:12px;}
+
+  /* frame 2 trial cards */
+  .searchbar{display:flex;gap:8px;margin-bottom:14px;}
+  .searchbar .box{flex:1;border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-family:var(--mono);font-size:12.5px;color:var(--ink);background:#FAFBFD;}
+  .searchbar .go{background:var(--primary);color:#fff;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;}
+  .trial-list{display:grid;gap:10px;}
+  .trial-row{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--card);}
+  .trial-row .nct{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--primary);white-space:nowrap;}
+  .trial-row .ti{font-size:13.5px;font-weight:500;line-height:1.45;}
+  .trial-row .meta{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+
+  /* frame 5 chat */
+  .chat{display:grid;gap:12px;}
+  .bubble{max-width:88%;border-radius:10px;padding:11px 14px;font-size:13.5px;line-height:1.55;}
+  .bubble.agent{background:#EDF2FE;border:1px solid #C7D6F8;border-top-left-radius:3px;}
+  .bubble.human{background:var(--met-bg);border:1px solid #9AD6C0;margin-left:auto;border-top-right-radius:3px;}
+  .bubble .who{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px;}
+  .bubble .impact{margin-top:6px;}
+  .reveal-btn{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--primary);background:var(--card);border:1px solid #C7D6F8;border-radius:6px;padding:5px 12px;cursor:pointer;margin-left:auto;display:block;}
+  .reveal-btn:hover{background:#EDF2FE;}
+  .reveal-btn:focus-visible,.stepslink:focus-visible,nav.steps a:focus-visible{outline:2px solid var(--secondary);outline-offset:2px;}
+  .hidden{display:none;}
+
+  /* frame 6 board */
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  @media (max-width:700px){ .board{grid-template-columns:1fr;} }
+  .col{border:1px solid var(--border);border-radius:8px;background:#FAFBFD;padding:10px;}
+  .col h4{margin:2px 4px 10px;font-size:13px;display:flex;align-items:center;gap:7px;}
+  .col h4 .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-soft);font-weight:500;}
+  .col.eligible h4{color:var(--met);} .col.uncertain-col h4{color:var(--uncertain);} .col.ineligible h4{color:var(--notmet);}
+  .bcard{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:8px;font-size:12.5px;}
+  .bcard .top{display:flex;gap:8px;align-items:center;margin-bottom:4px;}
+  .rankb{font-family:var(--mono);font-size:11px;font-weight:600;background:var(--ink);color:#fff;border-radius:4px;padding:1px 6px;}
+  .bcard .nct{font-family:var(--mono);font-size:11px;color:var(--primary);font-weight:600;}
+  .bcard .why{color:var(--ink-soft);font-size:12px;line-height:1.5;margin-top:4px;}
+  .empty-col{border:1.5px dashed var(--border);border-radius:7px;padding:16px 12px;text-align:center;font-size:12.5px;color:var(--ink-soft);}
+
+  /* frame 7 xlsx */
+  .sheettabs{display:flex;gap:2px;border-bottom:2px solid var(--border);margin-bottom:0;overflow-x:auto;}
+  .stab{font-size:12px;padding:6px 12px;border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0;background:#E9EBF1;color:var(--ink-soft);white-space:nowrap;}
+  .stab.on{background:var(--card);color:var(--ink);font-weight:600;border-bottom:2px solid var(--card);margin-bottom:-2px;}
+  .sig{display:flex;gap:24px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;}
+  .sig .line{border-bottom:1px solid var(--ink-soft);min-width:120px;display:inline-block;}
+
+  /* decisions section */
+  section.decide{padding:56px 0 8px;}
+  section.decide h2{font-size:22px;margin:0 0 4px;}
+  .decide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:18px;}
+  .dcard{border:1.5px dashed #D9A441;background:var(--uncertain-bg);border-radius:9px;padding:14px 16px;}
+  .dcard .ph-label{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;color:var(--uncertain);}
+  .dcard h3{font-size:14.5px;margin:6px 0 6px;}
+  .dcard p{font-size:12.5px;color:#6E5410;margin:0;}
+
+  footer{margin-top:56px;background:var(--card);border-top:1px solid var(--border);padding:26px 0 40px;font-size:12.5px;color:var(--ink-soft);}
+  footer b{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">SDIC Trial-Match · Meeting Study Sheet (목 8/27 14:00)</div>
+    <h1>환자 한 명이 접수되어 스크리닝 기록이 나가기까지 — 7장의 스냅샷</h1>
+    <p class="hero-sub">미팅에서 “실제로 어떻게 돌아가는가”를 눈으로 따라갈 수 있게 만든 워크스루입니다. 환자 S001 한 명의 여정을 파이프라인 순서 그대로 7단계로 보여줍니다. <span lang="en">One patient, end to end: intake → trial search → criteria verdicts → uncertainty-to-action → question round → re-ranking → the signed screening record.</span></p>
+    <div class="notice">⚠️<div><b>데모·목업 문서입니다.</b> 화면은 전부 정적 스냅샷이며 라이브 시스템이 아닙니다. 다만 S001의 비네트·추출·판정·질문·답변·순위·근거 문장은 실제 파이프라인 산출물(frozen traces.json)에서 그대로 발췌했고, 시험 4건은 ClinicalTrials.gov의 실제 모집중 시험입니다. <b>[PLACEHOLDER]</b>로 표시된 항목만 미확정 — 오늘 미팅에서 정합니다.</div></div>
+  </div>
+  <div class="wrap statstrip">
+    <div class="stat"><div class="n">10</div><div class="l">공식 합성 환자 (S001–S010)</div></div>
+    <div class="stat"><div class="n">40</div><div class="l">환자–시험 pair, end-to-end 평가</div></div>
+    <div class="stat"><div class="n">374</div><div class="l">개별 기준(criteria) 판정</div></div>
+    <div class="stat"><div class="n">82.5%</div><div class="l">블라인드 라벨 판정 정확도 (n=40)</div></div>
+    <div class="stat"><div class="n">$0</div><div class="l">재실행 비용 — 전 호출 캐시</div></div>
+  </div>
+</header>
+
+<nav class="steps" aria-label="단계 이동">
+  <div class="inner">
+    <a href="#s1"><span class="num">1</span>환자 접수</a>
+    <a href="#s2"><span class="num">2</span>시험 검색</a>
+    <a href="#s3"><span class="num">3</span>기준 판정</a>
+    <a href="#s4"><span class="num">4</span>불확실 → 행동</a>
+    <a href="#s5"><span class="num">5</span>확인 질문 라운드</a>
+    <a href="#s6"><span class="num">6</span>재평가 · 우선순위</a>
+    <a href="#s7"><span class="num">7</span>스크리닝 기록</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ── 1 ─────────────────────────────────────────── -->
+  <section class="frame" id="s1">
+    <div class="frame-grid">
+      <div class="rail">
+        <div class="stepnum">STEP 1 / 7</div>
+        <h2>환자 접수와 사실 추출</h2>
+        <div class="en" lang="en">Patient intake &amp; fact extraction</div>
+        <p>환자 비네트가 들어오면 추출 에이전트가 나이·성별·병력·검사 소견을 구조화합니다. 모든 값에는 <b>원문 인용(verbatim quote)</b>이 붙고, 서버가 인용이 실제 원문의 부분 문자열인지 검증합니다 — 아니면 그 값은 폐기됩니다.</p>
+        <div class="tags">
+          <span class="tag real">✓ 지금 동작함 — traces.json 실데이터</span>
+          <span class="tag ph">PLACEHOLDER — 실환자 입력 경로 (EMR 연동? 수기?)</span>
+        </div>
+      </div>
+      <div>
+        <div class="shot">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="urlbar">sdic-trial-demo.vercel.app / 환자 접수</div></div>
+          <div class="pad">
+            <div class="pt-card">
+              <div class="pt-head"><span class="pt-id">S001</span><span class="pt-cond">acute pancreatitis (alcohol-related) · 합성 환자</span></div>
+              <div class="vignette" lang="en">“A 54-year-old man with a history of chronic alcohol use presents with severe epigastric pain radiating to the back, nausea, and vomiting. Labs reveal markedly elevated serum lipase and amylase.”</div>
+            </div>
+            <div class="scrollx">
+            <table class="t" lang="en">
+              <thead><tr><th>추출 항목</th><th>값</th><th>원문 인용 (서버 검증)</th></tr></thead>
+              <tbody>
+                <tr><td>Age</td><td>54 years</td><td><span class="q">54-year-old</span></td></tr>
+                <tr><td>Sex</td><td>male</td><td><span class="q">man</span></td></tr>
+                <tr><td>History</td><td>chronic alcohol use</td><td><span class="q">history of chronic alcohol use</span></td></tr>
+                <tr><td>Symptom</td><td>severe epigastric pain radiating to the back</td><td><span class="q">severe epigastric pain radiating to the back</span></td></tr>
+                <tr><td>Labs</td><td>elevated lipase &amp; amylase</td><td><span class="q">markedly elevated serum lipase and amylase</span></td></tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+        <div class="shot-caption">스냅샷 ① — 노란 하이라이트가 원문 인용. 인용 없는 추출값은 화면에 올라오지 못한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2 ─────────────────────────────────────────── -->
+  <section class="frame" id="s2">
+    <div class="frame-grid">
+      <div class="rail">
+        <div class="stepnum">STEP 2 / 7</div>
+        <h2>모집중 시험 실시간 검색</h2>
+        <div class="en" lang="en">Live trial search — ClinicalTrials.gov API v2</div>
+        <p>환자 조건으로 ClinicalTrials.gov에서 <b>지금 모집중인 실제 시험</b>을 가져옵니다. 아래 4건은 가공되지 않은 실제 등록 시험이며, 사용한 검색 쿼리는 기록으로 남습니다.</p>
+        <div class="tags">
+          <span class="tag real">✓ 지금 동작함 — 실시험 52건 확보, 환자당 4건 평가</span>
+          <span class="tag ph">PLACEHOLDER — 국내 시험 소스(식약처/병원 IRB 목록) 추가 여부</span>
+        </div>
+      </div>
+      <div>
+        <div class="shot">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="urlbar">clinicaltrials.gov/api/v2/studies?query=…&amp;status=RECRUITING</div></div>
+          <div class="pad">
+            <div class="searchbar"><div class="box">acute pancreatitis (alcohol-related) · RECRUITING</div><div class="go">검색</div></div>
+            <div class="trial-list" lang="en">
+              <div class="trial-row"><span class="nct">NCT06179459</span><div><div class="ti">Registry of Patients Undergoing Endoscopic Management of Pancreatic Fluid Collections</div><div class="meta">Registry · Phase NA · Recruiting</div></div></div>
+              <div class="trial-row"><span class="nct">NCT06401577</span><div><div class="ti">Diabetes Related to Acute Pancreatitis and Its Mechanisms</div><div class="meta">Observational · Phase NA · Recruiting</div></div></div>
+              <div class="trial-row"><span class="nct">NCT06113419</span><div><div class="ti">Timing of Cholecystectomy in Severe Pancreatitis</div><div class="meta">Interventional · Phase NA · Recruiting</div></div></div>
+              <div class="trial-row"><span class="nct">NCT07144917</span><div><div class="ti">Immunoparalysis After Pancreaticoduodenectomy</div><div class="meta">Observational · Phase NA · Recruiting</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot-caption">스냅샷 ② — S001에 대해 실제로 가져온 4건. NCT 번호로 ct.gov 원문 조회 가능.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3 ─────────────────────────────────────────── -->
+  <section class="frame" id="s3">
+    <div class="frame-grid">
+      <div class="rail">
+        <div class="stepnum">STEP 3 / 7</div>
+        <h2>기준별 판정 — 근거 없이는 판정 없음</h2>
+        <div class="en" lang="en">Criterion-level verdicts with evidence</div>
+        <p>시험의 선정/제외 기준을 원자 단위로 쪼개고, 기준마다 <b>MET / NOT MET / UNKNOWN</b>을 근거·사유와 함께 판정합니다. 시험 단위 적격성(적격/미확정/부적격)은 모델이 아니라 <b>코드가</b> 결정합니다 — hard FAIL 하나는 PASS 여러 개로 절대 상쇄되지 않습니다.</p>
+        <div class="tags">
+          <span class="tag real">✓ 지금 동작함 — 판정 로직은 코드 (pipeline.decide_eligibility)</span>
+          <span class="tag">어휘 규칙: MET/NOT MET/UNKNOWN은 기준 단위, 적격/미확정/부적격은 시험 단위</span>
+        </div>
+      </div>
+      <div>
+        <div class="shot">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="urlbar">sdic-trial-demo.vercel.app / S001 / NCT06179459 기준 판정</div></div>
+          <div class="pad scrollx">
+            <table class="t" lang="en">
+              <thead><tr><th>기준 (inclusion/exclusion)</th><th>판정</th><th>근거 · 사유</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Age ≥ 18 years <span style="color:var(--ink-soft)">(inclusion)</span></td>
+                  <td><span class="chip met">MET</span></td>
+                  <td><span class="q">54-year-old man</span> — satisfies age ≥ 18.</td>
+                </tr>
+                <tr>
+                  <td>All patients undergoing endoscopic treatment of pancreatic fluid collections <span style="color:var(--ink-soft)">(inclusion)</span></td>
+                  <td><span class="chip unknown">UNKNOWN</span></td>
+                  <td>Vignette does not mention any endoscopic treatment or pancreatic fluid collections. → <b>4단계로</b></td>
+                </tr>
+                <tr>
+                  <td>Age &lt; 18 years <span style="color:var(--ink-soft)">(exclusion)</span></td>
+                  <td><span class="chip notmet">NOT MET</span></td>
+                  <td><span class="q">54-year-old man</span> — not under 18, exclusion does not apply.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="shot-caption">스냅샷 ③ — NCT06179459의 실제 판정 3건 발췌. UNKNOWN은 실패가 아니라 다음 단계의 입력이다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4 ─────────────────────────────────────────── -->
+  <section class="frame" id="s4">
+    <div class="frame-grid">
+      <div class="rail">
+        <div class="stepnum">STEP 4 / 7</div>
+        <h2>모르면 “왜 모르는가”를 진단하고 행동을 고른다</h2>
+        <div class="en" lang="en">Uncertainty taxonomy → action table (pure code)</div>
+        <p>이 시스템의 차별점입니다. 판정 불가 기준마다 <b>원인 10종</b> 중 하나를 붙이고, 원인→행동 매핑은 고정 테이블(코드)이 결정합니다. 질문을 무조건 많이 하는 게 아니라 <b>상황에 맞는 행동</b>을 고릅니다. 모르는 원인이 오면 ESCALATE로 fail-safe — 조용한 통과는 없습니다.</p>
+        <div class="tags"><span class="tag real">✓ 지금 동작함 — action_policy.py, 셀프테스트 포함</span></div>
+      </div>
+      <div>
+        <div class="shot">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="urlbar">action_policy.py — 원인 → 다음 행동 (코드 테이블, 모델 개입 없음)</div></div>
+          <div class="pad scrollx">
+            <table class="t">
+              <thead><tr><th>불확실성 원인</th><th>설명</th><th>다음 행동</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">MISSING</td><td>필요한 정보가 기록에 아예 없다</td><td><span class="chip action">ASK</span></td></tr>
+                <tr><td class="mono">STALE</td><td>정보는 있으나 시점이 오래됐다</td><td><span class="chip action">REQUEST_LATEST</span></td></tr>
+                <tr><td class="mono">INSUFFICIENT_EVIDENCE</td><td>근거는 있으나 결론까지 지지하지 못한다 (CT 소견 ≠ 조직 확진)</td><td><span class="chip action">VERIFY</span></td></tr>
+                <tr><td class="mono">CALCULABLE</td><td>입력 수치는 있고 계산값만 없다</td><td><span class="chip action">CALCULATE</span></td></tr>
+                <tr><td class="mono">CLINICAL_JUDGMENT</td><td>전문가 해석이 필요하다 (자동 판정 금지)</td><td><span class="chip stop">ESCALATE</span></td></tr>
+                <tr><td class="mono">DEFINITE_EXCLUSION</td><td>부적격이 확정됐다 — 더 묻는 것은 무의미</td><td><span class="chip stop">STOP</span></td></tr>
+                <tr><td colspan="3" style="color:var(--ink-soft);font-size:12px;">… 외 AMBIGUOUS→PROTOCOL_REVIEW, CONFLICTING→ESCALATE, BOUNDARY→REQUEST_LATEST, NOT_APPLICABLE→IGNORE (총 10종)</td></tr>
+              </tbody>
+            </table>
+            <div class="tags" style="margin-top:12px;">
+              <span class="tag">40 pair · 374 기준의 실측 분포:</span>
+              <span class="tag"><b class="mono">ASK 201</b></span>
+              <span class="tag"><b class="mono">STOP 86</b></span>
+              <span class="tag"><b class="mono">ESCALATE 11</b></span>
+              <span class="tag"><b class="mono">이미 판정됨 76</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="shot-caption">스냅샷 ④ — hard FAIL이 이미 뜬 시험의 나머지 미결 기준은 자동으로 STOP 처리(더 묻지 않음).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5 ─────────────────────────────────────────── -->
+  <section class="frame" id="s5">
+    <div class="frame-grid">
+      <div class="rail">
+        <div class="stepnum">STEP 5 / 7</div>
+        <h2>확인 질문 라운드 — 영향 큰 것부터 3개까지</h2>
+        <div class="en" lang="en">Clarifying-question round, impact-sorted</div>
+        <p>ASK로 분류된 항목이 코디네이터에게 갈 질문으로 바뀝니다. 질문마다 “몇 개 시험·몇 개 기준에 영향을 주는지”를 서버가 계산해 <b>영향 큰 순서로</b> 보여줍니다. 아래 버튼을 눌러 답변이 반영되는 흐름을 직접 확인해 보세요.</p>
+        <div class="tags">
+          <span class="tag real">✓ 지금 동작함 — 질문·답변·근거 모두 실데이터</span>
+          <span class="tag ph">PLACEHOLDER — 답변 주체 (코디네이터? 의료진? 환자 앱?)</span>
+        </div>
+      </div>
+      <div>
+        <div class="shot">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="urlbar">sdic-trial-demo.vercel.app / S001 / 질문 라운드</div></div>
+          <div class="pad chat">
+            <div class="bubble agent" lang="en">
+              <div class="who">Agent → 코디네이터 · Q1</div>
+              Has the patient had any prior pancreatic or biliary surgery, ERCP, or other endoscopic interventions?
+              <div class="impact"><span class="chip uncertain">영향: 3개 시험 · 9개 기준</span> <span class="chip uncertain">순위 변동 가능</span></div>
+            </div>
+            <button class="reveal-btn" data-target="a1" aria-expanded="false">코디네이터 답변 보기 ▾</button>
+            <div class="bubble human hidden" id="a1" lang="en">
+              <div class="who">코디네이터 답변 (기록 보강)</div>
+              He denies any prior pancreatic or biliary surgery, and has never undergone ERCP or other endoscopic pancreaticobiliary intervention.
+            </div>
+            <div class="bubble agent" lang="en">
+              <div class="who">Agent → 코디네이터 · Q2</div>
+              What do CT, MRI, or MRCP imaging results show regarding pancreatic structure, biliary obstruction, or malignancy?
+              <div class="impact"><span class="chip uncertain">영향: 3개 시험 · 8개 기준</span></div>
+            </div>
+            <button class="reveal-btn" data-target="a2" aria-expanded="false">코디네이터 답변 보기 ▾</button>
+            <div class="bubble human hidden" id="a2" lang="en">
+              <div class="who">코디네이터 답변 (기록 보강)</div>
+              CT on hospital day 2: diffuse pancreatic enlargement, peripancreatic fat stranding, 3.2&nbsp;cm nonenhancing area in the body consistent with necrosis; CT severity index 6. MRCP: nondilated CBD (4&nbsp;mm).
+            </div>
+            <div class="bubble agent" lang="en">
+              <div class="who">Agent → 코디네이터 · Q3</div>
+              Does the patient have any immunosuppressive conditions, active infections, or significant comorbidities (e.g., HIV, diabetes, renal or hepatic disease)?
+              <div class="impact"><span class="chip uncertain">영향: 2개 시험 · 2개 기준</span></div>
+            </div>
+            <button class="reveal-btn" data-target="a3" aria-expanded="false">코디네이터 답변 보기 ▾</button>
+            <div class="bubble human hidden" id="a3" lang="en">
+              <div class="who">코디네이터 답변 (기록 보강)</div>
+              No HIV, diabetes, or immunosuppressive therapy; alcohol-related hepatic steatosis, preserved renal function (creatinine 0.9&nbsp;mg/dL, eGFR&nbsp;92), no active infection.
+              <div class="impact"><span class="q">…no known HIV, no diabetes mellitus, and no active infection on this admission…</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot-caption">스냅샷 ⑤ — 질문 3개와 영향 수치(action_policy.enrich_questions 계산값) 모두 S001 실데이터. 답변이 기록에 합쳐지면 6단계 재평가가 돈다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6 ─────────────────────────────────────────── -->
+  <section class="frame" id="s6">
+    <div class="frame-grid">
+      <div class="rail">
+        <div class="stepnum">STEP 6 / 7</div>
+        <h2>재평가와 추천 우선순위 보드</h2>
+        <div class="en" lang="en">Re-evaluation &amp; deterministic ranking</div>
+        <p>답변이 반영된 기록으로 전 기준을 재판정하고, 우선순위는 코드의 고정 키가 정합니다: <b>적격성 → hard FAIL 수 → 중재 목적 → Phase 부담 → 커버리지 → 미해결 비율</b>. 모델 의견은 순위에 들어가지 않습니다. S001은 답변 후에도 판정이 유지된 사례 — 전체 10명 중 <b>6명은 재평가에서 판정이 바뀝니다</b>.</p>
+        <div class="tags"><span class="tag real">✓ 지금 동작함 — 골든 순위가 CI에 고정됨</span></div>
+      </div>
+      <div>
+        <div class="shot">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="urlbar">sdic-trial-demo.vercel.app / S001 / 추천 보드 (재평가 후)</div></div>
+          <div class="pad">
+            <div class="board">
+              <div class="col eligible">
+                <h4>적격 <span class="cnt">0</span></h4>
+                <div class="empty-col">확정 적격 없음 —<br>미확정 3건이 추가 확인 대기</div>
+              </div>
+              <div class="col uncertain-col">
+                <h4>미확정 <span class="cnt">3</span></h4>
+                <div class="bcard"><div class="top"><span class="rankb">RANK 1</span><span class="nct">NCT06179459</span></div><div lang="en">Endoscopic Mgmt of Pancreatic Fluid Collections (Registry)</div><div class="why" lang="en">Pancreatitis confirmed, but no data yet on a fluid collection or endoscopic treatment.</div></div>
+                <div class="bcard"><div class="top"><span class="rankb">RANK 2</span><span class="nct">NCT06401577</span></div><div lang="en">Diabetes Related to Acute Pancreatitis</div><div class="why" lang="en">Population fits; consent capacity and imaging findings not yet stated.</div></div>
+                <div class="bcard"><div class="top"><span class="rankb">RANK 3</span><span class="nct">NCT06113419</span></div><div lang="en">Timing of Cholecystectomy in Severe Pancreatitis</div><div class="why" lang="en">Severity criteria unresolved from current record.</div></div>
+              </div>
+              <div class="col ineligible">
+                <h4>부적격 <span class="cnt">1</span></h4>
+                <div class="bcard"><div class="top"><span class="rankb">RANK 4</span><span class="nct">NCT07144917</span></div><div lang="en">Immunoparalysis After Pancreaticoduodenectomy</div><div class="why">수술(췌십이지장절제) 이력이 전제 — hard FAIL. 어떤 순위 티어에서도 위로 올라오지 못한다.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="shot-caption">스냅샷 ⑥ — 보드 칼럼은 시험 단위 어휘(적격/미확정/부적격)만 쓴다. 부적격 1위 역전은 구조적으로 불가능.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7 ─────────────────────────────────────────── -->
+  <section class="frame" id="s7">
+    <div class="frame-grid">
+      <div class="rail">
+        <div class="stepnum">STEP 7 / 7</div>
+        <h2>병원이 보관하는 스크리닝 기록</h2>
+        <div class="en" lang="en">GCP-shaped screening record — xlsx + SQLite</div>
+        <p>마지막 산출물은 화면이 아니라 <b>문서와 데이터</b>입니다. ICH-GCP 필수문서 구성을 따른 엑셀 6장과, 같은 내용을 조회 가능하게 담은 SQLite(<span class="mono">screening.db</span>)가 함께 나갑니다. 모든 시트는 <b>질문 라운드 이후의 최종 판정</b>을 싣고, 초기 판정은 정정 로그에 남습니다.</p>
+        <div class="tags">
+          <span class="tag real">✓ 지금 동작함 — export_report.py, 실제 xlsx 생성됨</span>
+          <span class="tag ph">PLACEHOLDER — 확인자(서명 주체)·보관 절차</span>
+        </div>
+      </div>
+      <div>
+        <div class="shot">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="urlbar">임상시험_스크리닝기록_260825.xlsx</div></div>
+          <div class="pad">
+            <div class="sheettabs">
+              <span class="stab">표지</span><span class="stab on">스크리닝 로그</span><span class="stab">적격성 체크리스트</span><span class="stab">질의응답 로그</span><span class="stab">정정 로그</span><span class="stab">근거 원문</span>
+            </div>
+            <div class="scrollx" style="border:1px solid var(--border);border-top:none;">
+            <table class="t">
+              <thead><tr><th>대상자 코드</th><th>연령대</th><th>시험 (NCT)</th><th>최종 판정</th><th>초기 판정</th><th>확인자</th></tr></thead>
+              <tbody class="mono" style="font-size:12px;">
+                <tr><td>S001</td><td>50대</td><td>NCT06179459</td><td>미확정</td><td>미확정</td><td style="color:var(--ink-soft)">(비어 있음)</td></tr>
+                <tr><td>S001</td><td>50대</td><td>NCT07144917</td><td>부적격</td><td>부적격</td><td style="color:var(--ink-soft)">(비어 있음)</td></tr>
+                <tr><td>S002</td><td>20대</td><td>…</td><td>…</td><td>…</td><td style="color:var(--ink-soft)">(비어 있음)</td></tr>
+              </tbody>
+            </table>
+            </div>
+            <div class="sig">
+              <span>확인자 서명: <span class="line">&nbsp;</span> <span class="ph-inline">사람이 검토 후 직접 기입 — 자동 파이프라인은 서명하지 않는다</span></span>
+            </div>
+            <div class="tags" style="margin-top:12px;">
+              <span class="tag"><b class="mono">screening.db</b> — 같은 내용의 SQLite (증거 보관용)</span>
+              <span class="tag">생년월일 없음 — 연령대까지만 (식별성 최소화)</span>
+              <span class="tag">CDISC: 탈락사유→SDTM IE · 기준 카탈로그→TI 대응</span>
+            </div>
+          </div>
+        </div>
+        <div class="shot-caption">스냅샷 ⑦ — 확인자 열이 비어 있는 것이 정상. 서명은 시스템이 아니라 사람의 일이다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── decisions ─────────────────────────────────── -->
+  <section class="decide" id="decide">
+    <h2>오늘 미팅에서 확정할 것들</h2>
+    <p style="color:var(--ink-soft);font-size:14px;max-width:64ch;">위 7단계 중 파이프라인·판정·기록은 이미 동작합니다. 점선으로 표시된 아래 4가지가 열려 있는 결정입니다 — 데모에는 임시값이 들어가 있습니다.</p>
+    <div class="decide-grid">
+      <div class="dcard"><div class="ph-label">PLACEHOLDER 01</div><h3>실환자 데이터 입력 경로</h3><p>지금: 합성 비네트 텍스트. 결정할 것: EMR 연동 vs 코디네이터 수기 입력 vs 서식 업로드.</p></div>
+      <div class="dcard"><div class="ph-label">PLACEHOLDER 02</div><h3>질문 라운드의 답변 주체</h3><p>지금: 코디네이터 1인 가정. 결정할 것: 의료진 확인 단계, 환자 직접 응답 허용 여부.</p></div>
+      <div class="dcard"><div class="ph-label">PLACEHOLDER 03</div><h3>서명·보관 절차</h3><p>지금: 확인자 열 공란 + xlsx/SQLite 출력. 결정할 것: 확인자 지정, 보관 위치·기간(KGCP 최소 3년).</p></div>
+      <div class="dcard"><div class="ph-label">PLACEHOLDER 04</div><h3>시험 소스 확장</h3><p>지금: ClinicalTrials.gov만. 결정할 것: 국내 소스(식약처 승인 목록·원내 IRB) 병합 여부와 우선순위.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>출력 결과는 의학적 자문이 아닌 참고용입니다.</b> 임상적으로 검증되지 않은 역량 데모이며, 실제 등록 판단은 반드시 해당 시험 연구진과 자격 있는 의료인의 확인을 거쳐야 합니다.</p>
+    <p>데이터 출처 — 환자: 챌린지 공식 합성 비네트(S001–S010, 실환자 아님) · 시험: ClinicalTrials.gov API v2 (public domain, 실제 모집중 시험) · 판정/질문/순위: frozen traces.json (2026-07-08) 발췌 · 스냅샷은 정적 목업이며 라이브 시스템과 연동되지 않음.</p>
+  </div>
+</footer>
+
+<script>
+  // 답변 토글 (5단계)
+  document.querySelectorAll('.reveal-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var t = document.getElementById(btn.dataset.target);
+      var open = t.classList.toggle('hidden') === false;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open ? '답변 접기 ▴' : '코디네이터 답변 보기 ▾';
+    });
+  });
+  // 스텝 내비 스크롤 스파이
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.steps a'));
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  function spy(){
+    var y = window.scrollY + 120, cur = 0;
+    secs.forEach(function(s,i){ if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function(a,i){ a.classList.toggle('on', i === cur); });
+  }
+  window.addEventListener('scroll', spy, {passive:true});
+  spy();
+</script>
+</body>
+</html>
