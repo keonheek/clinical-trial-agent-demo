@@ -357,6 +357,7 @@
   .optnote{font-size:0.9rem;color:var(--ink-soft);margin:0 0 8px;}
   .sysbubble{background:#EAF1FE;border:1px solid var(--border);border-radius:4px;padding:10px 14px;font-size:0.9rem;line-height:1.6;color:var(--ink);margin-bottom:10px;}
   .sysbubble-change{display:flex;align-items:baseline;gap:6px;margin-top:6px;font-size:0.88rem;line-height:1.5;overflow-wrap:anywhere;}
+  .sysbubble-next{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);font-weight:700;font-size:0.86rem;}
   .linklike{background:none;border:none;color:var(--secondary);cursor:pointer;font-size:0.88rem;padding:0;
     text-decoration:underline;font-family:inherit;margin-top:6px;display:inline-block;}
   .funote{background:var(--uncertain-bg);color:var(--uncertain);border-radius:4px;padding:10px 14px;font-size:0.9rem;margin-bottom:10px;}
@@ -781,6 +782,15 @@ var I18N = {
     optTipLead: "This answer feeds the verdicts of: ",
     optTipItem: "{nct} ({c} criteria)",
     optNote: "The dim line under each option is the system's original Korean wording — that exact text is what an applied answer records.",
+    prioSplit: " · linked criteria: {i} inclusion / {e} exclusion",
+    optPerTrial: "re-checks {list}",
+    optPerTrialItem: "{nct} ×{n}",
+    pillFilterTip: "show only this trial's questions",
+    nextLead: "Where each trial stands now:",
+    nextElig: "Eligible — no open questions left for it.",
+    nextExcl: "Excluded ({n} blocking) — no further questions for it.",
+    nextCont: "Undetermined — {n} unresolved → questioning continues next round.",
+    nextWait: "Undetermined — nothing left to ask; awaiting re-evaluation.",
     phWithOptions: "Type your own (applied together with the checked options)",
     phFree: "Free-text answer (labs, history, medications …)",
     batchBtn: "Apply selected answers ({n} questions)",
@@ -1007,6 +1017,15 @@ var I18N = {
     optTipLead: "이 답이 판정에 쓰이는 시험: ",
     optTipItem: "{nct} (기준 {c}개)",
     optNote: "",
+    prioSplit: " · 연결 기준: 선정 {i} · 제외 {e}",
+    optPerTrial: "재판정 대상: {list}",
+    optPerTrialItem: "{nct} ×{n}",
+    pillFilterTip: "클릭하면 이 시험에 연결된 질문만 표시",
+    nextLead: "이번 라운드 이후 시험별 상태:",
+    nextElig: "적격 — 남은 미해결 질문 없음",
+    nextExcl: "탈락 (차단 기준 {n}건) — 이후 질문 대상 아님",
+    nextCont: "미확정 — 미해결 {n}건 → 다음 라운드 질문으로 이어짐",
+    nextWait: "미확정 — 물을 것 없음, 재평가 대기",
     phWithOptions: "직접 입력 (선택 항목과 함께 반영됩니다)",
     phFree: "자유 서술로 입력 (검사 수치, 병력, 복용 약 등)",
     batchBtn: "선택한 답변 모두 반영 (질문 {n}개)",
@@ -2439,7 +2458,7 @@ function renderTrialPills(){
     }).length;
     var trial = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
     var pill = el("div", "trialpill" + (selectedPill === nct ? " sel" : ""));
-    pill.title = trial ? fixRegistryCasing(trial.title || nct) : nct;
+    pill.title = (trial ? fixRegistryCasing(trial.title || nct) : nct) + " — " + t("pillFilterTip");
     pill.innerHTML = escapeHtml(nct) + ' <span class="pillcount">' + count + '</span>';
     pill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = nct; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
     box.appendChild(pill);
@@ -2468,6 +2487,15 @@ function questionPriorityLine(q, qMatch){
   } else if (hasTrials){
     line += escapeHtml(t("prioTrialsOnly", {t: q.affects_trials}));
   }
+  // 선정/제외 종류 분해는 질문 레벨에서 한 번만 말한다 (선택지마다 반복하던 태그의 승격,
+  // 08-27). 클라이언트 매퍼 수가 서버 수와 일치할 때만 — 어긋나면 침묵이 정답.
+  if (hasCrit && qMatch && qMatch.items && qMatch.count === q.affects_criteria){
+    var _inc = 0, _exc = 0;
+    qMatch.items.forEach(function(oc){
+      if (oc.crit && oc.crit.type === "exclusion") _exc += 1; else _inc += 1;
+    });
+    if (_inc || _exc) line += escapeHtml(t("prioSplit", {i: _inc, e: _exc}));
+  }
   if (hasRank){
     line += ' · <span class="' + (q.may_change_rank ? "rank-yes" : "") + '">' +
       escapeHtml(q.may_change_rank ? t("rankYes") : t("rankNo")) + "</span>";
@@ -2487,14 +2515,21 @@ function optionTagEl(optText, qTok, qMatch, openList){
   // "경구 섭취 가능"과 "경구 섭취 불가능"이 같은 기준에 걸린다 — 서로 반대인 답이 같은
   // 방향을 가리키게 되므로 방향 주장은 반드시 틀린다 (08-25 확인). 그래서 기준의 종류만
   // 말한다. 실제 판정은 Apply 후 재평가가 한다.
+  //
+  // 문항 레벨 매치와 같은 태그는 그리지 않는다 (08-27, 그의 지적): 같은 "선정 1 · 제외 2"가
+  // 선택지 6개에 반복되면 정보가 아니라 노이즈고, 방향 주장처럼 읽힌다. 종류 분해는
+  // questionPriorityLine이 문항에서 한 번만 말한다. 여기서는 이 선택지의 연결이 문항
+  // 전체와 다를 때만, 어느 시험의 기준 몇 건인지(시험별 분해)를 말한다.
+  if (sameMatch(m, qMatch)) return null;
   var inc = 0, exc = 0;
   m.items.forEach(function(oc){
     if (oc.crit && oc.crit.type === "exclusion") exc += 1; else inc += 1;
   });
   var tag = document.createElement("span");
   tag.className = "opt-tag " + (exc && !inc ? "excl" : (inc && !exc ? "incl" : "mixed"));
-  tag.textContent = exc && !inc ? t("optExcl", {n: exc})
-    : (inc && !exc ? t("optIncl", {n: inc}) : t("optMixed", {i: inc, e: exc}));
+  tag.textContent = t("optPerTrial", {list: m.ncts.map(function(n){
+    return t("optPerTrialItem", {nct: shortNct(n), n: m.byNct[n]});
+  }).join(" · ")});
   tag.title = t("optTipLead") + m.items.map(function(oc){
     return shortNct(oc.nct) + " " + (oc.crit && oc.crit.type === "exclusion"
       ? t("fitExclusion") : t("fitInclusion")) + ": " + oc.text;
@@ -2650,13 +2685,37 @@ function selectQuestion(qText){
 }
 function segTxt(key, n){ return n === 1 ? t(key + "One") : t(key, {n: n}); }
 var scrollToLastRound = false; // set by applyAnswerResponse: the round result must be ON screen
+// 라운드 결과 아래 "그래서 각 시험은 이제 어떻게 되나" 한 줄씩 (08-27, 그의 요구):
+// 계속 질문으로 이어지는지, 적격 확정인지, 탈락해서 질문 대상에서 빠지는지. 최신 라운드에만
+// 붙는다 — 과거 라운드 시점의 상태는 저장하지 않으므로 현재 상태를 소급 표기하면 거짓이 된다.
+// 라운드 2·3도 같은 렌더 경로라 동작이 같다. 방향 예측이 아니라 재평가가 끝난 사실만 말한다.
+function trialNextStripHtml(){
+  if (!cur || !cur.trials || !cur.trials.length) return "";
+  var rows = cur.trials.slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); })
+    .map(function(trial){
+      var open = (trial.criteria || []).filter(function(c){
+        var v = (c.verdict || "").toUpperCase();
+        return v === "UNKNOWN" || v === "UNCERTAIN";
+      }).length;
+      var blockN = (trial.criteria || []).filter(function(c){ return getEffect(c) === "FAIL"; }).length;
+      var txt;
+      if (trialIsBlocked(trial)) txt = t("nextExcl", {n: blockN || 1});
+      else if (trial.eligibility === "ELIGIBLE") txt = t("nextElig");
+      else if (open > 0) txt = t("nextCont", {n: open});
+      else txt = t("nextWait");
+      return '<div class="sysbubble-change"><span><b>' + escapeHtml(shortNct(trial.nct_id)) +
+        '</b> · ' + escapeHtml(txt) + '</span></div>';
+    });
+  return '<div class="sysbubble-next">' + escapeHtml(t("nextLead")) + '</div>' + rows.join("");
+}
 function renderChat(){
   var box = document.getElementById("chatscroll");
   box.innerHTML = "";
   var openList = collectOpenCriteria(cur.trials);
   var chatGloss = newGlossSection(); // one label for the whole chat tab (answered + pending)
   // 완료된 라운드 (읽기 전용, 접힌 톤)
-  roundsDone().forEach(function(r){
+  roundsDone().forEach(function(r, _ri, _rall){
+    var isLatestRound = _ri === _rall.length - 1;
     var block = el("div", "roundblock done");
     var head = el("div", "roundlabel", escapeHtml(t("roundDone", {n: r.n})));
     block.appendChild(head);
@@ -2689,6 +2748,7 @@ function renderChat(){
       detail += '<div class="sysbubble-change"><span><b>' + escapeHtml(fixRegistryCasing(c.title || c.nct_id)) + '</b>: ' +
         escapeHtml(segs.join(" · ")) + '</span></div>';
     });
+    if (isLatestRound) detail += trialNextStripHtml();
     if (vc.length || rc.length){
       detail += '<div><button type="button" class="linklike sysbubble-link">' +
         escapeHtml(t("chatFullDetail")) + '</button></div>';
