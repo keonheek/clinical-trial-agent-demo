@@ -6,6 +6,10 @@
 문제가 아니다 — 번역문을 만들어 사이드카로 두고, 영문 모드일 때 그걸 먼저 보여줘야 한다.
 
 산출물: `question_options_en.json` — {한국어 선택지: 영문} 사전. 원본은 건드리지 않는다.
+동시에 `gloss.json`에도 gen_gloss 키 체계(sha1(원문)[:12] → {src, en})로 병합한다 —
+api/trace.py·board.html의 기존 gloss 경로가 그대로 선택지를 영문 모드에 표시하므로
+서버/UI 코드 변경이 없다. gen_gloss.py는 기존 항목을 보존하며 추가만 하므로(--rebuild
+제외) 병합분은 재실행에도 살아남는다.
 
 **비용이 드는 스크립트다.** 챌린지 지원 키(ANTHROPIC_AI_HEALTHCARE_API_KEY)로 실제 호출이
 나가므로 그의 승인 없이는 실행하지 않는다. 기본은 --dry-run이고, 실제 실행은 --run 명시가
@@ -31,14 +35,14 @@ SRC = os.path.join(HERE, "question_options.json")
 OUT = os.path.join(HERE, "question_options_en.json")
 BATCH = 20
 
-PROMPT = (
+SYSTEM_PROMPT = (
     "Translate each Korean clinical trial screening answer option into English.\n"
     "Rules:\n"
     "- Preserve clinical meaning exactly. Do not broaden or narrow scope.\n"
     "- Keep parenthetical detail, abbreviations (ERCP, HbA1c, CrCl) and numbers as-is.\n"
     "- Use terminology a clinical research coordinator would write.\n"
-    "- No commentary. Return JSON only: an array of strings, same order and length as input.\n\n"
-    "Input array:\n{items}"
+    "- No commentary. Return a bare JSON object only: {\"translations\": [...]} -- an array of"
+    " strings, same order and length as the input array."
 )
 
 
@@ -70,22 +74,51 @@ def main():
         print("\nDRY RUN — 호출 없음. 실제 생성하려면 --run 을 붙여 실행 (지원 키 과금).")
         return
 
-    from anthropic_client import complete  # noqa: E402  승인된 경우에만 임포트
+    from anthropic_client import call_llm  # noqa: E402  승인된 경우에만 임포트
 
     result = {}
     for i in range(0, len(opts), BATCH):
         chunk = opts[i:i + BATCH]
-        raw = complete(PROMPT.format(items=json.dumps(chunk, ensure_ascii=False, indent=1)))
-        text = raw[raw.find("["):raw.rfind("]") + 1]
-        en = json.loads(text)
-        if len(en) != len(chunk):
-            sys.exit(f"배치 {i // BATCH + 1}: 개수 불일치 {len(en)} != {len(chunk)} — 중단")
+        obj = call_llm("option_en", SYSTEM_PROMPT,
+                       json.dumps(chunk, ensure_ascii=False, indent=1))
+        en = obj.get("translations") if isinstance(obj, dict) else None
+        if not isinstance(en, list) or len(en) != len(chunk):
+            got = len(en) if isinstance(en, list) else type(obj).__name__
+            sys.exit(f"배치 {i // BATCH + 1}: 개수 불일치 {got} != {len(chunk)} — 중단")
         result.update(dict(zip(chunk, en)))
         print(f"  배치 {i // BATCH + 1}/{batches} 완료 ({len(result)}/{len(opts)})")
 
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=1)
     print(f"작성: {OUT} ({len(result)}개)")
+
+    merge_into_gloss(result)
+
+
+def merge_into_gloss(result):
+    """question_options_en.json → gloss.json 병합. gen_gloss.key_of와 같은 키(sha1[:12]),
+    같은 항목 모양({src, en}). 기존 항목의 en은 덮지 않는다 — gen_gloss가 먼저 채웠다면
+    그쪽이 서빙 중인 원본이다."""
+    import hashlib
+    gloss_path = os.path.join(HERE, "gloss.json")
+    with open(gloss_path, encoding="utf-8") as f:
+        gloss = json.load(f)
+    added = 0
+    for ko, en in result.items():
+        src = ko.strip()
+        if not src or not en:
+            continue
+        key = hashlib.sha1(src.encode("utf-8")).hexdigest()[:12]
+        entry = gloss.get(key, {"src": src})
+        if not entry.get("en"):
+            entry["en"] = en.strip()
+            gloss[key] = entry
+            added += 1
+    tmp = gloss_path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(gloss, f, ensure_ascii=False, indent=1)
+    os.replace(tmp, gloss_path)
+    print(f"gloss.json 병합: {added}개 추가 (총 {len(gloss)}개)")
 
 
 if __name__ == "__main__":

@@ -28,11 +28,15 @@ RULE PRIORITY (first match wins; sets can overlap, so a hit lower down must neve
 reasoning as build_trial_intent.PRIORITY):
   1. COMFORT    -- palliative/hospice/comfort-only language. Checked FIRST, a safety property: goals-of-care-comfort
                    must never be pointed at a disease-modifying trial because some other symptom word also fired.
-  2. MONITORING -- chronic-stable/follow-up/surveillance language. A known, stable, tracked condition is not the
-                   same need as a new active presentation.
-  3. DIAGNOSIS  -- confirmation is the blocker: explicit suspicion language, OR an imaging-detected mass/lesion with
+  2. DIAGNOSIS  -- confirmation is the blocker: explicit suspicion language, OR an imaging-detected mass/lesion with
                    no tissue-confirmation language in the text. The tissue-confirmed guard matters: a positive
                    biopsy/lab result means confirmation is already done, so this must not fire on "mass" alone.
+                   Outranks MONITORING (reordered 08-27): an unconfirmed mass plus an incidental "well-controlled
+                   diabetes" comorbidity line was classifying as monitoring -- the comorbidity clause hijacked the
+                   need and the diagnosis case never reached its own rule. Per the definition above, confirmation
+                   blocks every other decision, so only comfort (safety) may sit above it.
+  3. MONITORING -- chronic-stable/follow-up/surveillance language. A known, stable, tracked condition is not the
+                   same need as a new active presentation.
   4. TREATMENT (explicit) -- active symptomatic presentation, no language suggesting a treatment is already under
                    way. High confidence.
   5. DEFAULT    -- nothing fired -> treatment, LOW confidence. A patient matching none of our keyword sets is more
@@ -108,8 +112,9 @@ ESTABLISHED_TREATMENT_PHRASES = [
     "history of treatment with", "status post", "s/p ",
 ]
 
-RULE_KO = ("완화 목적 언급 → 증상 완화 | 안정·추적 관찰 언급 → 추적관찰 | "
-           "확진 전 단계(의심 소견/영상 소견만 있고 조직 확진 없음) → 진단 확정 | "
+RULE_KO = ("완화 목적 언급 → 증상 완화 | "
+           "확진 전 단계(의심 소견/영상 소견만 있고 조직 확진 없음) → 진단 확정 (동반질환의 안정 기술보다 우선) | "
+           "안정·추적 관찰 언급 → 추적관찰 | "
            "급성 증상 호소이고 기존 치료 언급 없음 → 치료 | 아무 규칙도 안 걸리면 → 치료(확신 낮음)")
 
 
@@ -136,6 +141,19 @@ def classify_patient_need(vignette_text, extraction_fields=None):
                 "reasons": [f"완화 목적 기술 있음 → 근치적 치료가 아닌 증상 완화 요구로 분류"
                             f" (근거 문구 '{hits[0]}')"]}
 
+    # Diagnosis is evaluated BEFORE monitoring (08-27 reorder): confirmation blocks every
+    # downstream decision, so an incidental "well-controlled ..." comorbidity line must not
+    # hijack an unconfirmed-mass patient into monitoring (or, via the acute-override below,
+    # into treatment) before the diagnosis rule ever runs.
+    suspected = _find_any(text, DIAGNOSIS_SUSPECTED_PHRASES)
+    imaging = _find_any(text, IMAGING_UNCONFIRMED_PHRASES)
+    tissue = _find_any(text, TISSUE_CONFIRMED_PHRASES)
+    if suspected or (imaging and not tissue):
+        phrase = (suspected or imaging)[0]
+        return {"need": "diagnosis", "need_ko": NEED_KO["diagnosis"], "confidence": "high",
+                "reasons": [f"조직학적 확진 근거 없이 의심 소견·영상 소견만 존재 → 진단 확정 선행 요구로"
+                            f" 분류 (근거 문구 '{phrase}')"]}
+
     hits = _find_any(text, MONITORING_KEYWORDS)
     if hits:
         # An acute presentation in the same vignette outranks incidental stable/monitoring
@@ -147,15 +165,6 @@ def classify_patient_need(vignette_text, extraction_fields=None):
         return {"need": "monitoring", "need_ko": NEED_KO["monitoring"], "confidence": "high",
                 "reasons": [f"기지 질환의 경과 관찰 기술 있음 → 신규 개입보다 추적관찰 요구로 분류"
                             f" (근거 문구 '{hits[0]}')"]}
-
-    suspected = _find_any(text, DIAGNOSIS_SUSPECTED_PHRASES)
-    imaging = _find_any(text, IMAGING_UNCONFIRMED_PHRASES)
-    tissue = _find_any(text, TISSUE_CONFIRMED_PHRASES)
-    if suspected or (imaging and not tissue):
-        phrase = (suspected or imaging)[0]
-        return {"need": "diagnosis", "need_ko": NEED_KO["diagnosis"], "confidence": "high",
-                "reasons": [f"조직학적 확진 근거 없이 의심 소견·영상 소견만 존재 → 진단 확정 선행 요구로"
-                            f" 분류 (근거 문구 '{phrase}')"]}
 
     active = _find_any(text, ACTIVE_SYMPTOM_PHRASES)
     established = _find_any(text, ESTABLISHED_TREATMENT_PHRASES)
@@ -318,6 +327,14 @@ def _selftest():
     check(r["need"] == "comfort", f"goals-of-care comfort wording fires comfort (got {r['need']})")
     r = classify_patient_need("She is found to have a 2 cm thyroid nodule on neck ultrasound. No biopsy has been performed yet.")
     check(r["need"] == "diagnosis", f"imaging finding without tissue confirmation fires diagnosis (got {r['need']})")
+
+    # 08-27 regressions: diagnosis outranks monitoring/acute-override
+    r = classify_patient_need("Referred for evaluation. CT reveals a mass in the pancreatic head; "
+                              "no biopsy has been performed. Type 2 diabetes is well-controlled on metformin.")
+    check(r["need"] == "diagnosis", f"comorbidity 'well-controlled' clause must not hijack an unconfirmed mass (got {r['need']})")
+    r = classify_patient_need("Presents with abdominal pain; hypertension well-controlled. "
+                              "Imaging concerning for malignancy, suspected cholangiocarcinoma.")
+    check(r["need"] == "diagnosis", f"suspicion language reaches the diagnosis rule despite acute+monitoring context (got {r['need']})")
     check(HELP_MATRIX["monitoring"]["supportive"] == 0, "monitoring x supportive matches its documented reasoning (0)")
 
     print("patient_need selftest:", "ALL PASS" if ok else "FAILURES")
