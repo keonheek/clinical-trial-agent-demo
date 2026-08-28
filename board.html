@@ -781,7 +781,7 @@ var I18N = {
     optGeneric: " · closes the same criteria as the whole question",
     optTipLead: "This answer feeds the verdicts of: ",
     optTipItem: "{nct} ({c} criteria)",
-    optNote: "The dim line under each option is the system's original Korean wording — that exact text is what an applied answer records.",
+    optNote: "The dim line under each option is the system's original Korean wording — that exact text is what an applied answer records. Direction tags are previews; the re-evaluation on apply decides.",
     prioSplit: " · linked criteria: {i} inclusion / {e} exclusion",
     optPerTrial: "re-checks {list}",
     optPerTrialItem: "{nct} ×{n}",
@@ -792,9 +792,9 @@ var I18N = {
     nextCont: "Undetermined — {n} unresolved → questioning continues next round.",
     nextWait: "Undetermined — nothing left to ask; awaiting re-evaluation.",
     nextNeed: " Needed: {list}.",
-    optDirIn: "if checked → supports eligibility · re-evaluated on apply",
-    optDirOut: "if checked → possible exclusion · re-evaluated on apply",
-    optDirUnknown: "stays unresolved → the needed work-up is listed after the round",
+    optDirIn: "if checked → supports eligibility",
+    optDirOut: "if checked → possible exclusion",
+    optDirUnknown: "stays unresolved → needed work-up listed after the round",
     phWithOptions: "Type your own (applied together with the checked options)",
     phFree: "Free-text answer (labs, history, medications …)",
     batchBtn: "Apply selected answers ({n} questions)",
@@ -1020,7 +1020,7 @@ var I18N = {
     optGeneric: " · 질문 전체와 같은 기준을 닫습니다",
     optTipLead: "이 답이 판정에 쓰이는 시험: ",
     optTipItem: "{nct} (기준 {c}개)",
-    optNote: "",
+    optNote: "방향 표시는 미리보기입니다. 반영 후 재판정이 최종 판정을 내립니다.",
     prioSplit: " · 연결 기준: 선정 {i} · 제외 {e}",
     optPerTrial: "재판정 대상: {list}",
     optPerTrialItem: "{nct} ×{n}",
@@ -1031,9 +1031,9 @@ var I18N = {
     nextCont: "미확정 — 미해결 {n}건 → 다음 라운드 질문으로 이어짐",
     nextWait: "미확정 — 물을 것 없음, 재평가 대기",
     nextNeed: " 필요: {list}.",
-    optDirIn: "체크 시 → 적격 방향 · 반영 후 재판정",
-    optDirOut: "체크 시 → 제외 사유 방향 · 반영 후 재판정",
-    optDirUnknown: "미해결로 남음 → 라운드 후 필요한 확인이 안내됨",
+    optDirIn: "체크 시 → 적격 방향",
+    optDirOut: "체크 시 → 제외 사유 방향",
+    optDirUnknown: "미해결로 남음 → 필요한 확인 안내",
     phWithOptions: "직접 입력 (선택 항목과 함께 반영됩니다)",
     phFree: "자유 서술로 입력 (검사 수치, 병력, 복용 약 등)",
     batchBtn: "선택한 답변 모두 반영 (질문 {n}개)",
@@ -1359,7 +1359,11 @@ function glossFor(text){
   var entry = cur.gloss[glossKey(s)];
   if (!entry) return null;
   var g = LANG === "en" ? entry.en : entry.ko;
-  return g || null;
+  if (!g) return null;
+  // 숫자·단위·고유명("19", "HbA1c 6.8%", "CONSTELLATION")은 번역이 원문 그대로라
+  // 같은 줄이 두 번 찍힌다 — 원문과 같으면 번역 줄을 아예 그리지 않는다 (08-28 de-slop).
+  if (g.trim().toLowerCase() === s.toLowerCase()) return null;
+  return g;
 }
 function newGlossSection(){ return {shown: false}; }
 // One quiet line under the original, dimmer weight, never inside a verbatim-evidence quote.
