@@ -193,7 +193,7 @@ def _restore_server_fields(patient_id, trials):
 # ("patient", "history", "evidence", ...) that this local list lacked -- the gap let an
 # acute-exacerbation answer flip an unrelated consent criterion via the token "patient"
 # (PI-persona catch, 08-20). Same normalization, same stopwords, everywhere.
-from action_policy import _tokens  # noqa: E402
+from action_policy import _tokens, normalize_criterion_text  # noqa: E402
 
 
 def find_affected(question_text, trials, answer_text=""):
