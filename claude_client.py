@@ -64,8 +64,13 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
     for attempt in range(max_retries):
         try:
             proc = subprocess.run(
+                # --tools "" : no tools at all. With tools available the model sometimes spends
+                # its single turn reaching for one, and the CLI exits 1 with
+                # "Error: Reached max turns (1)" and no stderr -- the intermittent rc=1 that
+                # stalled answer rounds on the local server (2026-08-30). --max-turns 2 leaves
+                # room for the text reply after any stray tool call the empty list still allows.
                 ["claude", "-p", "--model", model, "--output-format", "text",
-                 "--strict-mcp-config", "--max-turns", "1"],
+                 "--strict-mcp-config", "--tools", "", "--max-turns", "2"],
                 input=prompt, capture_output=True, text=True, timeout=300,
             )
             raw = proc.stdout.strip()
