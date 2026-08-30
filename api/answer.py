@@ -330,14 +330,24 @@ def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_tex
     order's result). ([], []) when the existing questions suffice (no gaps, or every candidate
     is a repeat) -- enrich_questions on an empty list is a no-op either way.
     """
-    source = _focus_trials(trials_copy, focus_nct) or trials_copy
+    focus = _focus_trials(trials_copy, focus_nct)
+    source = focus or trials_copy
     all_criteria_flat = [
         {"nct_id": t.get("nct_id"), "text": c.get("text", ""), "verdict": c.get("verdict"),
          "action": c.get("action"), "effect": c.get("effect")}
         for t in source for c in t.get("criteria", [])
     ]
     patient_ext = {"patient_id": patient_id, "text": (vignette + "\n" + new_record).strip()}
-    gaps = detect_gaps(patient_ext, all_criteria_flat)
+    open_items = [c for c in all_criteria_flat if c.get("verdict") in ("UNKNOWN", "UNCERTAIN")
+                  and str(c.get("action") or "").upper() != "STOP"]
+    if focus and 0 < len(open_items) <= 12:
+        # One trial, a handful of open criteria: the gap list IS that list. Building it in code
+        # saves the gap-detector call (half the wait on the headless backend) and guarantees
+        # every open criterion of the focused trial is on the question generator's desk.
+        gaps = [{"field": c["text"][:80], "why_needed": "still undecided after the answers so far",
+                 "related_criteria": [c["text"]]} for c in open_items]
+    else:
+        gaps = detect_gaps(patient_ext, all_criteria_flat)
     if not gaps:
         return [], []
     followups = dedupe_followups(generate_questions(patient_ext, gaps), asked_texts,
