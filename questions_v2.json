@@ -82,6 +82,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Prior cholecystectomy performed",
+     "Endoscopic necrosectomy performed",
+     "Percutaneous or endoscopic drainage performed",
+     "History of other pancreatic surgery",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -103,6 +111,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Gallstone or bile duct obstruction confirmed",
+     "Chronic pancreatitis findings (calcification, pancreatic duct dilation) confirmed",
+     "Pancreatic mass or cystic lesion confirmed",
+     "All within normal range",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -124,6 +139,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "With shock",
+     "With organ failure",
+     "With local complications (necrosis, pseudocyst, etc.)",
+     "No complications, mild course",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -203,6 +225,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Leukopenia (decreased ANC) confirmed",
+     "Liver enzymes (AST/ALT) elevated to more than 3 times the upper limit of normal",
+     "Elevated serum creatinine/decreased renal function confirmed",
+     "All within normal range",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -224,6 +253,13 @@
      "neutral",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "History of thyroidectomy performed",
+     "Thyroidectomy scheduled",
+     "History of other surgery unrelated to Graves' disease/AIT",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -245,6 +281,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Diagnosed with arrhythmia (e.g., atrial fibrillation)",
+     "Uncontrolled hypertension confirmed",
+     "History of active malignancy",
+     "All normal/not applicable",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -335,6 +378,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Guardian can understand the clinical trial explanation language and complete the consent form",
+     "Communication not possible without interpreter support due to language barrier",
+     "Difficulty complying with regular visit schedule (e.g., distant residence, guardian circumstances)",
+     "Concerns regarding guardian's capacity to consent (e.g., cognitive decline, unclear legal representative status)",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -356,6 +407,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Kidney biopsy confirmed findings of minimal change disease (MCD)",
+     "Kidney biopsy confirmed findings of focal segmental glomerulosclerosis (FSGS)",
+     "Genetic testing confirmed a pathogenic variant associated with nephrotic syndrome",
+     "Both biopsy and genetic testing results were unremarkable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -379,6 +437,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Active infection confirmed (hepatitis B/C, HIV, etc.)",
+     "History of significant cardiac or central nervous system disease",
+     "Neutropenia (decreased ANC) or elevated liver enzymes confirmed",
+     "History of active or prior malignancy",
+     "All within normal range",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -481,6 +547,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "ECOG 0-1 (normal activity)",
+     "ECOG 2 or higher (activity limited)",
+     "Decreased renal function (reduced creatinine clearance)",
+     "Abnormal blood counts (ANC/platelet/hemoglobin below threshold)",
+     "All within normal range",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -504,6 +578,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "History of TURBT performed (recently performed)",
+     "History of prior systemic chemotherapy administration",
+     "Residual toxicity from prior treatment present (Grade 2 or higher)",
+     "History of radical cystectomy performed",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -527,6 +609,14 @@
      "eligible",
      "excluded",
      "unresolved"
+    ],
+    "options_en": [
+     "Urothelial carcinoma (urothelial carcinoma) histology confirmed",
+     "Confirmed as non-muscle-invasive bladder cancer (NMIBC) stage",
+     "Confirmed as muscle-invasive bladder cancer (MIBC) stage",
+     "Distant metastasis present (metastatic stage)",
+     "No malignancy on biopsy (benign lesion)",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -612,6 +702,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "History of hypersensitivity reaction to amide-type local anesthetics such as lidocaine",
+     "Currently taking anticoagulants or antiplatelet agents",
+     "Contraindication to contrast media use due to contrast allergy or decreased renal function",
+     "History of intracranial vascular malformation or previous neurovascular interventional procedure",
+     "Not applicable",
+     "No record/Unable to confirm"
     ]
    },
    {
@@ -633,6 +731,13 @@
      "unresolved",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Currently pregnant, confirmed as singleton pregnancy",
+     "Currently pregnant, confirmed as multiple pregnancy (twins or more)",
+     "Pregnancy status not confirmed (pregnancy possible)",
+     "Not currently pregnant (pregnancy test negative)",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -654,6 +759,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Lacks capacity for voluntary consent due to cognitive impairment or psychiatric disorder",
+     "Condition requiring consent from a legal representative or guardian",
+     "Falls under vulnerable populations, such as prisoners or institutionalized persons",
+     "Not applicable (normal capacity to consent, not a vulnerable population)",
+     "No record/unable to verify"
     ]
    }
   ]
@@ -731,6 +843,13 @@
      "excluded",
      "excluded",
      "unresolved"
+    ],
+    "options_en": [
+     "Nasal mucosal biopsy confirmed Mucorales hyphae (broad, aseptate hyphae)",
+     "Mucorales species identified on culture",
+     "Pathology findings confirmed a non-fungal cause such as bacterial necrosis",
+     "Both biopsy and culture results within normal range",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -752,6 +871,13 @@
      "excluded",
      "excluded",
      "unresolved"
+    ],
+    "options_en": [
+     "Confirmed hospitalization at Strasbourg University Hospital during the study period",
+     "Confirmed hospitalization at Lille University Hospital during the study period",
+     "Currently being treated at a hospital other than the designated hospitals (Strasbourg/Lille)",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -773,6 +899,13 @@
      "eligible",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Co-infection with invasive fungi other than Mucorales (e.g., Aspergillus) confirmed",
+     "Concurrent infection with non-fungal pathogens (e.g., bacterial sepsis) confirmed",
+     "Not identified on additional pathogen culture/imaging studies (Mucorales monoinfection)",
+     "All test results within normal range",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -854,6 +987,14 @@
      "eligible",
      "excluded",
      "unresolved"
+    ],
+    "options_en": [
+     "Residual small bowel length less than 50cm (ultra-short bowel syndrome)",
+     "Residual small bowel length 50-100cm (short bowel syndrome)",
+     "Ileocecal valve resected",
+     "Entire or partial colon resected",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -877,6 +1018,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Diagnosed with congenital gastrointestinal malformation (e.g., gastrointestinal obstruction)",
+     "Diagnosed with inflammatory bowel disease (IBD)",
+     "Diagnosed with Crohn's disease",
+     "Diagnosed with Hirschsprung's disease",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -898,6 +1047,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Gestational age under 32 weeks (extreme preterm)",
+     "Gestational age 32-36 weeks (moderate preterm)",
+     "History of perinatal asphyxia",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -979,6 +1135,14 @@
      "excluded",
      "excluded",
      "unresolved"
+    ],
+    "options_en": [
+     "Definite UIP pattern confirmed on HRCT",
+     "UIP pattern confirmed on surgical lung biopsy",
+     "IPF diagnosis finalized through multidisciplinary team (MDT) discussion",
+     "HRCT findings inconsistent with UIP pattern (atypical/suggestive of alternative diagnosis)",
+     "No evidence meeting IPF diagnostic criteria (ATS/ERS/JRS/ALAT 2022)",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -1002,6 +1166,14 @@
      "excluded",
      "excluded",
      "unresolved"
+    ],
+    "options_en": [
+     "FVC within 45–90% predicted",
+     "DLCO within 25–90% predicted",
+     "FVC below 45% predicted or DLCO below 25% predicted (severe restriction)",
+     "FEV1/FVC ratio ≥0.7, not consistent with a restrictive pattern",
+     "All within normal range",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -1023,6 +1195,13 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Currently taking nintedanib or pirfenidone at a stable dose for 8 weeks or more",
+     "Recently started antifibrotic therapy (less than 8 weeks) or dose is unstable",
+     "Currently taking systemic glucocorticoids at a high dose (equivalent to more than prednisone 20mg/day)",
+     "No history of antifibrotic agent or systemic glucocorticoid use",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -1111,6 +1290,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Currently taking immunosuppressants",
+     "Diagnosed with autoimmune disease",
+     "Diagnosed with HIV/AIDS",
+     "Diagnosed with multiple sclerosis (MS) or systemic lupus erythematosus (SLE)",
+     "None of the above",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -1134,6 +1321,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Enrolled as index case of acute EBV infection",
+     "Enrolled as family member or close contact of index case",
+     "Attempted enrollment as healthy volunteer",
+     "Attempted enrollment as control",
+     "No exclusion reason per cohort classification",
+     "No record/unable to verify"
     ]
    },
    {
@@ -1157,6 +1352,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Major organ failure (hepatic failure, renal failure, etc.) present",
+     "History of substance abuse present",
+     "Diagnosis of severe psychiatric disorder (schizophrenia, bipolar disorder, etc.) present",
+     "Diagnosis of endocrine disorder (diabetes mellitus, thyroid disease, etc.) present",
+     "Not applicable",
+     "No record/unable to confirm"
     ]
    }
   ]
@@ -1246,6 +1449,14 @@
      "eligible",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "History of right eye vitrectomy (vitrectomy)",
+     "History of right eye scleral buckle (scleral buckle)",
+     "Recurrence noted after right eye retinal detachment surgery",
+     "Right eye cataract surgery only performed, no history of retinal surgery",
+     "No history of right eye ophthalmic surgery at all",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -1269,6 +1480,14 @@
      "excluded",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "With proliferative vitreoretinopathy (PVR)",
+     "With macular hole",
+     "With macular scarring",
+     "Findings of recurrent retinal detachment",
+     "None of the following complications (PVR, recurrence, macular hole/scarring)",
+     "No record/unable to confirm"
     ]
    },
    {
@@ -1292,6 +1511,14 @@
      "neutral",
      "eligible",
      "unresolved"
+    ],
+    "options_en": [
+     "Scheduled as emergency surgery",
+     "Vitrectomy (vitrectomy) planned as sole procedure",
+     "Scleral buckling (scleral buckle) planned as combined procedure",
+     "Scheduled as pneumatic retinopexy (pneumatic retinopexy)",
+     "Not an emergency surgery; scheduled as a planned surgery",
+     "No record/unable to confirm"
     ]
    }
   ]

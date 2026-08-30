@@ -2815,7 +2815,7 @@ function buildPendingCard(q, openList, glossState){
   }
   if (Array.isArray(q.options) && q.options.length){
     var optWrap = el("div", "opt-list");
-    q.options.forEach(function(optText){
+    q.options.forEach(function(optText, optIdx){
       var lab = el("label", "opt-item");
       var cb = document.createElement("input");
       cb.type = "checkbox";
@@ -2827,7 +2827,10 @@ function buildPendingCard(q, openList, glossState){
       // and the Korean original drops to the dim gloss line (the reverse of KO mode). The
       // checkbox value stays the raw Korean string either way -- the answer round and the
       // criterion re-check key on it.
-      var enPrimary = LANG === "en" ? glossFor(String(optText)) : null;
+      // 서버가 options_en을 보내면(라이브·재생성 질문) 그것이 영문 본문; 없으면 gloss 사이드카.
+      var _srvEn = (Array.isArray(q.options_en) && q.options_en[optIdx]) ? String(q.options_en[optIdx]).trim() : "";
+      var enPrimary = LANG === "en" ? (_srvEn || glossFor(String(optText))) : null;
+      if (enPrimary && enPrimary.toLowerCase() === String(optText).trim().toLowerCase()) enPrimary = null;
       if (enPrimary){
         span.textContent = enPrimary;
         bodyDiv.appendChild(span);

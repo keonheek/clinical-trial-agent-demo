@@ -516,6 +516,9 @@ options described below -- 6 total at most. Rules for options:
 For each question ALSO supply `question_ko` and `why_ko`: faithful Korean versions of `question`
 and `why` in professional 하십시오체 (a coordinator reads them on screen), same clinical terms.
 
+For each option ALSO supply `options_en` (same order and length as `options`): the same finding
+in English, clinical-coordinator register, preserving every number, unit and drug name exactly.
+
 For each option ALSO supply its direction in `option_directions` (same order and length as
 `options`), judged against the criteria this question resolves:
   "eligible"   -- ticking it moves the patient toward eligibility (an inclusion criterion
@@ -530,7 +533,7 @@ for an inclusion criterion "naive to drug X", the option "X 투여 받은 적 �
 "이전에 X 투여 받음" is "excluded".
 
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"questions": [{"field": "<matches a gap field>", "question": "<question text>", "question_ko": "<Korean question>", "why": "<short reason, <=20 words>", "why_ko": "<Korean reason>", "options": ["<option>", "..."], "option_directions": ["eligible"|"excluded"|"unresolved"|"neutral", "..."]}]}
+{"questions": [{"field": "<matches a gap field>", "question": "<question text>", "question_ko": "<Korean question>", "why": "<short reason, <=20 words>", "why_ko": "<Korean reason>", "options": ["<option>", "..."], "options_en": ["<option in English>", "..."], "option_directions": ["eligible"|"excluded"|"unresolved"|"neutral", "..."]}]}
 Return at most 3 questions, prioritizing gaps that affect the most trials."""
 
 
@@ -578,16 +581,21 @@ Generate at most 3 clarifying questions per your instructions."""
             for d in raw_dirs:
                 d = str(d or "").strip().lower()
                 dirs.append(d if d in VALID_OPTION_DIRECTIONS else "neutral")
+        raw_en = q.get("options_en")
+        opts_en = None
+        if isinstance(raw_en, list) and len(raw_en) == len(options):
+            opts_en = [str(x or "").strip() for x in raw_en]
         if len(options) > 6:
             options = options[:4] + options[-2:]
             dirs = (dirs[:4] + dirs[-2:]) if dirs else None
+            opts_en = (opts_en[:4] + opts_en[-2:]) if opts_en else None
         # Direction comes from the model that wrote the option and saw the criteria; the UI's
         # token/regex guess was wrong on negations ("아님", "none planned") and on inclusion
         # criteria phrased negatively ("naive to X") -- his 08-30 screenshots.
         cleaned.append({"field": field, "question": question, "why": why,
                         "question_ko": str(q.get("question_ko", "")).strip(),
                         "why_ko": str(q.get("why_ko", "")).strip(),
-                        "options": options, "option_directions": dirs})
+                        "options": options, "options_en": opts_en, "option_directions": dirs})
     return cleaned
 
 
