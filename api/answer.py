@@ -403,8 +403,20 @@ def handle(body, client_ip="?"):
     questions_in = body.get("questions")
     if not isinstance(questions_in, list):
         questions_in = []
-    questions_in = [{"field": str(q.get("field", ""))[:120], "question": str(q.get("question", ""))[:MAX_QUESTION_LEN]}
-                    for q in questions_in[:MAX_QUESTIONS] if isinstance(q, dict) and q.get("question")]
+    # Keep the served links and option lists too: affected_detail is the exact criterion set
+    # the card promised to re-check, and options/options_en let a Korean answer contribute
+    # English tokens. Both are bounded and enter no prompt.
+    def _q_in(q):
+        det = q.get("affected_detail") if isinstance(q.get("affected_detail"), list) else []
+        det = [{"nct_id": str(d.get("nct_id", ""))[:20], "text": str(d.get("text", ""))[:500]}
+               for d in det[:MAX_AFFECTED * 2] if isinstance(d, dict)]
+        opts = [str(o)[:200] for o in (q.get("options") or [])[:8] if isinstance(o, str)]
+        opts_en = [str(o)[:200] for o in (q.get("options_en") or [])[:8] if isinstance(o, str)]
+        return {"field": str(q.get("field", ""))[:120], "question": str(q.get("question", ""))[:MAX_QUESTION_LEN],
+                "affected_detail": det, "options": opts,
+                "options_en": opts_en if len(opts_en) == len(opts) else []}
+    questions_in = [_q_in(q) for q in questions_in[:MAX_QUESTIONS] if isinstance(q, dict) and q.get("question")]
+    q_by_text = {q["question"]: q for q in questions_in}
     # already-asked question texts, resent by the client so follow-up generation never
     # re-asks something from an earlier round. Text is only ever normalized and compared --
     # it enters no prompt.
@@ -417,7 +429,37 @@ def handle(body, client_ip="?"):
     # ONE round for the whole batch: per-question find_affected, then the union (deduped by
     # criterion, capped) feeds a single rematch + a single recommend -- never one loop per
     # question.
-    affected, sources = union_affected([(q, find_affected(q, trials_copy, ans)) for q, ans in pairs])
+    def _affected_for(q, ans):
+        qo = q_by_text.get(q) or {}
+        # Korean option answers carry no Latin tokens ("악성종양 병력 없음" vs "malignant
+        # tumors"); add each selected option's English text to the token source.
+        ans_tok_src = ans
+        for ko, en in zip(qo.get("options") or [], qo.get("options_en") or []):
+            if ko and ko in ans and en:
+                ans_tok_src += " " + en
+        found = find_affected(q, trials_copy, ans_tok_src)
+        # Then the explicit links the card showed (server-side affected_detail): an answer
+        # must reach every criterion the question was linked to, not only the ones whose
+        # wording happens to overlap -- his 08-30 screenshot: malignancy history stayed
+        # UNKNOWN after "해당 사항 없음" because "history"/"patients" are stopwords and
+        # "cancer" never matched "malignant tumors".
+        seen = {(a["trial_idx"], a["crit_idx"]) for a in found}
+        want = {(d["nct_id"], normalize_criterion_text(d["text"])) for d in qo.get("affected_detail") or []}
+        if want:
+            for t_idx, t in enumerate(trials_copy):
+                if trial_is_blocked(t):
+                    continue
+                for c_idx, c in enumerate(t.get("criteria", [])):
+                    if (t_idx, c_idx) in seen or c.get("verdict") not in ("UNKNOWN", "UNCERTAIN"):
+                        continue
+                    if (t.get("nct_id"), normalize_criterion_text(c.get("text", ""))) in want:
+                        found.append({"nct_id": t.get("nct_id"), "trial_idx": t_idx, "crit_idx": c_idx,
+                                      "text": c.get("text", ""), "type": c.get("type", "inclusion"),
+                                      "before_verdict": c.get("verdict")})
+                        seen.add((t_idx, c_idx))
+        return found[:MAX_AFFECTED]
+
+    affected, sources = union_affected([(q, _affected_for(q, ans)) for q, ans in pairs])
     new_record = (extended_record
                   + "".join(f"\n추가 문진 Q: {q} / A: {a}" for q, a in pairs)).strip()
 

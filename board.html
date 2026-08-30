@@ -737,6 +737,7 @@ var I18N = {
     pathBlockingLabel: "Blocking criteria",
     pathResolveLabel: "Still open",
     pathNeedLead: "To qualify —",
+    pathAskGo: "Answer in Clarifying Questions →", pathAskGen: "Generate questions for these →", pathAskBusy: "Generating…",
     pathNeedBlocking: "clear {b} blockers",
     pathNeedBlockingOne: "clear 1 blocker",
     pathNeedResolve: "confirm {o} open",
@@ -981,6 +982,7 @@ var I18N = {
     pathBlockingLabel: "부적격 사유",
     pathResolveLabel: "미확정 기준",
     pathNeedLead: "적격 조건 —",
+    pathAskGo: "확인 질문에서 답하기 →", pathAskGen: "이 기준들에 대한 질문 생성 →", pathAskBusy: "생성 중…",
     pathNeedBlocking: "탈락 {b}건 해제",
     pathNeedBlockingOne: "탈락 1건 해제",
     pathNeedResolve: "미확인 {o}건 확인",
@@ -2214,9 +2216,13 @@ function critBadgeHtml(c){
   var v = (c.verdict || "UNKNOWN").toUpperCase();
   var vm = VERDICT_META[v] || VERDICT_META.UNKNOWN;
   var gloss = LANG === "en" ? vm.en : vm.ko;
-  var html = '<span class="badge ' + vm.cls + '" title="' + escapeHtml(t("verdictTip", {v: gloss})) + '">' +
-    escapeHtml(v.replace("_", " ")) + " · " + escapeHtml(gloss) + '</span>';
   var e = getEffect(c);
+  // 판정 칩의 색은 "문장이 참인가"가 아니라 "참여에 어떤 결과인가"를 따른다. 제외기준의
+  // NOT MET은 좋은 결과인데 빨간 칩 옆에 초록 PASS 칩이 붙어 "부적격이면서 적격"으로
+  // 읽혔다 (08-30 그의 지적). 같은 행의 두 칩은 항상 같은 색.
+  var vcls = e === "PASS" ? "b-met" : e === "FAIL" ? "b-notmet" : vm.cls;
+  var html = '<span class="badge ' + vcls + '" title="' + escapeHtml(t("verdictTip", {v: gloss})) + '">' +
+    escapeHtml(v.replace("_", " ")) + " · " + escapeHtml(gloss) + '</span>';
   if (e && EFFECT_META[e]){
     html += '<span class="badge ' + EFFECT_META[e].cls + '" title="' + escapeHtml(t("effectTip")) + '">' +
       escapeHtml(e) + " · " + escapeHtml(LANG === "en" ? EFFECT_META[e].en : EFFECT_META[e].ko) + '</span>';
@@ -2319,7 +2325,17 @@ function pathPanelHtml(trial){
   if (pr.resolve.length) parts.push(pr.resolve.length === 1
     ? t("pathNeedResolveOne") : t("pathNeedResolve", {o: pr.resolve.length}));
   if (parts.length){
-    html += '<div class="path-need">' + escapeHtml(t("pathNeedLead") + " " + parts.join(t("pathNeedJoin"))) + '</div>';
+    html += '<div class="path-need">' + escapeHtml(t("pathNeedLead") + " " + parts.join(t("pathNeedJoin")));
+    // 미해결 기준이 남았으면 여기서 바로 답하러 갈 수 있어야 한다: 대기 중인 질문이 이
+    // 시험에 연결돼 있으면 그리로, 없으면 이 시험의 미해결 기준으로 추가 질문을 만든다.
+    if (pr.resolve.length && !trialIsBlocked(trial)){
+      var hasPending = pendingQuestions().some(function(q){
+        return (q.affected_detail || []).some(function(d){ return d.nct_id === trial.nct_id; });
+      });
+      html += ' <button type="button" class="qlink" id="pathAskBtn" data-mode="' + (hasPending ? "go" : "gen") + '">' +
+        escapeHtml(hasPending ? t("pathAskGo") : t("pathAskGen")) + '</button>';
+    }
+    html += '</div>';
   }
   return html;
 }
@@ -2435,6 +2451,37 @@ function openModal(nct){
   _pl.querySelectorAll(".path-item").forEach(function(btn){
     btn.addEventListener("click", function(){ focusCriterion(btn.dataset.crit); });
   });
+  var _ask = _pl.querySelector("#pathAskBtn");
+  if (_ask){
+    _ask.addEventListener("click", function(){
+      if (_ask.dataset.mode === "go"){
+        var q0 = pendingQuestions().filter(function(q){
+          return (q.affected_detail || []).some(function(d){ return d.nct_id === trial.nct_id; });
+        })[0];
+        overlay.classList.remove("open");
+        if (q0) goToQuestion(q0, trial.nct_id);
+        return;
+      }
+      _ask.disabled = true; _ask.textContent = t("pathAskBusy");
+      var answered = Object.keys(cur.answered || {}).map(function(q){ return {question: q, answer: String(cur.answered[q] == null ? "" : cur.answered[q])}; });
+      var before = pendingQuestions().length;
+      fetchFollowups(cur.id, answered);
+      var tries = 0;
+      var timer = setInterval(function(){
+        tries++;
+        var pend = pendingQuestions();
+        if (pend.length > before){
+          clearInterval(timer);
+          overlay.classList.remove("open");
+          var q1 = pend.filter(function(q){ return (q.affected_detail || []).some(function(d){ return d.nct_id === trial.nct_id; }); })[0] || pend[pend.length - 1];
+          goToQuestion(q1, trial.nct_id);
+        } else if (tries > 600){
+          clearInterval(timer);
+          _ask.disabled = false; _ask.textContent = t("pathAskGen");
+        }
+      }, 500);
+    });
+  }
   _pl.querySelectorAll(".path-more").forEach(function(btn){
     btn.addEventListener("click", function(){
       var g = btn.parentNode;
