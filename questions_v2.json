@@ -1,0 +1,1299 @@
+{
+ "S001": {
+  "gaps": [
+   {
+    "field": "Prior pancreatic-directed procedures",
+    "why_needed": "Determines eligibility tied to endoscopic necrosectomy, drainage, cholecystectomy, or other pancreatic/biliary surgery history",
+    "related_criteria": [
+     "All patients undergoing endoscopic treatment of pancreatic fluid collections",
+     "Patients who did not receive endoscopic treatment of pancreatic fluid collections",
+     "Prior (before enrollment) direct endoscopic necrosectomy of the pancreas or percutaneous necrosectomy or drainage of necrotic collection(s)",
+     "Prior pancreatic surgery, including, but not limited to: distal pancreatectomy, pancreaticoduodenectomy, pancreatic necrosectomy, Frey procedure",
+     "History of cholecystectomy",
+     "Planned open cholecystectomy"
+    ]
+   },
+   {
+    "field": "Imaging findings on pancreatitis etiology and masses",
+    "why_needed": "CT/MRI/MRCP results needed to confirm chronic vs biliary pancreatitis and exclude tumors or cysts",
+    "related_criteria": [
+     "Diagnosis of definite chronic pancreatitis (CP) at enrollment based on CT scan (including non-contrast enhanced), MRI, or MRCP: parenchymal or ductal calcifications on CT scan (after excluding the possibility that calcifications are vascular), or intraductal filling defects suggestive of calcifications on MRI and/or MRCP",
+     "Biliary pancreatitis diagnosed on imaging (ultrasound, magnetic resonance imaging and/or tomography)",
+     "Pancreatic tumors, including ductal adenocarcinoma, neuroendocrine tumors, and metastasis",
+     "Confirmed or suspected cystic tumor associated with main pancreatic duct dilation, or believed to be the cause of AP (in the site-PI's judgement)",
+     "Chronic pancreatitis"
+    ]
+   },
+   {
+    "field": "Current severity and clinical course",
+    "why_needed": "Need APACHE score, shock status, complications, and oral-intake recovery to classify episode severity",
+    "related_criteria": [
+     "Diagnosis of pancreatitis according to Atlanta guidelines, moderately severe or severe pancreatitis (APACHE score ≥8 on admittance)",
+     "Septic shock",
+     "Pancreatitis-associated complication before laparoscopic cholecystectomy (compartment syndrome, bleeding and/or need for peripancreatic collection drainage)",
+     "Recovery of pancreatitis by tolerance of oral intake (defined as 24 hours of food consumption of any consistency without emetic episodes and pain defined as 4/10 on the visual analogue score of pain)"
+    ]
+   },
+   {
+    "field": "Comorbidities and malignancy history",
+    "why_needed": "Systemic illness or active cancer could confound outcomes or exclude enrollment",
+    "related_criteria": [
+     "Severe systemic illness that in the judgement of the investigative team will confound outcome assessments of diabetes mellitus and immunological outcomes or pose additional risk for harms, including: history of solid organ transplant, acquired immunodeficiency syndrome (AIDS), active treatment for cancer (except non-melanoma skin cancer) within 12 months prior to enrollment, chronic kidney disease with estimated glomerular filtration rate (eGFR) < 30 or on dialysis prior to AP, and decompensated cirrhosis (based on imaging or biopsy), or any other medical condition that in the opinion of the site-PI carries a life expectancy of <12 months",
+     "Active malignant disease"
+    ]
+   },
+   {
+    "field": "Consent capacity and willingness",
+    "why_needed": "Need to confirm patient can provide informed consent and complete study procedures",
+    "related_criteria": [
+     "Participant fully understands and is able to participate in all aspects of the study, including providing informed consent, completion of case report forms, telephone interviews, metabolic testing, and planned longitudinal follow-ups",
+     "Written informed consent"
+    ]
+   },
+   {
+    "field": "Other exposure and social history",
+    "why_needed": "Medication use, ERCP-related AP timing/hospitalization, and incarceration status not documented in vignette",
+    "related_criteria": [
+     "Use of disallowed concomitant medications within 30 days prior to enrollment",
+     "Potential participants with post-endoscopic retrograde cholangiopancreatography (ERCP) AP who are hospitalized for <48 hours",
+     "Incarceration"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "prior_pancreatic_procedures",
+    "question": "Has the patient had any prior pancreatic-directed procedures (endoscopic necrosectomy, drainage, cholecystectomy, or other pancreatic/biliary surgery)?",
+    "why": "Determines eligibility for 6 criteria tied to prior pancreatic/biliary interventions.",
+    "question_ko": "환자가 이전에 췌장 관련 시술(내시경적 괴사절제술, 배액술, 담낭절제술 등 췌장/담도 수술)을 받은 적이 있습니까?",
+    "why_ko": "이전 췌장/담도 시술 이력은 6개 적격성 기준을 좌우합니다.",
+    "options": [
+     "이전 담낭절제술 시행",
+     "내시경적 괴사절제술 시행",
+     "경피적 또는 내시경적 배액술 시행",
+     "기타 췌장 수술 이력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "imaging_findings_etiology_masses",
+    "question": "What do CT/MRI/MRCP findings show regarding pancreatitis etiology (biliary vs chronic) and presence of pancreatic masses or cysts?",
+    "why": "Confirms etiology and excludes tumors/cysts, affecting 5 eligibility criteria.",
+    "question_ko": "CT/MRI/MRCP 영상 검사에서 췌장염의 원인(담석성 대 만성)과 췌장 종괴 또는 낭종 유무는 어떻게 확인됩니까?",
+    "why_ko": "췌장염 원인 확인과 종양/낭종 배제는 5개 적격성 기준에 영향을 미칩니다.",
+    "options": [
+     "담석 또는 담관 폐쇄 확인됨",
+     "만성 췌장염 소견(석회화, 췌관 확장) 확인됨",
+     "췌장 종괴 또는 낭성 병변 확인됨",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "severity_clinical_course",
+    "question": "What is the patient's current severity classification — APACHE II score, presence of shock, organ-failure complications, and status of oral-intake recovery?",
+    "why": "Classifies episode severity, affecting 4 severity-based eligibility criteria.",
+    "question_ko": "환자의 현재 중증도는 어떠합니까 — APACHE II 점수, 쇼크 여부, 장기부전 등 합병증, 경구 섭취 회복 상태를 확인해 주십시오.",
+    "why_ko": "병기(중증도) 분류는 중증도 기반 적격성 기준 4개에 영향을 미칩니다.",
+    "options": [
+     "쇼크 동반",
+     "장기부전 동반",
+     "국소 합병증(괴사, 가성낭종 등) 동반",
+     "합병증 없음, 경증 경과",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S002": {
+  "gaps": [
+   {
+    "field": "informed consent capacity/status",
+    "why_needed": "Determines eligibility to enroll; consent status and any language/cognitive barriers unknown.",
+    "related_criteria": [
+     "[NCT06963203] Patients providing signed informed consent",
+     "[NCT06963203] Patients unable or unwilling to provide informed consent due to language barriers or intellectual limitations",
+     "[NCT05461820] Take part in this research voluntarily and sign the informed consent form"
+    ]
+   },
+   {
+    "field": "pregnancy/lactation status",
+    "why_needed": "Pregnancy affects treatment eligibility and safety; not addressed in vignette.",
+    "related_criteria": [
+     "[NCT06963203] Pregnant women",
+     "[NCT05461820] Pregnant and lactating women cannot rule out the possibility of pregnancy"
+    ]
+   },
+   {
+    "field": "lab values (CBC, LFTs, renal function)",
+    "why_needed": "Blood counts, liver enzymes, and creatinine needed to assess exclusion thresholds.",
+    "related_criteria": [
+     "[NCT05461820] Blood routine: the total number of white blood cells < 3.0×10^9 or neutrophils < 1.5×10^9",
+     "[NCT05461820] Alanine aminotransferase(ALT) or aspartate amino transferase(AST) is greater than 2 times of the normal upper limit; when ALT or AST is less than 2 times of the normal upper limit, and the test of hepatitis B two half-and-half positive",
+     "[NCT05461820] Renal insufficiency: serum creatinine is higher than the upper limit of normal value"
+    ]
+   },
+   {
+    "field": "prior/planned surgical history and indication",
+    "why_needed": "Need to know if surgery is planned/performed for Graves'/AIT vs other reasons or concurrent procedures.",
+    "related_criteria": [
+     "[NCT06963203] Undergoing surgical treatment for Graves' disease or Amiodarone-induced thyrotoxicosis (AIT) with biochemically confirmed hyperthyroidism, or on specific medication for the treatment of Graves' disease or AIT",
+     "[NCT06963203] Patients undergoing concurrent parathyroidectomy for primary or secondary hyperparathyroidism, lymph node clearance, or redo surgery",
+     "[NCT06963203] Surgical procedures performed for other reasons than Graves' disease or AIT"
+    ]
+   },
+   {
+    "field": "confirmatory thyroid diagnostics (TRAb, biochemical confirmation)",
+    "why_needed": "Need TRAb result and biochemical confirmation to establish Graves' disease diagnosis definitively.",
+    "related_criteria": [
+     "[NCT05461820] Graves hyperthyroidism (responsible for doctors' clinical diagnosis)",
+     "[NCT05461820] Thyroid receptor antibody (TRAb) was positive"
+    ]
+   },
+   {
+    "field": "comorbidities (cardiac, hypertension, malignancy)",
+    "why_needed": "Cardiac status, blood pressure control, and cancer history needed to assess exclusion criteria.",
+    "related_criteria": [
+     "[NCT05461820] Patients with a history of malignant tumors",
+     "[NCT05461820] Ill-controlled hypertension: diastolic blood pressure≥100mmHg, systolic blood pressure ≥160 mmHg",
+     "[NCT05461820] Patients with heart failure"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "lab values (CBC, LFTs, renal function)",
+    "question": "What are the patient's most recent CBC, liver function test, and renal function results?",
+    "why": "Screens for cytopenia, hepatic, or renal abnormalities that could exclude thionamide-based trials.",
+    "question_ko": "환자의 최근 일반혈액검사(CBC), 간기능검사(LFT), 신기능검사 결과는 어떻게 됩니까?",
+    "why_ko": "항갑상선제 기반 임상시험에서 제외 기준이 되는 혈구감소증, 간기능 이상, 신기능 이상 여부를 확인하기 위함입니다.",
+    "options": [
+     "백혈구감소증(ANC 저하) 확인됨",
+     "간효소(AST/ALT) 정상 상한치의 3배 이상 상승",
+     "혈청 크레아티닌 상승/신기능 저하 확인됨",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "prior/planned surgical history and indication",
+    "question": "Has the patient had, or is she scheduled for, thyroid surgery (thyroidectomy) or any other surgery, and for what indication?",
+    "why": "Prior/planned thyroidectomy affects eligibility for Graves'/AIT drug trials versus surgical-arm trials.",
+    "question_ko": "환자가 갑상선절제술 등 갑상선 수술을 받았거나 예정되어 있습니까? 있다면 그 적응증은 무엇입니까?",
+    "why_ko": "기존 또는 예정된 갑상선절제술 여부는 그레이브스병/AIT 약물 임상시험과 수술 관련 임상시험 적격성에 영향을 미칩니다.",
+    "options": [
+     "갑상선절제술 시행 이력 있음",
+     "갑상선절제술 예정됨",
+     "그레이브스병/AIT와 무관한 다른 수술 이력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "neutral",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "comorbidities (cardiac, hypertension, malignancy)",
+    "question": "Does the patient have any history of cardiac disease (e.g., arrhythmia, heart failure), uncontrolled hypertension, or malignancy?",
+    "why": "Cardiac, blood pressure, and cancer history determine exclusion given her tachycardia and hyperthyroid state.",
+    "question_ko": "환자에게 심장질환(부정맥, 심부전 등), 조절되지 않는 고혈압, 또는 악성종양 병력이 있습니까?",
+    "why_ko": "빈맥 및 갑상선기능항진 상태를 고려할 때 심장질환, 혈압 조절 상태, 악성종양 병력이 제외 기준 해당 여부를 결정합니다.",
+    "options": [
+     "부정맥(예: 심방세동) 진단됨",
+     "조절되지 않는 고혈압 확인됨",
+     "활동성 악성종양 병력 있음",
+     "모두 정상/해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S003": {
+  "gaps": [
+   {
+    "field": "consent capacity, language, and compliance willingness",
+    "why_needed": "Determines if patient/guardian can consent, communicate in trial languages, and complete required visits",
+    "related_criteria": [
+     "Willing and able to consent, and as appropriate assent, to participate in NEPTUNE Match",
+     "Non-English or non-Spanish speaking",
+     "Inability or unwillingness to comply with repeated assessments",
+     "Objections against participation at discretion of the investigator",
+     "The subject and/or their legal guardian must provide written informed consent"
+    ]
+   },
+   {
+    "field": "renal biopsy and genetic testing results",
+    "why_needed": "Histology (MCD/FSGS vs other glomerulopathies) and genetic mutation status determine trial-specific inclusion/exclusion",
+    "related_criteria": [
+     "biopsy or a disease-causing genetic mutation associated with nephrotic syndrome",
+     "Secondary",
+     "Renal biopsy performed prior to screening confirms a diagnosis of minimal change disease (MCD) or focal segmental glomerulosclerosis (FSGS)",
+     "Genetic nephropathy confirmed by genetic testing",
+     "Renal biopsy confirming IgA nephropathy, membranous nephropathy, or membranoproliferative glomerulonephritis"
+    ]
+   },
+   {
+    "field": "comorbidities and screening labs (CNS, cardiac, infectious, hematologic/liver, malignancy)",
+    "why_needed": "Safety exclusions require recent neuro/cardiac history, infection serologies, blood counts, and cancer screening",
+    "related_criteria": [
+     "Stroke or seizure within 6 months prior to screening, or other active central nervous system disorders",
+     "Severe congenital heart disease or history of acute myocardial infarction within 6 months, or severe arrhythmias, or moderate to large pericardial effusion, severe myocarditis, or unstable vital signs requiring vasopressors to maintain blood pressure",
+     "Positive for HBsAg or HBcAb with HBV DNA above normal range; positive for HCV antibodies with HCV RNA above normal range; or positive for HIV antibodies, syphilis, or CMV DNA",
+     "Abnormal laboratory values prior to screening: moderate to severe neutropenia (≤1.0×10⁹/L), moderate to severe anemia (hemoglobin ≤90 g/L), thrombocytopenia (≤75×10⁹/L), or liver dysfunction (ALT, AST, or bilirubin > 2.5x ULN persisting for 2 weeks)",
+     "Subjects with tumors or other life-threatening diseases prior to screening"
+    ]
+   },
+   {
+    "field": "prior NEPTUNE study enrollment and care site",
+    "why_needed": "Eligibility for NEPTUNE Match depends on existing NEPTUNE cohort enrollment and care at a NEPTUNE site",
+    "related_criteria": [
+     "Consented and eligible participants in the biopsied or non-biopsied cohorts of the NEPTUNE observational study",
+     "Currently non-NEPTUNE observational study participants are not eligible to be matched to a clinical trial using these biomarker assessments",
+     "Regular nephrology healthcare provided at a NEPTUNE study site",
+     "Must be potentially eligible for the NEPTUNE Match partnering trials (e.g. if no trial is enrolling a participant under age 6, those under 6 are not eligible)"
+    ]
+   },
+   {
+    "field": "immunosuppressive/CNI treatment history and response",
+    "why_needed": "Steroid- or CNI-resistance, dependence, and relapse pattern determine which trial's treatment-history criteria are met",
+    "related_criteria": [
+     "Resistant to standard Immunosuppressive agents (if clinically indicated, e.g. primary/non-genetic forms)",
+     "Patients with steroid-dependence/frequently relapsing disease (but achievement of complete remission)",
+     "Meets the 2021 KDIGO definition of steroid-resistant nephrotic syndrome (SRNS), and either: has received an adequate dose of calcineurin inhibitors (CNIs) for more than 6 months without achieving at least partial remission; or has contraindications to CNI use (e.g., eGFR < 60 mL/min/1.73 m², prominent tubular injury on biopsy, elevated urinary markers > 3x ULN, abnormal glucose tolerance, severe uncontrolled hypertension, significant drug interactions, or known CNI allergy); or has shown inadequate response or relapse after treatment with at least two immunosuppressive agents (including a CNI and at least one other conventional or biologic agent), defined as failure to achieve complete remission after 12 months of therapy or relapse following initial response"
+    ]
+   },
+   {
+    "field": "current kidney function and proteinuria values",
+    "why_needed": "Specific eGFR and UP/C ratio thresholds are needed to check kidney-function eligibility cutoffs",
+    "related_criteria": [
+     "Persistent urinary protein-to-creatinine (UP/C) ratio >1.0 g/g",
+     "eGFR > 30 ml/min per 1.73 m2",
+     "eGFR < 60 mL/min/1.73 m² (using the modified Bedside Schwartz formula)"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "consent capacity, language, and compliance willingness",
+    "question": "Can the patient's parent/guardian provide informed consent in a trial-supported language, and are they able to commit to the required visit schedule?",
+    "why": "Consent capacity, language, and visit compliance are prerequisites checked across most trials.",
+    "question_ko": "환아의 보호자가 임상시험 지원 언어로 동의서 내용을 이해하고 서명할 수 있으며, 필요한 방문 일정을 준수할 의향이 있습니까?",
+    "why_ko": "동의 능력, 언어, 방문 순응도는 대부분의 임상시험 등록에서 확인하는 전제 조건입니다.",
+    "options": [
+     "보호자가 임상시험 설명 언어를 이해하고 동의서 작성 가능",
+     "언어 장벽으로 통역 지원 없이는 의사소통 불가",
+     "정기 방문 일정 준수 어려움(거주지 원거리, 보호자 사정 등)",
+     "보호자의 동의 능력에 대한 우려 있음(인지저하, 법적 대리인 불명확 등)",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "renal biopsy and genetic testing results",
+    "question": "What did the renal biopsy show (histologic subtype), and has genetic testing for steroid-resistant nephrotic syndrome mutations been performed?",
+    "why": "Histologic subtype and genetic mutation status determine which trial's inclusion/exclusion criteria are met.",
+    "question_ko": "신장 생검 결과 조직학적 아형은 무엇이며, 스테로이드 저항성 신증후군 관련 유전자 검사를 시행하였습니까?",
+    "why_ko": "조직학적 소견과 유전자 변이 여부에 따라 각 임상시험의 포함·제외 기준 충족 여부가 달라집니다.",
+    "options": [
+     "신장 생검에서 미세변화신질환(MCD) 소견 확인",
+     "신장 생검에서 국소분절사구체경화증(FSGS) 소견 확인",
+     "유전자 검사에서 신증후군 관련 병원성 변이 확인",
+     "생검 및 유전자 검사 결과 모두 특이 소견 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "comorbidities and screening labs (CNS, cardiac, infectious, hematologic/liver, malignancy)",
+    "question": "Does the patient have any active infection, significant cardiac/CNS history, hematologic/liver abnormality, or malignancy identified on baseline screening labs?",
+    "why": "Safety exclusions require normal infection serologies, cardiac/CNS history, blood counts, and cancer screening.",
+    "question_ko": "환아에게 활동성 감염, 유의한 심장/중추신경계 병력, 혈액/간 기능 이상, 또는 악성종양이 기저 선별검사에서 확인되었습니까?",
+    "why_ko": "안전성 제외 기준은 감염 혈청검사, 심장/중추신경계 병력, 혈구 수치, 암 선별검사가 정상일 것을 요구합니다.",
+    "options": [
+     "활동성 감염(B형/C형 간염, HIV 등) 확인됨",
+     "유의한 심장 또는 중추신경계 질환 병력 있음",
+     "호중구감소증(ANC 저하) 또는 간효소 수치 상승 확인",
+     "활동성 또는 과거 악성종양 병력 있음",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S004": {
+  "gaps": [
+   {
+    "field": "Tumor histology, staging, and disease-status confirmation",
+    "why_needed": "Biopsy/imaging results needed to confirm cancer type, histology subtype, and disease extent for eligibility.",
+    "related_criteria": [
+     "Malignant or benign indication for undergoing cystectomy",
+     "Histology of pure adenocarcinoma, pure squamous cell carcinoma, or pure small cell carcinoma in the TURBT sample",
+     "Histologically or cytologically proven advanced solid tumour, refractory to conventional treatment, or for which no further conventional therapy is considered appropriate",
+     "At least 1 measurable lesion according to RECIST v1.1, or at least one assessable lesion",
+     "Diagnosed with lung cancer (SCLC or NSCLC), head and neck cancer (HNSCC), thyroid cancer, breast cancer, cervical cancer, colorectal cancer, or bladder cancer per specified ICD-O/ICD-10 diagnostic codes, and will receive surgery, radiation therapy, chemotherapy, or a combination",
+     "Diagnosed with a primary cancer other than breast, bladder, cervix, colon, rectum, lung, and/or head-and-neck cancer, or other type of cancer not listed in the inclusion criteria"
+    ]
+   },
+   {
+    "field": "Functional status and organ-system lab values",
+    "why_needed": "ECOG status, life expectancy, and full lab panel needed to confirm fitness for cisplatin/study drug.",
+    "related_criteria": [
+     "ECOG Performance Status (PS) 0 - 2",
+     "Eastern Cooperative Oncology Group performance status of 0 or 1",
+     "Life expectancy of at least 12 weeks",
+     "Diagnosis/disease status Cisplatin-ineligible: CTCAE Grade 2+ peripheral neuropathy; Grade 2+ hearing loss; creatinine clearance < 60 ml/min; NYHA class II+ CHF",
+     "Adequate organ function: ANC, Platelets, Hemoglobin, Serum creatinine, Total bilirubin, AST/ALT thresholds",
+     "Normal Glucose-6-phosphate dehydrogenase (G6PD) status",
+     "History of G6PD deficiency",
+     "History of oxalate renal calculi",
+     "Haematological and biochemical indices within the protocol specified ranges"
+    ]
+   },
+   {
+    "field": "Recent/prior cancer treatment, toxicity, and surgical history",
+    "why_needed": "Treatment timeline needed to check washout periods, residual toxicity, and planned surgical approach.",
+    "related_criteria": [
+     "Radiotherapy, chemotherapy, non-chemotherapy systemic anti-cancer therapy, or investigational drugs within 4 weeks prior to enrolment; or first immunotherapy dose within 12 weeks",
+     "Ongoing toxic manifestations of previous treatments that are Grade >1 per CTCAE v5.0",
+     "Major thoracic or abdominal surgery from which the participant has not yet recovered",
+     "Any central nervous system metastases",
+     "Has already initiated curative treatment for the current episode of cancer",
+     "Planned ileal conduit as urinary diversion",
+     "Long-term prophylactic antibiotic treatment expected to continue after the cystectomy"
+    ]
+   },
+   {
+    "field": "Comorbidities, active infection, and drug allergy/safety history",
+    "why_needed": "Infection status, comorbid disease control, and allergy history needed to assess treatment safety.",
+    "related_criteria": [
+     "Previous severe allergic reaction to antimicrobial treatment",
+     "Has a severe known allergic reaction to any excipient contained in the study drug formulation",
+     "Active Grade 3 or 4 viral, bacterial, or fungal infection within 2 weeks prior to first dose",
+     "Uncontrolled intercurrent illness (infection, symptomatic CHF, uncontrolled hypertension, unstable angina, arrhythmia, interstitial lung disease, serious GI conditions)",
+     "At high medical risk because of non-malignant systemic disease, including active uncontrolled infection",
+     "Known history of current or latent tuberculosis, HIV or Hepatitis B or C infection"
+    ]
+   },
+   {
+    "field": "Sociodemographic and healthcare-access eligibility",
+    "why_needed": "Language, care site, residence, and insurance status needed for this access/outreach trial's screening criteria.",
+    "related_criteria": [
+     "English or Spanish speaking",
+     "Individuals who do not speak English or Spanish",
+     "Receives cancer treatment at UCH-Aurora, UCH-Highlands Ranch, UCHealth North, UCHealth South-UCHealth Memorial Hospital, UCHealth Parkview Hospital, San Juan Cancer Center, RMCC-Pueblo, SCL-St. Mary's, or Parkview Medical Center",
+     "Not receiving cancer treatment at one of the listed collaborating hospital sites",
+     "Resides in a rural county served by the specified hospital sites with Rural-Urban Continuum Code (RUCC) 4-9",
+     "Rural and medically underserved, and/or uninsured, and/or underinsured"
+    ]
+   },
+   {
+    "field": "Informed consent capacity and vulnerability status",
+    "why_needed": "Need to confirm patient can understand/sign consent and is not in an excluded vulnerable category.",
+    "related_criteria": [
+     "Ability to understand and sign an informed consent",
+     "Written (signed and dated) informed consent and capable of co-operating with investigational medicinal product administration and follow-up",
+     "From a vulnerable population (e.g., inmates or on probation, homeless, pregnant), decisionally-challenged with cognitive or personality impairment, suicidal ideation or intoxication at consent, unable to hear, or likely unable to be tracked over time"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "functional_status_labs",
+    "question": "What is the patient's ECOG performance status, and are renal function (creatinine clearance), hematologic counts (ANC, platelets, hemoglobin), and liver function tests within trial-eligible ranges?",
+    "why": "ECOG status and organ-function labs determine fitness for cisplatin-based or study-drug treatment.",
+    "question_ko": "환자의 ECOG 활동도, 그리고 신기능(크레아티닌 청소율), 혈액수치(ANC, 혈소판, 혈색소), 간기능 검사 결과가 임상시험 적격 범위 내에 있습니까?",
+    "why_ko": "ECOG 활동도와 장기 기능 검사 수치는 시스플라틴 기반 또는 시험 약물 투여 적합성을 결정합니다.",
+    "options": [
+     "ECOG 0-1 (활동 정상)",
+     "ECOG 2 이상 (활동 제한)",
+     "신기능 저하 (크레아티닌 청소율 감소)",
+     "혈액수치 이상 (ANC/혈소판/혈색소 기준 미달)",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "prior_treatment_surgical_history",
+    "question": "Has the patient received prior systemic chemotherapy, immunotherapy, or bladder-directed surgery (e.g., TURBT, cystectomy) for this cancer, and if so, when and with what residual toxicity?",
+    "why": "Prior treatment timing and residual toxicity determine washout eligibility and treatment-line status.",
+    "question_ko": "환자가 이 암에 대해 이전에 전신 항암화학요법, 면역치료, 또는 방광 관련 수술(TURBT, 방광적출술 등)을 받은 적이 있습니까? 있다면 시행 시기와 잔존 독성은 어떻습니까?",
+    "why_ko": "이전 치료 시기와 잔존 독성은 washout 기간 충족 여부와 치료 라인을 결정합니다.",
+    "options": [
+     "TURBT 시행 이력 있음 (최근 시행)",
+     "전신 항암화학요법 이전 투여 이력 있음",
+     "이전 치료로 인한 잔존 독성 있음 (Grade 2 이상)",
+     "근치적 방광적출술 시행 이력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "tumor_histology_staging",
+    "question": "What is the confirmed tumor histology (urothelial vs. other) and stage (non-muscle-invasive vs. muscle-invasive vs. metastatic) per biopsy and imaging?",
+    "why": "Histology subtype and disease stage determine which trials' inclusion criteria the patient can meet.",
+    "question_ko": "생검 및 영상검사상 확인된 종양 조직형(요로상피암 등)과 병기(비근침습성/근침습성/전이성)는 무엇입니까?",
+    "why_ko": "조직형과 병기는 어떤 임상시험의 선정기준을 충족하는지를 결정합니다.",
+    "options": [
+     "요로상피암 (urothelial carcinoma) 조직형 확인됨",
+     "비근침습성 방광암 (NMIBC) 병기로 확인됨",
+     "근침습성 방광암 (MIBC) 병기로 확인됨",
+     "원격 전이 소견 있음 (전이성 병기)",
+     "조직검사상 악성 소견 없음 (양성 병변)",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "eligible",
+     "eligible",
+     "excluded",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S005": {
+  "gaps": [
+   {
+    "field": "Procedure-specific medical contraindications",
+    "why_needed": "Determines eligibility/safety for MMA intra-arterial lidocaine infusion; vignette has no relevant history.",
+    "related_criteria": [
+     "Known allergies to lidocaine",
+     "Seizure disorder, history of seizures, or increased seizure susceptibility",
+     "Intracranial vascular malformations or dural AVF",
+     "Hemodynamic instability, any condition where brief hemodynamic shifts may pose risk",
+     "Previous MMA intervention or craniotomy that could result in MMA occlusion",
+     "Any implanted electronic device (pacemaker, ICD, DBS, VNS, cochlear implant, spinal cord stimulator)",
+     "Significant cardiovascular disease (unstable angina, severe arrhythmias, recent MI)",
+     "Active systemic infection"
+    ]
+   },
+   {
+    "field": "Pregnancy status and details",
+    "why_needed": "Needed to assess registry eligibility (singleton pregnancy, onset timing) and procedural trial's pregnancy exclusion.",
+    "related_criteria": [
+     "Pregnant with one fetus/baby at time of enrollment (singleton pregnancy)",
+     "Have headaches or migraines prior to pregnancy and continued to have headaches or migraines into pregnancy OR headaches or migraines began while pregnant in the first trimester.",
+     "Able to provide proof of active intrauterine pregnancy and estimated due date, via online document upload, using any of: ultrasound report of current pregnancy, beta hcg lab report, a signed provider's medical documentation confirming intrauterine pregnancy with fetal heart sounds and estimated due date, or a signed provider's note on a prescription sheet or physician letterhead confirming intrauterine pregnancy and estimated due date.",
+     "Not pregnant at time of enrollment",
+     "Pregnant with more than one fetus/baby at time of enrollment (multigestational pregnancy)"
+    ]
+   },
+   {
+    "field": "Consent capacity and vulnerable population status",
+    "why_needed": "Confirms patient can legally consent and isn't in an excluded vulnerable category.",
+    "related_criteria": [
+     "Patients willing and able to provide simple consent for registry participation.",
+     "Subject has provided informed consent.",
+     "Vulnerable populations (i.e. pregnant individuals, children, prisoners, individuals lacking decision-making capacity, persons with cognitive impairment, those unable to provide informed consent)"
+    ]
+   },
+   {
+    "field": "Digital access for registry participation",
+    "why_needed": "Registry requires app/email-based reporting; unclear if patient has needed devices/internet.",
+    "related_criteria": [
+     "Has access to email, text messages via smartphone or computer with internet access",
+     "No access to email, smartphone, or computer with internet access"
+    ]
+   },
+   {
+    "field": "Migraine diagnosis chronicity and treatment refractoriness",
+    "why_needed": "Vignette lacks chronicity, refractory status, or planned MMA lidocaine procedure details.",
+    "related_criteria": [
+     "Chronic migraine or status migrainosus, or craniofacial pain refractory to maximal medical therapy who are undergoing MMA IA lidocaine infusion."
+    ]
+   },
+   {
+    "field": "Other physician-judged precluding conditions",
+    "why_needed": "Catch-all exclusion needing physician assessment of any unspecified comorbidity.",
+    "related_criteria": [
+     "Patients with any other condition which might preclude participation in the opinion of the patient's physician(s) or the study's principal investigator"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "procedure_contraindications",
+    "question": "Does the patient have any medical contraindications to MMA intra-arterial lidocaine infusion (e.g., local anesthetic allergy, anticoagulant use, contrast allergy, prior neurovascular intervention)?",
+    "why": "Determines eligibility/safety for the MMA lidocaine procedure; affects 8 trial criteria.",
+    "question_ko": "환자에게 MMA(중경막동맥) 동맥 내 리도카인 주입술에 대한 의학적 금기사항(국소마취제 과민반응, 항응고제 복용, 조영제 알레르기, 이전 신경혈관 중재시술 병력 등)이 있습니까?",
+    "why_ko": "MMA 리도카인 주입술의 적격성 및 안전성을 결정하며, 8개 임상시험 기준에 영향을 미칩니다.",
+    "options": [
+     "리도카인 등 아마이드계 국소마취제 과민반응 병력 있음",
+     "항응고제 또는 항혈소판제 복용 중",
+     "조영제 알레르기 또는 신기능 저하로 조영제 사용 금기",
+     "두개 내 혈관 기형 또는 이전 신경혈관 중재시술 병력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "pregnancy_status",
+    "question": "Is the patient currently pregnant, and if so, is it a singleton pregnancy? When did the migraine symptoms begin relative to the pregnancy?",
+    "why": "Needed for registry eligibility (singleton pregnancy, onset timing) and procedural trial's pregnancy exclusion.",
+    "question_ko": "환자가 현재 임신 중입니까? 임신 중이라면 단태 임신입니까? 편두통 증상은 임신을 기준으로 언제 시작되었습니까?",
+    "why_ko": "레지스트리 적격성(단태 임신, 발병 시점) 및 시술 임상시험의 임신 제외 기준 확인에 필요합니다.",
+    "options": [
+     "현재 임신 중이며 단태 임신으로 확인됨",
+     "현재 임신 중이며 다태 임신(쌍둥이 이상)으로 확인됨",
+     "임신 여부 확인 안 됨(임신 가능성 있음)",
+     "현재 임신 중이 아님(임신 반응 검사 음성)",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "unresolved",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "consent_capacity",
+    "question": "Does the patient have full legal capacity to consent, and do they belong to any vulnerable population (e.g., cognitive impairment, incarceration, requiring guardian consent)?",
+    "why": "Confirms the patient can legally consent and isn't in an excluded vulnerable category.",
+    "question_ko": "환자가 완전한 법적 동의 능력을 가지고 있습니까? 취약군(인지장애, 수감, 법정대리인 동의 필요 등)에 해당됩니까?",
+    "why_ko": "환자가 법적으로 유효한 동의를 할 수 있는지, 제외 대상 취약군에 해당하는지 확인합니다.",
+    "options": [
+     "인지장애 또는 정신질환으로 자발적 동의 능력이 없음",
+     "법정대리인 또는 보호자의 동의가 필요한 상태",
+     "수감자, 시설 수용자 등 취약군에 해당",
+     "해당 사항 없음(동의 능력 정상, 취약군 아님)",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S006": {
+  "gaps": [
+   {
+    "field": "Detailed prior imaging/CT history",
+    "why_needed": "Determines chest CT status and whether pulmonary Mucorales infection can be assessed",
+    "related_criteria": [
+     "Having undergone at least one CT scan including the thoracic region",
+     "No CT scan including the thoracic region"
+    ]
+   },
+   {
+    "field": "Microbiological/histopathological confirmation of mucormycosis",
+    "why_needed": "Needed to confirm or exclude EORTC/MSGERC-defined invasive Mucorales infection and its site",
+    "related_criteria": [
+     "Diagnosis of probable or proven invasive pulmonary infection with Mucorales according to the 2020 EORTC/MSGERC criteria",
+     "No diagnosis of probable or proven invasive pulmonary infection with Mucorales (EORTC/MSGERC 2020 criteria)",
+     "Case group: patient hospitalized in a department of Lille University Hospital, with diagnosis of mucormycosis based on conventional mycology data and/or positivity of q-PCR and/or anatomopathologic diagnosis, associated with a compatible clinical situation",
+     "Control group 2: patient hospitalized in a department of Lille University Hospital, with diagnosis of disseminated candidiasis or invasive pulmonary aspergillosis according to specific classifications (EORTC/MSG criteria, AspICU criteria)"
+    ]
+   },
+   {
+    "field": "Treating hospital and admission dates",
+    "why_needed": "Site-specific eligibility requires confirming hospitalization at Strasbourg or Lille University Hospital within study windows",
+    "related_criteria": [
+     "Treated at Strasbourg University Hospital between January 1, 2009, and June 3, 2025",
+     "Case group: patient hospitalized in a department of Lille University Hospital, with diagnosis of mucormycosis based on conventional mycology data and/or positivity of q-PCR and/or anatomopathologic diagnosis, associated with a compatible clinical situation",
+     "Control group 2: patient hospitalized in a department of Lille University Hospital, with diagnosis of disseminated candidiasis or invasive pulmonary aspergillosis according to specific classifications (EORTC/MSG criteria, AspICU criteria)"
+    ]
+   },
+   {
+    "field": "Co-infection or other invasive fungal infection status",
+    "why_needed": "Determines eligibility for control groups and exclusion for fungal co-infection",
+    "related_criteria": [
+     "Control group 1: patient assessed for hematopoietic stem cell transplantation, considered at risk for invasive fungal infection (IFI), for whom the pre-transplantation review excluded an ongoing infection",
+     "Co-infection of mucormycosis with another invasive fungal infection (IFI)"
+    ]
+   },
+   {
+    "field": "Consent and insurance status",
+    "why_needed": "Administrative eligibility requires confirming informed consent process and social insurance coverage",
+    "related_criteria": [
+     "Patient's consent collected after information; for children, information given to holders of parental authority and then to the child to obtain their consent",
+     "Patient must be socially insured"
+    ]
+   },
+   {
+    "field": "Overall inclusion/exclusion criteria fulfillment",
+    "why_needed": "General exclusion clause requires cross-checking all other criteria before final eligibility determination",
+    "related_criteria": [
+     "Patients for whom the inclusion criteria are not met"
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "microbiological_histopathological_confirmation",
+    "question": "Has mucormycosis been microbiologically or histopathologically confirmed per EORTC/MSGERC criteria, and at which site?",
+    "why": "Confirms invasive Mucorales infection diagnosis and site, required by 4 criteria.",
+    "question_ko": "EORTC/MSGERC 기준에 따라 Mucorales 감염이 미생물학적 또는 조직병리학적으로 확진되었으며, 감염 부위는 어디입니까?",
+    "why_ko": "침습성 Mucorales 감염 진단 및 감염 부위 확인은 4개 기준에 영향을 미칩니다.",
+    "options": [
+     "비강 점막 조직검사에서 Mucorales 균사(광범위 무격막 균사) 확인됨",
+     "배양검사에서 Mucorales 균종 동정됨",
+     "병리 소견상 세균성 괴사 등 진균 이외 원인으로 확인됨",
+     "조직검사 및 배양검사 결과 모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "eligible",
+     "excluded",
+     "excluded",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "treating_hospital_admission_dates",
+    "question": "Which hospital is treating the patient, and what are the admission dates?",
+    "why": "Site-specific eligibility requires confirming admission at Strasbourg or Lille within study windows.",
+    "question_ko": "환자가 치료받고 있는 병원은 어디이며, 입원 날짜는 언제입니까?",
+    "why_ko": "연구 기간 내 Strasbourg 또는 Lille 대학병원 입원 여부 확인이 site별 적격성 판단에 필요합니다.",
+    "options": [
+     "Strasbourg 대학병원에서 연구 기간 내 입원 확인됨",
+     "Lille 대학병원에서 연구 기간 내 입원 확인됨",
+     "지정 병원(Strasbourg/Lille) 외 다른 병원에서 치료 중",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "eligible",
+     "excluded",
+     "excluded",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "coinfection_other_ifi_status",
+    "question": "Is there evidence of co-infection or another invasive fungal infection besides mucormycosis?",
+    "why": "Determines control group eligibility and exclusion for fungal co-infection.",
+    "question_ko": "Mucormycosis 외에 동반 감염 또는 다른 침습성 진균 감염의 증거가 있습니까?",
+    "why_ko": "대조군 적격성 및 진균 동반 감염에 따른 제외 여부 판단에 필요합니다.",
+    "options": [
+     "Mucorales 외 다른 침습성 진균(Aspergillus 등) 동시 감염 확인됨",
+     "세균성 패혈증 등 진균 외 병원체에 의한 동반 감염 확인됨",
+     "추가 병원체 배양/영상 검사에서 확인되지 않음(Mucorales 단독 감염)",
+     "모든 검사 결과 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "neutral",
+     "eligible",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S007": {
+  "gaps": [
+   {
+    "field": "History of intestinal resection / bowel length",
+    "why_needed": "Determines short bowel, ultra-short bowel, or primary intestinal failure eligibility for NCT05535361",
+    "related_criteria": [
+     "Subject has short bowel syndrome, defined as 50% or less of expected bowel length based on subject age and/or height, and measured at the time of the subject's prior intestinal resection.",
+     "Minimum residual bowel length of 3 cm.",
+     "Ultra-short bowel syndrome defined as less than 3 cm of bowel length.",
+     "Primary intestinal failure (i.e., without loss or resection of intestinal tissue)."
+    ]
+   },
+   {
+    "field": "Consent capacity and caregiver willingness",
+    "why_needed": "Confirms patient/guardian can consent, understand study demands, and attend all visits",
+    "related_criteria": [
+     "lack of informed consent",
+     "The subject, parent or legal guardian of the subject is able to read, understand, and is willing to provide informed consent.",
+     "The subject or parent or legal guardian of the patient is able to understand the requirements of the study and is willing to bring the subject to all clinic visits and complete all study related procedures (as determined by the investigator)."
+    ]
+   },
+   {
+    "field": "GI disease diagnosis (congenital/IBD/Crohn's)",
+    "why_needed": "Vignette gives no history of IBD, Crohn's, or other congenital/major GI disease",
+    "related_criteria": [
+     "diagnosis of congenital or other major gastrointestinal disease (i.e. inflammatory bowel disease, cancer)",
+     "Diagnosed Inflammatory bowel disease-unclassified (not Crohn's or ulcerative colitis)",
+     "Evidence of active or prior Crohn's disease."
+    ]
+   },
+   {
+    "field": "Prematurity and perinatal birth history",
+    "why_needed": "Gestational age at birth and perinatal asphyxia history not stated in vignette",
+    "related_criteria": [
+     "infants with gestational age at birth < 31 weeks",
+     "infants with gestational age at birth < 37 weeks and major respiratory or neurologic morbidity",
+     "infants with history of perinatal asphyxia"
+    ]
+   },
+   {
+    "field": "Coagulation and immune status",
+    "why_needed": "INR/platelet values and immunocompromise history not provided in vignette",
+    "related_criteria": [
+     "Coagulopathy, as defined by INR > 1.4 or platelets < 100.",
+     "Known immunocompromised status including, but not limited to, individuals who have undergone organ transplantation, chemotherapy or radiotherapy within the past 12 months, who have clinically significant leukopenia, who are positive for the human immunodeficiency virus (HIV) or whose immune status makes the subject a poor candidate for clinical trial participation in the opinion of the Investigator."
+    ]
+   },
+   {
+    "field": "Investigator-assessed overall suitability",
+    "why_needed": "Requires clinical judgment beyond vignette data on any disqualifying condition",
+    "related_criteria": [
+     "Subject is determined by the investigator to be unsuitable for participation in this trial for any reason."
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "intestinal_resection_bowel_length",
+    "question": "Has the infant undergone any intestinal resection, and if so, what is the residual small bowel length?",
+    "why": "Determines short bowel/ultra-short bowel/intestinal failure eligibility (affects 4 criteria).",
+    "question_ko": "환아가 장 절제술을 받은 적이 있습니까? 있다면 잔존 소장 길이는 얼마입니까?",
+    "why_ko": "단장증후군, 초단장증후군, 또는 일차성 장부전 적격성을 결정합니다 (4개 기준에 영향).",
+    "options": [
+     "잔존 소장 길이 50cm 미만 (초단장증후군)",
+     "잔존 소장 길이 50~100cm (단장증후군)",
+     "회장말단판막 절제됨",
+     "결장 전체 또는 일부 절제됨",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "eligible",
+     "eligible",
+     "eligible",
+     "excluded",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "gi_disease_diagnosis",
+    "question": "Does the infant have any diagnosed congenital GI anomaly, inflammatory bowel disease, or Crohn's disease?",
+    "why": "Confirms absence of major GI disease required for trial eligibility (affects 3 criteria).",
+    "question_ko": "환아에게 진단된 선천성 위장관 기형, 염증성 장질환, 또는 크론병이 있습니까?",
+    "why_ko": "임상시험 적격성에 필요한 주요 위장관 질환 부재를 확인합니다 (3개 기준에 영향).",
+    "options": [
+     "선천성 위장관 기형 진단됨 (예: 위장관 폐쇄)",
+     "염증성 장질환(IBD) 진단됨",
+     "크론병 진단됨",
+     "허쉬스프룽병 진단됨",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "prematurity_perinatal_history",
+    "question": "What was the infant's gestational age at birth, and is there a history of perinatal asphyxia?",
+    "why": "Gestational age and perinatal asphyxia history affect eligibility (affects 3 criteria).",
+    "question_ko": "환아의 출생 시 재태연령은 얼마였으며, 주산기 가사(질식) 병력이 있습니까?",
+    "why_ko": "재태연령과 주산기 가사 병력은 적격성에 영향을 미칩니다 (3개 기준에 영향).",
+    "options": [
+     "재태연령 32주 미만 (고도 조산)",
+     "재태연령 32~36주 (중등도 조산)",
+     "주산기 가사(질식) 병력 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "neutral",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S008": {
+  "gaps": [
+   {
+    "field": "IPF diagnostic workup details",
+    "why_needed": "Need imaging pattern review, biopsy, and MDT confirmation against ATS/ERS/JRS/ALAT 2022 criteria",
+    "related_criteria": [
+     "Diagnosis of idiopathic pulmonary fibrosis (IPF) according to the 2022 American Thoracic Society/European Respiratory Society/Japanese Respiratory Society/Latin American Thoracic Society (ATS/ERS/JRS/ALAT) clinical practice guideline.",
+     "Identified etiology for acute worsening (i.e.: infectious disease)",
+     "Interstitial lung disease of known etiology (e.g., domestic and occupational environmental exposures, connective tissue disease, drug toxicity, etc.)."
+    ]
+   },
+   {
+    "field": "Pulmonary function test results",
+    "why_needed": "FVC%, DLCO%, and FEV1/FVC ratio from screening spirometry/PFTs are unknown",
+    "related_criteria": [
+     "Forced vital capacity percent predicted (FVC% predicted) ≥45% during the screening period.",
+     "Diffusing capacity of the lung for carbon monoxide percent predicted (DLCO% predicted), corrected for hemoglobin (Hb), ≥30% and ≤90% during the screening period.",
+     "Pre-bronchodilator forced expiratory volume in 1 second (FEV1)/FVC < 0.70 during the screening period."
+    ]
+   },
+   {
+    "field": "Acute exacerbation status and workup",
+    "why_needed": "Whether current presentation qualifies as an acute exacerbation and infection/cause has been ruled out is unclear",
+    "related_criteria": [
+     "Definite or suspected Acute Exacerbation defined by the international working group criteria after exclusion of alternative diagnoses of acute worsening",
+     "Active bacterial, viral, fungal or parasitic infection (only positive swab for SARS-CoV-2, Influenzae A, Influenzae B and Respiratory Syncytial Virus (RSV) is considered an active viral infection)",
+     "Acute exacerbation of IPF within 3 months prior to screening or during the screening period, as judged by the investigator."
+    ]
+   },
+   {
+    "field": "Current medications (antifibrotics, glucocorticoids)",
+    "why_needed": "Nintedanib/pirfenidone dosing history and recent glucocorticoid dose/duration are not documented",
+    "related_criteria": [
+     "Meets either of the following: the patient has been on a stable dose of nintedanib or pirfenidone for at least 8 weeks prior to screening and during screening..., OR the patient has not received nintedanib or pirfenidone for at least 4 weeks prior to screening...",
+     "Treatment with glucocorticoids > 1 mg/kg/d for more than 7 days in the last 15 days",
+     "Known hypersensitivity to glucocorticoids or to any component of the study treatment"
+    ]
+   },
+   {
+    "field": "Malignancy/cancer history",
+    "why_needed": "Presence, type, and timing of any current or past cancer diagnosis is unknown",
+    "related_criteria": [
+     "Active cancer",
+     "Current or suspected malignancy, or history of malignancy within 5 years prior to screening (excluding basal cell carcinoma of the skin, squamous cell carcinoma of the skin, superficial bladder cancer, carcinoma in situ of the cervix, or other carcinoma in situ that has received curative treatment with no recurrence)."
+    ]
+   },
+   {
+    "field": "Respiratory support and imaging emphysema burden",
+    "why_needed": "Ventilation status and HRCT emphysema-vs-fibrosis proportion needed but not reported",
+    "related_criteria": [
+     "Patient requiring mechanical ventilation or already on mechanical ventilation",
+     "Emphysema ≥ 50%, or emphysema greater than fibrosis, as determined by independent central imaging review of HRCT."
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "ipf_diagnosis_confirmation",
+    "question": "Has the IPF diagnosis been confirmed by HRCT UIP pattern, biopsy, or multidisciplinary team review per ATS/ERS/JRS/ALAT 2022 criteria?",
+    "why": "Diagnosis confirmation is a prerequisite for all IPF trial eligibility criteria.",
+    "question_ko": "HRCT의 UIP 패턴, 생검, 또는 다학제팀(MDT) 검토를 통해 ATS/ERS/JRS/ALAT 2022 기준에 따라 IPF 진단이 확진되었습니까?",
+    "why_ko": "진단 확진 여부는 모든 IPF 임상시험 적격 기준의 전제 조건입니다.",
+    "options": [
+     "HRCT에서 확정적(definite) UIP 패턴 확인됨",
+     "외과적 폐생검에서 UIP 소견 확인됨",
+     "다학제팀(MDT) 논의를 통해 IPF로 최종 확진됨",
+     "HRCT 소견이 UIP 패턴에 부합하지 않음(비전형적/대안 진단 시사)",
+     "IPF 진단 기준(ATS/ERS/JRS/ALAT 2022)을 충족하는 근거 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "eligible",
+     "eligible",
+     "excluded",
+     "excluded",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "pft_results",
+    "question": "What are the patient's FVC%, DLCO%, and FEV1/FVC ratio from the most recent PFTs?",
+    "why": "FVC%/DLCO% thresholds are hard inclusion/exclusion cutoffs in most IPF trials.",
+    "question_ko": "가장 최근 폐기능검사(PFT)에서 FVC%, DLCO%, FEV1/FVC 비율은 얼마입니까?",
+    "why_ko": "FVC%/DLCO% 기준치는 대부분의 IPF 임상시험에서 명확한 포함/제외 기준입니다.",
+    "options": [
+     "FVC 45–90% 예측치 범위",
+     "DLCO 25–90% 예측치 범위",
+     "FVC 45% 미만 또는 DLCO 25% 미만(중증 제한)",
+     "FEV1/FVC 비율 0.7 이상으로 제한성 패턴에 부합하지 않음",
+     "모두 정상 범위",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "eligible",
+     "excluded",
+     "excluded",
+     "excluded",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "current_medications",
+    "question": "Is the patient currently on antifibrotic therapy (nintedanib/pirfenidone) or systemic glucocorticoids, and at what dose/duration?",
+    "why": "Current medication and dosing determine washout needs and concomitant-med exclusions.",
+    "question_ko": "환자가 현재 항섬유화제(닌테다닙/피르페니돈) 또는 전신 글루코코르티코이드를 복용 중이며, 용량과 기간은 어떻게 됩니까?",
+    "why_ko": "현재 복용 약물과 용량은 washout 필요 여부 및 병용약물 제외 기준을 결정합니다.",
+    "options": [
+     "닌테다닙 또는 피르페니돈을 안정 용량으로 8주 이상 복용 중",
+     "항섬유화제를 최근 시작(8주 미만)했거나 용량이 불안정함",
+     "전신 글루코코르티코이드를 고용량(prednisone 20mg/day 초과 상당)으로 복용 중",
+     "항섬유화제 및 전신 글루코코르티코이드 복용 이력 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S009": {
+  "gaps": [
+   {
+    "field": "Immune-related comorbidities",
+    "why_needed": "Trials exclude immunosuppression, autoimmune disease, AIDS, MS, or SLE, none assessed in vignette.",
+    "related_criteria": [
+     "Immunosuppression (broadly defined as primary/secondary immunodeficiency or treatment with an immunosuppressive medication including ≥ 10mg prednisone equivalent)",
+     "History of autoimmune disease (e.g. SLE, vasculitis etc.)",
+     "AIDS",
+     "Multiple sclerosis",
+     "Systemic lupus erythematosus"
+    ]
+   },
+   {
+    "field": "Cohort/arm classification and general suitability",
+    "why_needed": "Need to know if patient is index case, relative, volunteer, or control, and any disqualifying condition.",
+    "related_criteria": [
+     "Relatives of CAEBV patients must be 3 years of age or older",
+     "Unrelated volunteers must be 18 years of age or older",
+     "Any other condition that, in the opinion of the investigator, would make the patient unsuitable for enrollment or could interfere with the patient participating in the study",
+     "For control group: clinical picture of upper respiratory tract infection OR confirmed primary Cytomegalovirus (CMV) infection",
+     "Suspicion/diagnosis of IM as per judgement of the treating clinician (control group only)"
+    ]
+   },
+   {
+    "field": "Other exclusionary medical/psychiatric conditions",
+    "why_needed": "ME/CFS trial excludes organ failure, substance abuse, severe psychiatric illness, or endocrine disease.",
+    "related_criteria": [
+     "Drug/medication abuse",
+     "Presence of organ failure",
+     "Major depression or other severe psychiatric illness",
+     "Severe endocrine disease (e.g., hypopituitarism, adrenal insufficiency)",
+     "Other conditions that might explain ME/CFS symptoms"
+    ]
+   },
+   {
+    "field": "Specific EBV laboratory/serology results",
+    "why_needed": "Trials require documented EBV antibody titers or viral DNA/RNA levels, beyond a positive monospot.",
+    "related_criteria": [
+     "A severe progressive illness that began as a primary EBV infection, or associated with positive EBV-specific antibody titers (IgG-VCA, EA or EBNA) not otherwise explained",
+     "Detection of elevated levels of EBV DNA, RNA or proteins in affected tissues OR elevated levels of EBV DNA in the peripheral blood",
+     "Confirmed primary EBV infection as confirmed by the treating clinician, defined by compatible clinical and laboratory picture",
+     "Serology compatible with primary EBV infection (anti-EBNA IgG negative, anti-VCA IgG negative, anti-VCA IgM positive OR anti-EBNA IgG negative, anti-VCA IgG positive, anti-VCA IgM positive)"
+    ]
+   },
+   {
+    "field": "Informed consent status",
+    "why_needed": "Enrollment requires documented signed consent from patient or guardian, not stated in vignette.",
+    "related_criteria": [
+     "Informed consent as documented by signature",
+     "Written consent of the patient (or legal guardian for patients aged < 18 years)."
+    ]
+   },
+   {
+    "field": "Illness onset and ME/CFS diagnostic status",
+    "why_needed": "Need symptom timeline and formal criteria to assess post-infectious ME/CFS diagnosis.",
+    "related_criteria": [
+     "Documented or probable acute infectious disease at the onset of ME/CFS symptoms",
+     "Diagnosis of ME/CFS according to the IOM criteria, the CCC, the diagnostic worksheet published by P.C. Rowe et al. (2017), or the pediatric case definition published by L.A. Jason et al. (2006)."
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "immune_related_comorbidities",
+    "question": "Does the patient have any immunosuppressive condition, autoimmune disease, HIV/AIDS, multiple sclerosis, or systemic lupus erythematosus?",
+    "why": "5 trial criteria exclude immunosuppression or autoimmune disease; not assessed in vignette.",
+    "question_ko": "환자에게 면역억제 상태, 자가면역질환, HIV/AIDS, 다발성경화증(MS), 또는 전신홍반루푸스(SLE)가 있습니까?",
+    "why_ko": "5개의 임상시험 기준이 면역억제 상태 또는 자가면역질환을 배제 사유로 규정하고 있으나, 현재 병력에서 확인되지 않았습니다.",
+    "options": [
+     "면역억제제 복용 중",
+     "자가면역질환 진단 있음",
+     "HIV/AIDS 진단 있음",
+     "다발성경화증(MS) 또는 전신홍반루푸스(SLE) 진단 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "cohort_arm_classification",
+    "question": "What is the patient's intended role in the study cohort (acute EBV index case, contact/relative, healthy volunteer, or control), and is there any disqualifying finding for that role?",
+    "why": "5 criteria depend on cohort role (index case vs. contact/volunteer/control); not stated in vignette.",
+    "question_ko": "환자의 연구 코호트 내 역할은 무엇입니까 (급성 EBV 지표 환자, 접촉자/가족, 건강 자원자, 또는 대조군)? 해당 역할에 대해 자격을 배제할 소견이 있습니까?",
+    "why_ko": "5개의 기준이 코호트 내 역할(지표 환자 대 접촉자/자원자/대조군)에 따라 달라지지만 현재 기록에는 명시되어 있지 않습니다.",
+    "options": [
+     "급성 EBV 감염의 지표 환자(index case)로 등록",
+     "지표 환자의 가족 또는 밀접 접촉자로 등록",
+     "건강 자원자(healthy volunteer)로 등록 시도",
+     "대조군(control)으로 등록 시도",
+     "코호트 분류상 자격 배제 사유 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "eligible",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "other_exclusionary_conditions",
+    "question": "Does the patient have major organ failure, a substance abuse history, severe psychiatric illness, or an endocrine disorder?",
+    "why": "5 criteria in the ME/CFS trial exclude these conditions; none assessed in vignette.",
+    "question_ko": "환자에게 주요 장기부전, 물질남용 병력, 중증 정신질환, 또는 내분비질환이 있습니까?",
+    "why_ko": "ME/CFS 임상시험의 5개 기준이 이러한 상태를 배제 사유로 규정하고 있으나 현재 병력에서 확인되지 않았습니다.",
+    "options": [
+     "주요 장기부전(간부전, 신부전 등) 있음",
+     "물질남용 병력 있음",
+     "중증 정신질환(조현병, 양극성장애 등) 진단 있음",
+     "내분비질환(당뇨병, 갑상선질환 등) 진단 있음",
+     "해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ },
+ "S010": {
+  "gaps": [
+   {
+    "field": "Prior ocular surgical history in the affected eye",
+    "why_needed": "Determines eligibility for surgery-naive vs. reoperation trial arms",
+    "related_criteria": [
+     "Past history of phacovitrectomy in the planned operative eye.",
+     "Past history of cataract in the planned operative eye.",
+     "Past history of vitrectomy in the planned operative eye.",
+     "Previous PPV",
+     "Have had previous cataract surgery in the study eye",
+     "History of previous ocular surgery in the study eye other than uncomplicated cataract surgery with posterior chamber intraocular lens and intact posterior capsule or a refractive surgery (surgery must have occurred at least 3 months prior to the baseline visit)"
+    ]
+   },
+   {
+    "field": "Retinal detachment type and complexity",
+    "why_needed": "Distinguishes uncomplicated RRD from PVR, recurrence, or macular hole/scarring for trial fit",
+    "related_criteria": [
+     "Patients with uncomplicated rhegmatogenous retinal detcahment.",
+     "PVR",
+     "Recurrent RD",
+     "Macular hole RD",
+     "Scleral buckling is indicated",
+     "Macular scarring"
+    ]
+   },
+   {
+    "field": "Planned surgical approach and urgency",
+    "why_needed": "Confirms planned vs. emergency procedure, technique, and site match trial protocol",
+    "related_criteria": [
+     "Planned combined phacovitrectomy procedure at one of the selected surgical sites.",
+     "Planned combined phacovitrectomy procedure with 25-gauge (G) vitrectomy tools.",
+     "Unplanned/emergency phacovitrectomy.",
+     "Have clinical indication for standard retinal reattachment surgery by means of a pars plana vitrectomy and gas tamponade"
+    ]
+   },
+   {
+    "field": "Systemic comorbidities",
+    "why_needed": "Renal/hepatic/retinal disease, hypertension, or recent cardiovascular events may exclude enrollment",
+    "related_criteria": [
+     "Known retinopathy, known hepatic disease (or history of significant chronic liver disease), or known renal disease (patients with diabetes and no known retinopathy may be enrolled)",
+     "History of uncontrolled hypertension",
+     "History of stroke, transient ischemic attack, or major cardiac surgery within 3 months prior to study, or current treatment for systemic infection"
+    ]
+   },
+   {
+    "field": "Visual acuity and other ocular pathology in the affected eye",
+    "why_needed": "Baseline VA and coexisting ocular disease affect visual-outcome eligibility thresholds",
+    "related_criteria": [
+     "Present to the hospital with a visual acuity of hand motion or better in the study eye",
+     "Any known significant ocular disease in the study eye (e.g., cornea opacity) which, in the opinion of the investigator, would preclude a visual acuity of at least 6/7.5 (20/25) following successful vitrectomy or limit adequate visibility of the retina",
+     "Any other ocular pathology in the study eye requiring treatment with topical ophthalmic drops or intravitreal injection"
+    ]
+   },
+   {
+    "field": "Symptom onset timing and consent capacity",
+    "why_needed": "Time since macula-off detachment and ability to sign ICF gate enrollment windows",
+    "related_criteria": [
+     "Present within 10 days of macula-off retinal detachment (based on patient-reported history of loss of central vision)",
+     "Able to understand and sign an informed consent form (ICF) that has been approved by an ethics committee."
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "field": "prior_ocular_surgery",
+    "question": "Has the patient had any prior ocular surgery in the right eye (e.g., vitrectomy, scleral buckle, cataract surgery)?",
+    "why": "Determines eligibility for surgery-naive vs. reoperation trial arms.",
+    "question_ko": "환자가 우안에 이전 안과 수술(유리체절제술, 공막돌륭술, 백내장 수술 등)을 받은 적이 있습니까?",
+    "why_ko": "수술 미경험군과 재수술군 시험 참여 적격성을 결정합니다.",
+    "options": [
+     "우안 유리체절제술(vitrectomy) 과거력 있음",
+     "우안 공막돌륭술(scleral buckle) 과거력 있음",
+     "우안 망막박리 수술 후 재발 소견 있음",
+     "우안 백내장 수술만 시행, 망막수술 과거력 없음",
+     "우안 안과 수술 과거력 전혀 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "retinal_detachment_complexity",
+    "question": "What is the type and complexity of the retinal detachment — is it complicated by proliferative vitreoretinopathy (PVR), recurrence, or macular hole/scarring?",
+    "why": "Distinguishes uncomplicated RRD from PVR, recurrence, or macular hole/scarring for trial fit.",
+    "question_ko": "망막박리의 유형 및 복잡도는 어떻습니까 — 증식성 유리체망막병증(PVR), 재발, 또는 황반원공/반흔을 동반한 복잡성 병변입니까?",
+    "why_ko": "단순 RRD와 PVR, 재발, 황반원공/반흔 동반 복잡 병변을 구분하여 시험 적합성을 판단합니다.",
+    "options": [
+     "증식성 유리체망막병증(PVR) 동반",
+     "황반원공 동반",
+     "황반반흔(macular scarring) 동반",
+     "망막박리 재발 소견",
+     "합병증(PVR, 재발, 황반원공/반흔) 해당 사항 없음",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "excluded",
+     "excluded",
+     "excluded",
+     "eligible",
+     "unresolved"
+    ]
+   },
+   {
+    "field": "planned_surgical_approach",
+    "question": "What is the planned surgical approach and timing — elective vs. emergency, and technique (vitrectomy, scleral buckle, or pneumatic retinopexy)?",
+    "why": "Confirms planned vs. emergency procedure and technique match trial protocol.",
+    "question_ko": "계획된 수술적 접근법과 시행 시기는 어떻습니까 — 응급 수술입니까 계획된(elective) 수술입니까, 그리고 술식은 유리체절제술, 공막돌륭술, 또는 기체망막유착술 중 무엇입니까?",
+    "why_ko": "응급 여부와 술식이 시험 프로토콜과 일치하는지 확인합니다.",
+    "options": [
+     "응급 수술로 예정됨",
+     "유리체절제술(vitrectomy) 단독 술식 예정",
+     "공막돌륭술(scleral buckle) 병행 예정",
+     "기체망막유착술(pneumatic retinopexy)로 예정됨",
+     "응급 수술 아님, 계획된 수술로 예정됨",
+     "기록 없음/확인 불가"
+    ],
+    "option_directions": [
+     "excluded",
+     "neutral",
+     "neutral",
+     "neutral",
+     "eligible",
+     "unresolved"
+    ]
+   }
+  ]
+ }
+}

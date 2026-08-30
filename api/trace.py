@@ -101,6 +101,21 @@ try:
 except FileNotFoundError:
     pass
 
+# Regenerated question sets (gen_questions_v2.py): Korean question text, Korean self-contained
+# options and per-option direction from the current question generator. Replaces the frozen
+# trace's questions (and supplies gaps for the priority numbers) without touching traces.json.
+try:
+    with open(os.path.join(ROOT, "questions_v2.json"), encoding="utf-8") as f:
+        _Q_V2 = json.load(f)
+    for _trace in TRACES:
+        _v2 = _Q_V2.get(_trace.get("patient_id")) if isinstance(_Q_V2, dict) else None
+        if _v2 and _v2.get("questions"):
+            _trace["questions"] = _v2["questions"]
+            if _v2.get("gaps") and not _trace.get("gaps"):
+                _trace["gaps"] = _v2["gaps"]
+except (FileNotFoundError, json.JSONDecodeError):
+    pass
+
 # Bilingual gloss sidecar (gen_gloss.py), same sidecar pattern as coverage/trial_intent above:
 # {sha1(source.strip())[:12]: {"src", "ko"/"en"}}, built once by a separate offline script and
 # never touched here. gen_gloss.py may still be mid-write (it writes the whole file on every
