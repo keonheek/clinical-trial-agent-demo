@@ -1378,6 +1378,19 @@ function newGlossSection(){ return {shown: false}; }
 // unambiguously as a translation by position and styling alone.
 // 질문/사유 본문: 서버가 question_ko/why_ko를 보내면(라이브·추가 질문) 국문 모드에서 그것을
 // 본문으로, 영문 원문을 보조 줄로 쓴다. 없으면(캐시 환자) 기존 gloss 사이드카 경로 그대로.
+// 추천 근거(rationale): 라이브·답변 라운드는 rationale_ko를 함께 보낸다. 국문 모드면 그것이
+// 본문, 영문 원문은 보조 줄. 캐시 환자는 기존 gloss 경로.
+function rationaleText(trial){
+  if (LANG === "ko" && trial.rationale_ko) return trial.rationale_ko;
+  return trial.rationale || "";
+}
+function rationaleSecondaryHtml(trial, state){
+  if (trial.rationale_ko){
+    var sec = LANG === "ko" ? (trial.rationale || "") : trial.rationale_ko;
+    return sec ? '<span class="gloss-line">' + escapeHtml(sec) + '</span>' : "";
+  }
+  return glossLineHtml(trial.rationale, state);
+}
 function qPrimary(q, key){
   var ko = q[key + "_ko"];
   if (LANG === "ko" && ko) return ko;
@@ -1386,6 +1399,8 @@ function qPrimary(q, key){
 function qSecondaryHtml(q, key, state){
   var ko = q[key + "_ko"];
   if (ko){
+    // 국문 모드의 사유(why)는 국문 한 줄이면 충분 — 영문 원문까지 두 줄로 겹치지 않는다.
+    if (LANG === "ko" && key === "why") return "";
     var sec = LANG === "ko" ? (q[key] || "") : ko;
     if (!sec || sec === qPrimary(q, key)) return "";
     return '<span class="gloss-line">' + escapeHtml(sec) + '</span>';
@@ -2393,7 +2408,7 @@ function openModal(nct){
     ? em.en
     : em.ko + " · " + (trial.eligibility || "UNCERTAIN");
   document.getElementById("verdictSummary").innerHTML =
-    escapeHtml(trial.rationale || "") + glossLineHtml(trial.rationale, modalGloss);
+    escapeHtml(rationaleText(trial)) + rationaleSecondaryHtml(trial, modalGloss);
   var _pl = document.getElementById("pathLine");
   _pl.innerHTML = pathPanelHtml(trial);
   _pl.querySelectorAll(".path-item").forEach(function(btn){
@@ -2652,8 +2667,11 @@ function csvCell(v){
 }
 function exportCurrentCsv(){
   if (!cur || !cur.trials) return;
-  var rows = [["patient_id","nct_id","trial_title","phase","eligibility","rank",
-               "criterion_type","criterion_text","verdict","effect","evidence","reasoning"]];
+  var ko = LANG === "ko";
+  var rows = [ko
+    ? ["환자ID","시험(NCT)","시험명","단계","적격성","순위","기준 구분","기준","판정","효과","근거","사유"]
+    : ["patient_id","nct_id","trial_title","phase","eligibility","rank",
+       "criterion_type","criterion_text","verdict","effect","evidence","reasoning"]];
   (cur.trials || []).slice().sort(function(a,b){
     return (a.rank || 99) - (b.rank || 99);
   }).forEach(function(tr){
@@ -2663,6 +2681,18 @@ function exportCurrentCsv(){
                  getEffect(c), c.evidence || "", c.reasoning || ""]);
     });
   });
+  // 답변 이력과 판정 변경도 같은 파일에 — 기준 표만으로는 "왜 바뀌었는지"가 빠진다.
+  var answered = Object.keys(cur.answered || {});
+  if (answered.length){
+    rows.push([]); rows.push(ko ? ["질문","답변"] : ["question","answer"]);
+    answered.forEach(function(qt){ rows.push([qt, String(cur.answered[qt] == null ? "" : cur.answered[qt])]); });
+  }
+  var chg = [];
+  roundsDone().forEach(function(e){ (e.verdictChanges || []).forEach(function(c){ chg.push(c); }); });
+  if (chg.length){
+    rows.push([]); rows.push(ko ? ["시험(NCT)","기준","변경 전","변경 후"] : ["nct_id","criterion","before","after"]);
+    chg.forEach(function(c){ rows.push([c.nct_id || "", c.criterion || "", c.before || "", c.after || ""]); });
+  }
   var csv = "\ufeff" + rows.map(function(r){ return r.map(csvCell).join(","); }).join("\r\n");
   var blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
   var a = document.createElement("a");
@@ -2715,9 +2745,12 @@ function buildPendingCard(q, openList, glossState){
     : "";
   var qTok = questionTokens(q);
   var qMatch = matchOpenCriteria(qTok, openList);
+  // 영문 대문자 필드 라벨(PRIOR DEUCRAVACITINIB EXPOSURE)은 국문 질문 위에서는 잡음이다 —
+  // 국문 본문이 있으면 숨기고 참고용 배지는 질문 줄로 옮긴다.
+  var showField = !!q.field && !(LANG === "ko" && q.question_ko);
   card.innerHTML =
-    (q.field ? '<div class="qfield" title="' + escapeHtml(q.field) + '">' + escapeHtml(prettifyName(q.field)) + ctxBadge + '</div>' : "") +
-    '<div class="qtext">' + escapeHtml(qPrimary(q, "question")) + fuBadge + '</div>' +
+    (showField ? '<div class="qfield" title="' + escapeHtml(q.field) + '">' + escapeHtml(prettifyName(q.field)) + ctxBadge + '</div>' : "") +
+    '<div class="qtext">' + escapeHtml(qPrimary(q, "question")) + fuBadge + (showField ? "" : ctxBadge) + '</div>' +
     qSecondaryHtml(q, "question", glossState) +
     (q.why ? '<div class="qwhy">' + escapeHtml(qPrimary(q, "why")) + '</div>' + qSecondaryHtml(q, "why", glossState) : "") +
     questionPriorityLine(q, qMatch);

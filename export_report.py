@@ -43,6 +43,8 @@ sys.path.insert(0, HERE)
 
 from action_policy import apply_trial_level_actions  # noqa: E402
 from patient_need import classify_patient_need  # noqa: E402
+import ranking  # noqa: E402
+from pipeline import decide_eligibility  # noqa: E402
 from pipeline import effect_of  # noqa: E402  (판정→효과 매핑의 단일 출처)
 
 ELIG_KO = {"ELIGIBLE": "적격", "UNCERTAIN": "미확정", "INELIGIBLE": "부적격"}
@@ -135,7 +137,25 @@ def load_traces(path=None):
     for tr in traces:
         apply_trial_level_actions(tr.get("trials", []))
         tr["patient_need"] = classify_patient_need(tr.get("patient_text", ""))
-        _apply_reeval(tr)
+        _apply_reeval(tr)  # verdict_final / effect_final first; the re-rank below reads them
+        # Final rank = the order the board shows. traces.json's reeval.final_ranking froze an older
+        # rule; api/trace.py re-derives the served order with ranking.rank_trials at request time,
+        # so an export that trusted the frozen rank put a different trial at #1 than the screen
+        # (demo-video frame check, 2026-08-30). Re-rank a shadow copy built from the FINAL verdicts.
+        shadow = []
+        for t in tr.get("trials", []):
+            crits = [dict(c, verdict=c.get("verdict_final"), effect=c.get("effect_final"))
+                     for c in t.get("criteria") or []]
+            # eligibility re-derived from the FINAL criteria (pipeline.decide_eligibility), exactly
+            # as the answer round does -- reeval.final_ranking's eligibility froze an older rule.
+            elig = decide_eligibility(crits)[0] if crits else (t.get("eligibility_final") or "UNCERTAIN")
+            t["eligibility_final"] = elig
+            shadow.append({"nct_id": t.get("nct_id"), "phase": t.get("phase"), "title": t.get("title"),
+                           "eligibility": elig, "trial_intent": t.get("trial_intent"), "criteria": crits})
+        ranking.rank_trials(shadow, trust_attached=False, patient_need=tr["patient_need"])
+        rank_by = {s_["nct_id"]: s_.get("rank") for s_ in shadow}
+        for t in tr.get("trials", []):
+            t["rank_final"] = rank_by.get(t.get("nct_id"), t.get("rank_final"))
         tr["_crit_ids"] = _criterion_ids(tr.get("trials", []))
     return traces, src
 

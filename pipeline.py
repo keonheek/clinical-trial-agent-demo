@@ -649,8 +649,10 @@ trials -- your only job is to write the human-readable rationale for each.
 Write <= 30 words per trial, citing the concrete clinical reason, in plain clinical language
 (e.g. "TRAb-positive Graves confirmed by goiter and tachycardia; no exclusion criteria triggered"
 or "Excluded: patient is 9 years old and the trial bars anyone under 18").
+Also give `rationale_ko`: the same rationale in Korean, professional 명사형/하십시오체, identical
+clinical terms and numbers (a Korean coordinator reads it on screen; no machine-translation tone).
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"rationales": [{"nct_id": "<id>", "rationale": "<short rationale>"}]}
+{"rationales": [{"nct_id": "<id>", "rationale": "<short rationale>", "rationale_ko": "<Korean rationale>"}]}
 Include exactly one entry per trial given."""
 
 
@@ -681,7 +683,7 @@ def decide_eligibility(criteria):
 ELIGIBILITY_ORDER = ranking.ELIGIBILITY_ORDER  # single definition, lives in ranking.py
 
 # Fields recommend() decides in code and every caller must copy onto its trial dicts.
-RECOMMENDATION_FIELDS = ("eligibility", "rank", "rationale", "rank_reason", "rank_basis",
+RECOMMENDATION_FIELDS = ("eligibility", "rank", "rationale", "rationale_ko", "rank_reason", "rank_basis",
                          "ranking_version", "trial_intent")
 
 
@@ -746,12 +748,13 @@ Candidate trials, with their already-decided eligibility and the criteria that d
 
 Write one rationale per trial per your instructions."""
     result = call_groq("recommender", RECOMMENDER_SYS, user)
-    rationales = {}
+    rationales, rationales_ko = {}, {}
     for r in result.get("rationales", []):
         nct_id = str(r.get("nct_id", "")).strip()
         if nct_id:
             rationales[nct_id] = truncate_words(
                 str(r.get("rationale", "")).strip(), MAX_RATIONALE_WORDS)
+            rationales_ko[nct_id] = str(r.get("rationale_ko", "")).strip()
 
     by_id = {}
     for d in decided:
@@ -759,6 +762,7 @@ Write one rationale per trial per your instructions."""
             "eligibility": d["eligibility"],
             "rank": d["rank"],
             "rationale": rationales.get(d["nct_id"], "no rationale returned for this trial"),
+            "rationale_ko": rationales_ko.get(d["nct_id"], ""),
             "rank_reason": d.get("rank_reason"),
             "rank_basis": d.get("rank_basis"),
             "ranking_version": d.get("ranking_version"),
@@ -1022,6 +1026,7 @@ def run_reeval(patient, gaps, questions, trials_out):
         r = recs.get(t["nct_id"], {"eligibility": t["eligibility"], "rank": t["rank"], "rationale": t["rationale"]})
         final_ranking.append({"nct_id": t["nct_id"], "rank": r["rank"],
                                "eligibility": r["eligibility"], "rationale": r["rationale"],
+                               "rationale_ko": r.get("rationale_ko", ""),
                                "rank_reason": r.get("rank_reason")})
     final_ranking.sort(key=lambda r: r["rank"])
 
