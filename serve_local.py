@@ -22,6 +22,7 @@ sys.path.insert(0, HERE)
 os.environ.setdefault("LLM_BACKEND", "claude")
 os.environ.setdefault("CLAUDE_PIPELINE_MODEL", "claude-sonnet-5")
 os.environ.setdefault("LIVE_RATE_LIMIT", "1000")
+os.environ.setdefault("ROUND_BUDGET_S", "900")  # claude -p is slow; 45 s is a Vercel constraint, not ours
 for _k in ("CLAUDECODE", "CLAUDE_CODE_CHILD_SESSION"):  # let claude -p start from inside a session
     os.environ.pop(_k, None)
 

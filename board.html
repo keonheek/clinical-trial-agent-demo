@@ -597,6 +597,7 @@
     <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
     <button class="refresh-btn" id="exportBtn" title="">CSV</button>
     <button class="refresh-btn" id="exportXlsxBtn" title="">XLSX</button>
+    <button class="refresh-btn" id="exportHtmlBtn" title="">HTML</button>
   </div>
   <div class="stalechip" id="staleChip"><button id="staleChipBtn"></button></div>
   <div class="ranknote" id="rankNeedNote" style="display:none;"></div>
@@ -808,6 +809,7 @@ var I18N = {
     toRank: "See final ranking →", exportCsv: "Export CSV",
     exportXlsx: "Screening record (xlsx)", exportXlsxTip: "Signed screening record: screening log, eligibility checklist, Q&A log, corrections log, source text, metadata — built from the state on screen",
     exportXlsxBusy: "Building record…", exportXlsxFail: "Record export failed",
+    exportHtml: "View as HTML", exportHtmlTip: "Open the same screening record as a web page in a new tab (tabs per sheet, coloured verdicts)",
     exportTip: "Download the current on-screen screening state (per-criterion rows). The signed GCP record is produced offline by export_report.py.",
     batchNote: "Checked answers are applied in one batch. re-evaluation runs once.",
     batchBusyBtn: "Applying answers",
@@ -1051,6 +1053,7 @@ var I18N = {
     toRank: "최종 순위 보기 →", exportCsv: "CSV 내보내기",
     exportXlsx: "스크리닝 기록(xlsx)", exportXlsxTip: "서명용 스크리닝 기록: 스크리닝 로그·적격성 체크리스트·질의응답 이력·정정 로그·근거 원문·메타 — 현재 화면 상태로 생성",
     exportXlsxBusy: "기록 생성 중…", exportXlsxFail: "기록 생성 실패",
+    exportHtml: "HTML로 보기", exportHtmlTip: "같은 스크리닝 기록을 새 탭에 웹 페이지로 엽니다 (시트별 탭, 판정 색상)",
     exportTip: "현재 화면의 스크리닝 상태를 기준 단위로 내려받습니다. 서명용 GCP 기록은 export_report.py로 별도 생성합니다.",
     batchNote: "고른 답변은 한 번에 반영되고, 다시 판정도 한 번만 실행됩니다.",
     batchBusyBtn: "답변 반영 중",
@@ -1614,6 +1617,12 @@ function applyStaticI18n(){
     _ex1.dataset.wired = "1";
     _ex1.addEventListener("click", exportCurrentXlsx);
   }
+  var _ex2 = document.getElementById("exportHtmlBtn");
+  if (_ex2 && !_ex2.dataset.wired){
+    _ex2.dataset.wired = "1";
+    _ex2.addEventListener("click", exportCurrentHtml);
+  }
+  if (_ex2){ _ex2.textContent = t("exportHtml"); _ex2.title = t("exportHtmlTip"); }
   // 언어 전환 후에도 두 내보내기 버튼 라벨이 따라오도록 — 종전에는 환자 로드 전에만 갱신됐다.
   var _exL = document.getElementById("exportBtn");
   if (_exL){ _exL.textContent = t("exportCsv"); _exL.title = t("exportTip"); }
@@ -2715,9 +2724,7 @@ function exportCurrentCsv(){
 }
 // 서명용 스크리닝 기록(xlsx): 화면 상태(현재 판정, 답변 이력, 라운드별 판정 변경)를 서버로
 // 보내 export_report.py와 같은 통합문서를 받는다. LLM 호출 없음.
-function exportCurrentXlsx(){
-  if (!cur || !cur.trials) return;
-  var btn = document.getElementById("exportXlsxBtn");
+function exportStateBody(){
   var chg = [];
   roundsDone().forEach(function(e){ (e.verdictChanges || []).forEach(function(c){ chg.push({nct_id: c.nct_id, criterion: c.criterion, before: c.before, after: c.after}); }); });
   var answers = Object.keys(cur.answered || {}).map(function(q){ return {question: q, answer: String(cur.answered[q] == null ? "" : cur.answered[q])}; });
@@ -2730,6 +2737,26 @@ function exportCurrentXlsx(){
     questions: (cur.questions || []).map(function(q){ return {field: q.field, question: q.question, why: q.why}; }),
     answers: answers, verdict_changes: chg
   };
+  return body;
+}
+// 같은 기록을 새 탭에 웹 페이지로 (xlsx_view.py 렌더). 탭은 클릭 핸들러 안에서 미리 열어야
+// 팝업 차단에 걸리지 않는다.
+function exportCurrentHtml(){
+  if (!cur || !cur.trials) return;
+  var btn = document.getElementById("exportHtmlBtn");
+  var body = exportStateBody(); body.format = "html";
+  var win = window.open("", "_blank");
+  if (btn){ btn.disabled = true; btn.textContent = t("exportXlsxBusy"); }
+  fetch("/api/export", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
+    .then(function(r){ if (!r.ok) throw new Error("http " + r.status); return r.text(); })
+    .then(function(html){ if (win){ win.document.open(); win.document.write(html); win.document.close(); } })
+    .catch(function(){ if (win) win.close(); if (btn) btn.textContent = t("exportXlsxFail"); })
+    .then(function(){ setTimeout(function(){ if (btn){ btn.disabled = false; btn.textContent = t("exportHtml"); } }, 1500); });
+}
+function exportCurrentXlsx(){
+  if (!cur || !cur.trials) return;
+  var btn = document.getElementById("exportXlsxBtn");
+  var body = exportStateBody();
   if (btn){ btn.disabled = true; btn.textContent = t("exportXlsxBusy"); }
   fetch("/api/export", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
     .then(function(r){ if (!r.ok) throw new Error("http " + r.status); return r.blob(); })

@@ -23,7 +23,10 @@ def cell(v):
 
 
 def render(path):
-    wb = load_workbook(path, read_only=True, data_only=True)
+    return render_workbook(load_workbook(path, read_only=True, data_only=True), os.path.basename(path))
+
+
+def render_workbook(wb, name):
     tabs, panes = [], []
     for i, ws in enumerate(wb.worksheets):
         rows = list(ws.iter_rows(values_only=True))
@@ -34,7 +37,6 @@ def render(path):
         body = "".join("<tr>" + "".join(cell(v) for v in r[:width]) + "</tr>" for r in rows[1:])
         tabs.append(f'<button class="tab{" on" if i == 0 else ""}" data-i="{i}">{E(ws.title)} <span>{len(rows) - 1}</span></button>')
         panes.append(f'<section id="p{i}"{"" if i == 0 else " hidden"}><h2>{E(ws.title)}</h2><div class="wrap"><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div></section>')
-    name = os.path.basename(path)
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{E(name)}</title>
 <style>
 body{{margin:0;background:#F4F6F8;color:#11161C;font-family:"IBM Plex Sans KR","Apple SD Gothic Neo",-apple-system,sans-serif;font-size:14px}}

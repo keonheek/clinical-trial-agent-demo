@@ -19,6 +19,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 import export_report  # noqa: E402
+import xlsx_view  # noqa: E402
 
 MAX_BODY = 2_000_000
 
@@ -72,7 +73,13 @@ def handle(body):
     data = export_report.build_workbook_bytes(traces, "board-state.json", digest)
     stamp = datetime.date.today().strftime("%y%m%d")
     name = f"screening_record_{trace['patient_id']}_{stamp}.xlsx"
-    return (data, name), None
+    if body.get("format") == "html":
+        import io
+        from openpyxl import load_workbook
+        wb = load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+        page = xlsx_view.render_workbook(wb, name).encode("utf-8")
+        return (page, name[:-5] + ".html", "text/html; charset=utf-8", "inline"), None
+    return (data, name, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "attachment"), None
 
 
 class handler(BaseHTTPRequestHandler):
@@ -91,10 +98,10 @@ class handler(BaseHTTPRequestHandler):
             return self._json(500, {"error": f"export failed: {type(e).__name__}"})
         if err:
             return self._json(400, {"error": err})
-        data, name = result
+        data, name, ctype, disp = result
         self.send_response(200)
-        self.send_header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        self.send_header("Content-Disposition", f"attachment; filename=\"{name}\"")
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Disposition", f"{disp}; filename=\"{name}\"")
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-store")
         self.end_headers()

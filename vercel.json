@@ -21,7 +21,7 @@
       "maxDuration": 60
     },
     "api/export.py": {
-      "includeFiles": "{export_report.py,pipeline.py,ranking.py,patient_need.py,action_policy.py,evidence.py,*_client.py,trial_intent*.json,coverage_map*.json}",
+      "includeFiles": "{export_report.py,pipeline.py,ranking.py,patient_need.py,action_policy.py,evidence.py,*_client.py,trial_intent*.json,coverage_map*.json,xlsx_view.py}",
       "maxDuration": 30
     }
   }
