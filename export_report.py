@@ -134,6 +134,27 @@ def load_traces(path=None):
     src = path or os.path.join(HERE, "traces.json")
     with open(src, encoding="utf-8") as f:
         traces = json.load(f)
+    return prepare_traces(traces), src
+
+
+def build_workbook_bytes(traces, src_label, digest):
+    """Same workbook as build_workbook, returned as bytes (the /api/export download path)."""
+    import io
+    wb = Workbook()
+    wb.remove(wb.active)
+    _sheet_meta(wb, traces, src_label, digest)
+    _sheet_screening_log(wb, traces)
+    _sheet_checklist(wb, traces)
+    _sheet_qa(wb, traces)
+    _sheet_corrections(wb, traces)
+    _sheet_source(wb, traces)
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+def prepare_traces(traces):
+    """Final-state enrichment shared by the CLI and /api/export (in-memory board state)."""
     for tr in traces:
         apply_trial_level_actions(tr.get("trials", []))
         tr["patient_need"] = classify_patient_need(tr.get("patient_text", ""))
@@ -157,7 +178,7 @@ def load_traces(path=None):
         for t in tr.get("trials", []):
             t["rank_final"] = rank_by.get(t.get("nct_id"), t.get("rank_final"))
         tr["_crit_ids"] = _criterion_ids(tr.get("trials", []))
-    return traces, src
+    return traces
 
 
 def _sorted_trials(trace):

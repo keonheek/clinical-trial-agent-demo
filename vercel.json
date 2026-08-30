@@ -19,6 +19,10 @@
     "api/live.py": {
       "includeFiles": "{pipeline.py,ranking.py,patient_need.py,action_policy.py,evidence.py,build_trial_intent.py,fetch_trials.py,*_client.py}",
       "maxDuration": 60
+    },
+    "api/export.py": {
+      "includeFiles": "{export_report.py,pipeline.py,ranking.py,patient_need.py,action_policy.py,evidence.py,*_client.py,trial_intent*.json,coverage_map*.json}",
+      "maxDuration": 30
     }
   }
 }

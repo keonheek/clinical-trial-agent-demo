@@ -25,7 +25,7 @@ os.environ.setdefault("LIVE_RATE_LIMIT", "1000")
 for _k in ("CLAUDECODE", "CLAUDE_CODE_CHILD_SESSION"):  # let claude -p start from inside a session
     os.environ.pop(_k, None)
 
-from api import patients as _patients, trace as _trace, answer as _answer, live as _live  # noqa: E402
+from api import patients as _patients, trace as _trace, answer as _answer, live as _live, export as _export  # noqa: E402
 
 _answer.RATE_LIMIT_PER_MIN = 1000
 _answer.FOLLOWUP_RATE_LIMIT_PER_MIN = 1000
@@ -35,6 +35,7 @@ ROUTES = {
     "/api/trace": _trace.handler,
     "/api/answer": _answer.handler,
     "/api/live": _live.handler,
+    "/api/export": _export.handler,
 }
 MIME = {".html": "text/html; charset=utf-8", ".js": "application/javascript", ".json": "application/json",
         ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml", ".pdf": "application/pdf"}
