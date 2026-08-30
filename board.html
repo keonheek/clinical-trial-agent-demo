@@ -1576,7 +1576,9 @@ function generateFollowupsAndGo(nct){
   if (status) status.textContent = t("liveGenBusy");
   var answered = Object.keys(cur.answered || {}).map(function(q){ return {question: q, answer: String(cur.answered[q] == null ? "" : cur.answered[q])}; });
   var before = pendingQuestions().length;
-  fetchFollowups(cur.id, answered);
+  var line = document.getElementById("rankOpenLine");
+  if (line){ line.hidden = false; line.textContent = t("liveGenBusy"); }
+  fetchFollowups(cur.id, answered, nct);
   var tries = 0;
   var timer = setInterval(function(){
     tries++;
@@ -2940,7 +2942,19 @@ function buildPendingCard(q, openList, glossState){
       var cb = document.createElement("input");
       cb.type = "checkbox";
       cb.value = String(optText);
-      cb.addEventListener("change", updateBatchBar);
+      // 마지막 두 선택지(깨끗한 부정 답 · 기록 없음)는 나머지와 양립하지 않는다 — "모두 초록"을
+      // 한꺼번에 찍으면 서로 모순된 답이 한 문장으로 합쳐져 재판정이 UNCERTAIN으로 끝난다.
+      var _isClosing = Array.isArray(q.options) && q.options.length >= 3 && optIdx >= q.options.length - 2;
+      cb.dataset.closing = _isClosing ? "1" : "";
+      cb.addEventListener("change", function(){
+        if (cb.checked){
+          optWrap.querySelectorAll('input[type="checkbox"]').forEach(function(o){
+            if (o === cb) return;
+            if (_isClosing || o.dataset.closing === "1") o.checked = false;
+          });
+        }
+        updateBatchBar();
+      });
       var bodyDiv = el("div", "opt-body");
       var span = el("span", "opt-text");
       // EN mode reads English-first: when a translation exists, it becomes the primary line
@@ -3376,13 +3390,14 @@ function showFollowupError(msg){
   cur.followupNote = String(msg);
   renderChatAll();
 }
-function fetchFollowups(patientId, pending){
+function fetchFollowups(patientId, pending, focusNct){
   if (!cur || cur.id !== patientId) return;
   var note = document.getElementById("batchNote");
   if (note) note.textContent = t("fuChecking");
   var body = {
     patient_id: patientId,
     followups_only: true,
+    focus_nct: focusNct || undefined,
     trials: cur.trials,
     extended_record: cur.extendedRecord,
     asked_questions: (cur.questions || []).map(function(q){ return q.question; }),

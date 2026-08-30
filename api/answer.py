@@ -291,7 +291,26 @@ def union_affected(pairs_affected, cap=MAX_AFFECTED):
     return union, {k: v for k, v in sources.items() if k in kept}
 
 
-def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_texts):
+def _focus_trials(trials_copy, focus_nct=None):
+    """The trial the coordinator is trying to settle: `focus_nct` if given and still open,
+    else the best-ranked non-blocked trial that still carries UNKNOWN/UNCERTAIN criteria.
+    Without this, the 3-question cap went to gaps that span the most trials, and the ONE
+    criterion still blocking the #1 trial (his 08-30 screenshot: malignancy history) was never
+    asked -- the coordinator could not finish. Returns None to mean "no focus, use all"."""
+    def _open(t):
+        return any(c.get("verdict") in ("UNKNOWN", "UNCERTAIN") for c in t.get("criteria", []))
+    if focus_nct:
+        for t in trials_copy:
+            if t.get("nct_id") == focus_nct and not trial_is_blocked(t) and _open(t):
+                return [t]
+    ranked = sorted([t for t in trials_copy if not trial_is_blocked(t)], key=lambda t: t.get("rank") or 99)
+    for t in ranked:
+        if _open(t):
+            return [t]
+    return None
+
+
+def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_texts, focus_nct=None):
     """The background 'do we need MORE questions?' check: 2 LLM calls over the POST-answer state.
 
     Runs pipeline.detect_gaps (which honors is_question_worthy + the blocked-trial gate via the
@@ -311,10 +330,11 @@ def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_tex
     order's result). ([], []) when the existing questions suffice (no gaps, or every candidate
     is a repeat) -- enrich_questions on an empty list is a no-op either way.
     """
+    source = _focus_trials(trials_copy, focus_nct) or trials_copy
     all_criteria_flat = [
         {"nct_id": t.get("nct_id"), "text": c.get("text", ""), "verdict": c.get("verdict"),
          "action": c.get("action"), "effect": c.get("effect")}
-        for t in trials_copy for c in t.get("criteria", [])
+        for t in source for c in t.get("criteria", [])
     ]
     patient_ext = {"patient_id": patient_id, "text": (vignette + "\n" + new_record).strip()}
     gaps = detect_gaps(patient_ext, all_criteria_flat)
@@ -381,8 +401,10 @@ def handle(body, client_ip="?"):
         asked_texts = [str(x)[:MAX_QUESTION_LEN] for x in _asked[:MAX_ASKED_QUESTIONS]
                        if isinstance(x, str) and x.strip()] + [q for q, _ in pairs]
         try:
+            _focus = body.get("focus_nct")
+            _focus = str(_focus)[:20] if isinstance(_focus, str) else None
             followups, gaps = _generate_followups(
-                patient_id, patient["text"], extended_record, trials_copy, asked_texts)
+                patient_id, patient["text"], extended_record, trials_copy, asked_texts, _focus)
             if followups:
                 enrich_questions(followups, gaps, trials_copy)
             return {"followup_questions": followups}
