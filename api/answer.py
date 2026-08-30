@@ -291,9 +291,11 @@ def union_affected(pairs_affected, cap=MAX_AFFECTED):
     return union, {k: v for k, v in sources.items() if k in kept}
 
 
-def _focus_trials(trials_copy, focus_nct=None):
+def _focus_trials(trials_copy, focus_nct=None, contest=False):
     """The trial the coordinator is trying to settle: `focus_nct` if given and still open,
     else the best-ranked non-blocked trial that still carries UNKNOWN/UNCERTAIN criteria.
+    contest=True: the reviewer is RE-CHECKING a blocked trial (08-31, his request) -- `focus_nct`
+    is returned even when blocked, so its blocking criteria can be questioned.
     Without this, the 3-question cap went to gaps that span the most trials, and the ONE
     criterion still blocking the #1 trial (his 08-30 screenshot: malignancy history) was never
     asked -- the coordinator could not finish. Returns None to mean "no focus, use all"."""
@@ -301,7 +303,11 @@ def _focus_trials(trials_copy, focus_nct=None):
         return any(c.get("verdict") in ("UNKNOWN", "UNCERTAIN") for c in t.get("criteria", []))
     if focus_nct:
         for t in trials_copy:
-            if t.get("nct_id") == focus_nct and not trial_is_blocked(t) and _open(t):
+            if t.get("nct_id") != focus_nct:
+                continue
+            if contest and trial_is_blocked(t):
+                return [t]
+            if not trial_is_blocked(t) and _open(t):
                 return [t]
     ranked = sorted([t for t in trials_copy if not trial_is_blocked(t)], key=lambda t: t.get("rank") or 99)
     for t in ranked:
@@ -310,7 +316,8 @@ def _focus_trials(trials_copy, focus_nct=None):
     return None
 
 
-def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_texts, focus_nct=None):
+def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_texts, focus_nct=None,
+                        contest=False):
     """The background 'do we need MORE questions?' check: 2 LLM calls over the POST-answer state.
 
     Runs pipeline.detect_gaps (which honors is_question_worthy + the blocked-trial gate via the
@@ -330,14 +337,40 @@ def _generate_followups(patient_id, vignette, new_record, trials_copy, asked_tex
     order's result). ([], []) when the existing questions suffice (no gaps, or every candidate
     is a repeat) -- enrich_questions on an empty list is a no-op either way.
     """
-    focus = _focus_trials(trials_copy, focus_nct)
+    focus = _focus_trials(trials_copy, focus_nct, contest)
     source = focus or trials_copy
+    contest_on = bool(contest and focus and trial_is_blocked(focus[0]))
     all_criteria_flat = [
         {"nct_id": t.get("nct_id"), "text": c.get("text", ""), "verdict": c.get("verdict"),
-         "action": c.get("action"), "effect": c.get("effect")}
+         "action": c.get("action"), "effect": c.get("effect") or effect_of(c.get("type", "inclusion"), c.get("verdict")),
+         "evidence": c.get("evidence"), "type": c.get("type", "inclusion")}
         for t in source for c in t.get("criteria", [])
     ]
     patient_ext = {"patient_id": patient_id, "text": (vignette + "\n" + new_record).strip()}
+    if contest_on:
+        # Re-check of ONE blocked trial: the blocking criteria come first (the verdict the
+        # reviewer wants to challenge), then its undecided ones. The trial-level STOP is exactly
+        # what is being contested, so it does not gate here. Built in code, no gap-detector call.
+        fails = [c for c in all_criteria_flat if c.get("effect") == "FAIL"]
+        undecided = [c for c in all_criteria_flat if c.get("verdict") in ("UNKNOWN", "UNCERTAIN")]
+        open_items = (fails + undecided)[:12]
+        gaps = []
+        for c in open_items:
+            if c.get("effect") == "FAIL":
+                why = (f"currently judged {c['verdict']} for this {c['type']} criterion and BLOCKS "
+                       f"enrolment (chart basis: {c.get('evidence') or 'inference, no direct quote'}). "
+                       f"Ask the coordinator to CONFIRM or REFUTE that finding from the chart.")
+            else:
+                why = "still undecided after the answers so far"
+            gaps.append({"field": c["text"][:80], "why_needed": why, "related_criteria": [c["text"]]})
+        if not gaps:
+            return [], []
+        followups = dedupe_followups(generate_questions(patient_ext, gaps), asked_texts,
+                                     cap=FOLLOWUP_CAP)
+        for q in followups:
+            q["followup"] = True
+            q["contest_nct"] = focus[0].get("nct_id")
+        return followups, gaps
     open_items = [c for c in all_criteria_flat if c.get("verdict") in ("UNKNOWN", "UNCERTAIN")
                   and str(c.get("action") or "").upper() != "STOP"]
     if focus and 0 < len(open_items) <= 12:
@@ -418,8 +451,10 @@ def handle(body, client_ip="?"):
         try:
             _focus = body.get("focus_nct")
             _focus = str(_focus)[:20] if isinstance(_focus, str) else None
+            _contest = body.get("contest") is True
             followups, gaps = _generate_followups(
-                patient_id, patient["text"], extended_record, trials_copy, asked_texts, _focus)
+                patient_id, patient["text"], extended_record, trials_copy, asked_texts, _focus,
+                contest=_contest)
             if followups:
                 enrich_questions(followups, gaps, trials_copy)
             return {"followup_questions": followups}
@@ -449,9 +484,12 @@ def handle(body, client_ip="?"):
                for d in det[:MAX_AFFECTED * 2] if isinstance(d, dict)]
         opts = [str(o)[:200] for o in (q.get("options") or [])[:8] if isinstance(o, str)]
         opts_en = [str(o)[:200] for o in (q.get("options_en") or [])[:8] if isinstance(o, str)]
+        cn = q.get("contest_nct")
         return {"field": str(q.get("field", ""))[:120], "question": str(q.get("question", ""))[:MAX_QUESTION_LEN],
                 "affected_detail": det, "options": opts,
-                "options_en": opts_en if len(opts_en) == len(opts) else []}
+                "options_en": opts_en if len(opts_en) == len(opts) else [],
+                # a re-check question carries the one blocked trial it may unblock (08-31)
+                "contest_nct": str(cn)[:20] if isinstance(cn, str) and cn else None}
     questions_in = [_q_in(q) for q in questions_in[:MAX_QUESTIONS] if isinstance(q, dict) and q.get("question")]
     q_by_text = {q["question"]: q for q in questions_in}
     # already-asked question texts, resent by the client so follow-up generation never
@@ -494,6 +532,29 @@ def handle(body, client_ip="?"):
                                       "text": c.get("text", ""), "type": c.get("type", "inclusion"),
                                       "before_verdict": c.get("verdict")})
                         seen.add((t_idx, c_idx))
+        # Re-check of a blocked trial (08-31): the question was generated to challenge THAT
+        # trial's block, so on that one trial the blocked gate is lifted and its blocking (FAIL)
+        # criteria are re-judged too -- linked ones always, others only on token overlap. Never
+        # reaches any other trial; never a decided PASS criterion.
+        cn = qo.get("contest_nct")
+        if cn:
+            atok = _tokens(q + " " + ans_tok_src)
+            for t_idx, t in enumerate(trials_copy):
+                if t.get("nct_id") != cn:
+                    continue
+                for c_idx, c in enumerate(t.get("criteria", [])):
+                    if (t_idx, c_idx) in seen:
+                        continue
+                    eff = c.get("effect") or effect_of(c.get("type", "inclusion"), c.get("verdict"))
+                    if eff != "FAIL" and c.get("verdict") not in ("UNKNOWN", "UNCERTAIN"):
+                        continue
+                    linked = (t.get("nct_id"), normalize_criterion_text(c.get("text", ""))) in want
+                    if not linked and not (atok & _tokens(c.get("text", ""))):
+                        continue
+                    found.append({"nct_id": t.get("nct_id"), "trial_idx": t_idx, "crit_idx": c_idx,
+                                  "text": c.get("text", ""), "type": c.get("type", "inclusion"),
+                                  "before_verdict": c.get("verdict")})
+                    seen.add((t_idx, c_idx))
         return found[:MAX_AFFECTED]
 
     affected, sources = union_affected([(q, _affected_for(q, ans)) for q, ans in pairs])
@@ -580,7 +641,14 @@ def handle(body, client_ip="?"):
     # needs to see the same STOP-gated `action` fields the sequential code always gave it.
     for t in trials_copy:
         _blocked_view = {"criteria": t.get("criteria", [])}   # never the posted eligibility
+        _still_blocked = trial_is_blocked(_blocked_view)
         for c in t.get("criteria", []):
+            if not _still_blocked and c.get("action_scope") == "trial":
+                # a re-check lifted the block (08-31): the trial-level STOP no longer holds, so
+                # the criterion's own cause decides its action again (code, no model)
+                c["uncertainty_type"], c["action"] = classify_action(c.get("verdict"), c.get("uncertainty_type"))
+                c.pop("action_scope", None)
+                c.pop("action_reason", None)
             trial_level_action(c, _blocked_view)
 
     def _run_recommend():

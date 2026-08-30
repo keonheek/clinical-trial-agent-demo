@@ -223,8 +223,21 @@ def criterion_id(nct_id, text):
     return hashlib.sha1(basis.encode("utf-8")).hexdigest()[:10]
 
 
-def _affected_criteria(question, gaps_by_field, trials):
+def _is_fail(criterion):
+    """Hard-FAIL test without importing pipeline (pipeline imports this module): the served
+    `effect` when present, else the same EFFECT_TABLE rule (exclusion MET / inclusion NOT_MET)."""
+    if criterion.get("effect"):
+        return criterion.get("effect") == "FAIL"
+    return (criterion.get("type"), criterion.get("verdict")) in (("exclusion", "MET"), ("inclusion", "NOT_MET"))
+
+
+def _affected_criteria(question, gaps_by_field, trials, contest_nct=None):
     """Locate the still-undecided criteria a question bears on.
+
+    contest_nct (2026-08-31, his request: "click on that test only and take the test on that
+    only" for an Excluded trial): the question was generated to RE-CHECK one blocked trial, so
+    the trial-level STOP does not apply to it -- link against that one trial only, and against
+    its blocking (FAIL) criteria as well as its undecided ones. Never widens to other trials.
 
     Prefers the exact gap->related_criteria links (present on freshly-generated
     traces); falls back to token overlap between the question and each gap's
@@ -252,15 +265,23 @@ def _affected_criteria(question, gaps_by_field, trials):
 
     pairs = []
     for t in trials:
+        if contest_nct:
+            if t.get("nct_id") != contest_nct:
+                continue
         # trial-level STOP: criteria on an already-blocked trial are not work a question can
         # advance, so they must not inflate affects_criteria / affects_trials / may_change_rank
-        if trial_is_blocked(t):
+        elif trial_is_blocked(t):
             continue
         for c in t.get("criteria", []):
-            if c.get("verdict") not in _UNDECIDED:
-                continue
-            if c.get("action") == "STOP":
-                continue
+            if contest_nct:
+                # the block itself is what is being questioned: FAIL criteria are in scope
+                if not _is_fail(c) and c.get("verdict") not in _UNDECIDED:
+                    continue
+            else:
+                if c.get("verdict") not in _UNDECIDED:
+                    continue
+                if c.get("action") == "STOP":
+                    continue
             # With explicit links, restrict to them (normalized compare); without any links
             # at all, fall back to token overlap directly against the criterion text so a
             # question still surfaces its criteria on gap-less traces.
@@ -277,7 +298,8 @@ def _affected_criteria(question, gaps_by_field, trials):
 def priority_numbers(question, gaps, trials):
     """The three card numbers for one question. Pure function of the trace."""
     gaps_by_field = {g["field"]: g for g in (gaps or [])}
-    pairs = _affected_criteria(question, gaps_by_field, trials)
+    contest_nct = question.get("contest_nct") if isinstance(question.get("contest_nct"), str) else None
+    pairs = _affected_criteria(question, gaps_by_field, trials, contest_nct=contest_nct)
 
     affected_trials = {t["nct_id"] for t, _ in pairs}
     n_criteria = len(pairs)
@@ -286,7 +308,8 @@ def priority_numbers(question, gaps, trials):
     touches_uncertain_trial = any(
         t.get("eligibility") == "UNCERTAIN" for t, _ in pairs
     )
-    may_change_rank = bool(pairs) and (touches_uncertain_trial or n_trials >= 2)
+    # a re-check question on a blocked trial can lift the block -> the ranking can move
+    may_change_rank = bool(pairs) and (touches_uncertain_trial or n_trials >= 2 or bool(contest_nct))
 
     # The pairs themselves, not just how many. 08-25 review: "which ones need to be exercised
     # for the patient to be a fit candidate" cannot be read off a count. Split by polarity so

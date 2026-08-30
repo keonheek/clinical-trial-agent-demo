@@ -399,6 +399,8 @@
   .rankhead .status{font-size:0.86rem;color:var(--ink-soft);}
   .rankhead .status.fresh{color:var(--met);font-weight:700;}
   .rankrow .rowgen{margin:8px 0 0 0;align-self:flex-start;}
+  .rankrow .rowgen.contest{color:var(--notmet);}
+  .roundlabel.sec{margin-top:6px;}
   .rankopen{margin:0 0 12px;padding:10px 14px;border:1px solid var(--border);border-left:3px solid #9A6200;background:#FFF7E6;border-radius:4px;font-size:0.9rem;color:var(--ink);display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
   .livestatus.needs .statustext{color:#9A6200;}
   .refresh-btn{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:11px 22px;font-weight:700;cursor:pointer;font-size:0.86rem;
@@ -715,7 +717,7 @@ var I18N = {
     loading: "Loading", liveWaiting: "{n} questions waiting", liveWaitingOne: "1 question waiting",
     liveDone: "All questions resolved · ranking ready",
     liveOpenLeft: "{n} criteria still need confirmation → generate questions", liveOpenTip: "The top candidates still have unconfirmed criteria. Click to generate the next questions.",
-    liveGenBusy: "Generating questions…", rankOpenLine: "{n} criteria on the candidate trials still need confirmation. Generate questions per trial below.", rowGen: "Generate questions for this trial ({n} open) →", fuNoneNew: "No new questions for this trial — the pending ones already cover its open criteria.", fuNetFail: "Question generation failed (network). Try again.",
+    liveGenBusy: "Generating questions…", rankOpenLine: "{n} criteria on the candidate trials still need confirmation. Generate questions per trial below.", rowGen: "Generate questions for this trial ({n} open) →", rowContest: "Re-check this trial ({n} blocking) →", pathContest: "Re-check the blocking criteria →", pillCommon: "Common", secCommon: "Common questions · several trials", secTrial: "{nct} only", fuNoneNew: "No new questions for this trial — the pending ones already cover its open criteria.", fuNetFail: "Question generation failed (network). Try again.",
     resetBtn: "↺ Start over", resetTip: "Discard the saved rounds for this patient and reload the initial state", resetConfirm: "Discard all rounds and answers for this patient?",
     pdLoading: "Loading patients", pdSelect: "Select patient", pdMore: "More demo patients",
     noPatients: "No patients registered", errPrefix: "Error: ",
@@ -827,7 +829,7 @@ var I18N = {
     pillFilterTip: "show only this trial's questions",
     nextLead: "Where each trial stands now:",
     nextElig: "Eligible — no open questions left for it.",
-    nextExcl: "Excluded ({n} blocking) — no further questions for it.",
+    nextExcl: "Excluded ({n} blocking) — no further questions unless you re-check it from the Final Ranking.",
     nextCont: "Undetermined — {n} unresolved → questioning continues next round.",
     nextWait: "Undetermined — nothing left to ask; awaiting re-evaluation.",
     nextNeed: " Needed: {list}.",
@@ -968,7 +970,7 @@ var I18N = {
     loading: "불러오는 중", liveWaiting: "확인 질문 {n}개 대기중", liveWaitingOne: "확인 질문 1개 대기중",
     liveDone: "확인 질문 모두 해결됨 · 순위 확인 가능",
     liveOpenLeft: "확인 필요 기준 {n}건 남음 → 질문 생성", liveOpenTip: "후보 시험에 미확인 기준이 남아 있습니다. 누르면 다음 질문을 생성합니다.",
-    liveGenBusy: "질문 생성 중…", rankOpenLine: "후보 시험에 확인 필요 기준 {n}건이 남아 있습니다. 아래에서 시험별로 질문을 생성하십시오.", rowGen: "이 시험 질문 생성 (미확인 {n}건) →", fuNoneNew: "이 시험에 대한 새 질문이 없습니다 — 대기 중인 질문이 이미 미확인 기준을 다룹니다.", fuNetFail: "질문 생성 실패(네트워크). 다시 시도하십시오.",
+    liveGenBusy: "질문 생성 중…", rankOpenLine: "후보 시험에 확인 필요 기준 {n}건이 남아 있습니다. 아래에서 시험별로 질문을 생성하십시오.", rowGen: "이 시험 질문 생성 (미확인 {n}건) →", rowContest: "이 시험 재검토 (차단 기준 {n}건) →", pathContest: "차단 기준 재검토 →", pillCommon: "공통", secCommon: "공통 질문 · 여러 시험에 걸림", secTrial: "{nct} 전용", fuNoneNew: "이 시험에 대한 새 질문이 없습니다 — 대기 중인 질문이 이미 미확인 기준을 다룹니다.", fuNetFail: "질문 생성 실패(네트워크). 다시 시도하십시오.",
     resetBtn: "↺ 처음부터", resetTip: "이 환자의 저장된 라운드를 지우고 초기 상태로 되돌립니다", resetConfirm: "이 환자의 모든 라운드와 답변을 지우시겠습니까?",
     pdLoading: "환자 불러오는 중", pdSelect: "환자 선택", pdMore: "추가 데모 환자",
     noPatients: "등록된 환자가 없습니다", errPrefix: "오류: ",
@@ -1075,7 +1077,7 @@ var I18N = {
     pillFilterTip: "클릭하면 이 시험에 연결된 질문만 표시",
     nextLead: "이번 라운드 이후 시험별 상태:",
     nextElig: "적격 — 남은 미해결 질문 없음",
-    nextExcl: "탈락 (차단 기준 {n}건) — 이후 질문 대상 아님",
+    nextExcl: "탈락 (차단 기준 {n}건) — 최종 순위에서 재검토하지 않는 한 질문 대상 아님",
     nextCont: "미확정 — 미해결 {n}건 → 다음 라운드 질문으로 이어짐",
     nextWait: "미확정 — 물을 것 없음, 재평가 대기",
     nextNeed: " 필요: {list}.",
@@ -1597,7 +1599,7 @@ var _genBusy = false;
 var _fuSettled = false;   // fetchFollowups has answered (with or without new questions)
 // 남은 미확인 기준으로 추가 질문을 만들고 확인 질문 탭 첫 질문으로 이동. 상태 칩·순위 탭·카드
 // 모달이 같은 함수를 쓴다 — 어디서든 "멈춤" 대신 "다음 질문"이 나와야 한다 (08-30 그의 지적).
-function generateFollowupsAndGo(nct, btn){
+function generateFollowupsAndGo(nct, btn, contest){
   if (!cur || _genBusy) return;
   _genBusy = true;
   if (btn){ btn.disabled = true; btn.textContent = t("liveGenBusy"); }
@@ -1608,7 +1610,7 @@ function generateFollowupsAndGo(nct, btn){
   var line = document.getElementById("rankOpenLine");
   if (line){ line.hidden = false; line.textContent = t("liveGenBusy"); }
   _fuSettled = false;
-  fetchFollowups(cur.id, answered, nct);
+  fetchFollowups(cur.id, answered, nct, contest);
   var tries = 0;
   var timer = setInterval(function(){
     tries++;
@@ -2433,6 +2435,11 @@ function pathPanelHtml(trial){
       });
       html += ' <button type="button" class="qlink" id="pathAskBtn" data-mode="' + (hasPending ? "go" : "gen") + '">' +
         escapeHtml(hasPending ? t("pathAskGo") : t("pathAskGen")) + '</button>';
+    } else if (trialIsBlocked(trial)){
+      // 탈락 시험도 되묻을 수 있어야 한다 (08-31 그의 요청): 차단 기준을 이 시험만 따로 재검토.
+      var hasContest = pendingQuestions().some(function(q){ return q.contest_nct === trial.nct_id; });
+      html += ' <button type="button" class="qlink" id="pathAskBtn" data-mode="' + (hasContest ? "go" : "contest") + '">' +
+        escapeHtml(hasContest ? t("pathAskGo") : t("pathContest")) + '</button>';
     }
     html += '</div>';
   }
@@ -2563,7 +2570,7 @@ function openModal(nct){
       }
       _ask.disabled = true; _ask.textContent = t("pathAskBusy");
       overlay.classList.remove("open");
-      generateFollowupsAndGo(trial.nct_id);
+      generateFollowupsAndGo(trial.nct_id, null, _ask.dataset.mode === "contest");
     });
   }
   _pl.querySelectorAll(".path-more").forEach(function(btn){
@@ -2606,9 +2613,9 @@ function openModal(nct){
   overlay.classList.add("open");
 }
 function goToQuestion(q, nct){
-  var pillNcts = pillTrialNcts();
   var _sv = captureSelections();
-  selectedPill = pillNcts.indexOf(nct) >= 0 ? nct : "ALL";
+  var home = q ? questionHome(q) : "ALL";
+  selectedPill = (home === "COMMON" || pillTrialNcts().indexOf(home) >= 0) ? home : "ALL";
   selectedQuestion = q.question;
   renderChatAll();
   restoreSelections(_sv); updateBatchBar();
@@ -2627,43 +2634,66 @@ document.addEventListener("keydown", function(e){ if (e.key === "Escape") overla
 // ---------------------------------------------------------------------------
 // 확인 질문 탭 — 시험 필터 필 + 근거 페인 + 채팅 라운드 + 하단 일괄 반영 바
 // ---------------------------------------------------------------------------
+// 질문의 소속 시험 (08-31 그의 요청: 시험마다 따로, 여러 시험에 걸친 질문만 공통).
+// 서버가 실어준 affected_detail(진짜 질문→기준 링크)이 기준이고, 재검토 질문은 contest_nct;
+// 둘 다 없는 옛 질문만 토큰 매처로 추정한다. 한 시험 = 그 시험, 둘 이상 또는 0 = COMMON.
+function questionNcts(q, openList){
+  var det = Array.isArray(q.affected_detail) ? q.affected_detail : [];
+  var out = [];
+  det.forEach(function(d){ if (d && d.nct_id && out.indexOf(d.nct_id) < 0) out.push(d.nct_id); });
+  if (out.length) return out;
+  if (q.contest_nct) return [q.contest_nct];
+  if (typeof q.affects_trials === "number") return [];   // server said: links to nothing open
+  return matchOpenCriteria(questionTokens(q), openList || collectOpenCriteria(cur.trials)).ncts;
+}
+function questionHome(q, openList){
+  var n = questionNcts(q, openList);
+  return n.length === 1 ? n[0] : "COMMON";
+}
 function pillTrialNcts(){
   var openList = collectOpenCriteria(cur.trials);
-  var ncts = [];
-  pendingQuestions().forEach(function(q){
-    matchOpenCriteria(questionTokens(q), openList).ncts.forEach(function(n){
-      if (ncts.indexOf(n) < 0) ncts.push(n);
-    });
-  });
-  return ncts;
+  var homes = {};
+  pendingQuestions().forEach(function(q){ homes[questionHome(q, openList)] = 1; });
+  // 순위 순서로 — 질문 탭의 시험 순서가 최종 순위와 같아야 읽힌다
+  return (cur.trials || []).slice().sort(function(a, b){ return (a.rank || 99) - (b.rank || 99); })
+    .map(function(tr){ return tr.nct_id; }).filter(function(n){ return homes[n]; });
+}
+function hasCommonQuestions(){
+  var openList = collectOpenCriteria(cur.trials);
+  return pendingQuestions().some(function(q){ return questionHome(q, openList) === "COMMON"; });
 }
 function questionsForPill(list){
   if (selectedPill === "ALL") return list;
   var openList = collectOpenCriteria(cur.trials);
-  return list.filter(function(q){
-    return matchOpenCriteria(questionTokens(q), openList).ncts.indexOf(selectedPill) >= 0;
-  });
+  return list.filter(function(q){ return questionHome(q, openList) === selectedPill; });
+}
+function pillLabel(key){
+  if (key === "ALL") return t("pillAll");
+  if (key === "COMMON") return t("pillCommon");
+  return key;
 }
 function renderTrialPills(){
   var box = document.getElementById("trialPills");
   box.innerHTML = "";
   var openList = collectOpenCriteria(cur.trials);
   var pend = pendingQuestions();
-  var allPill = el("div", "trialpill" + (selectedPill === "ALL" ? " sel" : ""));
-  allPill.innerHTML = escapeHtml(t("pillAll")) + ' <span class="pillcount">' + pend.length + '</span>';
-  allPill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = "ALL"; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
-  box.appendChild(allPill);
-  pillTrialNcts().forEach(function(nct){
-    var count = pend.filter(function(q){
-      return matchOpenCriteria(questionTokens(q), openList).ncts.indexOf(nct) >= 0;
-    }).length;
-    var trial = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
-    var pill = el("div", "trialpill" + (selectedPill === nct ? " sel" : ""));
-    pill.title = (trial ? fixRegistryCasing(trial.title || nct) : nct) + " — " + t("pillFilterTip");
-    pill.innerHTML = escapeHtml(nct) + ' <span class="pillcount">' + count + '</span>';
-    pill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = nct; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
+  function addPill(key, count, title){
+    var pill = el("div", "trialpill" + (selectedPill === key ? " sel" : ""));
+    if (title) pill.title = title;
+    pill.innerHTML = escapeHtml(pillLabel(key)) + ' <span class="pillcount">' + count + '</span>';
+    pill.addEventListener("click", function(){ var _sv = captureSelections(); selectedPill = key; selectedQuestion = null; renderChatAll(); restoreSelections(_sv); updateBatchBar(); });
     box.appendChild(pill);
+  }
+  addPill("ALL", pend.length, null);
+  var nCommon = pend.filter(function(q){ return questionHome(q, openList) === "COMMON"; }).length;
+  if (nCommon) addPill("COMMON", nCommon, t("secCommon"));
+  pillTrialNcts().forEach(function(nct){
+    var count = pend.filter(function(q){ return questionHome(q, openList) === nct; }).length;
+    var trial = (cur.trials || []).find(function(x){ return x.nct_id === nct; });
+    addPill(nct, count, (trial ? fixRegistryCasing(trial.title || nct) : nct) + " — " + t("pillFilterTip"));
   });
+  // 선택된 필이 사라졌으면(질문이 다 답해짐) 전체로
+  if (selectedPill !== "ALL" && !box.querySelector(".trialpill.sel")) selectedPill = "ALL";
 }
 function questionPriorityLine(q, qMatch){
   var hasTrials = typeof q.affects_trials === "number";
@@ -3156,6 +3186,27 @@ function renderChat(){
   if (optNoteText && pend.some(function(q){ return Array.isArray(q.options) && q.options.length; })){
     box.appendChild(el("div", "optnote", escapeHtml(optNoteText)));
   }
+  if (selectedPill === "ALL" && pend.length){
+    // 전체 보기 = 시험별 섹션 (08-31 그의 요청): 공통 질문 먼저, 그 다음 순위 순서로 시험마다
+    // 따로. 추가 질문은 카드의 배지로 구분되므로 섹션을 또 나누지 않는다.
+    var hdr = el("div", "roundblock");
+    hdr.appendChild(el("div", "roundlabel",
+      escapeHtml(t("roundPending", {n: roundNo})) + ' <span class="progress">' +
+      escapeHtml(t("roundWaitingCount", {n: pend.length})) + '</span>'));
+    box.appendChild(hdr);
+    var keys = (hasCommonQuestions() ? ["COMMON"] : []).concat(pillTrialNcts());
+    keys.forEach(function(key){
+      var items = pend.filter(function(q){ return questionHome(q, openList) === key; });
+      if (!items.length) return;
+      var sec = el("div", "roundblock sec");
+      var trial = (cur.trials || []).find(function(x){ return x.nct_id === key; });
+      var title = key === "COMMON" ? t("secCommon")
+        : t("secTrial", {nct: key}) + (trial && trial.title ? " · " + truncateText(fixRegistryCasing(trial.title), 70) : "");
+      sec.appendChild(el("div", "roundlabel sec", escapeHtml(title) + ' <span class="progress">' + items.length + '</span>'));
+      items.forEach(function(q){ sec.appendChild(buildPendingCard(q, openList, chatGloss)); });
+      box.appendChild(sec);
+    });
+  } else {
   if (base.length){
     var block = el("div", "roundblock");
     block.appendChild(el("div", "roundlabel",
@@ -3169,6 +3220,7 @@ function renderChat(){
     fblock.appendChild(el("div", "roundlabel fu", escapeHtml(t("fuRound"))));
     fups.forEach(function(q){ fblock.appendChild(buildPendingCard(q, openList, chatGloss)); });
     box.appendChild(fblock);
+  }
   }
   if (!pendAll.length){
     var doneBlock = el("div", "roundcomplete", escapeHtml(t("allDone")) + "<br>" +
@@ -3189,7 +3241,7 @@ function renderChat(){
     c.classList.toggle("sel", c.dataset.question === selectedQuestion);
   });
   document.getElementById("chatHead").textContent =
-    t("chatHead") + (selectedPill === "ALL" ? "" : ". " + selectedPill);
+    t("chatHead") + (selectedPill === "ALL" ? "" : ". " + pillLabel(selectedPill));
   if (scrollToLastRound){
     // 라운드 직후: 제일 중요한 순간(내 답이 무엇을 바꿨나)이 화면 밖으로 밀리지 않게
     // 방금 끝난 라운드 블록 상단으로 스크롤. 그 외에는 기존처럼 맨 아래(대기 질문)로.
@@ -3367,7 +3419,14 @@ function submitBatch(){
     patient_id: cur.id,
     trials: cur.trials,
     extended_record: cur.extendedRecord,
-    questions: (cur.questions || []).slice(0, 12).map(function(q){ return {field: q.field, question: q.question}; }),
+    // 카드가 약속한 링크(affected_detail)·선택지 영문·재검토 대상 시험을 함께 보낸다 — 서버의
+    // _q_in이 읽는 필드들. 없으면 답이 카드에 적힌 기준에 못 미치고 토큰 겹침에만 기댄다.
+    questions: (cur.questions || []).slice(0, 12).map(function(q){ return {
+      field: q.field, question: q.question,
+      affected_detail: (q.affected_detail || []).map(function(d){ return {nct_id: d.nct_id, text: d.text}; }),
+      options: q.options || [], options_en: q.options_en || [],
+      contest_nct: q.contest_nct || undefined
+    }; }),
     asked_questions: (cur.questions || []).map(function(q){ return q.question; })
   };
   if (pending.length === 1){
@@ -3426,7 +3485,7 @@ function showFollowupError(msg){
   cur.followupNote = String(msg);
   renderChatAll();
 }
-function fetchFollowups(patientId, pending, focusNct){
+function fetchFollowups(patientId, pending, focusNct, contest){
   if (!cur || cur.id !== patientId) return;
   var note = document.getElementById("batchNote");
   if (note) note.textContent = t("fuChecking");
@@ -3434,6 +3493,7 @@ function fetchFollowups(patientId, pending, focusNct){
     patient_id: patientId,
     followups_only: true,
     focus_nct: focusNct || undefined,
+    contest: contest ? true : undefined,   // re-check of a blocked trial (08-31)
     trials: cur.trials,
     extended_record: cur.extendedRecord,
     asked_questions: (cur.questions || []).map(function(q){ return q.question; }),
@@ -3706,11 +3766,13 @@ function renderRanking(withDeltas){
     row.dataset.nct = trial.nct_id;
     // 시험별로 따로: 차단되지 않았고 미확인 기준이 남은 행마다 "이 시험 질문 생성" (08-30 그의 요청).
     var _openN = trialIsBlocked(trial) ? 0 : (trial.criteria || []).filter(function(c){ return c.verdict === "UNKNOWN" || c.verdict === "UNCERTAIN"; }).length;
-    if (_openN){
+    // 탈락 행: "이 시험 재검토" — 차단 기준을 이 시험만 따로 되묻는다 (08-31 그의 요청).
+    var _blockN = trialIsBlocked(trial) ? (trial.criteria || []).filter(function(c){ return getEffect(c) === "FAIL"; }).length : 0;
+    if (_openN || _blockN){
       var _gb = document.createElement("button");
-      _gb.type = "button"; _gb.className = "qlink rowgen";
-      _gb.textContent = t("rowGen", {n: _openN});
-      _gb.addEventListener("click", function(ev){ ev.stopPropagation(); generateFollowupsAndGo(trial.nct_id, _gb); });
+      _gb.type = "button"; _gb.className = "qlink rowgen" + (_blockN ? " contest" : "");
+      _gb.textContent = _blockN ? t("rowContest", {n: _blockN}) : t("rowGen", {n: _openN});
+      _gb.addEventListener("click", function(ev){ ev.stopPropagation(); generateFollowupsAndGo(trial.nct_id, _gb, !!_blockN); });
       setTimeout(function(){ row.appendChild(_gb); }, 0);
     }
     // 08-25: 랭킹에서 바로 "왜 이 판정인지"로 들어가야 한다. 보드 카드에만 있던 진입점을
