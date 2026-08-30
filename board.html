@@ -3098,9 +3098,15 @@ function renderChat(){
     // 라운드 직후: 제일 중요한 순간(내 답이 무엇을 바꿨나)이 화면 밖으로 밀리지 않게
     // 방금 끝난 라운드 블록 상단으로 스크롤. 그 외에는 기존처럼 맨 아래(대기 질문)로.
     scrollToLastRound = false;
+    // 라운드 직후 다음 라운드 질문이 있으면 그 첫 질문으로 — 위(라운드 결과)도 아래(마지막
+    // 질문)도 아니다 (08-30 그의 지적). 대기 질문이 없을 때만 방금 끝난 라운드 결과로.
+    var firstPending = box.querySelector(".qitem[data-question]");
     var doneBlocks = box.querySelectorAll(".roundblock.done");
     var lastDone = doneBlocks.length ? doneBlocks[doneBlocks.length - 1] : null;
-    if (lastDone){
+    if (firstPending){
+      box.scrollTop = Math.max(0,
+        firstPending.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - 8);
+    } else if (lastDone){
       box.scrollTop = Math.max(0,
         lastDone.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop);
     } else {
