@@ -396,6 +396,8 @@
   .rankhead{display:flex;justify-content:space-between;align-items:center;margin:0 0 16px;flex-wrap:wrap;gap:12px;}
   .rankhead .status{font-size:0.86rem;color:var(--ink-soft);}
   .rankhead .status.fresh{color:var(--met);font-weight:700;}
+  .rankopen{margin:0 0 12px;padding:10px 14px;border:1px solid var(--border);border-left:3px solid #9A6200;background:#FFF7E6;border-radius:4px;font-size:0.9rem;color:var(--ink);display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .livestatus.needs .statustext{color:#9A6200;}
   .refresh-btn{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:11px 22px;font-weight:700;cursor:pointer;font-size:0.86rem;
     display:inline-flex;align-items:center;gap:8px;}
   .refresh-btn.done{background:var(--met);}
@@ -595,11 +597,13 @@
   <div class="rankhead">
     <div class="status" id="rankStatus">Last updated: initial matching</div>
     <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+    <button class="refresh-btn" id="resetBtn" title="">↺</button>
     <button class="refresh-btn" id="exportBtn" title="">CSV</button>
     <button class="refresh-btn" id="exportXlsxBtn" title="">XLSX</button>
     <button class="refresh-btn" id="exportHtmlBtn" title="">HTML</button>
   </div>
   <div class="stalechip" id="staleChip"><button id="staleChipBtn"></button></div>
+  <div class="rankopen" id="rankOpenLine" hidden></div>
   <div class="ranknote" id="rankNeedNote" style="display:none;"></div>
   <div class="ranknote obs" id="rankObsNote" style="display:none;"></div>
   <div class="rankspilt">
@@ -683,6 +687,9 @@ var I18N = {
     colTipINELIGIBLE: "Trials ruled out by a confirmed blocking criterion",
     loading: "Loading", liveWaiting: "{n} questions waiting", liveWaitingOne: "1 question waiting",
     liveDone: "All questions resolved · ranking ready",
+    liveOpenLeft: "{n} criteria still need confirmation → generate questions", liveOpenTip: "The top candidates still have unconfirmed criteria. Click to generate the next questions.",
+    liveGenBusy: "Generating questions…", rankOpenLine: "{n} criteria on the candidate trials still need confirmation. Answer them to settle eligibility.",
+    resetBtn: "↺ Start over", resetTip: "Discard the saved rounds for this patient and reload the initial state", resetConfirm: "Discard all rounds and answers for this patient?",
     pdLoading: "Loading patients", pdSelect: "Select patient", pdMore: "More demo patients",
     noPatients: "No patients registered", errPrefix: "Error: ",
     loadingData: "Loading patient data.", loadingDataFor: "Loading {id}.",
@@ -933,6 +940,9 @@ var I18N = {
     colTipINELIGIBLE: "참여를 막는 기준이 확정되어 탈락한 시험",
     loading: "불러오는 중", liveWaiting: "확인 질문 {n}개 대기중", liveWaitingOne: "확인 질문 1개 대기중",
     liveDone: "확인 질문 모두 해결됨 · 순위 확인 가능",
+    liveOpenLeft: "확인 필요 기준 {n}건 남음 → 질문 생성", liveOpenTip: "후보 시험에 미확인 기준이 남아 있습니다. 누르면 다음 질문을 생성합니다.",
+    liveGenBusy: "질문 생성 중…", rankOpenLine: "후보 시험에 확인 필요 기준 {n}건이 남아 있습니다. 답하면 적격 여부가 확정됩니다.",
+    resetBtn: "↺ 처음부터", resetTip: "이 환자의 저장된 라운드를 지우고 초기 상태로 되돌립니다", resetConfirm: "이 환자의 모든 라운드와 답변을 지우시겠습니까?",
     pdLoading: "환자 불러오는 중", pdSelect: "환자 선택", pdMore: "추가 데모 환자",
     noPatients: "등록된 환자가 없습니다", errPrefix: "오류: ",
     loadingData: "환자 데이터를 불러오는 중입니다.", loadingDataFor: "{id} 데이터를 불러오는 중입니다.",
@@ -1539,20 +1549,69 @@ function pendingQuestions(){
 function roundsDone(){
   return events.filter(function(e){ return e.kind === "round" && !e.reverted; });
 }
+// 차단되지 않은 시험에 아직 미확인 기준이 남아 있는가 — "질문 모두 해결"이 곧 "판정 끝"은 아니다.
+function openCriteriaLeft(){
+  var n = 0;
+  (cur && cur.trials || []).forEach(function(t){
+    if (trialIsBlocked(t)) return;
+    (t.criteria || []).forEach(function(c){ if (c.verdict === "UNKNOWN" || c.verdict === "UNCERTAIN") n++; });
+  });
+  return n;
+}
 function computeLiveStatus(){
   var n = pendingQuestions().length;
   if (n === 1) return {text: t("liveWaitingOne"), tab: "chat"};
   if (n > 0) return {text: t("liveWaiting", {n: n}), tab: "chat"};
+  var open = cur ? openCriteriaLeft() : 0;
+  if (open > 0) return {text: t("liveOpenLeft", {n: open}), tab: "chat", gen: true};
   return {text: t("liveDone"), tab: "ranking"};
+}
+var _genBusy = false;
+// 남은 미확인 기준으로 추가 질문을 만들고 확인 질문 탭 첫 질문으로 이동. 상태 칩·순위 탭·카드
+// 모달이 같은 함수를 쓴다 — 어디서든 "멈춤" 대신 "다음 질문"이 나와야 한다 (08-30 그의 지적).
+function generateFollowupsAndGo(nct){
+  if (!cur || _genBusy) return;
+  _genBusy = true;
+  var status = document.getElementById("statusText");
+  if (status) status.textContent = t("liveGenBusy");
+  var answered = Object.keys(cur.answered || {}).map(function(q){ return {question: q, answer: String(cur.answered[q] == null ? "" : cur.answered[q])}; });
+  var before = pendingQuestions().length;
+  fetchFollowups(cur.id, answered);
+  var tries = 0;
+  var timer = setInterval(function(){
+    tries++;
+    var pend = pendingQuestions();
+    if (pend.length > before){
+      clearInterval(timer); _genBusy = false;
+      var q1 = (nct ? pend.filter(function(q){ return (q.affected_detail || []).some(function(d){ return d.nct_id === nct; }); })[0] : null) || pend[0];
+      goToQuestion(q1, nct || "ALL");
+      renderLiveStatus();
+    } else if (tries > 1200 || (cur && cur.followupNote && tries > 4)){
+      clearInterval(timer); _genBusy = false; renderLiveStatus();
+    }
+  }, 500);
 }
 function renderLiveStatus(){
   var s = computeLiveStatus();
   var box = document.getElementById("liveStatus");
   document.getElementById("statusText").textContent = s.text;
   box.dataset.tab = s.tab;
-  box.classList.toggle("done", pendingQuestions().length === 0);
-  box.title = t("statusTip");
+  box.dataset.gen = s.gen ? "1" : "";
+  box.classList.toggle("done", pendingQuestions().length === 0 && !s.gen);
+  box.classList.toggle("needs", !!s.gen);
+  box.title = s.gen ? t("liveOpenTip") : t("statusTip");
   document.getElementById("qCountBadge").textContent = pendingQuestions().length;
+  var line = document.getElementById("rankOpenLine");
+  if (line){
+    if (s.gen && !_genBusy){
+      line.hidden = false;
+      line.innerHTML = escapeHtml(t("rankOpenLine", {n: openCriteriaLeft()})) +
+        ' <button type="button" class="qlink" id="rankAskBtn">' + escapeHtml(t("pathAskGen")) + '</button>';
+      line.querySelector("#rankAskBtn").addEventListener("click", function(){ generateFollowupsAndGo(null); });
+    } else {
+      line.hidden = true;
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1567,6 +1626,7 @@ document.querySelectorAll(".tab").forEach(function(tab){
   });
 });
 document.getElementById("liveStatus").addEventListener("click", function(){
+  if (document.getElementById("liveStatus").dataset.gen === "1"){ generateFollowupsAndGo(null); return; }
   var targetTab = document.getElementById("liveStatus").dataset.tab;
   var tabEl = document.querySelector('.tab[data-v="' + targetTab + '"]');
   if (tabEl) tabEl.click();
@@ -2463,23 +2523,8 @@ function openModal(nct){
         return;
       }
       _ask.disabled = true; _ask.textContent = t("pathAskBusy");
-      var answered = Object.keys(cur.answered || {}).map(function(q){ return {question: q, answer: String(cur.answered[q] == null ? "" : cur.answered[q])}; });
-      var before = pendingQuestions().length;
-      fetchFollowups(cur.id, answered);
-      var tries = 0;
-      var timer = setInterval(function(){
-        tries++;
-        var pend = pendingQuestions();
-        if (pend.length > before){
-          clearInterval(timer);
-          overlay.classList.remove("open");
-          var q1 = pend.filter(function(q){ return (q.affected_detail || []).some(function(d){ return d.nct_id === trial.nct_id; }); })[0] || pend[pend.length - 1];
-          goToQuestion(q1, trial.nct_id);
-        } else if (tries > 600){
-          clearInterval(timer);
-          _ask.disabled = false; _ask.textContent = t("pathAskGen");
-        }
-      }, 500);
+      overlay.classList.remove("open");
+      generateFollowupsAndGo(trial.nct_id);
     });
   }
   _pl.querySelectorAll(".path-more").forEach(function(btn){
@@ -3638,6 +3683,13 @@ function renderRankStatusText(){
 document.getElementById("staleChipBtn").addEventListener("click", function(){
   document.getElementById("refreshBtn").click();
 });
+document.getElementById("resetBtn").addEventListener("click", function(){
+  if (!cur) return;
+  if (!window.confirm(t("resetConfirm"))) return;
+  clearState();
+  if (cur.isLive){ location.reload(); return; }
+  loadTrace(cur.id);
+});
 var refreshBtn = document.getElementById("refreshBtn");
 refreshBtn.addEventListener("click", function(){
   if (!cur) return;
@@ -3715,6 +3767,9 @@ function renderRankSideHistory(){
   });
 }
 function renderHistory(){
+  saveState();
+  var _rb = document.getElementById("resetBtn");
+  if (_rb){ _rb.hidden = !(events.length || Object.keys((cur && cur.answered) || {}).length); _rb.textContent = t("resetBtn"); _rb.title = t("resetTip"); }
   var box = document.getElementById("dynamicHistory");
   box.innerHTML = "";
   var latestRoundSeq = null;
@@ -3806,6 +3861,41 @@ function revertRound(e){
 // ---------------------------------------------------------------------------
 // 로드 + 전체 렌더
 // ---------------------------------------------------------------------------
+// 세션 지속: 라운드·답변·이력을 브라우저에 저장해 새로고침이 "처음부터"가 되지 않게 한다
+// (08-30 그의 지적). 환자별 키, 라이브 환자는 기록 텍스트 해시까지 포함.
+function stateKey(){
+  if (!cur) return null;
+  var h = 0, txt = String(cur.patientText || "");
+  for (var i = 0; i < txt.length; i++) h = (h * 31 + txt.charCodeAt(i)) | 0;
+  return "sdic_state:" + cur.id + ":" + (h >>> 0).toString(16);
+}
+function saveState(){
+  try {
+    var k = stateKey();
+    if (!k || !cur) return;
+    if (!events.length && !Object.keys(cur.answered || {}).length){ localStorage.removeItem(k); return; }
+    localStorage.setItem(k, JSON.stringify({v: 1, savedAt: Date.now(), cur: cur, events: events,
+      histSeq: histSeq, roundCounter: roundCounter, selectedPill: selectedPill}));
+  } catch (e) { /* storage unavailable: nothing to restore later, nothing broken now */ }
+}
+function restoreState(){
+  try {
+    var k = stateKey();
+    if (!k) return false;
+    var raw = localStorage.getItem(k);
+    if (!raw) return false;
+    var st = JSON.parse(raw);
+    if (!st || st.v !== 1 || !st.cur || st.cur.id !== cur.id) return false;
+    var keep = cur.gloss;                 // 서버 gloss는 항상 최신 서빙본
+    cur = st.cur; cur.gloss = keep || cur.gloss;
+    events = st.events || []; histSeq = st.histSeq || 0; roundCounter = st.roundCounter || 0;
+    selectedPill = st.selectedPill || "ALL";
+    return true;
+  } catch (e) { return false; }
+}
+function clearState(){
+  try { var k = stateKey(); if (k) localStorage.removeItem(k); } catch (e) {}
+}
 function renderAll(){
   renderPatientBtn();
   renderPatientMenu();
@@ -3869,8 +3959,11 @@ function loadTrace(patientId){
       histSeq = 0;
       selectedPill = "ALL";
       selectedQuestion = null;
+      var restored = restoreState();
       document.getElementById("round0Time").textContent = nowLabel();
       renderAll();
+      var rb = document.getElementById("resetBtn");
+      if (rb){ rb.hidden = !restored && !events.length; }
     })
     .catch(function(e){ showLoadError(String(e)); });
 }
