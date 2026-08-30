@@ -287,30 +287,7 @@ for _entry in TRIALS_RAW.values():
         _all_trials[_t["nct_id"]] = _t
 ALL_TRIALS = list(_all_trials.values())
 
-# Models offerable per backend, for the local UI's picker. IDs are the exact strings the
-# provider expects -- Anthropic aliases carry no date suffix. Local only: the deployed
-# endpoint stays pinned to its configured model so a visitor can't select a costlier one.
-MODEL_CHOICES = {
-    "anthropic": [
-        {"id": "claude-haiku-4-5", "label": "Haiku 4.5 (기본, 가장 저렴)"},
-        {"id": "claude-sonnet-5", "label": "Sonnet 5 (균형)"},
-        {"id": "claude-opus-4-8", "label": "Opus 4.8 (최고 성능, 비쌈)"},
-    ],
-    "claude": [
-        {"id": "claude-haiku-4-5", "label": "Haiku 4.5 (기본, 가장 빠름)"},
-        {"id": "claude-sonnet-5", "label": "Sonnet 5 (균형)"},
-        {"id": "claude-opus-4-8", "label": "Opus 4.8 (최고 성능, 가장 느림)"},
-    ],
-# Fable is deliberately NOT offered in the UI: it screens inputs for bio content and can
-# decline clinical prompts. It stays reachable for offline smoke tests via
-# pipeline.set_active_model("claude-fable-5") in a script.
-    "groq": [
-        {"id": "llama-3.3-70b-versatile", "label": "Llama 3.3 70B (무료)"},
-    ],
-    "ollama": [
-        {"id": "qwen3.6:35b", "label": "Qwen3.6 35B (로컬)"},
-    ],
-}
+from model_choices import MODEL_CHOICES  # noqa: E402
 
 SESSIONS = {}
 SESSIONS_LOCK = threading.Lock()

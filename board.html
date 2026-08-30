@@ -70,6 +70,8 @@
   .tab{padding:16px 22px;font-size:0.9rem;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;
     display:flex;align-items:center;gap:8px;}
   .tab.active{color:var(--primary);border-color:var(--secondary);}
+  .modelsel{margin-left:12px;font:inherit;font-size:0.82rem;padding:3px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;}
+  .modelsel option{color:#111;}
   .tabbadge{background:var(--secondary);color:#fff;font-size:0.88rem;font-weight:700;min-width:17px;height:17px;border-radius:99px;
     display:inline-flex;align-items:center;justify-content:center;padding:0 4px;}
 
@@ -498,8 +500,32 @@
     <button type="button" data-lang="en" class="on">EN</button>
     <button type="button" data-lang="ko">KO</button>
   </div>
+  <select id="modelSel" class="modelsel" hidden aria-label="LLM model" title="LLM model for new runs / answer rounds"></select>
   <span class="eventtag">2026 SKKU HEALTHCARE<br>AGENTIC CHALLENGE</span>
 </div>
+<script>
+// Model picker: local server only (GET/POST /api/meta in live_server.py). The deployed
+// endpoint has no /api/meta, so the control stays hidden there and the model stays pinned.
+(function(){
+  var sel = document.getElementById("modelSel");
+  fetch("/api/meta").then(function(r){ return r.ok ? r.json() : null; }).then(function(m){
+    if (!m || !m.models || !m.models.length) return;
+    sel.innerHTML = m.models.map(function(x){
+      return '<option value="' + x.id + '"' + (x.id === m.model ? ' selected' : '') + '>' + x.label + '</option>';
+    }).join("");
+    sel.hidden = false;
+    sel.addEventListener("change", function(){
+      sel.disabled = true;
+      fetch("/api/meta", {method: "POST", headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({model: sel.value})})
+        .then(function(r){ return r.json(); })
+        .then(function(res){ if (res.error) { console.warn("[modelSel]", res.error); sel.value = sel.dataset.prev || sel.value; } else { sel.dataset.prev = res.model; } })
+        .catch(function(){})
+        .then(function(){ sel.disabled = false; });
+    });
+  }).catch(function(){});
+})();
+</script>
 
 <div class="tabbarouter">
   <div class="patient-dropdown" id="patientDropdown">

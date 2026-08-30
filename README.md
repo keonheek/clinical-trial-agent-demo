@@ -7,6 +7,8 @@ questions, and returns a per-patient recommendation with a deterministic priorit
 
 This is a capability demo, not a validated clinical tool. See disclaimer at the bottom.
 
+**심사용 재현 (API 키 불필요):** `python3 serve_local.py` → 브라우저에서 `http://127.0.0.1:8930/board.html`. 커밋된 `traces.json`을 그대로 서빙하므로 모델 호출 없이 전체 판정·질문·순위를 확인할 수 있습니다. 답변 라운드/재생성만 LLM 백엔드가 필요합니다 (`LLM_BACKEND`, 아래 참고).
+
 ## What it does
 
 1. Pulls REAL, currently-recruiting trials from ClinicalTrials.gov for all 10 official sample
@@ -15,7 +17,7 @@ This is a capability demo, not a validated clinical tool. See disclaimer at the 
 2. Runs a 6-role LLM pipeline plus a re-evaluation loop that parses trial eligibility criteria,
    extracts patient facts with verbatim evidence, matches each criterion, detects gaps in the
    patient's record, and generates clarifying questions. The LLM backend is switchable via the
-   `LLM_BACKEND` env var; the default is `anthropic` (`claude-haiku-4-5`, funded by the
+   `LLM_BACKEND` env var; the default is `anthropic` (`claude-opus-5`, funded by the
    challenge's API credit — this project's sanctioned exception to an otherwise-$0 posture),
    with Groq free tier, local Ollama, and the local Claude Code subscription as alternatives.
    Every call is cached per backend+model, so a re-run costs nothing.
@@ -128,8 +130,9 @@ patients' clarifying questions (Korean text, Korean options, per-option directio
 `questions_v2.json`; `gen_options_en_v2.py` adds English option text; `gen_gloss.py` builds
 `gloss.json`. `xlsx_view.py <file.xlsx>` renders a screening record as one tabbed HTML page.
 
-The default backend (`LLM_BACKEND=anthropic`, model `claude-sonnet-5`, override with
-`CLAUDE_PIPELINE_MODEL`) reads `ANTHROPIC_AI_HEALTHCARE_API_KEY`, then `ANTHROPIC_NEW_KEY`, then
+The default backend (`LLM_BACKEND=anthropic`, model `claude-opus-5`; override with
+`CLAUDE_PIPELINE_MODEL` or pick Haiku 4.5 / Sonnet 5 / Opus 5 / Fable 5 in the board's model
+picker) reads `ANTHROPIC_AI_HEALTHCARE_API_KEY`, then `ANTHROPIC_NEW_KEY`, then
 `ANTHROPIC_API_KEY` from the environment or from `.env` / `.env.local` at the repo root;
 `LLM_BACKEND=groq` reads `GROQ_API_KEY`, `LLM_BACKEND=ollama` needs no key, and
 `LLM_BACKEND=claude` runs on a local Claude Code subscription (`claude -p`). The pipeline itself
@@ -150,7 +153,7 @@ quota again).
   (`urllib.request`, `json`, `hashlib`, `time`, `os`); the screening-record export
   (`export_report.py`, `api/export.py`, `xlsx_view.py`) needs `openpyxl` — see
   `requirements.txt`, the only pinned dependency.
-- One LLM backend, selected by `LLM_BACKEND`: `anthropic` (default, `claude-sonnet-5` since
+- One LLM backend, selected by `LLM_BACKEND`: `anthropic` (default, `claude-opus-5` since 2026-08-30; `claude-sonnet-5`
   2026-08-19 after the 3-model bake-off; `claude-haiku-4-5` before that), `groq` (free tier,
   `llama-3.3-70b-versatile`), `ollama` (local `qwen3.6`), or `claude` (local Claude Code
   subscription). All are called in JSON mode.
@@ -168,7 +171,7 @@ quota again).
 - **Patient vignettes** (`patients.json`): the competition's own published sample patients
   (S001-S010), copied verbatim from the task brief — not real patient data.
 - **LLM inference** is backend-switchable via `LLM_BACKEND`, and the pipeline is not tied to any
-  one model. Default is `anthropic` / `claude-haiku-4-5` (funded by the challenge's API credit —
+  one model. Default is `anthropic` / `claude-opus-5` (funded by the challenge's API credit —
   the sanctioned exception to this project's $0 default); alternatives are Groq free tier
   (`llama-3.3-70b-versatile`), local Ollama (`qwen3.6`, $0), and the local Claude Code
   subscription. Every call is cached per backend+model, so switching backends never reuses

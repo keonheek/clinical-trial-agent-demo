@@ -20,7 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 os.chdir(HERE)
 sys.path.insert(0, HERE)
 os.environ.setdefault("LLM_BACKEND", "claude")
-os.environ.setdefault("CLAUDE_PIPELINE_MODEL", "claude-sonnet-5")
+os.environ.setdefault("CLAUDE_PIPELINE_MODEL", "claude-opus-5")
 os.environ.setdefault("LIVE_RATE_LIMIT", "1000")
 os.environ.setdefault("ROUND_BUDGET_S", "900")  # claude -p is slow; 45 s is a Vercel constraint, not ours
 for _k in ("CLAUDECODE", "CLAUDE_CODE_CHILD_SESSION"):  # let claude -p start from inside a session
@@ -31,7 +31,47 @@ from api import patients as _patients, trace as _trace, answer as _answer, live 
 _answer.RATE_LIMIT_PER_MIN = 1000
 _answer.FOLLOWUP_RATE_LIMIT_PER_MIN = 1000
 
+import json  # noqa: E402
+import pipeline  # noqa: E402
+from model_choices import MODEL_CHOICES  # noqa: E402
+
+
+class _Meta:
+    """GET/POST /api/meta -- the board's model picker (local only; the deployed endpoint has
+    no /api/meta, so the picker stays hidden there and the model stays pinned)."""
+
+    @staticmethod
+    def _send(h, obj, status=200):
+        data = json.dumps(obj).encode("utf-8")
+        h.send_response(status)
+        h.send_header("Content-Type", "application/json")
+        h.send_header("Content-Length", str(len(data)))
+        h.end_headers()
+        h.wfile.write(data)
+
+    @classmethod
+    def do_GET(cls, h):
+        backend = os.environ["LLM_BACKEND"]
+        cls._send(h, {"backend": backend, "model": pipeline.ACTIVE_MODEL,
+                      "default_model": pipeline.DEFAULT_MODEL,
+                      "models": MODEL_CHOICES.get(backend, [])})
+
+    @classmethod
+    def do_POST(cls, h):
+        backend = os.environ["LLM_BACKEND"]
+        n = int(h.headers.get("Content-Length") or 0)
+        try:
+            body = json.loads(h.rfile.read(n) or b"{}")
+        except ValueError:
+            body = {}
+        wanted = str(body.get("model", "")).strip()
+        if wanted not in {m["id"] for m in MODEL_CHOICES.get(backend, [])}:
+            return cls._send(h, {"error": f"model not available on backend {backend}"}, 400)
+        cls._send(h, {"backend": backend, "model": pipeline.set_active_model(wanted)})
+
+
 ROUTES = {
+    "/api/meta": _Meta,
     "/api/patients": _patients.handler,
     "/api/trace": _trace.handler,
     "/api/answer": _answer.handler,

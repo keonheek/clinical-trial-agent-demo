@@ -17,7 +17,7 @@ import re
 import subprocess
 import time
 
-DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-haiku-4-5-20251001")
+DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-opus-5")
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
 
 _stats = {"api_calls": 0, "cache_hits": 0}

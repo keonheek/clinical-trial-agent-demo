@@ -32,10 +32,11 @@ import urllib.request
 API_URL = "https://api.anthropic.com/v1/messages"
 API_VERSION = "2023-06-01"
 
-# Default switched Haiku -> Sonnet 2026-08-19 (Keonhee's go): the 3-model bake-off on the 51
-# blind stress labels measured verdict accuracy Sonnet 76.5% vs Haiku 72.6% (Opus excluded by
-# his 08-18 model order). Override with CLAUDE_PIPELINE_MODEL.
-DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-sonnet-5")
+# Default switched Sonnet 5 -> Opus 5 2026-08-30 (Keonhee's go) for the final submission.
+# History: Haiku -> Sonnet 2026-08-19 after the 3-model bake-off on the 51 blind stress labels
+# (Sonnet 76.5% vs Haiku 72.6%). Override with CLAUDE_PIPELINE_MODEL or the UI picker
+# (Haiku 4.5 / Sonnet 5 / Opus 5 / Fable 5 -- see live_server.MODEL_CHOICES).
+DEFAULT_MODEL = os.environ.get("CLAUDE_PIPELINE_MODEL", "claude-opus-5")
 
 # Roles where clinical reasoning quality decides the score. Everything else is extraction.
 THINKING_ROLES = {"matcher", "reeval-matcher"}
@@ -45,6 +46,13 @@ def _supports_effort(model):
     """output_config.effort and the thinking toggle are frontier-model features. Haiku 4.5
     returns HTTP 400 ("does not support the effort parameter") if either is sent."""
     return not model.startswith("claude-haiku")
+
+
+def _thinking_always_on(model):
+    """Fable 5 and Opus 5 run adaptive thinking by default. Fable rejects
+    thinking={"type":"disabled"} with HTTP 400, so it is never sent for these; effort alone
+    controls spend there."""
+    return model.startswith("claude-fable") or model.startswith("claude-opus-5")
 
 
 def _price_for(model):
@@ -60,6 +68,8 @@ def _price_for(model):
 # USD per million tokens. Sonnet 5 is on introductory pricing through 2026-08-31, which covers
 # the whole competition; it reverts to 3/15 on 2026-09-01.
 PRICING = {
+    "claude-fable-5": (10.00, 50.00),
+    "claude-opus-5": (5.00, 25.00),
     "claude-sonnet-5": (2.00, 10.00),
     "claude-haiku-4-5": (1.00, 5.00),
     "claude-opus-4-8": (5.00, 25.00),
@@ -210,8 +220,10 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
         # rather than sending them unconditionally.
         if _supports_effort(model):
             body["output_config"] = {"effort": "medium" if role in THINKING_ROLES else "low"}
-            if role not in THINKING_ROLES:
+            if role not in THINKING_ROLES and not _thinking_always_on(model):
                 # Structured extraction does not benefit from deliberation; skip it and pay less.
+                # Not sent on Fable 5 / Opus 5: Fable returns 400 for it, and Opus 5 with
+                # thinking disabled can leak tool-call text -- low effort covers both there.
                 body["thinking"] = {"type": "disabled"}
         data = json.dumps(body).encode("utf-8")
 
