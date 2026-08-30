@@ -1614,6 +1614,10 @@ function applyStaticI18n(){
     _ex1.dataset.wired = "1";
     _ex1.addEventListener("click", exportCurrentXlsx);
   }
+  // 언어 전환 후에도 두 내보내기 버튼 라벨이 따라오도록 — 종전에는 환자 로드 전에만 갱신됐다.
+  var _exL = document.getElementById("exportBtn");
+  if (_exL){ _exL.textContent = t("exportCsv"); _exL.title = t("exportTip"); }
+  if (_ex1){ _ex1.textContent = t("exportXlsx"); _ex1.title = t("exportXlsxTip"); }
   var _tr0 = document.getElementById("toRankBtn");
   if (_tr0 && !_tr0.dataset.wired){
     _tr0.dataset.wired = "1";
@@ -1638,10 +1642,6 @@ function applyStaticI18n(){
     if (_tr) _tr.textContent = t("toRank");
     var _sh = document.getElementById("rankSideHead");
     if (_sh) _sh.textContent = t("sideHist");
-    var _ex = document.getElementById("exportBtn");
-    if (_ex){ _ex.textContent = t("exportCsv"); _ex.title = t("exportTip"); }
-    var _exx = document.getElementById("exportXlsxBtn");
-    if (_exx){ _exx.textContent = t("exportXlsx"); _exx.title = t("exportXlsxTip"); }
     document.getElementById("batchBtn").textContent = t("batchBtn", {n: 0});
     document.getElementById("rankStatus").textContent = t("rankStatusInit");
   }
