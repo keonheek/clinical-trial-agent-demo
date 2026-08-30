@@ -196,7 +196,7 @@ def _restore_server_fields(patient_id, trials):
 from action_policy import _tokens  # noqa: E402
 
 
-def find_affected(question_text, trials):
+def find_affected(question_text, trials, answer_text=""):
     """Which still-unresolved criteria does this answer plausibly bear on? live_server.py
     answers this from an LLM-built gap -> related_criteria map; that map does not exist here
     (traces.json stores questions but not the gaps that produced them), so this does the same
@@ -208,7 +208,10 @@ def find_affected(question_text, trials):
     to "resolve every open criterion": that silently re-evaluates the whole trace on one
     unrelated answer and spends the metered key on criteria the answer never touched
     (지우's proven bug, same defect class as live_server.find_affected's empty-target case)."""
-    qtok = _tokens(question_text)
+    # 08-30 stress review: widen with the answer's own tokens so an answer about consent
+    # capacity or alcohol use reaches the same criterion on every non-blocked trial, not
+    # only the trial whose wording overlapped the question. Still bounded by overlap.
+    qtok = _tokens(question_text + " " + (answer_text or ""))
     affected = []
     for t_idx, t in enumerate(trials):
         # trial-level STOP: a trial that already carries a hard FAIL is out; re-evaluating its
@@ -414,7 +417,7 @@ def handle(body, client_ip="?"):
     # ONE round for the whole batch: per-question find_affected, then the union (deduped by
     # criterion, capped) feeds a single rematch + a single recommend -- never one loop per
     # question.
-    affected, sources = union_affected([(q, find_affected(q, trials_copy)) for q, _ in pairs])
+    affected, sources = union_affected([(q, find_affected(q, trials_copy, ans)) for q, ans in pairs])
     new_record = (extended_record
                   + "".join(f"\n추가 문진 Q: {q} / A: {a}" for q, a in pairs)).strip()
 

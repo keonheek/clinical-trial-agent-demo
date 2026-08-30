@@ -1376,6 +1376,22 @@ function newGlossSection(){ return {shown: false}; }
 // The "번역/translation" micro-label prints once per section (state.shown), not once per line --
 // every other gloss line in that section still carries the same dim/italic style, so it reads
 // unambiguously as a translation by position and styling alone.
+// 질문/사유 본문: 서버가 question_ko/why_ko를 보내면(라이브·추가 질문) 국문 모드에서 그것을
+// 본문으로, 영문 원문을 보조 줄로 쓴다. 없으면(캐시 환자) 기존 gloss 사이드카 경로 그대로.
+function qPrimary(q, key){
+  var ko = q[key + "_ko"];
+  if (LANG === "ko" && ko) return ko;
+  return q[key] || "";
+}
+function qSecondaryHtml(q, key, state){
+  var ko = q[key + "_ko"];
+  if (ko){
+    var sec = LANG === "ko" ? (q[key] || "") : ko;
+    if (!sec || sec === qPrimary(q, key)) return "";
+    return '<span class="gloss-line">' + escapeHtml(sec) + '</span>';
+  }
+  return glossLineHtml(q[key] || "", state);
+}
 function glossLineHtml(text, state, extraCls){
   var g = glossFor(text);
   if (!g) return "";
@@ -2536,11 +2552,30 @@ function optionDirectionEl(optText, q){
     var v = String(d.verdict || "").toUpperCase();
     return v === "UNKNOWN" || v === "UNCERTAIN";
   });
+  var tag = document.createElement("span");
+  // 서버 방향이 있으면 그것이 정답이다: 선택지를 쓴 모델이 기준 원문을 보고 판단한 값
+  // (question-generator의 option_directions). 토큰/정규식 추정은 부정형("아님", "none
+  // planned")과 부정형 선정기준("naive to X")에서 틀렸다 — 08-30 그의 스크린샷.
+  if (Array.isArray(q.option_directions) && Array.isArray(q.options)
+      && q.option_directions.length === q.options.length){
+    var _i = q.options.indexOf(optText);
+    var _d = _i >= 0 ? String(q.option_directions[_i] || "").toLowerCase() : "";
+    if (_d === "neutral") return null;
+    if (_d === "unresolved"){ tag.className = "opt-tag mixed"; tag.textContent = t("optDirUnknown"); return tag; }
+    if (_d === "eligible" || _d === "excluded"){
+      tag.className = "opt-tag " + (_d === "eligible" ? "incl" : "excl");
+      tag.textContent = t(_d === "eligible" ? "optDirIn" : "optDirOut");
+      if (det.length) tag.title = t("optTipLead") + det.map(function(d){
+        return shortNct(d.nct_id) + " " + (String(d.type).toLowerCase() === "exclusion"
+          ? t("fitExclusion") : t("fitInclusion")) + ": " + (d.text || "");
+      }).join(" · ");
+      return tag;
+    }
+  }
   if (!det.length) return null;
   var txt = normTagText(optText);
-  var pol = /기록 없음|확인 불가|모름/.test(txt) ? "unknown"
-    : /(모두 정상|정상 범위|해당 ?사항 없음|아니오$|없음$)/.test(txt) ? "negate" : "affirm";
-  var tag = document.createElement("span");
+  var pol = /기록 없음|확인 불가|모름|unknown|not documented|no record/i.test(txt) ? "unknown"
+    : /(모두 정상|정상 범위|해당 ?사항 없음|아니오|없음|아님|않음|\bnot?\b|\bnone\b|\bnever\b|naive|negative|normal)/i.test(txt) ? "negate" : "affirm";
   if (pol === "unknown"){
     tag.className = "opt-tag mixed";
     tag.textContent = t("optDirUnknown");
@@ -2682,9 +2717,9 @@ function buildPendingCard(q, openList, glossState){
   var qMatch = matchOpenCriteria(qTok, openList);
   card.innerHTML =
     (q.field ? '<div class="qfield" title="' + escapeHtml(q.field) + '">' + escapeHtml(prettifyName(q.field)) + ctxBadge + '</div>' : "") +
-    '<div class="qtext">' + escapeHtml(q.question) + fuBadge + '</div>' +
-    glossLineHtml(q.question, glossState) +
-    (q.why ? '<div class="qwhy">' + escapeHtml(q.why) + '</div>' + glossLineHtml(q.why, glossState) : "") +
+    '<div class="qtext">' + escapeHtml(qPrimary(q, "question")) + fuBadge + '</div>' +
+    qSecondaryHtml(q, "question", glossState) +
+    (q.why ? '<div class="qwhy">' + escapeHtml(qPrimary(q, "why")) + '</div>' + qSecondaryHtml(q, "why", glossState) : "") +
     questionPriorityLine(q, qMatch);
   // The server-numbered priority line above already says what answering re-checks (with the
   // NCT list folded in when the mapper agrees). A second, standalone mapper line under it was
@@ -2938,9 +2973,9 @@ function renderEvidence(){
   var m = matchOpenCriteria(questionTokens(q), openList);
   var evGloss = newGlossSection(); // one label for the whole evidence pane
   var html = "<h3>" + escapeHtml(t("evHead")) + "</h3>" +
-    '<div class="evq">' + escapeHtml(q.question) + '</div>' +
-    glossLineHtml(q.question, evGloss) +
-    (q.why ? '<div class="evwhy">' + escapeHtml(q.why) + '</div>' + glossLineHtml(q.why, evGloss) : "");
+    '<div class="evq">' + escapeHtml(qPrimary(q, "question")) + '</div>' +
+    qSecondaryHtml(q, "question", evGloss) +
+    (q.why ? '<div class="evwhy">' + escapeHtml(qPrimary(q, "why")) + '</div>' + qSecondaryHtml(q, "why", evGloss) : "");
   if (!m.items.length){
     var serverLinked = typeof q.affects_criteria === "number" && q.affects_criteria > 0;
     html += '<div class="evempty">' + escapeHtml(t(serverLinked ? "evLinkUnmapped" : "evNoLink")) + '</div>';

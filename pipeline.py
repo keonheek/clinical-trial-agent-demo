@@ -34,6 +34,7 @@ import re
 import sys
 import time
 
+from action_policy import _affected_criteria, _tokens, trial_is_blocked
 from action_policy import (
     normalize_uncertainty_type,
     action_for,
@@ -84,6 +85,7 @@ MAX_EXTENDED_RECORD_WORDS = 180
 VALID_VERDICTS = {"MET", "NOT_MET", "UNCERTAIN", "UNKNOWN"}
 VALID_ELIGIBILITY = {"ELIGIBLE", "INELIGIBLE", "UNCERTAIN"}
 VALID_EFFECTS = {"PASS", "FAIL", "REVIEW"}
+VALID_OPTION_DIRECTIONS = {"eligible", "excluded", "unresolved", "neutral"}
 
 # Two-layer verdict model.
 #
@@ -505,10 +507,30 @@ options described below -- 6 total at most. Rules for options:
   (b) "기록 없음/확인 불가" for when the chart is simply silent.
   Without (a) a coordinator holding a normal result has no way to say so, which is a real answer.
   Never include a free-text placeholder -- the UI adds that itself.
-- Write options in Korean; keep clinical terms and units in their standard form (ANC, HbA1c, mg/dL).
+- Options MUST be written in Korean (Hangul sentences, 명사형 종결); only drug names, clinical
+  terms and units stay in their standard form (ANC, HbA1c, mg/dL, deucravacitinib). This holds
+  even when the vignette and the criteria are in English.
+- Every option must be self-contained and unambiguous on its own: say "다른 임상시험 참여 계획
+  없음", never a bare "임상시험 참여 계획 없음" that could be read as this trial.
+
+For each question ALSO supply `question_ko` and `why_ko`: faithful Korean versions of `question`
+and `why` in professional 하십시오체 (a coordinator reads them on screen), same clinical terms.
+
+For each option ALSO supply its direction in `option_directions` (same order and length as
+`options`), judged against the criteria this question resolves:
+  "eligible"   -- ticking it moves the patient toward eligibility (an inclusion criterion
+                  becomes met, or an exclusion criterion becomes not met)
+  "excluded"   -- ticking it moves the patient toward exclusion (an exclusion criterion becomes
+                  met, or an inclusion criterion becomes not met)
+  "unresolved" -- the chart is silent / cannot be confirmed (always the value for
+                  "기록 없음/확인 불가")
+  "neutral"    -- bears on no criterion either way
+Judge the direction from the criterion wording, not from whether the option sounds positive:
+for an inclusion criterion "naive to drug X", the option "X 투여 받은 적 없음" is "eligible" and
+"이전에 X 투여 받음" is "excluded".
 
 Respond with ONLY a JSON object, no markdown fences, no commentary, in this exact shape:
-{"questions": [{"field": "<matches a gap field>", "question": "<question text>", "why": "<short reason, <=20 words>", "options": ["<option>", "..."]}]}
+{"questions": [{"field": "<matches a gap field>", "question": "<question text>", "question_ko": "<Korean question>", "why": "<short reason, <=20 words>", "why_ko": "<Korean reason>", "options": ["<option>", "..."], "option_directions": ["eligible"|"excluded"|"unresolved"|"neutral", "..."]}]}
 Return at most 3 questions, prioritizing gaps that affect the most trials."""
 
 
@@ -549,10 +571,23 @@ Generate at most 3 clarifying questions per your instructions."""
         # Truncating from the end would drop the two closing options the prompt requires
         # (the clean answer and "기록 없음"), which are the ones a coordinator needs most --
         # so when over the cap, drop from the MIDDLE and keep the tail.
+        raw_dirs = q.get("option_directions")
+        dirs = None
+        if isinstance(raw_dirs, list) and len(raw_dirs) == len(options):
+            dirs = []
+            for d in raw_dirs:
+                d = str(d or "").strip().lower()
+                dirs.append(d if d in VALID_OPTION_DIRECTIONS else "neutral")
         if len(options) > 6:
             options = options[:4] + options[-2:]
+            dirs = (dirs[:4] + dirs[-2:]) if dirs else None
+        # Direction comes from the model that wrote the option and saw the criteria; the UI's
+        # token/regex guess was wrong on negations ("아님", "none planned") and on inclusion
+        # criteria phrased negatively ("naive to X") -- his 08-30 screenshots.
         cleaned.append({"field": field, "question": question, "why": why,
-                        "options": options})
+                        "question_ko": str(q.get("question_ko", "")).strip(),
+                        "why_ko": str(q.get("why_ko", "")).strip(),
+                        "options": options, "option_directions": dirs})
     return cleaned
 
 
@@ -576,12 +611,27 @@ def dedupe_followups(candidates, asked_texts, cap=3):
     """
     seen = {_norm_q(t) for t in asked_texts or [] if t}
     seen.discard("")
+    seen_tok = [_tokens(t) for t in seen]
+
+    def _near_dup(norm):
+        # A follow-up re-asking "enrolled in or planning to enroll in any other clinical trial
+        # or research study?" after "...other clinical trials or interventional studies?" slipped
+        # through exact matching (his 08-30 screenshot). Jaccard on content tokens catches it.
+        tok = _tokens(norm)
+        if not tok:
+            return False
+        for st in seen_tok:
+            if st and len(tok & st) / len(tok | st) >= 0.6:
+                return True
+        return False
+
     out = []
     for q in candidates or []:
         norm = _norm_q(q.get("question", ""))
-        if not norm or norm in seen:
+        if not norm or norm in seen or _near_dup(norm):
             continue
         seen.add(norm)
+        seen_tok.append(_tokens(norm))
         out.append(q)
         if len(out) >= cap:
             break
@@ -758,10 +808,28 @@ Clarifying questions asked during follow-up:
 
 Generate the extended_record and answers per your instructions."""
     result = call_groq("reeval-record-answer", RECORD_ANSWER_SYS, user)
-    extended_record = truncate_words(str(result.get("extended_record", "")).strip(), MAX_EXTENDED_RECORD_WORDS)
-    answers_raw = result.get("answers", [])
+    # Ground the quotes against the FULL record. Truncating to MAX_EXTENDED_RECORD_WORDS
+    # before the substring check silently dropped every answer whose quote sat past word 180
+    # -- and when all three dropped, run_reeval skipped the whole answer round with no retry.
+    # 8 of 30 stress runs with questions lost their answer round that way (2026-08-30).
+    # The prompt still asks for <=180 words; the cap is advisory, not a grounding filter.
+    extended_record = str(result.get("extended_record", "")).strip()
+    verified = _verify_answers(extended_record, result.get("answers", []))
+    if extended_record and not verified:
+        # one retry with an amended prompt (a new disk-cache key on every backend --
+        # anthropic_client's use_cache flag governs server-side prompt caching, not the disk
+        # cache, so it would have returned the same failed sample)
+        retry_user = user + ("\n\nRetry: every evidence_quote MUST be copied character-for-"
+                             "character from your extended_record.")
+        result = call_groq("reeval-record-answer", RECORD_ANSWER_SYS, retry_user)
+        extended_record = str(result.get("extended_record", "")).strip()
+        verified = _verify_answers(extended_record, result.get("answers", []))
+    return extended_record, verified
+
+
+def _verify_answers(extended_record, answers_raw):
     verified = []
-    for a in answers_raw:
+    for a in answers_raw or []:
         question = str(a.get("question", "")).strip()
         answer = str(a.get("answer", "")).strip()
         quote = str(a.get("evidence_quote", "")).strip()
@@ -770,7 +838,7 @@ Generate the extended_record and answers per your instructions."""
         if quote in extended_record:
             verified.append({"question": question, "answer": answer, "evidence_quote": quote})
         # else: dropped -- fails the same verbatim-grounding bar as (b) patient-extractor
-    return extended_record, verified
+    return verified
 
 
 # ---------------------------------------------------------------------------
@@ -872,19 +940,38 @@ def run_reeval(patient, gaps, questions, trials_out):
         print("    -> record/answer generation failed grounding check, skipping reeval")
         return empty
 
+    # Link answered questions to criteria through the SAME resolver the served cards use
+    # (action_policy._affected_criteria: exact gap field, else token overlap with the gap's
+    # field/why_needed, criterion texts normalized). The old exact-string join on q["field"]
+    # silently matched nothing whenever the question generator reformatted the field name
+    # ("Renal function (eGFR)" vs "renal_function_egfr"): 4 of the 10 production traces and
+    # 11 of the first 25 stress runs had an answer round that changed zero verdicts for that
+    # reason alone (2026-08-30 stress run). What the card promises is what gets re-judged.
     gaps_by_field = {g["field"]: g for g in gaps}
-    answered_fields = {q["field"] for q in questions
-                        if any(a["question"] == q["question"] for a in answers)}
-    target_criteria_texts = set()
-    for field in answered_fields:
-        g = gaps_by_field.get(field)
-        if g:
-            target_criteria_texts.update(g.get("related_criteria", []))
+    answer_by_q = {a["question"]: a.get("answer", "") for a in answers}
+    answered_qs = [q for q in questions if q["question"] in answer_by_q]
+    target_keys = set()
+    for q in answered_qs:
+        for t, c in _affected_criteria(q, gaps_by_field, trials_out):
+            target_keys.add((t["nct_id"], c["text"]))
+        # Widen by token overlap of the question AND its answer against every open criterion
+        # on a non-blocked trial (the live /api/answer rule, plus the answer text). The blind
+        # review of the 08-30 stress run found the single most frequent defect was an answer
+        # the system itself asked for -- consent capacity, alcohol use, other-trial enrolment
+        # -- never reaching the same criterion on the other candidate trials. Still bounded:
+        # no criterion the answer does not touch is re-judged.
+        atok = _tokens(q["question"] + " " + str(answer_by_q.get(q["question"], "")))
+        for t in trials_out:
+            if trial_is_blocked(t):
+                continue
+            for c in t["criteria"]:
+                if c["verdict"] in ("UNKNOWN", "UNCERTAIN") and (atok & _tokens(c.get("text", ""))):
+                    target_keys.add((t["nct_id"], c["text"]))
 
     affected = []
     for t_idx, t in enumerate(trials_out):
         for c_idx, c in enumerate(t["criteria"]):
-            if c["text"] in target_criteria_texts and c["verdict"] in ("UNKNOWN", "UNCERTAIN"):
+            if (t["nct_id"], c["text"]) in target_keys and c["verdict"] in ("UNKNOWN", "UNCERTAIN"):
                 affected.append({
                     "nct_id": t["nct_id"], "trial_idx": t_idx, "crit_idx": c_idx,
                     "text": c["text"], "type": c["type"], "before_verdict": c["verdict"],
@@ -895,7 +982,11 @@ def run_reeval(patient, gaps, questions, trials_out):
         return {**empty, "extended_record": extended_record, "answers": answers}
 
     print(f"  [reeval] re-matching {len(affected)} affected criteria...")
-    rematched = rematch_affected_criteria(patient, extended_record, affected)
+    # Batches of 12 (the live path's MAX_AFFECTED): one giant re-match prompt for a
+    # criteria-heavy patient (P06, 38 open criteria) failed repeatedly on the headless backend.
+    rematched = []
+    for i in range(0, len(affected), 12):
+        rematched.extend(rematch_affected_criteria(patient, extended_record, affected[i:i + 12]))
 
     verdict_changes = []
     updated_trials = [dict(t, criteria=[dict(c) for c in t["criteria"]]) for t in trials_out]
@@ -914,9 +1005,13 @@ def run_reeval(patient, gaps, questions, trials_out):
             crit["evidence"] = r["after_evidence"]
         crit["reasoning"] = r["after_reasoning"]
         if after_verdict != r["before_verdict"]:
+            # Carry the new evidence and reasoning with the change: the trace's trials[] keep
+            # the initial pass, so without these the corrections log shows a flipped verdict
+            # next to the pre-answer reasoning (blind review 08-30: 9 of 25 personas).
             verdict_changes.append({
                 "nct_id": r["nct_id"], "criterion": r["text"],
                 "before": r["before_verdict"], "after": after_verdict,
+                "evidence_after": r.get("after_evidence"), "reasoning_after": r["after_reasoning"],
             })
 
     print(f"    -> {len(verdict_changes)} verdict change(s)")
@@ -954,13 +1049,21 @@ def run_patient(patient, trials_raw_for_patient):
     trials_out = []
     all_criteria_flat = []  # for gap-detector: [{nct_id, text, verdict}]
 
-    for t in trials:
+    # Parse + match the four trials concurrently (the live endpoint already does): each pair is
+    # two sequential model calls, and running the pairs one after another made the batch path
+    # roughly four times slower than it needs to be (his 08-30 question on run times).
+    def _parse_and_match(t):
         print(f"  [criteria-parser] {t['nct_id']} ({t['title'][:50]}...)")
         criteria = parse_criteria(t)
         print(f"    -> {len(criteria)} criteria parsed")
-
         print(f"  [matcher] {t['nct_id']} vs patient fields...")
-        matched = match_trial(patient, fields, criteria, nct_id=t["nct_id"])
+        return match_trial(patient, fields, criteria, nct_id=t["nct_id"])
+
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=max(1, len(trials))) as ex:
+        matched_by_trial = list(ex.map(_parse_and_match, trials))
+
+    for t, matched in zip(trials, matched_by_trial):
 
         for c in matched:
             all_criteria_flat.append({"nct_id": t["nct_id"], "text": c["text"],

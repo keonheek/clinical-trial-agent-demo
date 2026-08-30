@@ -81,8 +81,13 @@ def call_llm(role, system_prompt, user_prompt, model=DEFAULT_MODEL, json_mode=Tr
             parsed = None
             if json_mode:
                 try:
-                    parsed = json.loads(_strip_fences(raw))
-                except json.JSONDecodeError as je:
+                    # Same parser as the production backend (anthropic_client._extract_json):
+                    # first complete {...} object, commentary before/after ignored. Plain
+                    # json.loads made this backend stricter than prod, so a stress run here
+                    # crashed on outputs prod would have accepted (2026-08-30, P08 injection).
+                    from anthropic_client import _extract_json
+                    parsed = _extract_json(_strip_fences(raw))
+                except (json.JSONDecodeError, ValueError) as je:
                     last_err = je
                     print(f"  [claude] {role}: malformed JSON (attempt "
                           f"{attempt+1}/{max_retries}), retrying in {backoff}s", flush=True)
