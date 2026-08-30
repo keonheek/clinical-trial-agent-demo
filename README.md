@@ -252,6 +252,10 @@ It is a hackathon capability demo and has not been clinically validated. Trial e
 must always be confirmed with the trial's own study team and a qualified clinician before
 any enrollment decision.)
 
+## Handover / opening the exports (Windows)
+
+Non-technical guide, Korean first: [HANDOVER.md](HANDOVER.md) — which export to use (xlsx vs CSV), how to open each in Excel, the browser view, and how to run the app locally.
+
 ## Files
 
 | File | Purpose |
