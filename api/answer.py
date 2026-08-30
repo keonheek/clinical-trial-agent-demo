@@ -374,6 +374,11 @@ def handle(body, client_ip="?"):
     if not live_mode and patient_id not in KNOWN_IDS:
         return {"error": "unknown patient_id"}
     pairs, pairs_error = _extract_answer_pairs(body)
+    if pairs_error and body.get("followups_only") is True and pairs_error == "answers must be a non-empty array":
+        # "Generate questions for this trial" before any answer exists: nothing to apply, the
+        # follow-up generator only needs the state (his 08-30 report: the button spun forever
+        # because this rejection came back as {"error"} and the client kept waiting).
+        pairs, pairs_error = [], None
     if pairs_error:
         return {"error": pairs_error}
     if not isinstance(trials, list) or not trials:

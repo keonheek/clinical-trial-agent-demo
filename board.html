@@ -715,7 +715,7 @@ var I18N = {
     loading: "Loading", liveWaiting: "{n} questions waiting", liveWaitingOne: "1 question waiting",
     liveDone: "All questions resolved · ranking ready",
     liveOpenLeft: "{n} criteria still need confirmation → generate questions", liveOpenTip: "The top candidates still have unconfirmed criteria. Click to generate the next questions.",
-    liveGenBusy: "Generating questions…", rankOpenLine: "{n} criteria on the candidate trials still need confirmation. Generate questions per trial below.", rowGen: "Generate questions for this trial ({n} open) →",
+    liveGenBusy: "Generating questions…", rankOpenLine: "{n} criteria on the candidate trials still need confirmation. Generate questions per trial below.", rowGen: "Generate questions for this trial ({n} open) →", fuNoneNew: "No new questions for this trial — the pending ones already cover its open criteria.", fuNetFail: "Question generation failed (network). Try again.",
     resetBtn: "↺ Start over", resetTip: "Discard the saved rounds for this patient and reload the initial state", resetConfirm: "Discard all rounds and answers for this patient?",
     pdLoading: "Loading patients", pdSelect: "Select patient", pdMore: "More demo patients",
     noPatients: "No patients registered", errPrefix: "Error: ",
@@ -968,7 +968,7 @@ var I18N = {
     loading: "불러오는 중", liveWaiting: "확인 질문 {n}개 대기중", liveWaitingOne: "확인 질문 1개 대기중",
     liveDone: "확인 질문 모두 해결됨 · 순위 확인 가능",
     liveOpenLeft: "확인 필요 기준 {n}건 남음 → 질문 생성", liveOpenTip: "후보 시험에 미확인 기준이 남아 있습니다. 누르면 다음 질문을 생성합니다.",
-    liveGenBusy: "질문 생성 중…", rankOpenLine: "후보 시험에 확인 필요 기준 {n}건이 남아 있습니다. 아래에서 시험별로 질문을 생성하십시오.", rowGen: "이 시험 질문 생성 (미확인 {n}건) →",
+    liveGenBusy: "질문 생성 중…", rankOpenLine: "후보 시험에 확인 필요 기준 {n}건이 남아 있습니다. 아래에서 시험별로 질문을 생성하십시오.", rowGen: "이 시험 질문 생성 (미확인 {n}건) →", fuNoneNew: "이 시험에 대한 새 질문이 없습니다 — 대기 중인 질문이 이미 미확인 기준을 다룹니다.", fuNetFail: "질문 생성 실패(네트워크). 다시 시도하십시오.",
     resetBtn: "↺ 처음부터", resetTip: "이 환자의 저장된 라운드를 지우고 초기 상태로 되돌립니다", resetConfirm: "이 환자의 모든 라운드와 답변을 지우시겠습니까?",
     pdLoading: "환자 불러오는 중", pdSelect: "환자 선택", pdMore: "추가 데모 환자",
     noPatients: "등록된 환자가 없습니다", errPrefix: "오류: ",
@@ -1594,6 +1594,7 @@ function computeLiveStatus(){
   return {text: t("liveDone"), tab: "ranking"};
 }
 var _genBusy = false;
+var _fuSettled = false;   // fetchFollowups has answered (with or without new questions)
 // 남은 미확인 기준으로 추가 질문을 만들고 확인 질문 탭 첫 질문으로 이동. 상태 칩·순위 탭·카드
 // 모달이 같은 함수를 쓴다 — 어디서든 "멈춤" 대신 "다음 질문"이 나와야 한다 (08-30 그의 지적).
 function generateFollowupsAndGo(nct, btn){
@@ -1606,6 +1607,7 @@ function generateFollowupsAndGo(nct, btn){
   var before = pendingQuestions().length;
   var line = document.getElementById("rankOpenLine");
   if (line){ line.hidden = false; line.textContent = t("liveGenBusy"); }
+  _fuSettled = false;
   fetchFollowups(cur.id, answered, nct);
   var tries = 0;
   var timer = setInterval(function(){
@@ -1613,11 +1615,17 @@ function generateFollowupsAndGo(nct, btn){
     var pend = pendingQuestions();
     if (pend.length > before){
       clearInterval(timer); _genBusy = false;
+      if (btn){ btn.disabled = false; }
       var q1 = (nct ? pend.filter(function(q){ return (q.affected_detail || []).some(function(d){ return d.nct_id === nct; }); })[0] : null) || pend[0];
       goToQuestion(q1, nct || "ALL");
-      renderLiveStatus();
-    } else if (tries > 1200 || (cur && cur.followupNote && tries > 4)){
-      clearInterval(timer); _genBusy = false; renderLiveStatus();
+      renderLiveStatus(); renderRanking(false);
+    } else if (_fuSettled || tries > 1200){
+      // 응답은 왔지만 새 질문이 없음(중복 제거·오류): 멈춘 채 두지 않고 기존 대기 질문으로
+      clearInterval(timer); _genBusy = false;
+      if (btn){ btn.disabled = false; }
+      renderLiveStatus(); renderRanking(false);
+      if (pend.length){ goToQuestion(pend[0], nct || "ALL"); }
+      else { var tabEl = document.querySelector('.tab[data-v="chat"]'); if (tabEl) tabEl.click(); }
     }
   }, 500);
 }
@@ -3439,9 +3447,14 @@ function fetchFollowups(patientId, pending, focusNct){
     if (note) note.textContent = t("batchNote");
     var fresh = mergeFollowups(data.followup_questions || []);
     if (data.followup_error) showFollowupError(data.followup_error);
+    else if (data.error) showFollowupError(data.error);
+    else if (!fresh) showFollowupError(t("fuNoneNew"));
     if (fresh){ renderChatAll(); renderLiveStatus(); renderHistory(); }
+    _fuSettled = true;
   }).catch(function(){
     if (note) note.textContent = t("batchNote");         // silent: the round itself succeeded
+    showFollowupError(t("fuNetFail"));
+    _fuSettled = true;
   });
 }
 function applyAnswerResponse(pending, data){
