@@ -119,12 +119,22 @@ python3 pipeline.py --generate   # runs the 6-role pipeline, writes traces.json 
 python3 assert_traces.py    # verifies traces, actions, and the golden ranking order
 python3 ranking.py          # ranking self-tests; --golden checks expected_ranking.json
 python3 action_policy.py    # uncertainty/action self-tests
+python3 export_report.py    # 스크리닝 기록 xlsx + screening.db from traces.json (needs openpyxl)
+python3 serve_local.py      # the judge board on http://127.0.0.1:8930 with the same api/ handlers
 ```
 
-The default backend reads `ANTHROPIC_NEW_KEY` (falling back to `ANTHROPIC_API_KEY`) from the
-environment or from `.env` / `.env.local` at the repo root; `LLM_BACKEND=groq` reads
-`GROQ_API_KEY` instead, and `LLM_BACKEND=ollama` needs no key at all. No dependencies beyond
-the Python 3 standard library (`urllib`, `json`, `hashlib`).
+Optional sidecars (never touch `traces.json`): `gen_questions_v2.py` regenerates the 10 demo
+patients' clarifying questions (Korean text, Korean options, per-option direction) into
+`questions_v2.json`; `gen_options_en_v2.py` adds English option text; `gen_gloss.py` builds
+`gloss.json`. `xlsx_view.py <file.xlsx>` renders a screening record as one tabbed HTML page.
+
+The default backend (`LLM_BACKEND=anthropic`, model `claude-sonnet-5`, override with
+`CLAUDE_PIPELINE_MODEL`) reads `ANTHROPIC_AI_HEALTHCARE_API_KEY`, then `ANTHROPIC_NEW_KEY`, then
+`ANTHROPIC_API_KEY` from the environment or from `.env` / `.env.local` at the repo root;
+`LLM_BACKEND=groq` reads `GROQ_API_KEY`, `LLM_BACKEND=ollama` needs no key, and
+`LLM_BACKEND=claude` runs on a local Claude Code subscription (`claude -p`). The pipeline itself
+is Python 3 standard library only; `export_report.py`, `api/export.py` and `xlsx_view.py` need
+`openpyxl` (`pip install -r requirements.txt`).
 
 Regenerating `traces.json` is a deliberate, gated act: the blind evaluation labels join to
 traces on exact criterion text, so a regeneration on a different backend silently unpairs them.
@@ -136,11 +146,14 @@ quota again).
 
 ## Dependencies
 
-- Python 3 standard library only (no pip installs required: `urllib.request`, `json`,
-  `hashlib`, `time`, `os`).
-- One LLM backend, selected by `LLM_BACKEND`: `anthropic` (default, `claude-haiku-4-5`),
-  `groq` (free tier, `llama-3.3-70b-versatile`), `ollama` (local `qwen3.6`), or `claude`
-  (local Claude Code subscription). All are called in JSON mode.
+- Python 3.12+. The pipeline, ranking and API handlers use the standard library only
+  (`urllib.request`, `json`, `hashlib`, `time`, `os`); the screening-record export
+  (`export_report.py`, `api/export.py`, `xlsx_view.py`) needs `openpyxl` — see
+  `requirements.txt`, the only pinned dependency.
+- One LLM backend, selected by `LLM_BACKEND`: `anthropic` (default, `claude-sonnet-5` since
+  2026-08-19 after the 3-model bake-off; `claude-haiku-4-5` before that), `groq` (free tier,
+  `llama-3.3-70b-versatile`), `ollama` (local `qwen3.6`), or `claude` (local Claude Code
+  subscription). All are called in JSON mode.
 - ClinicalTrials.gov API v2 (`https://clinicaltrials.gov/api/v2/studies`), no key required.
 - `ranking.py`, `action_policy.py`, and `evidence.py` import no LLM client at all — they are
   pure modules, which is what makes them safe to bundle into the `api/` serverless handlers.
